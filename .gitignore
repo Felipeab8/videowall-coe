@@ -1,0 +1,8 @@
+# Lixo do Windows / OneDrive
+Thumbs.db
+desktop.ini
+*.lnk
+
+# Editores
+.vscode/
+.idea/
