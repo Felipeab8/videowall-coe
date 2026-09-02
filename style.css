@@ -2633,15 +2633,16 @@ body.edit-mode .header-controls .btn-alertas.active {
     background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
     border: 1px solid var(--card-border);
     border-radius: 12px;
-    padding: 18px 20px;
+    padding: 14px 18px;
     display: grid;
     grid-template-columns: 1fr auto;
     grid-template-areas:
         'nome nome'
         'pct  tons'
         'barra barra';
-    align-content: center;
-    row-gap: 10px;
+    grid-template-rows: auto auto 1fr;
+    align-content: start;
+    row-gap: 8px;
     column-gap: 12px;
     min-height: 0;
     overflow: hidden;
@@ -2657,9 +2658,9 @@ body.edit-mode .header-controls .btn-alertas.active {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.72rem;
+    font-size: 0.66rem;
     font-weight: 700;
-    letter-spacing: 1.1px;
+    letter-spacing: 1px;
     text-transform: uppercase;
     color: var(--muted);
 }
@@ -2669,7 +2670,7 @@ body.edit-mode .header-controls .btn-alertas.active {
     grid-area: tons;
     align-self: baseline;
     justify-self: end;
-    font-size: 1.15rem;
+    font-size: 0.92rem;
     font-weight: 700;
     color: var(--text);
     font-variant-numeric: tabular-nums;
@@ -2677,7 +2678,7 @@ body.edit-mode .header-controls .btn-alertas.active {
 }
 
 .moega-tons small {
-    font-size: 0.85rem;
+    font-size: 0.72rem;
     font-weight: 600;
     color: var(--muted);
 }
@@ -2687,7 +2688,7 @@ body.edit-mode .header-controls .btn-alertas.active {
     grid-area: pct;
     align-self: baseline;
     margin-bottom: 0;
-    font-size: 2.9rem;
+    font-size: 2.05rem;
     font-weight: 700;
     line-height: 1;
     color: var(--text);
@@ -2695,9 +2696,19 @@ body.edit-mode .header-controls .btn-alertas.active {
     letter-spacing: -0.02em;
 }
 
+/* o sinal de % acompanha o número, menor e discreto */
+.moega-item .pct-sign {
+    font-size: 0.46em;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0;
+    margin-left: 3px;
+}
+
 .moega-item .progress-bar {
     grid-area: barra;
-    height: 38px;
+    align-self: end;
+    height: 24px;
     margin-bottom: 0;
 }
 

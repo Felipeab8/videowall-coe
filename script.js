@@ -420,6 +420,13 @@ function syncBarLabel(bar, pct) {
     }
     const label = bar.container.nextElementSibling;
     if (label && label.classList.contains('progress-label')) {
+        const sign = label.querySelector('.pct-sign');
+        if (sign) {
+            label.textContent = '';
+            label.appendChild(document.createTextNode(String(pct)));
+            label.appendChild(sign);
+            return;
+        }
         label.textContent = label.textContent.replace(/\d+([.,]\d+)?\s*%/, pct + '%');
     }
 }
