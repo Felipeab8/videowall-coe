@@ -37,8 +37,11 @@
     <!-- Main Container -->
     <div class="container">
         <!-- Sidebar Menu -->
-        <aside class="sidebar">
-            <div class="sidebar-header">TELAS</div>
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-top">
+                <div class="sidebar-header">TELAS</div>
+                <button class="sidebar-toggle" id="btnSidebarToggle" type="button" title="Recolher menu (Ctrl+B)" aria-label="Recolher menu de telas" aria-expanded="true" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+            </div>
             <nav class="menu">
                 <button class="menu-item active" data-screen="0">
                     <span class="menu-text">Recepção</span>
@@ -72,6 +75,9 @@
                 </button>
             </nav>
         </aside>
+
+        <!-- Alça flutuante: reabre o menu quando ele está recolhido -->
+        <button class="sidebar-reveal" id="btnSidebarReveal" type="button" title="Mostrar menu de telas (Ctrl+B)" aria-label="Mostrar menu de telas" aria-expanded="false" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
 
         <!-- Main Content Area -->
         <main class="content">

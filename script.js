@@ -39,8 +39,121 @@ menuItems.forEach((item) => {
             target.classList.add('active');
         }
         setAlertsPage(false);
+        scheduleFit();
     });
 });
+
+// ============================================
+// AJUSTE À TELA (qualquer resolução, sem rolagem)
+// O CSS já escala tudo proporcionalmente pela variável --fit.
+// Aqui vem a rede de segurança: se a tela ativa ainda transbordar
+// (monitor baixo demais, texto editado, tabela mais longa), a raiz
+// encolhe em passos até o conteúdo caber — ou até o piso, quando
+// o excesso passa a ser resolvido pela rolagem interna do bloco.
+// ============================================
+const FIT_FLOOR = 0.62;   // não encolhe além disso: legibilidade à distância
+const FIT_STEP = 0.96;    // ~4% por passo
+const FIT_SLACK = 2;      // folga em px para ignorar arredondamento
+
+function fitTargets() {
+    const active = alertsPageOpen()
+        ? alertsPage
+        : document.querySelector('.screen.active');
+    if (!active) return [];
+    return [active, ...active.querySelectorAll('.content-section, .table-scroll, .alerts-list')];
+}
+
+function fitOverflow(targets) {
+    let worst = 0;
+    for (const el of targets) {
+        const over = el.scrollHeight - el.clientHeight;
+        if (over > worst) worst = over;
+    }
+    return worst;
+}
+
+let fitPending = false;
+
+function fitToScreen() {
+    fitPending = false;
+    const root = document.documentElement;
+    root.style.setProperty('--fit-adjust', '1');
+
+    const targets = fitTargets();
+    if (!targets.length) return;
+
+    let scale = 1;
+    while (scale > FIT_FLOOR && fitOverflow(targets) > FIT_SLACK) {
+        scale *= FIT_STEP;
+        root.style.setProperty('--fit-adjust', scale.toFixed(4));
+    }
+}
+
+function scheduleFit() {
+    if (fitPending) return;
+    fitPending = true;
+    requestAnimationFrame(fitToScreen);
+}
+
+window.addEventListener('resize', scheduleFit);
+window.addEventListener('load', scheduleFit);
+if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(scheduleFit);
+}
+
+// ============================================
+// MENU RECOLHÍVEL (tela cheia)
+// ============================================
+const SIDEBAR_STORAGE_KEY = 'videowall:sidebar-collapsed';
+const btnSidebarToggle = document.getElementById('btnSidebarToggle');
+const btnSidebarReveal = document.getElementById('btnSidebarReveal');
+
+function setSidebarCollapsed(collapsed, persist = true) {
+    document.body.classList.toggle('sidebar-collapsed', collapsed);
+
+    if (btnSidebarToggle) {
+        btnSidebarToggle.setAttribute('aria-expanded', String(!collapsed));
+    }
+    if (btnSidebarReveal) {
+        btnSidebarReveal.setAttribute('aria-expanded', String(!collapsed));
+        btnSidebarReveal.tabIndex = collapsed ? 0 : -1;
+    }
+
+    if (!persist) return;
+    try {
+        localStorage.setItem(SIDEBAR_STORAGE_KEY, collapsed ? '1' : '0');
+    } catch (err) {
+        /* armazenamento indisponível: segue apenas em memória */
+    }
+}
+
+function toggleSidebar() {
+    setSidebarCollapsed(!document.body.classList.contains('sidebar-collapsed'));
+    scheduleFit();
+}
+
+if (btnSidebarToggle) {
+    btnSidebarToggle.addEventListener('click', toggleSidebar);
+}
+
+if (btnSidebarReveal) {
+    btnSidebarReveal.addEventListener('click', toggleSidebar);
+}
+
+document.addEventListener('keydown', (event) => {
+    if (!(event.ctrlKey || event.metaKey) || event.altKey) return;
+    if (event.key !== 'b' && event.key !== 'B') return;
+    event.preventDefault();
+    toggleSidebar();
+});
+
+let sidebarStartCollapsed = false;
+try {
+    sidebarStartCollapsed = localStorage.getItem(SIDEBAR_STORAGE_KEY) === '1';
+} catch (err) {
+    sidebarStartCollapsed = false;
+}
+setSidebarCollapsed(sidebarStartCollapsed, false);
 
 // ============================================
 // PÁGINA DE ALERTAS (funcionalidade acessada pelo cabeçalho)
@@ -79,6 +192,7 @@ function setAlertsPage(open) {
         refreshAlertsBadge();
         alertsPage.scrollIntoView({ block: 'start' });
     }
+    scheduleFit();
 }
 
 if (btnAlertas) {
@@ -122,6 +236,7 @@ document.querySelectorAll('.row-toggle').forEach((btn) => {
         document.querySelectorAll('tr[data-parent="' + key + '"]').forEach((child) => {
             child.hidden = collapsed;
         });
+        scheduleFit();
     });
 });
 
@@ -608,6 +723,7 @@ function toggleEditMode() {
 
     document.body.classList.toggle('edit-mode', nextState);
     applyEditMode(nextState);
+    scheduleFit();
 }
 
 if (btnClaro) {
@@ -733,6 +849,7 @@ document.querySelectorAll('[data-forecast-toggle]').forEach((btn) => {
         target.hidden = !opening;
         btn.setAttribute('aria-expanded', String(opening));
         btn.textContent = opening ? 'OCULTAR' : 'TABELA';
+        scheduleFit();
     });
 });
 
