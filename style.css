@@ -2126,3 +2126,188 @@ body.edit-mode .forecast-bar.is-empty {
 .alert-title {
     letter-spacing: 0.005em;
 }
+
+/* ============================================
+   MIX DE GRÃOS POR MOEGA
+   ============================================ */
+/* Cores neutras por grão: mesma paleta nos dois temas, com texto escuro dentro
+   das faixas (contraste aprovado em claro e escuro / visão de cores) */
+:root {
+    --grao-milho: #d8c396;
+    --grao-sorgo: #a68b80;
+    --grao-trigo: #9fb0c4;
+    --grao-soja: #74847a;
+    --grao-texto: #10192a;
+}
+
+.kpi-grid--six {
+    grid-template-columns: repeat(6, 1fr);
+}
+
+.kpi-grid--six .kpi-card {
+    padding: 14px;
+    min-height: 84px;
+}
+
+.kpi-grid--six .kpi-value {
+    font-size: 1.7rem;
+}
+
+.legend-dot--milho {
+    background: var(--grao-milho);
+}
+
+.legend-dot--sorgo {
+    background: var(--grao-sorgo);
+}
+
+.legend-dot--trigo {
+    background: var(--grao-trigo);
+}
+
+.legend-dot--soja {
+    background: var(--grao-soja);
+}
+
+.stack-chart--grao .stack-label {
+    width: 78px;
+}
+
+.stack-chart--grao .stack-axis {
+    margin-left: 90px;
+}
+
+.stack-chart--grao .stack-value {
+    color: var(--grao-texto);
+    font-size: 0.7rem;
+}
+
+.stack-seg--milho {
+    background: var(--grao-milho);
+}
+
+.stack-seg--sorgo {
+    background: var(--grao-sorgo);
+}
+
+.stack-seg--trigo {
+    background: var(--grao-trigo);
+}
+
+.stack-seg--soja {
+    background: var(--grao-soja);
+}
+
+/* Faixa consolidada das 6 moegas */
+.stack-row--total {
+    margin-top: 6px;
+    padding-top: 10px;
+    border-top: 1px solid var(--row-line);
+}
+
+.stack-row--total .stack-label {
+    text-transform: uppercase;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+}
+
+.stack-row--total .stack-track {
+    height: 38px;
+}
+
+/* ============================================
+   PÁGINA DE ALERTAS (funcionalidade, fora do rodízio de telas)
+   ============================================ */
+.alerts-page {
+    display: block;
+    animation: fadeIn 0.35s ease;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 14px;
+    padding: 22px 24px;
+    box-shadow: var(--shadow);
+}
+
+.alerts-page[hidden] {
+    display: none;
+}
+
+/* Com a página aberta, as telas do rodízio saem de cena */
+body.alerts-open .screen.active {
+    display: none;
+}
+
+.alerts-page-header {
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--row-line);
+}
+
+.screen-badge--alert {
+    background: linear-gradient(135deg, #e05548 0%, #c0392b 100%);
+    box-shadow: 0 6px 16px rgba(192, 57, 43, 0.32);
+}
+
+.badge-icon {
+    width: 20px;
+    height: 20px;
+    display: block;
+}
+
+.alerts-close {
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+/* Botão de acesso no cabeçalho, à direita de EDITAR */
+.btn-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: var(--panel-border);
+    color: var(--text);
+    font-size: 0.62rem;
+    font-weight: 800;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.btn-alertas.has-critical {
+    border-color: rgba(231, 76, 60, 0.55);
+    color: #f0857a;
+}
+
+.btn-alertas.has-critical .btn-badge {
+    background: var(--danger);
+    color: #fff;
+}
+
+.btn-alertas.active {
+    background: linear-gradient(135deg, #e05548 0%, #c0392b 100%);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(192, 57, 43, 0.3);
+}
+
+.btn-alertas.active .btn-badge {
+    background: rgba(255, 255, 255, 0.28);
+    color: #fff;
+}
+
+body.theme-light .btn-alertas.has-critical {
+    color: #b03a2e;
+}
+
+body.edit-mode .alerts-page {
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2), var(--shadow);
+}
+
+body.edit-mode .header-controls .btn-alertas.active {
+    background: linear-gradient(135deg, #e05548 0%, #c0392b 100%);
+    color: #fff;
+}

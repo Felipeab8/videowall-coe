@@ -31,14 +31,69 @@ function isEditing() {
 menuItems.forEach((item) => {
     item.addEventListener('click', () => {
         const screenIndex = item.getAttribute('data-screen');
+        const target = document.getElementById('screen-' + screenIndex);
         menuItems.forEach((m) => m.classList.remove('active'));
         screens.forEach((s) => s.classList.remove('active'));
         item.classList.add('active');
-        if (screens[screenIndex]) {
-            screens[screenIndex].classList.add('active');
+        if (target) {
+            target.classList.add('active');
         }
+        setAlertsPage(false);
     });
 });
+
+// ============================================
+// PÁGINA DE ALERTAS (funcionalidade acessada pelo cabeçalho)
+// ============================================
+const alertsPage = document.getElementById('alertsPage');
+const btnAlertas = document.getElementById('btnAlertas');
+const btnFecharAlertas = document.getElementById('btnFecharAlertas');
+const alertsBadge = document.getElementById('alertsBadge');
+
+function alertsPageOpen() {
+    return !!alertsPage && !alertsPage.hidden;
+}
+
+function refreshAlertsBadge() {
+    if (!alertsPage) return;
+    const items = alertsPage.querySelectorAll('.alerts-list .alert-item');
+    const critical = alertsPage.querySelectorAll('.alerts-list .alert-critical').length;
+    if (alertsBadge) alertsBadge.textContent = String(items.length);
+    if (btnAlertas) {
+        btnAlertas.classList.toggle('has-critical', critical > 0);
+        btnAlertas.setAttribute('title', items.length === 1
+            ? '1 alerta ativo'
+            : items.length + ' alertas ativos');
+    }
+}
+
+function setAlertsPage(open) {
+    if (!alertsPage) return;
+    alertsPage.hidden = !open;
+    document.body.classList.toggle('alerts-open', open);
+    if (btnAlertas) {
+        btnAlertas.classList.toggle('active', open);
+        btnAlertas.setAttribute('aria-expanded', String(open));
+    }
+    if (open) {
+        refreshAlertsBadge();
+        alertsPage.scrollIntoView({ block: 'start' });
+    }
+}
+
+if (btnAlertas) {
+    btnAlertas.addEventListener('click', () => setAlertsPage(!alertsPageOpen()));
+}
+
+if (btnFecharAlertas) {
+    btnFecharAlertas.addEventListener('click', () => setAlertsPage(false));
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && alertsPageOpen()) setAlertsPage(false);
+});
+
+refreshAlertsBadge();
 
 document.querySelectorAll('.flow-btn').forEach((btn) => {
     btn.addEventListener('click', function (event) {
@@ -159,6 +214,7 @@ function applyTextEditing(enabled) {
         document.querySelectorAll(selector).forEach((element) => {
             if (!(element instanceof HTMLElement)) return;
             if (element.tagName === 'BUTTON' && !element.classList.contains('flow-btn')) return;
+            if (element.classList.contains('screen-badge--alert')) return;
 
             element.classList.toggle('editable', enabled);
             element.contentEditable = enabled ? 'true' : 'false';
@@ -173,7 +229,7 @@ function applyTextEditing(enabled) {
 // EDIÇÃO DE LUGAR (arrastar e soltar)
 // ============================================
 const DRAG_CONFIG = [
-    { selector: '.screen > div:not(.screen-header)', group: 'bloco', section: true },
+    { selector: '.screen > div:not(.screen-header), .alerts-page > div:not(.screen-header)', group: 'bloco', section: true },
     { selector: '.split-grid > .content-section', group: 'painel' },
     { selector: '.kpi-card', group: 'kpi' },
     { selector: '.kpi-card-small', group: 'kpi-small' },
@@ -399,7 +455,7 @@ document.addEventListener('pointerup', () => {
 // EDIÇÃO DE TAMANHO (redimensionar blocos e gráficos)
 // ============================================
 const RESIZE_CONFIG = [
-    { selector: '.screen > div:not(.screen-header)', mode: 'min' },
+    { selector: '.screen > div:not(.screen-header), .alerts-page > div:not(.screen-header)', mode: 'min' },
     { selector: '.split-grid > .content-section', mode: 'size' },
     { selector: '.kpi-card', mode: 'size' },
     { selector: '.kpi-card-small', mode: 'size' },
@@ -558,6 +614,7 @@ if (btnLive) {
         if (isEditing()) {
             toggleEditMode();
         }
+        setAlertsPage(false);
         btnLive.classList.add('active');
     });
 }
