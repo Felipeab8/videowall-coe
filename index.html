@@ -44,16 +44,16 @@
                     <span class="menu-text">Recepção</span>
                 </button>
                 <button class="menu-item" data-screen="1">
-                    <span class="menu-text">Moegas</span>
+                    <span class="menu-text">Qualidade</span>
                 </button>
                 <button class="menu-item" data-screen="2">
-                    <span class="menu-text">Secagem</span>
+                    <span class="menu-text">Moegas</span>
                 </button>
                 <button class="menu-item" data-screen="3">
-                    <span class="menu-text">Produtividade</span>
+                    <span class="menu-text">Secagem</span>
                 </button>
                 <button class="menu-item" data-screen="4">
-                    <span class="menu-text">Turno</span>
+                    <span class="menu-text">Produtividade</span>
                 </button>
                 <button class="menu-item" data-screen="5">
                     <span class="menu-text">Silos</span>
@@ -80,7 +80,7 @@
                 <div class="screen-header">
                     <div class="screen-badge">01</div>
                     <div class="screen-title-section">
-                        <h2>Recepção, Qualidade & Fila de Caminhões</h2>
+                        <h2>Recepção & Fila de Caminhões</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">5</span>s</div>
                     </div>
                 </div>
@@ -280,6 +280,42 @@
                     </div>
                 </div>
 
+                <div class="alerts-section">
+                    <span class="alert-badge alert-red">FILA > LIMITE</span>
+                    <span class="alert-text">Tempo de ciclo acima da meta</span>
+                    <span class="alert-badge alert-green">OPERAÇÃO DENTRO DO RITMO</span>
+                </div>
+            </section>
+
+            <!-- Screen 1: Qualidade -->
+            <section class="screen" id="screen-1">
+                <div class="screen-header">
+                    <div class="screen-badge">02</div>
+                    <div class="screen-title-section">
+                        <h2>Controle de Qualidade</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">4</span>s</div>
+                    </div>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-label">UMIDADE MÉDIA</div>
+                        <div class="kpi-value">12,3%</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">IMPUREZA</div>
+                        <div class="kpi-value">0,8%</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">CARGAS OK</div>
+                        <div class="kpi-value">98</div>
+                    </div>
+                    <div class="kpi-card alert">
+                        <div class="kpi-label">CARGAS REPROVADAS</div>
+                        <div class="kpi-value">2</div>
+                    </div>
+                </div>
+
                 <div class="content-section">
                     <h3>RECEPÇÃO DE MILHO, SORGO, TRIGO</h3>
                     <div class="table-scroll">
@@ -312,27 +348,7 @@
                 </div>
 
                 <div class="content-section">
-                    <h3>CONTROLE DE QUALIDADE</h3>
-                    <div class="kpi-grid-small kpi-grid-small--quad">
-                        <div class="kpi-card-small">
-                            <div class="kpi-label-small">UMIDADE MÉDIA</div>
-                            <div class="kpi-value-small">12.3%</div>
-                        </div>
-                        <div class="kpi-card-small">
-                            <div class="kpi-label-small">IMPUREZA</div>
-                            <div class="kpi-value-small">0.8%</div>
-                        </div>
-                        <div class="kpi-card-small">
-                            <div class="kpi-label-small">CARGAS OK</div>
-                            <div class="kpi-value-small">98</div>
-                        </div>
-                        <div class="kpi-card-small alert">
-                            <div class="kpi-label-small">CARGAS REPROVADAS</div>
-                            <div class="kpi-value-small">2</div>
-                        </div>
-                    </div>
-
-                    <h4 class="subsection-title">DISTRIBUIÇÃO DE QUALIDADE</h4>
+                    <h3>DISTRIBUIÇÃO DE QUALIDADE</h3>
                     <div class="status-bar">
                         <div class="status-item ok">
                             <div class="status-dot"></div>
@@ -348,151 +364,95 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="alerts-section">
-                    <span class="alert-badge alert-red">FILA > LIMITE</span>
-                    <span class="alert-text">Tempo de ciclo acima da meta</span>
-                    <span class="alert-badge alert-green">OPERAÇÃO DENTRO DO RITMO</span>
-                </div>
             </section>
 
-            <!-- Screen 1: Moegas -->
-            <section class="screen" id="screen-1">
+            <!-- Screen 2: Moegas -->
+            <section class="screen" id="screen-2">
                 <div class="screen-header">
-                    <div class="screen-badge">02</div>
+                    <div class="screen-badge">03</div>
                     <div class="screen-title-section">
                         <h2>Segregação por Moegas</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">7</span>s</div>
                     </div>
                 </div>
                 
-                <div class="kpi-grid kpi-grid--six">
-                    <div class="kpi-card">
-                        <div class="kpi-label">MOEGA 1</div>
-                        <div class="kpi-value">320 t</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">MOEGA 2</div>
-                        <div class="kpi-value">265 t</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">MOEGA 3</div>
-                        <div class="kpi-value">290 t</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">MOEGA 4</div>
-                        <div class="kpi-value">240 t</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">MOEGA 5</div>
-                        <div class="kpi-value">205 t</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">MOEGA 6</div>
-                        <div class="kpi-value">180 t</div>
+                <div class="content-section">
+                    <h3>OCUPAÇÃO DAS MOEGAS · UM GRÃO POR MOEGA</h3>
+                    <div class="moega-grid">
+                        <div class="moega-item moega-item--alerta">
+                            <span class="moega-name"><i class="legend-dot legend-dot--milho"></i>Moega 1 · Milho</span>
+                            <span class="moega-tons">110,4 <small>/ 120 t</small></span>
+                            <div class="progress-bar">
+                                <div class="progress progress--milho" style="width: 92%"></div>
+                            </div>
+                            <div class="progress-label">92%</div>
+                        </div>
+                        <div class="moega-item">
+                            <span class="moega-name"><i class="legend-dot legend-dot--milho"></i>Moega 2 · Milho</span>
+                            <span class="moega-tons">68 <small>/ 100 t</small></span>
+                            <div class="progress-bar">
+                                <div class="progress progress--milho" style="width: 68%"></div>
+                            </div>
+                            <div class="progress-label">68%</div>
+                        </div>
+                        <div class="moega-item">
+                            <span class="moega-name"><i class="legend-dot legend-dot--sorgo"></i>Moega 3 · Sorgo</span>
+                            <span class="moega-tons">102 <small>/ 120 t</small></span>
+                            <div class="progress-bar">
+                                <div class="progress progress--sorgo" style="width: 85%"></div>
+                            </div>
+                            <div class="progress-label">85%</div>
+                        </div>
+                        <div class="moega-item">
+                            <span class="moega-name"><i class="legend-dot legend-dot--trigo"></i>Moega 4 · Trigo</span>
+                            <span class="moega-tons">60 <small>/ 80 t</small></span>
+                            <div class="progress-bar">
+                                <div class="progress progress--trigo" style="width: 75%"></div>
+                            </div>
+                            <div class="progress-label">75%</div>
+                        </div>
+                        <div class="moega-item">
+                            <span class="moega-name"><i class="legend-dot legend-dot--sorgo"></i>Moega 5 · Sorgo</span>
+                            <span class="moega-tons">58 <small>/ 100 t</small></span>
+                            <div class="progress-bar">
+                                <div class="progress progress--sorgo" style="width: 58%"></div>
+                            </div>
+                            <div class="progress-label">58%</div>
+                        </div>
+                        <div class="moega-item">
+                            <span class="moega-name"><i class="legend-dot legend-dot--soja"></i>Moega 6 · Soja</span>
+                            <span class="moega-tons">35,2 <small>/ 80 t</small></span>
+                            <div class="progress-bar">
+                                <div class="progress progress--soja" style="width: 44%"></div>
+                            </div>
+                            <div class="progress-label">44%</div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="content-section">
-                    <h3>MIX DE GRÃOS POR MOEGA (% DO TOTAL RECEBIDO)</h3>
-                    <div class="chart-legend">
-                        <span class="legend-item"><i class="legend-dot legend-dot--milho"></i>Milho</span>
-                        <span class="legend-item"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
-                        <span class="legend-item"><i class="legend-dot legend-dot--trigo"></i>Trigo</span>
-                        <span class="legend-item"><i class="legend-dot legend-dot--soja"></i>Soja</span>
-                    </div>
-                    <div class="stack-chart stack-chart--grao">
-                        <div class="stack-row">
-                            <span class="stack-label">Moega 1</span>
-                            <div class="stack-track">
-                                <div class="stack-seg stack-seg--milho" style="width: 100%"><span class="stack-value">Milho 100,0%</span></div>
-                            </div>
-                        </div>
-                        <div class="stack-row">
-                            <span class="stack-label">Moega 2</span>
-                            <div class="stack-track">
-                                <div class="stack-seg stack-seg--milho" style="width: 62.3%"><span class="stack-value">Milho 62,3%</span></div>
-                                <div class="stack-seg stack-seg--sorgo" style="width: 37.7%"><span class="stack-value">Sorgo 37,7%</span></div>
-                            </div>
-                        </div>
-                        <div class="stack-row">
-                            <span class="stack-label">Moega 3</span>
-                            <div class="stack-track">
-                                <div class="stack-seg stack-seg--sorgo" style="width: 60.3%"><span class="stack-value">Sorgo 60,3%</span></div>
-                                <div class="stack-seg stack-seg--trigo" style="width: 39.7%"><span class="stack-value">Trigo 39,7%</span></div>
-                            </div>
-                        </div>
-                        <div class="stack-row">
-                            <span class="stack-label">Moega 4</span>
-                            <div class="stack-track">
-                                <div class="stack-seg stack-seg--trigo" style="width: 100%"><span class="stack-value">Trigo 100,0%</span></div>
-                            </div>
-                        </div>
-                        <div class="stack-row">
-                            <span class="stack-label">Moega 5</span>
-                            <div class="stack-track">
-                                <div class="stack-seg stack-seg--sorgo" style="width: 73.2%"><span class="stack-value">Sorgo 73,2%</span></div>
-                                <div class="stack-seg stack-seg--trigo" style="width: 26.8%"><span class="stack-value">Trigo 26,8%</span></div>
-                            </div>
-                        </div>
-                        <div class="stack-row">
-                            <span class="stack-label">Moega 6</span>
-                            <div class="stack-track">
-                                <div class="stack-seg stack-seg--soja" style="width: 66.7%"><span class="stack-value">Soja 66,7%</span></div>
-                                <div class="stack-seg stack-seg--milho" style="width: 33.3%"><span class="stack-value">Milho 33,3%</span></div>
-                            </div>
-                        </div>
-                        <div class="stack-row stack-row--total">
-                            <span class="stack-label">Total</span>
-                            <div class="stack-track">
-                                <div class="stack-seg stack-seg--milho" style="width: 36.3%"><span class="stack-value">Milho 36,3%</span></div>
-                                <div class="stack-seg stack-seg--sorgo" style="width: 28.3%"><span class="stack-value">Sorgo 28,3%</span></div>
-                                <div class="stack-seg stack-seg--trigo" style="width: 27.4%"><span class="stack-value">Trigo 27,4%</span></div>
-                                <div class="stack-seg stack-seg--soja" style="width: 8%"><span class="stack-value">Soja 8,0%</span></div>
-                            </div>
-                        </div>
-                        <div class="stack-axis">
-                            <span>0%</span>
-                            <span>50%</span>
-                            <span>100%</span>
+                <div class="content-section content-section--auto totaldia">
+                    <div class="section-head">
+                        <h3>RECEBIDO NO DIA · 1.500 T</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item"><i class="legend-dot legend-dot--milho"></i>Milho</span>
+                            <span class="legend-item"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
+                            <span class="legend-item"><i class="legend-dot legend-dot--trigo"></i>Trigo</span>
+                            <span class="legend-item"><i class="legend-dot legend-dot--soja"></i>Soja</span>
                         </div>
                     </div>
-                    <p class="stack-hint">Cada barra mostra a participação de cada grão no volume recebido pela moega. A linha Total consolida as 6 moegas: 1.500 t no dia.</p>
-                </div>
-
-                <div class="content-section">
-                    <h3>OCUPAÇÃO POR MOEGA</h3>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 92%"></div>
+                    <div class="stack-track">
+                            <div class="stack-seg stack-seg--milho" style="width: 39.0%"><span class="stack-value">Milho · 585 t</span></div>
+                            <div class="stack-seg stack-seg--sorgo" style="width: 33.0%"><span class="stack-value">Sorgo · 495 t</span></div>
+                            <div class="stack-seg stack-seg--trigo" style="width: 16.0%"><span class="stack-value">Trigo · 240 t</span></div>
+                            <div class="stack-seg stack-seg--soja" style="width: 12.0%"><span class="stack-value">Soja · 180 t</span></div>
                     </div>
-                    <div class="progress-label">Moega 1: 92%</div>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 68%"></div>
-                    </div>
-                    <div class="progress-label">Moega 2: 68%</div>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 85%"></div>
-                    </div>
-                    <div class="progress-label">Moega 3: 85%</div>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 75%"></div>
-                    </div>
-                    <div class="progress-label">Moega 4: 75%</div>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 58%"></div>
-                    </div>
-                    <div class="progress-label">Moega 5: 58%</div>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 44%"></div>
-                    </div>
-                    <div class="progress-label">Moega 6: 44%</div>
                 </div>
             </section>
 
-            <!-- Screen 2: Secagem -->
-            <section class="screen" id="screen-2">
+            <!-- Screen 3: Secagem -->
+            <section class="screen" id="screen-3">
                 <div class="screen-header">
-                    <div class="screen-badge">03</div>
+                    <div class="screen-badge">04</div>
                     <div class="screen-title-section">
                         <h2>Processo de Secagem</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">2</span>s</div>
@@ -553,10 +513,10 @@
                 </div>
             </section>
 
-            <!-- Screen 3: Produtividade -->
-            <section class="screen" id="screen-3">
+            <!-- Screen 4: Produtividade -->
+            <section class="screen" id="screen-4">
                 <div class="screen-header">
-                    <div class="screen-badge">04</div>
+                    <div class="screen-badge">05</div>
                     <div class="screen-title-section">
                         <h2>Produtividade Diária</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">4</span>s</div>
@@ -611,70 +571,6 @@
                             <span class="hour-value">116 t</span>
                         </div>
                     </div>
-                </div>
-            </section>
-
-            <!-- Screen 4: Turno -->
-            <section class="screen" id="screen-4">
-                <div class="screen-header">
-                    <div class="screen-badge">05</div>
-                    <div class="screen-title-section">
-                        <h2>Informações do Turno</h2>
-                        <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">6</span>s</div>
-                    </div>
-                </div>
-                
-                <div class="kpi-grid">
-                    <div class="kpi-card">
-                        <div class="kpi-label">TURNO ATUAL</div>
-                        <div class="kpi-value">08h-16h</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">OPERADORES</div>
-                        <div class="kpi-value">8</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">PARADAS</div>
-                        <div class="kpi-value">2</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">TEMPO OPERAÇÃO</div>
-                        <div class="kpi-value">6h 45m</div>
-                    </div>
-                </div>
-
-                <div class="content-section">
-                    <h3>HISTÓRICO DE EVENTOS</h3>
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>HORA</th>
-                                <th>EVENTO</th>
-                                <th>DURAÇÃO</th>
-                                <th>STATUS</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>08:00</td>
-                                <td>Início do Turno</td>
-                                <td>--</td>
-                                <td>✅</td>
-                            </tr>
-                            <tr>
-                                <td>10:15</td>
-                                <td>Parada Recepção</td>
-                                <td>15 min</td>
-                                <td>✅</td>
-                            </tr>
-                            <tr>
-                                <td>12:30</td>
-                                <td>Parada Manutenção</td>
-                                <td>30 min</td>
-                                <td>✅</td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </section>
 

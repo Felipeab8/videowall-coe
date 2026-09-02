@@ -889,6 +889,7 @@ body.theme-light #btnClaro .btn-icon {
     flex: 1;
     display: flex;
     height: 34px;
+    gap: 2px;
     border-radius: 6px;
     overflow: hidden;
     border: 1px solid var(--row-line);
@@ -2130,14 +2131,24 @@ body.edit-mode .forecast-bar.is-empty {
 /* ============================================
    MIX DE GRÃOS POR MOEGA
    ============================================ */
-/* Cores neutras por grão: mesma paleta nos dois temas, com texto escuro dentro
-   das faixas (contraste aprovado em claro e escuro / visão de cores) */
-:root {
-    --grao-milho: #d8c396;
-    --grao-sorgo: #a68b80;
-    --grao-trigo: #9fb0c4;
-    --grao-soja: #74847a;
-    --grao-texto: #10192a;
+/* Paleta categórica por grão — ordem fixa milho · sorgo · trigo · soja.
+   Validada em claro e escuro: pior par vizinho ΔE 9,2 (protan/deutan) e 27,6
+   em visão normal; rótulo escuro dentro das faixas >= 4,5:1 em todas elas. */
+:root,
+body.theme-dark {
+    --grao-milho: #c98500;
+    --grao-sorgo: #3987e5;
+    --grao-trigo: #d95926;
+    --grao-soja: #199e70;
+    --grao-texto: #05080d;
+}
+
+/* Mesmas quatro matizes, degraus próprios para o fundo claro */
+body.theme-light {
+    --grao-milho: #eda100;
+    --grao-sorgo: #2a78d6;
+    --grao-trigo: #eb6834;
+    --grao-soja: #1baf7a;
 }
 
 .kpi-grid--six {
@@ -2310,4 +2321,452 @@ body.edit-mode .alerts-page {
 body.edit-mode .header-controls .btn-alertas.active {
     background: linear-gradient(135deg, #e05548 0%, #c0392b 100%);
     color: #fff;
+}
+
+/* ============================================
+   TELA FIXA — videowall sem rolagem
+   Cada tela ocupa exatamente a altura disponível:
+   blocos de altura natural (KPIs, rodapés) não esticam,
+   os demais dividem a sobra e encolhem quando falta espaço.
+   ============================================ */
+.content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 14px 18px;
+}
+
+.screen,
+.alerts-page {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 16px 18px;
+}
+
+.screen.active,
+.alerts-page:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* dentro da tela o respiro vem do gap, não das margens */
+.screen > *,
+.alerts-page > * {
+    margin-bottom: 0;
+    min-height: 0;
+}
+
+.screen-header {
+    flex: 0 0 auto;
+    margin-bottom: 0;
+}
+
+/* blocos de altura natural */
+.screen > .kpi-grid,
+.screen > .alerts-section,
+.alerts-page > .alerts-summary {
+    flex: 0 0 auto;
+}
+
+/* blocos que dividem a altura restante */
+.screen > .content-section,
+.screen > .split-grid,
+.screen > .flow-section,
+.alerts-page > .alerts-list {
+    flex: 1 1 auto;
+}
+
+.split-grid {
+    align-items: stretch;
+    min-height: 0;
+}
+
+/* a seção vira coluna flex para o conteúdo interno poder encolher;
+   overflow auto é só válvula de segurança em telas menores */
+.content-section {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+.content-section > h3,
+.content-section > .section-head,
+.content-section > .subsection-title,
+.content-section > .chart-legend,
+.content-section > .stack-hint,
+.content-section > .kpi-grid-small {
+    flex: 0 0 auto;
+}
+
+/* elementos que esticam dentro da seção */
+.table-scroll,
+.hourly-data,
+.system-status,
+.silo-grid,
+.forecast-chart {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.table-scroll {
+    overflow: auto;
+}
+
+.alerts-list {
+    overflow: auto;
+}
+
+.alert-item {
+    flex: 0 0 auto;
+}
+
+/* gráfico de 7 dias acompanha a altura da tela */
+.forecast-chart {
+    grid-template-rows: minmax(90px, 1fr) auto;
+}
+
+/* silos: duas fileiras de quatro dividindo a altura */
+.silo-grid {
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
+.silo-item {
+    min-height: 0;
+}
+
+.silo-visual {
+    height: auto;
+    flex: 1 1 auto;
+    min-height: 56px;
+}
+
+/* status ocupa a seção inteira */
+.system-status {
+    justify-content: space-between;
+}
+
+/* produção por hora: as colunas acompanham a altura da seção */
+.hourly-data {
+    grid-auto-rows: minmax(0, 1fr);
+}
+
+.hour-item {
+    min-height: 0;
+}
+
+.hour-bar {
+    height: auto;
+    flex: 1 1 auto;
+    min-height: 40px;
+}
+
+/* moegas: mix (largo) ao lado da ocupação */
+.split-grid--moegas {
+    grid-template-columns: 1.55fr 1fr;
+}
+
+/* barras do mix ocupam a altura da coluna, com limite de espessura */
+.stack-chart--grao {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.stack-chart--grao .stack-row {
+    flex: 1 1 auto;
+    min-height: 30px;
+}
+
+.stack-chart--grao .stack-track {
+    height: 100%;
+    max-height: 56px;
+}
+
+.stack-chart--grao .stack-axis {
+    flex: 0 0 auto;
+}
+
+/* lista distribuída na altura da seção (ocupação por moega) */
+.content-section--spread {
+    justify-content: space-between;
+}
+
+.content-section--spread > :last-child {
+    margin-bottom: 0;
+}
+
+/* Telas mais baixas que 1080p: mesma diagramação, respiro reduzido,
+   para continuar cabendo sem rolagem */
+@media (max-height: 950px) {
+    :root,
+    body.theme-dark,
+    body.theme-light {
+        --header-h: 62px;
+    }
+
+    .header {
+        padding: 8px 20px;
+    }
+
+    .content {
+        padding: 10px 14px;
+    }
+
+    .screen,
+    .alerts-page {
+        padding: 12px 14px;
+    }
+
+    .screen.active,
+    .alerts-page:not([hidden]) {
+        gap: 10px;
+    }
+
+    .screen-badge {
+        width: 32px;
+        height: 32px;
+        font-size: 0.78rem;
+    }
+
+    .screen-title-section h2 {
+        font-size: 1.2rem;
+        margin-bottom: 2px;
+    }
+
+    .kpi-card {
+        min-height: 68px;
+        padding: 10px 14px;
+    }
+
+    .kpi-value {
+        font-size: 1.6rem;
+    }
+
+    .kpi-grid,
+    .kpi-grid-small,
+    .silo-grid,
+    .split-grid {
+        gap: 10px;
+    }
+
+    .content-section {
+        padding: 12px 14px;
+    }
+
+    .content-section h3 {
+        margin-bottom: 10px;
+    }
+
+    .forecast-chart {
+        grid-template-rows: minmax(70px, 1fr) auto;
+    }
+
+    .stack-chart--grao .stack-track {
+        max-height: 40px;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 6px 10px;
+    }
+
+    .alert-item,
+    .summary-card {
+        padding: 10px 14px;
+    }
+}
+
+@media (max-height: 950px) {
+    .chart-legend {
+        margin-bottom: 10px;
+    }
+
+    .forecast-summary {
+        margin-bottom: 10px;
+    }
+
+    .forecast-stat {
+        padding: 8px 12px;
+    }
+
+    .stack-hint {
+        margin-top: 8px;
+    }
+
+    .status-row {
+        padding: 8px 12px;
+    }
+
+    .silo-item {
+        padding: 10px 10px;
+    }
+
+    .kpi-card-small {
+        padding: 10px 12px;
+    }
+
+    .status-item {
+        padding: 8px 12px;
+    }
+}
+
+@media (max-height: 950px) {
+    .content-section h3,
+    .flow-section h3 {
+        margin-bottom: 8px;
+    }
+}
+
+/* ============================================
+   MOEGAS: OCUPAÇÃO x LIMITE (um grão por moega)
+   ============================================ */
+.moega-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: minmax(0, 1fr);
+    gap: 14px;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.moega-item {
+    background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+        'nome nome'
+        'pct  tons'
+        'barra barra';
+    align-content: center;
+    row-gap: 10px;
+    column-gap: 12px;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.moega-item--alerta {
+    border-color: rgba(231, 76, 60, 0.45);
+    background: linear-gradient(180deg, rgba(231, 76, 60, 0.12) 0%, rgba(231, 76, 60, 0.03) 100%);
+}
+
+.moega-name {
+    grid-area: nome;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+/* tonelagem atual / limite — apoio, alinhada pela base com o percentual */
+.moega-tons {
+    grid-area: tons;
+    align-self: baseline;
+    justify-self: end;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.moega-tons small {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+/* percentual de ocupação é o número herói do cartão */
+.moega-item .progress-label {
+    grid-area: pct;
+    align-self: baseline;
+    margin-bottom: 0;
+    font-size: 2.9rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+
+.moega-item .progress-bar {
+    grid-area: barra;
+    height: 38px;
+    margin-bottom: 0;
+}
+
+.moega-item .progress {
+    border-radius: 999px;
+}
+
+/* preenchimento na cor do grão da moega */
+.progress--milho {
+    background: var(--grao-milho);
+}
+
+.progress--sorgo {
+    background: var(--grao-sorgo);
+}
+
+.progress--trigo {
+    background: var(--grao-trigo);
+}
+
+.progress--soja {
+    background: var(--grao-soja);
+}
+
+/* faixa única do total do dia */
+.stack-chart--total {
+    flex: 0 0 auto;
+}
+
+.stack-chart--total .stack-row--total {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+}
+
+/* seção de altura natural (não divide a sobra com as demais) */
+.screen > .content-section--auto {
+    flex: 0 0 auto;
+}
+
+@media (max-height: 950px) {
+    .logo {
+        height: 40px;
+    }
+}
+
+/* Faixa do dia: título e legenda dividem a mesma linha */
+.totaldia .section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.totaldia .section-head h3 {
+    margin-bottom: 0;
+}
+
+.totaldia .chart-legend {
+    margin-bottom: 0;
+}
+
+.totaldia .stack-track {
+    height: 38px;
+    flex: 0 0 auto;
+}
+
+.totaldia .stack-value {
+    color: var(--grao-texto);
+    font-size: 0.74rem;
 }

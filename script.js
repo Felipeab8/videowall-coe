@@ -191,6 +191,8 @@ const EDITABLE_SELECTORS = [
     '.summary-number',
     '.summary-label',
     '.progress-label',
+    '.moega-name',
+    '.moega-tons',
     '.silo-name',
     '.silo-temp',
     '.silo-volume',
