@@ -121,6 +121,7 @@ const EDITABLE_SELECTORS = [
     '.kpi-breakdown-value',
     '.content-section h3',
     '.flow-section h3',
+    '.subsection-title',
     '.data-table th',
     '.data-table td',
     '.flow-btn',

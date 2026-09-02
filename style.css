@@ -594,6 +594,26 @@ body.theme-light #btnClaro .btn-icon {
     font-variant-numeric: tabular-nums;
 }
 
+/* Qualidade: 4 KPIs por linha dentro da secao */
+.kpi-grid-small--quad {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.kpi-card-small.alert {
+    border-color: rgba(231, 76, 60, 0.4);
+    background: linear-gradient(180deg, rgba(231, 76, 60, 0.14) 0%, rgba(231, 76, 60, 0.04) 100%);
+}
+
+/* Subtitulo interno de secao (ex.: DISTRIBUICAO DE QUALIDADE) */
+.subsection-title {
+    margin: 18px 0 12px;
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
+}
+
 /* Previsao do dia por produto */
 .kpi-grid-small--breakdown {
     grid-template-columns: repeat(6, 1fr);
@@ -2030,6 +2050,10 @@ body.edit-mode .forecast-bar.is-empty {
         grid-template-columns: repeat(2, 1fr);
     }
 
+    .kpi-grid-small--quad {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
     .kpi-grid-small--breakdown {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -2068,6 +2092,7 @@ body.edit-mode .forecast-bar.is-empty {
 .kpi-label-small,
 .content-section h3,
 .flow-section h3,
+.subsection-title,
 .data-table th,
 .hour-label,
 .summary-label,

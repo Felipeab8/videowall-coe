@@ -43,36 +43,33 @@
                     <span class="menu-text">Recepção</span>
                 </button>
                 <button class="menu-item" data-screen="1">
-                    <span class="menu-text">Qualidade</span>
-                </button>
-                <button class="menu-item" data-screen="2">
                     <span class="menu-text">Moegas</span>
                 </button>
-                <button class="menu-item" data-screen="3">
+                <button class="menu-item" data-screen="2">
                     <span class="menu-text">Secagem</span>
                 </button>
-                <button class="menu-item" data-screen="4">
+                <button class="menu-item" data-screen="3">
                     <span class="menu-text">Alertas</span>
                 </button>
-                <button class="menu-item" data-screen="5">
+                <button class="menu-item" data-screen="4">
                     <span class="menu-text">Produtividade</span>
                 </button>
-                <button class="menu-item" data-screen="6">
+                <button class="menu-item" data-screen="5">
                     <span class="menu-text">Turno</span>
                 </button>
-                <button class="menu-item" data-screen="7">
+                <button class="menu-item" data-screen="6">
                     <span class="menu-text">Silos</span>
                 </button>
-                <button class="menu-item" data-screen="8">
+                <button class="menu-item" data-screen="7">
                     <span class="menu-text">Aeração</span>
                 </button>
-                <button class="menu-item" data-screen="9">
+                <button class="menu-item" data-screen="8">
                     <span class="menu-text">Expedição</span>
                 </button>
-                <button class="menu-item" data-screen="10">
+                <button class="menu-item" data-screen="9">
                     <span class="menu-text">Dosagem</span>
                 </button>
-                <button class="menu-item" data-screen="11">
+                <button class="menu-item" data-screen="10">
                     <span class="menu-text">Central</span>
                 </button>
             </nav>
@@ -85,7 +82,7 @@
                 <div class="screen-header">
                     <div class="screen-badge">01</div>
                     <div class="screen-title-section">
-                        <h2>Recepção & Fila de Caminhões</h2>
+                        <h2>Recepção, Qualidade & Fila de Caminhões</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">5</span>s</div>
                     </div>
                 </div>
@@ -316,44 +313,28 @@
                     </div>
                 </div>
 
-                <div class="alerts-section">
-                    <span class="alert-badge alert-red">FILA > LIMITE</span>
-                    <span class="alert-text">Tempo de ciclo acima da meta</span>
-                    <span class="alert-badge alert-green">OPERAÇÃO DENTRO DO RITMO</span>
-                </div>
-            </section>
-
-            <!-- Screen 1: Qualidade -->
-            <section class="screen" id="screen-1">
-                <div class="screen-header">
-                    <div class="screen-badge">02</div>
-                    <div class="screen-title-section">
-                        <h2>Controle de Qualidade</h2>
-                        <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">3</span>s</div>
-                    </div>
-                </div>
-                
-                <div class="kpi-grid">
-                    <div class="kpi-card">
-                        <div class="kpi-label">UMIDADE MÉDIA</div>
-                        <div class="kpi-value">12.3%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">IMPUREZA</div>
-                        <div class="kpi-value">0.8%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">CARGAS OK</div>
-                        <div class="kpi-value">98</div>
-                    </div>
-                    <div class="kpi-card alert">
-                        <div class="kpi-label">CARGAS REPROVADAS</div>
-                        <div class="kpi-value">2</div>
-                    </div>
-                </div>
-
                 <div class="content-section">
-                    <h3>DISTRIBUIÇÃO DE QUALIDADE</h3>
+                    <h3>CONTROLE DE QUALIDADE</h3>
+                    <div class="kpi-grid-small kpi-grid-small--quad">
+                        <div class="kpi-card-small">
+                            <div class="kpi-label-small">UMIDADE MÉDIA</div>
+                            <div class="kpi-value-small">12.3%</div>
+                        </div>
+                        <div class="kpi-card-small">
+                            <div class="kpi-label-small">IMPUREZA</div>
+                            <div class="kpi-value-small">0.8%</div>
+                        </div>
+                        <div class="kpi-card-small">
+                            <div class="kpi-label-small">CARGAS OK</div>
+                            <div class="kpi-value-small">98</div>
+                        </div>
+                        <div class="kpi-card-small alert">
+                            <div class="kpi-label-small">CARGAS REPROVADAS</div>
+                            <div class="kpi-value-small">2</div>
+                        </div>
+                    </div>
+
+                    <h4 class="subsection-title">DISTRIBUIÇÃO DE QUALIDADE</h4>
                     <div class="status-bar">
                         <div class="status-item ok">
                             <div class="status-dot"></div>
@@ -369,12 +350,18 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="alerts-section">
+                    <span class="alert-badge alert-red">FILA > LIMITE</span>
+                    <span class="alert-text">Tempo de ciclo acima da meta</span>
+                    <span class="alert-badge alert-green">OPERAÇÃO DENTRO DO RITMO</span>
+                </div>
             </section>
 
-            <!-- Screen 2: Moegas -->
-            <section class="screen" id="screen-2">
+            <!-- Screen 1: Moegas -->
+            <section class="screen" id="screen-1">
                 <div class="screen-header">
-                    <div class="screen-badge">03</div>
+                    <div class="screen-badge">02</div>
                     <div class="screen-title-section">
                         <h2>Segregação por Moegas</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">7</span>s</div>
@@ -421,10 +408,10 @@
                 </div>
             </section>
 
-            <!-- Screen 3: Secagem -->
-            <section class="screen" id="screen-3">
+            <!-- Screen 2: Secagem -->
+            <section class="screen" id="screen-2">
                 <div class="screen-header">
-                    <div class="screen-badge">04</div>
+                    <div class="screen-badge">03</div>
                     <div class="screen-title-section">
                         <h2>Processo de Secagem</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">2</span>s</div>
@@ -485,10 +472,10 @@
                 </div>
             </section>
 
-            <!-- Screen 4: Alertas -->
-            <section class="screen" id="screen-4">
+            <!-- Screen 3: Alertas -->
+            <section class="screen" id="screen-3">
                 <div class="screen-header">
-                    <div class="screen-badge">05</div>
+                    <div class="screen-badge">04</div>
                     <div class="screen-title-section">
                         <h2>Painel de Alertas</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">1</span>s</div>
@@ -535,10 +522,10 @@
                 </div>
             </section>
 
-            <!-- Screen 5: Produtividade -->
-            <section class="screen" id="screen-5">
+            <!-- Screen 4: Produtividade -->
+            <section class="screen" id="screen-4">
                 <div class="screen-header">
-                    <div class="screen-badge">06</div>
+                    <div class="screen-badge">05</div>
                     <div class="screen-title-section">
                         <h2>Produtividade Diária</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">4</span>s</div>
@@ -596,10 +583,10 @@
                 </div>
             </section>
 
-            <!-- Screen 6: Turno -->
-            <section class="screen" id="screen-6">
+            <!-- Screen 5: Turno -->
+            <section class="screen" id="screen-5">
                 <div class="screen-header">
-                    <div class="screen-badge">07</div>
+                    <div class="screen-badge">06</div>
                     <div class="screen-title-section">
                         <h2>Informações do Turno</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">6</span>s</div>
@@ -660,10 +647,10 @@
                 </div>
             </section>
 
-            <!-- Screen 7: Silos -->
-            <section class="screen" id="screen-7">
+            <!-- Screen 6: Silos -->
+            <section class="screen" id="screen-6">
                 <div class="screen-header">
-                    <div class="screen-badge">08</div>
+                    <div class="screen-badge">07</div>
                     <div class="screen-title-section">
                         <h2>Capacidade de Silos</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">8</span>s</div>
@@ -806,10 +793,10 @@
                 </div>
             </section>
 
-            <!-- Screen 8: Aeração -->
-            <section class="screen" id="screen-8">
+            <!-- Screen 7: Aeração -->
+            <section class="screen" id="screen-7">
                 <div class="screen-header">
-                    <div class="screen-badge">09</div>
+                    <div class="screen-badge">08</div>
                     <div class="screen-title-section">
                         <h2>Sistema de Aeração</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">3</span>s</div>
@@ -870,10 +857,10 @@
                 </div>
             </section>
 
-            <!-- Screen 9: Expedição -->
-            <section class="screen" id="screen-9">
+            <!-- Screen 8: Expedição -->
+            <section class="screen" id="screen-8">
                 <div class="screen-header">
-                    <div class="screen-badge">10</div>
+                    <div class="screen-badge">09</div>
                     <div class="screen-title-section">
                         <h2>Expedição de Produtos</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">2</span>s</div>
@@ -934,10 +921,10 @@
                 </div>
             </section>
 
-            <!-- Screen 10: Dosagem -->
-            <section class="screen" id="screen-10">
+            <!-- Screen 9: Dosagem -->
+            <section class="screen" id="screen-9">
                 <div class="screen-header">
-                    <div class="screen-badge">11</div>
+                    <div class="screen-badge">10</div>
                     <div class="screen-title-section">
                         <h2>Sistema de Dosagem</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">1</span>s</div>
@@ -992,10 +979,10 @@
                 </div>
             </section>
 
-            <!-- Screen 11: Central -->
-            <section class="screen" id="screen-11">
+            <!-- Screen 10: Central -->
+            <section class="screen" id="screen-10">
                 <div class="screen-header">
-                    <div class="screen-badge">12</div>
+                    <div class="screen-badge">11</div>
                     <div class="screen-title-section">
                         <h2>Central de Controle</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">2</span>s</div>
