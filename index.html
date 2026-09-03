@@ -10,6 +10,34 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="theme-dark">
+
+    <!-- Icones dos graos (referenciados via <use> nos KPIs de qualidade) -->
+    <svg class="grao-sprite" aria-hidden="true" focusable="false">
+        <symbol id="ico-milho" viewBox="0 0 24 24">
+            <path d="M12 2.2c2.3 2 3.6 5 3.6 8.8 0 4.6-1.4 8.1-3.6 9.8-2.2-1.7-3.6-5.2-3.6-9.8 0-3.8 1.3-6.8 3.6-8.8Z"></path>
+            <path d="M12 5v14.4"></path>
+            <path d="M9.6 9h4.8"></path>
+            <path d="M9.4 13h5.2"></path>
+            <path d="M9.8 17h4.4"></path>
+            <path d="M8.6 14.4c-2 .5-3.4 2.2-3.6 4.4 2.1-.2 3.7-1.4 4.3-3.2"></path>
+        </symbol>
+        <symbol id="ico-sorgo" viewBox="0 0 24 24">
+            <path d="M12 21.6v-8.4"></path>
+            <circle cx="12" cy="4.2" r="2"></circle>
+            <circle cx="9.9" cy="7.6" r="2"></circle>
+            <circle cx="14.1" cy="7.6" r="2"></circle>
+            <circle cx="12" cy="11" r="2"></circle>
+            <path d="M12 19.4c-1.9-.2-3.3-1.3-3.7-3.1 2-.2 3.4.8 3.7 3.1Z"></path>
+        </symbol>
+        <symbol id="ico-trigo" viewBox="0 0 24 24">
+            <path d="M12 21.6V8.4"></path>
+            <path d="M12 19.4c-2.4 0-4.4-2-4.4-4.4 2.4 0 4.4 2 4.4 4.4Z"></path>
+            <path d="M12 19.4c2.4 0 4.4-2 4.4-4.4-2.4 0-4.4 2-4.4 4.4Z"></path>
+            <path d="M12 13.4c-2.4 0-4.4-2-4.4-4.4 2.4 0 4.4 2 4.4 4.4Z"></path>
+            <path d="M12 13.4c2.4 0 4.4-2 4.4-4.4-2.4 0-4.4 2-4.4 4.4Z"></path>
+            <path d="M12 8.6c-1.7-1.7-1.7-4.6 0-6.3 1.7 1.7 1.7 4.6 0 6.3Z"></path>
+        </symbol>
+    </svg>
     <!-- Header -->
     <header class="header">
         <div class="header-content">
@@ -65,12 +93,9 @@
                     <span class="menu-text">Aeração</span>
                 </button>
                 <button class="menu-item" data-screen="7">
-                    <span class="menu-text">Expedição</span>
+                    <span class="menu-text">Expedição · Dosagem</span>
                 </button>
                 <button class="menu-item" data-screen="8">
-                    <span class="menu-text">Dosagem</span>
-                </button>
-                <button class="menu-item" data-screen="9">
                     <span class="menu-text">Central</span>
                 </button>
             </nav>
@@ -182,6 +207,24 @@
                                 <div class="kpi-value-small">92%</div>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="content-section content-section--auto totaldia">
+                    <div class="section-head">
+                        <h3>RECEBIDO NO DIA · 1.240 T</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item"><i class="legend-dot legend-dot--milho"></i>Milho</span>
+                            <span class="legend-item"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
+                            <span class="legend-item"><i class="legend-dot legend-dot--trigo"></i>Trigo</span>
+                            <span class="legend-item"><i class="legend-dot legend-dot--soja"></i>Soja</span>
+                        </div>
+                    </div>
+                    <div class="stack-track">
+                            <div class="stack-seg stack-seg--milho" style="width: 56.5%"><span class="stack-value">Milho · 700 t</span></div>
+                            <div class="stack-seg stack-seg--sorgo" style="width: 22.6%"><span class="stack-value">Sorgo · 280 t</span></div>
+                            <div class="stack-seg stack-seg--trigo" style="width: 12.9%"><span class="stack-value">Trigo · 160 t</span></div>
+                            <div class="stack-seg stack-seg--soja" style="width: 8.0%"><span class="stack-value">Soja · 100 t</span></div>
                     </div>
                 </div>
 
@@ -304,13 +347,59 @@
                 </div>
 
                 <div class="kpi-grid">
-                    <div class="kpi-card">
+                    <div class="kpi-card kpi-card--grao">
                         <div class="kpi-label">UMIDADE MÉDIA</div>
                         <div class="kpi-value">12,3%</div>
+                        <div class="grao-metrics">
+                            <span class="grao-metric">
+                                <svg class="grao-icon grao-icon--milho" aria-hidden="true"><use href="#ico-milho"></use></svg>
+                                <span class="grao-metric-text">
+                                    <span class="grao-metric-name">Milho</span>
+                                    <span class="grao-metric-value">12,6%</span>
+                                </span>
+                            </span>
+                            <span class="grao-metric">
+                                <svg class="grao-icon grao-icon--sorgo" aria-hidden="true"><use href="#ico-sorgo"></use></svg>
+                                <span class="grao-metric-text">
+                                    <span class="grao-metric-name">Sorgo</span>
+                                    <span class="grao-metric-value">12,1%</span>
+                                </span>
+                            </span>
+                            <span class="grao-metric">
+                                <svg class="grao-icon grao-icon--trigo" aria-hidden="true"><use href="#ico-trigo"></use></svg>
+                                <span class="grao-metric-text">
+                                    <span class="grao-metric-name">Trigo</span>
+                                    <span class="grao-metric-value">11,9%</span>
+                                </span>
+                            </span>
+                        </div>
                     </div>
-                    <div class="kpi-card">
+                    <div class="kpi-card kpi-card--grao">
                         <div class="kpi-label">IMPUREZA</div>
                         <div class="kpi-value">0,8%</div>
+                        <div class="grao-metrics">
+                            <span class="grao-metric">
+                                <svg class="grao-icon grao-icon--milho" aria-hidden="true"><use href="#ico-milho"></use></svg>
+                                <span class="grao-metric-text">
+                                    <span class="grao-metric-name">Milho</span>
+                                    <span class="grao-metric-value">0,9%</span>
+                                </span>
+                            </span>
+                            <span class="grao-metric">
+                                <svg class="grao-icon grao-icon--sorgo" aria-hidden="true"><use href="#ico-sorgo"></use></svg>
+                                <span class="grao-metric-text">
+                                    <span class="grao-metric-name">Sorgo</span>
+                                    <span class="grao-metric-value">0,7%</span>
+                                </span>
+                            </span>
+                            <span class="grao-metric">
+                                <svg class="grao-icon grao-icon--trigo" aria-hidden="true"><use href="#ico-trigo"></use></svg>
+                                <span class="grao-metric-text">
+                                    <span class="grao-metric-name">Trigo</span>
+                                    <span class="grao-metric-value">0,6%</span>
+                                </span>
+                            </span>
+                        </div>
                     </div>
                     <div class="kpi-card">
                         <div class="kpi-label">CARGAS OK</div>
@@ -435,24 +524,6 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="content-section content-section--auto totaldia">
-                    <div class="section-head">
-                        <h3>RECEBIDO NO DIA · 1.500 T</h3>
-                        <div class="chart-legend">
-                            <span class="legend-item"><i class="legend-dot legend-dot--milho"></i>Milho</span>
-                            <span class="legend-item"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
-                            <span class="legend-item"><i class="legend-dot legend-dot--trigo"></i>Trigo</span>
-                            <span class="legend-item"><i class="legend-dot legend-dot--soja"></i>Soja</span>
-                        </div>
-                    </div>
-                    <div class="stack-track">
-                            <div class="stack-seg stack-seg--milho" style="width: 39.0%"><span class="stack-value">Milho · 585 t</span></div>
-                            <div class="stack-seg stack-seg--sorgo" style="width: 33.0%"><span class="stack-value">Sorgo · 495 t</span></div>
-                            <div class="stack-seg stack-seg--trigo" style="width: 16.0%"><span class="stack-value">Trigo · 240 t</span></div>
-                            <div class="stack-seg stack-seg--soja" style="width: 12.0%"><span class="stack-value">Soja · 180 t</span></div>
-                    </div>
-                </div>
             </section>
 
             <!-- Screen 3: Secagem -->
@@ -480,7 +551,7 @@
                     </div>
                     <div class="kpi-card">
                         <div class="kpi-label">UMIDADE SAÍDA</div>
-                        <div class="kpi-value">11.2%</div>
+                        <div class="kpi-value">11,2%</div>
                     </div>
                 </div>
 
@@ -498,21 +569,15 @@
                         <tbody>
                             <tr>
                                 <td>Secador 1</td>
-                                <td>✅ Operando</td>
+                                <td><span class="equip-estado is-operando">● Operando</span><span class="ciclo-tempo">em ciclo há 02:14</span></td>
                                 <td>25°C</td>
-                                <td>11.5%</td>
+                                <td>11,5%</td>
                             </tr>
                             <tr>
                                 <td>Secador 2</td>
-                                <td>✅ Operando</td>
-                                <td>26°C</td>
-                                <td>11.0%</td>
-                            </tr>
-                            <tr>
-                                <td>Secador 3</td>
-                                <td>🟡 Manutenção</td>
-                                <td>--</td>
-                                <td>--</td>
+                                <td><span class="equip-estado is-parado">● Parado</span></td>
+                                <td>—</td>
+                                <td>—</td>
                             </tr>
                         </tbody>
                     </table>
@@ -524,58 +589,64 @@
                 <div class="screen-header">
                     <div class="screen-badge">05</div>
                     <div class="screen-title-section">
-                        <h2>Produtividade Diária</h2>
+                        <h2>Produtividade da Secagem</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">4</span>s</div>
                     </div>
                 </div>
                 
                 <div class="kpi-grid">
                     <div class="kpi-card">
-                        <div class="kpi-label">PROCESSADO HOJE</div>
-                        <div class="kpi-value">1.240 t</div>
+                        <div class="kpi-label">SECADO HOJE</div>
+                        <div class="kpi-value">1.120 t</div>
                     </div>
                     <div class="kpi-card">
                         <div class="kpi-label">META HOJE</div>
-                        <div class="kpi-value">1.500 t</div>
+                        <div class="kpi-value">1.300 t</div>
                     </div>
                     <div class="kpi-card">
                         <div class="kpi-label">PERCENTUAL</div>
-                        <div class="kpi-value">82.7%</div>
+                        <div class="kpi-value">86,2%</div>
                     </div>
                     <div class="kpi-card">
                         <div class="kpi-label">RITMO MÉDIO</div>
-                        <div class="kpi-value">155 t/h</div>
+                        <div class="kpi-value">140 t/h</div>
                     </div>
                 </div>
 
                 <div class="content-section">
-                    <h3>PRODUÇÃO POR HORA</h3>
-                    <div class="hourly-data">
-                        <div class="hour-item">
-                            <span class="hour-label">08h</span>
-                            <div class="hour-bar"><div class="hour-fill" style="height: 45%"></div></div>
-                            <span class="hour-value">142 t</span>
+                    <h3>SECAGEM POR HORA</h3>
+                    <div class="forecast-chart forecast-chart--horas" data-chart-max="200">
+                        <div class="forecast-yaxis">
+                            <span>200</span>
+                            <span>150</span>
+                            <span>100</span>
+                            <span>50</span>
+                            <span>0</span>
                         </div>
-                        <div class="hour-item">
-                            <span class="hour-label">09h</span>
-                            <div class="hour-bar"><div class="hour-fill" style="height: 52%"></div></div>
-                            <span class="hour-value">158 t</span>
+                        <div class="forecast-plot">
+                            <div class="forecast-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+                            <div class="forecast-cols">
+                                <div class="hora-col"><div class="forecast-bar forecast-bar--hora" style="height: 71.0%"><span class="forecast-cap">142</span></div></div>
+                                <div class="hora-col"><div class="forecast-bar forecast-bar--hora" style="height: 77.5%"><span class="forecast-cap">155</span></div></div>
+                                <div class="hora-col"><div class="forecast-bar forecast-bar--hora" style="height: 74.0%"><span class="forecast-cap">148</span></div></div>
+                                <div class="hora-col"><div class="forecast-bar forecast-bar--hora" style="height: 81.0%"><span class="forecast-cap">162</span></div></div>
+                                <div class="hora-col"><div class="forecast-bar forecast-bar--hora" style="height: 68.5%"><span class="forecast-cap">137</span></div></div>
+                                <div class="hora-col"><div class="forecast-bar forecast-bar--hora" style="height: 52.0%"><span class="forecast-cap">104</span></div></div>
+                                <div class="hora-col"><div class="forecast-bar forecast-bar--hora" style="height: 79.0%"><span class="forecast-cap">158</span></div></div>
+                                <div class="hora-col"><div class="forecast-bar forecast-bar--hora" style="height: 57.0%"><span class="forecast-cap">114</span></div></div>
+                            </div>
                         </div>
-                        <div class="hour-item">
-                            <span class="hour-label">10h</span>
-                            <div class="hour-bar"><div class="hour-fill" style="height: 48%"></div></div>
-                            <span class="hour-value">151 t</span>
+                        <div class="forecast-xaxis">
+                            <span class="forecast-day">07h</span>
+                            <span class="forecast-day">08h</span>
+                            <span class="forecast-day">09h</span>
+                            <span class="forecast-day">10h</span>
+                            <span class="forecast-day">11h</span>
+                            <span class="forecast-day">12h</span>
+                            <span class="forecast-day">13h</span>
+                            <span class="forecast-day is-agora">14h<small>parcial</small></span>
                         </div>
-                        <div class="hour-item">
-                            <span class="hour-label">11h</span>
-                            <div class="hour-bar"><div class="hour-fill" style="height: 50%"></div></div>
-                            <span class="hour-value">155 t</span>
-                        </div>
-                        <div class="hour-item">
-                            <span class="hour-label">12h</span>
-                            <div class="hour-bar"><div class="hour-fill" style="height: 38%"></div></div>
-                            <span class="hour-value">116 t</span>
-                        </div>
+                        <span class="forecast-unit">t</span>
                     </div>
                 </div>
             </section>
@@ -844,18 +915,18 @@
                 <div class="screen-header">
                     <div class="screen-badge">08</div>
                     <div class="screen-title-section">
-                        <h2>Expedição de Produtos</h2>
+                        <h2>Expedição &amp; Dosagem</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">2</span>s</div>
                     </div>
                 </div>
-                
-                <div class="kpi-grid">
+
+                <div class="kpi-grid kpi-grid--six">
                     <div class="kpi-card">
                         <div class="kpi-label">CARGAS EXPEDIDAS</div>
                         <div class="kpi-value">28</div>
                     </div>
                     <div class="kpi-card">
-                        <div class="kpi-label">TONNAGEM TOTAL</div>
+                        <div class="kpi-label">TONELAGEM TOTAL</div>
                         <div class="kpi-value">1.120 t</div>
                     </div>
                     <div class="kpi-card">
@@ -866,105 +937,88 @@
                         <div class="kpi-label">TEMPO MÉDIO</div>
                         <div class="kpi-value">18 min</div>
                     </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">PRECISÃO DOSAGEM</div>
+                        <div class="kpi-value">99,2%</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">TAXA DOSAGEM</div>
+                        <div class="kpi-value">2,5 t/h</div>
+                    </div>
                 </div>
 
-                <div class="content-section">
-                    <h3>ÚLTIMAS CARGAS EXPEDIDAS</h3>
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>CARGA</th>
-                                <th>DESTINO</th>
-                                <th>TONNAGEM</th>
-                                <th>HORA SAÍDA</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>#2845</td>
-                                <td>São Paulo</td>
-                                <td>40 t</td>
-                                <td>13:45</td>
-                            </tr>
-                            <tr>
-                                <td>#2844</td>
-                                <td>Campinas</td>
-                                <td>38 t</td>
-                                <td>13:20</td>
-                            </tr>
-                            <tr>
-                                <td>#2843</td>
-                                <td>Ribeirão Preto</td>
-                                <td>42 t</td>
-                                <td>13:00</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="split-grid">
+                    <div class="content-section">
+                        <h3>ÚLTIMAS CARGAS EXPEDIDAS</h3>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>CARGA</th>
+                                    <th>DESTINO</th>
+                                    <th>TONELAGEM</th>
+                                    <th>HORA SAÍDA</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#2845</td>
+                                    <td>São Paulo</td>
+                                    <td>40 t</td>
+                                    <td>13:45</td>
+                                </tr>
+                                <tr>
+                                    <td>#2844</td>
+                                    <td>Campinas</td>
+                                    <td>38 t</td>
+                                    <td>13:20</td>
+                                </tr>
+                                <tr>
+                                    <td>#2843</td>
+                                    <td>Ribeirão Preto</td>
+                                    <td>42 t</td>
+                                    <td>13:00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="content-section">
+                        <h3>CALIBRAÇÃO DOS DOSADORES</h3>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>DOSADOR</th>
+                                    <th>STATUS</th>
+                                    <th>SETPOINT (kg)</th>
+                                    <th>REAL (kg)</th>
+                                    <th>VARIAÇÃO</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Dosador 1</td>
+                                    <td><span class="equip-estado is-operando">● Operando</span></td>
+                                    <td>500</td>
+                                    <td>501</td>
+                                    <td>+0,2%</td>
+                                </tr>
+                                <tr>
+                                    <td>Dosador 2</td>
+                                    <td><span class="equip-estado is-operando">● Operando</span></td>
+                                    <td>500</td>
+                                    <td>499</td>
+                                    <td>-0,2%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
-            <!-- Screen 8: Dosagem -->
+            <!-- Screen 8: Central -->
             <section class="screen" id="screen-8">
                 <div class="screen-header">
                     <div class="screen-badge">09</div>
-                    <div class="screen-title-section">
-                        <h2>Sistema de Dosagem</h2>
-                        <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">1</span>s</div>
-                    </div>
-                </div>
-                
-                <div class="kpi-grid">
-                    <div class="kpi-card">
-                        <div class="kpi-label">DOSADOR 1</div>
-                        <div class="kpi-value">✅ OK</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">DOSADOR 2</div>
-                        <div class="kpi-value">✅ OK</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">PRECISÃO MÉDIA</div>
-                        <div class="kpi-value">99.2%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">TAXA ATUAL</div>
-                        <div class="kpi-value">2.5 t/h</div>
-                    </div>
-                </div>
-
-                <div class="content-section">
-                    <h3>CALIBRAÇÃO DOS DOSADORES</h3>
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>DOSADOR</th>
-                                <th>SETPOINT (kg)</th>
-                                <th>REAL (kg)</th>
-                                <th>VARIAÇÃO</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Dosador 1</td>
-                                <td>500</td>
-                                <td>501</td>
-                                <td>+0.2%</td>
-                            </tr>
-                            <tr>
-                                <td>Dosador 2</td>
-                                <td>500</td>
-                                <td>499</td>
-                                <td>-0.2%</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- Screen 9: Central -->
-            <section class="screen" id="screen-9">
-                <div class="screen-header">
-                    <div class="screen-badge">10</div>
                     <div class="screen-title-section">
                         <h2>Central de Controle</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">2</span>s</div>
@@ -1045,7 +1099,7 @@
                     <div class="alert-item alert-info">
                         <div class="alert-indicator"></div>
                         <div class="alert-content">
-                            <div class="alert-title">MANUTENÇÃO SECADOR 3 PROGRAMADA</div>
+                            <div class="alert-title">MANUTENÇÃO SECADOR 2 PROGRAMADA</div>
                             <div class="alert-time">14:20 | 20 min atrás</div>
                         </div>
                     </div>

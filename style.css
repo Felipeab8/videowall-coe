@@ -401,11 +401,11 @@ body.theme-light #btnClaro .btn-icon {
 .menu-text {
     max-width: 100%;
     overflow: hidden;
-    text-overflow: ellipsis;
     display: block;
     font-size: inherit;
     line-height: 1.2;
-    white-space: nowrap;
+    /* rótulos com duas palavras (ex.: Expedição · Dosagem) quebram em vez de cortar */
+    overflow-wrap: break-word;
 }
 
 /* ============================================
@@ -1535,6 +1535,29 @@ body.sidebar-collapsed .sidebar-reveal {
     color: var(--danger);
 }
 
+/* Estado de equipamento (secadores, dosadores) + tempo de ciclo na mesma célula */
+.equip-estado {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.equip-estado.is-operando {
+    color: var(--ok);
+}
+
+.equip-estado.is-parado {
+    color: var(--warn);
+}
+
+.ciclo-tempo {
+    margin-left: 0.625rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
 /* ============================================
    EDIT MODE
    ============================================ */
@@ -1905,7 +1928,7 @@ body.theme-light ::-webkit-scrollbar-thumb:hover {
     position: relative;
     height: 100%;
     display: grid;
-    grid-template-columns: repeat(7, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--chart-cols, 7), minmax(0, 1fr));
 }
 
 .forecast-col {
@@ -1968,7 +1991,7 @@ body.theme-light ::-webkit-scrollbar-thumb:hover {
     grid-column: 2;
     grid-row: 2;
     display: grid;
-    grid-template-columns: repeat(7, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--chart-cols, 7), minmax(0, 1fr));
     padding-top: 0.5rem;
 }
 
@@ -1992,8 +2015,37 @@ body.theme-light ::-webkit-scrollbar-thumb:hover {
     text-transform: none;
 }
 
-.forecast-day.is-today {
+.forecast-day.is-today,
+.forecast-day.is-agora {
     color: var(--text);
+}
+
+/* Produção por hora: mesma moldura do gráfico de 7 dias, série única */
+.forecast-chart--horas {
+    --chart-cols: 8;
+}
+
+.hora-col {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    height: 100%;
+    border-radius: 8px 8px 0 0;
+    transition: background 0.2s ease;
+}
+
+.hora-col:hover {
+    background: var(--hover);
+}
+
+.hora-col:hover .forecast-bar {
+    filter: brightness(1.18);
+}
+
+.forecast-bar--hora {
+    width: 4rem;
+    max-width: 46%;
+    background: var(--viz-real);
 }
 
 .forecast-table {
@@ -2291,6 +2343,86 @@ body.theme-light {
     background: var(--grao-soja);
 }
 
+
+/* Ícones dos grãos — sprite escondido, traço herdado do svg que faz o <use> */
+.grao-sprite {
+    display: none;
+}
+
+.grao-icon {
+    width: 1.125rem;
+    height: 1.125rem;
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.grao-icon--milho {
+    color: var(--grao-milho);
+}
+
+.grao-icon--sorgo {
+    color: var(--grao-sorgo);
+}
+
+.grao-icon--trigo {
+    color: var(--grao-trigo);
+}
+
+.grao-icon--soja {
+    color: var(--grao-soja);
+}
+
+/* KPI com abertura por grão (umidade média, impureza) */
+.kpi-card--grao {
+    align-items: stretch;
+    gap: 0.375rem;
+}
+
+.grao-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem 0.625rem;
+    margin-top: 0.125rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--card-border);
+}
+
+.grao-metric {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    flex: 1 1 4.5rem;
+    min-width: 0;
+}
+
+.grao-metric-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+}
+
+.grao-metric-name {
+    font-size: 0.55rem;
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    line-height: 1.1;
+}
+
+.grao-metric-value {
+    font-size: 0.95rem;
+    color: var(--text);
+    font-weight: 700;
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.015em;
+}
 .stack-chart--grao .stack-label {
     width: 4.875rem;
 }

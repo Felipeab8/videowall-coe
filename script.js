@@ -289,6 +289,8 @@ const EDITABLE_SELECTORS = [
     '.kpi-value-small',
     '.kpi-breakdown-label',
     '.kpi-breakdown-value',
+    '.grao-metric-name',
+    '.grao-metric-value',
     '.content-section h3',
     '.flow-section h3',
     '.subsection-title',
@@ -862,7 +864,10 @@ function setForecastValue(bar, clientY) {
 
     const rect = col.getBoundingClientRect();
     const ratio = Math.max(0, Math.min(1, (rect.bottom - clientY) / rect.height));
-    const tons = ratio * FORECAST_MAX;
+    // cada gráfico pode ter seu próprio topo de eixo (data-chart-max)
+    const chart = bar.closest('[data-chart-max]');
+    const max = chart ? Number(chart.dataset.chartMax) : NaN;
+    const tons = ratio * (max > 0 ? max : FORECAST_MAX);
 
     bar.style.height = (ratio * 100).toFixed(1) + '%';
     bar.classList.toggle('is-empty', ratio === 0);
