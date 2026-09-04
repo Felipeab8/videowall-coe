@@ -605,6 +605,11 @@ body.sidebar-collapsed .sidebar-reveal {
     box-shadow: var(--shadow-soft);
 }
 
+.kpi-card.ok {
+    border-color: rgba(46, 204, 113, 0.4);
+    background: linear-gradient(180deg, rgba(46, 204, 113, 0.14) 0%, rgba(46, 204, 113, 0.04) 100%);
+}
+
 .kpi-card.alert {
     border-color: rgba(231, 76, 60, 0.4);
     background: linear-gradient(180deg, rgba(231, 76, 60, 0.14) 0%, rgba(231, 76, 60, 0.04) 100%);
@@ -2029,6 +2034,11 @@ body.theme-light ::-webkit-scrollbar-thumb:hover {
     line-height: 1.6;
 }
 
+/* culturas que o dia nao recebeu somem da lista */
+.viz-tooltip-row[hidden] {
+    display: none;
+}
+
 .viz-tooltip-key {
     width: 0.75rem;
     height: 2px;
@@ -3079,9 +3089,50 @@ body.theme-light .kpi-flag--alerta {
     background: var(--grao-soja);
 }
 
+/* o programado tambem e empilhado por grao: mesma cor, tom rebaixado */
+.forecast-bar--prog.is-stack {
+    background: transparent;
+    outline: 1px solid var(--panel-border);
+    outline-offset: -1px;
+}
+
+.forecast-bar--prog .forecast-seg {
+    opacity: 0.38;
+}
+
 /* dias fechados ficam levemente recuados do dia corrente */
 .forecast-col.is-passado .forecast-bar--prog {
-    opacity: 0.55;
+    opacity: 0.7;
+}
+
+/* chaves da legenda: barra cheia = realizado, barra clara = programado */
+.legend-dot--real-key,
+.legend-dot--prog-key {
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 2px;
+    background: var(--grao-milho);
+}
+
+.legend-dot--prog-key {
+    opacity: 0.38;
+    outline: 1px solid var(--panel-border);
+    outline-offset: -1px;
+}
+
+/* na tabela cada grao mostra realizado / programado */
+.forecast-table .data-table th small {
+    display: block;
+    margin-top: 0.125rem;
+    font-size: 0.55rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: none;
+    color: var(--faint);
+}
+
+.forecast-table .data-table td.is-vazio {
+    color: var(--faint);
 }
 
 .legend-item--sep {
@@ -3513,15 +3564,16 @@ body.theme-light .kpi-flag--alerta {
     border-radius: 50%;
 }
 
-/* previsao: cartoes crescem ate um teto e ficam centrados; as linhas das
-   cidades dividem a altura do painel em vez de sobrar vao no fim */
+/* previsao: os cartoes dos dias dividem toda a altura do painel; as linhas
+   das cidades tambem, em vez de sobrar vao no fim */
 .weather-days {
-    grid-auto-rows: minmax(0, 8.5rem);
-    align-content: start;
+    grid-auto-rows: minmax(0, 1fr);
+    align-content: stretch;
 }
 
 .weather-day {
-    justify-content: center;
+    justify-content: flex-start;
+    gap: 0.1875rem;
 }
 
 .weather-cities {
@@ -4030,4 +4082,233 @@ body.theme-light .kpi-flag--alerta {
     letter-spacing: 0.08em;
     color: var(--faint);
     font-variant-numeric: tabular-nums;
+}
+
+/* ============================================
+   PRODUTIVIDADE POR SECADOR
+   Barra por equipamento: o preenchido é o secado hoje,
+   a calha inteira é a meta do secador. A leitura vale
+   pelo confronto entre os dois secadores, por isso as
+   linhas dividem a altura da seção em partes iguais.
+   ============================================ */
+.split-grid--prod {
+    grid-template-columns: 1.5fr 1fr;
+}
+
+.prod-secador-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-auto-rows: minmax(0, 1fr);
+    gap: 0.875rem;
+}
+
+.prod-secador {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 0;
+    padding: 0.875rem 1.125rem;
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
+}
+
+.prod-secador-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.prod-secador-track {
+    position: relative;
+    width: 100%;
+    height: 1.125rem;
+    border-radius: 999px;
+    background: var(--row-bg);
+    border: 1px solid var(--row-line);
+    overflow: hidden;
+}
+
+.prod-secador-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent-strong) 100%);
+}
+
+.prod-secador-foot {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.prod-secador-volume {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.prod-secador-percent {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ============================================
+   CARTAO DE PREVISAO POR DIA (tela da central)
+   Cada cartao ocupa toda a altura do painel: cabecalho com condicao,
+   temperaturas por periodo, detalhes do dia e leitura operacional.
+   ============================================ */
+.weather-glyph--md {
+    width: 1.875rem;
+    height: 1.875rem;
+}
+
+.weather-day-cond {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.2;
+}
+
+.weather-day-periods {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.25rem;
+    margin-top: 0.125rem;
+}
+
+.weather-day-period {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    padding: 0.25rem 0.125rem;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.weather-day-details {
+    flex: 1 1 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: 0.125rem;
+    margin-top: 0.25rem;
+    padding-top: 0.375rem;
+    border-top: 1px solid var(--row-line);
+}
+
+.weather-day-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.375rem;
+    padding-bottom: 0.1875rem;
+    border-bottom: 1px dashed var(--row-line);
+}
+
+.weather-day-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.weather-day-k {
+    font-size: 0.52rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.weather-day-v {
+    font-size: 0.63rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.weather-day-v.weather-day-rain {
+    color: var(--text);
+}
+
+.weather-day-v.weather-day-rain.is-chuva {
+    color: var(--accent);
+}
+
+/* leitura operacional do dia: fecha o cartao no rodape */
+.weather-day-tag {
+    width: 100%;
+    margin-top: 0.375rem;
+    padding: 0.3125rem 0.375rem;
+    border-radius: 7px;
+    border: 1px solid transparent;
+    font-size: 0.53rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-align: center;
+    line-height: 1.25;
+}
+
+.weather-day-tag--ok {
+    color: var(--ok);
+    border-color: rgba(46, 204, 113, 0.35);
+    background: rgba(46, 204, 113, 0.12);
+}
+
+.weather-day-tag--atencao {
+    color: var(--warn);
+    border-color: rgba(243, 156, 18, 0.35);
+    background: rgba(243, 156, 18, 0.12);
+}
+
+.weather-day-tag--alerta {
+    color: var(--danger);
+    border-color: rgba(231, 76, 60, 0.35);
+    background: rgba(231, 76, 60, 0.12);
+}
+
+/* ============================================
+   RECEPCAO · PREVISAO E RITMO (bloco unico, ocupa a sobra da tela)
+   ============================================ */
+.content-section--ritmo {
+    gap: 0.875rem;
+}
+
+.content-section--ritmo > .kpi-grid-small--breakdown {
+    flex: 1 1 auto;
+    min-height: 0;
+    grid-template-rows: 1.15fr 1fr;
+    margin-bottom: 0;
+}
+
+.content-section--ritmo .kpi-card-small {
+    justify-content: center;
+}
+
+.content-section--ritmo .kpi-card-small--wide .kpi-breakdown {
+    flex: 1 1 auto;
+    align-items: stretch;
+}
+
+.content-section--ritmo .kpi-breakdown-item {
+    justify-content: center;
+}
+
+.ritmo-recebido {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
 }

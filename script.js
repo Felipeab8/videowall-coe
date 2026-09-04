@@ -858,12 +858,14 @@ function formatTon(value) {
 
 let vizTooltip = null;
 
-// As quatro culturas somam o realizado; depois vem o total e o programado.
+// Cada grao traz realizado e programado do dia; depois vem os totais.
+// Como o patio nao recebe mais que dois graos no mesmo dia, as linhas das
+// culturas ausentes ficam ocultas em vez de aparecerem zeradas.
 const VIZ_SERIES = [
-    { chave: 'milho', nome: 'Milho', cor: 'var(--grao-milho)' },
-    { chave: 'sorgo', nome: 'Sorgo', cor: 'var(--grao-sorgo)' },
-    { chave: 'trigo', nome: 'Trigo', cor: 'var(--grao-trigo)' },
-    { chave: 'soja', nome: 'Soja', cor: 'var(--grao-soja)' },
+    { chave: 'milho', nome: 'Milho', cor: 'var(--grao-milho)', grao: true },
+    { chave: 'sorgo', nome: 'Sorgo', cor: 'var(--grao-sorgo)', grao: true },
+    { chave: 'trigo', nome: 'Trigo', cor: 'var(--grao-trigo)', grao: true },
+    { chave: 'soja', nome: 'Soja', cor: 'var(--grao-soja)', grao: true },
     { chave: 'recebido', nome: 'Recebido', cor: 'var(--viz-real)', total: true },
     { chave: 'programado', nome: 'Programado', cor: 'var(--viz-prog)' }
 ];
@@ -878,6 +880,7 @@ function buildVizTooltip() {
     box.appendChild(title);
 
     const values = {};
+    const rows = {};
     VIZ_SERIES.forEach((serie) => {
         const row = document.createElement('div');
         row.className = 'viz-tooltip-row' + (serie.total ? ' is-total' : '');
@@ -898,10 +901,11 @@ function buildVizTooltip() {
         row.appendChild(name);
         box.appendChild(row);
         values[serie.chave] = value;
+        rows[serie.chave] = row;
     });
 
     document.body.appendChild(box);
-    return { box: box, title: title, values: values };
+    return { box: box, title: title, values: values, rows: rows };
 }
 
 function showVizTooltip(col, clientX, clientY) {
@@ -910,7 +914,9 @@ function showVizTooltip(col, clientX, clientY) {
     // Rótulos vêm de data-attributes: sempre textContent, nunca innerHTML.
     vizTooltip.title.textContent = col.dataset.dia || '';
     VIZ_SERIES.forEach((serie) => {
-        vizTooltip.values[serie.chave].textContent = col.dataset[serie.chave] || '—';
+        const dado = col.dataset[serie.chave];
+        vizTooltip.values[serie.chave].textContent = dado || '—';
+        if (serie.grao) vizTooltip.rows[serie.chave].hidden = !dado;
     });
     vizTooltip.box.classList.add('is-visible');
 
