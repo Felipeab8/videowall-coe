@@ -373,14 +373,6 @@ body.theme-light #btnClaro .btn-icon {
     text-align: left;
     letter-spacing: 0.005em;
     font-family: inherit;
-    counter-increment: screenNum;
-}
-
-.menu-item::before {
-    content: counter(screenNum, decimal-leading-zero) " · ";
-    color: var(--faint);
-    font-weight: 700;
-    flex-shrink: 0;
 }
 
 .menu-item:hover {
@@ -392,10 +384,6 @@ body.theme-light #btnClaro .btn-icon {
     background: var(--accent-soft);
     border-left-color: var(--accent);
     color: var(--text);
-}
-
-.menu-item.active::before {
-    color: var(--accent);
 }
 
 .menu-text {
@@ -1110,50 +1098,6 @@ body.sidebar-collapsed .sidebar-reveal {
 }
 
 /* ============================================
-   ALERTS SECTION
-   ============================================ */
-.alerts-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--section-bg);
-    border: 1px solid var(--panel-border);
-    border-radius: 12px;
-    padding: 0.75rem 1rem;
-    gap: 1.125rem;
-}
-
-.alert-badge {
-    padding: 0.4375rem 1rem;
-    border-radius: 999px;
-    font-weight: 700;
-    font-size: 0.68rem;
-    white-space: nowrap;
-    letter-spacing: 0.9px;
-    text-transform: uppercase;
-}
-
-.alert-badge.alert-red {
-    background: rgba(231, 76, 60, 0.15);
-    color: var(--danger);
-    border: 1px solid rgba(231, 76, 60, 0.35);
-}
-
-.alert-badge.alert-green {
-    background: rgba(46, 204, 113, 0.15);
-    color: var(--ok);
-    border: 1px solid rgba(46, 204, 113, 0.35);
-}
-
-.alert-text {
-    flex: 1;
-    color: var(--muted);
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-align: center;
-}
-
-/* ============================================
    STATUS BAR
    ============================================ */
 .status-bar {
@@ -1548,14 +1492,6 @@ body.sidebar-collapsed .sidebar-reveal {
 
 .equip-estado.is-parado {
     color: var(--warn);
-}
-
-.ciclo-tempo {
-    margin-left: 0.625rem;
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
 }
 
 /* ============================================
@@ -2267,7 +2203,6 @@ body.edit-mode .forecast-bar.is-empty {
 }
 
 .btn-header,
-.alert-badge,
 .status-indicator {
     font-weight: 600;
     letter-spacing: 0.06em;
@@ -2286,7 +2221,6 @@ body.edit-mode .forecast-bar.is-empty {
 .data-table td,
 .status-item,
 .status-label,
-.alert-text,
 .alert-title {
     letter-spacing: 0.005em;
 }
@@ -2607,7 +2541,6 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 /* blocos de altura natural */
 .screen > .kpi-grid,
-.screen > .alerts-section,
 .alerts-page > .alerts-summary {
     flex: 0 0 auto;
 }
@@ -2895,4 +2828,1206 @@ body.edit-mode .header-controls .btn-alertas.active {
 .totaldia .stack-value {
     color: var(--grao-texto);
     font-size: 0.74rem;
+}
+
+/* ============================================
+   CABECALHO DE SECAO (titulo + acao/estado)
+   ============================================ */
+.section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.875rem;
+}
+
+.section-head h3 {
+    margin-bottom: 0;
+}
+
+/* ============================================
+   VARIACOES DE COLUNAS
+   ============================================ */
+/* tres paineis na mesma faixa (silos: capacidade, estatica e tempo) */
+.split-grid--trio {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.85fr) minmax(0, 1fr);
+}
+
+/* ============================================
+   KPIs COMPACTOS (qualidade: o topo cede altura a tabela)
+   ============================================ */
+.kpi-grid--compact .kpi-card {
+    min-height: 4.25rem;
+    padding: 0.625rem 0.875rem;
+    gap: 0.3125rem;
+}
+
+.kpi-grid--compact .kpi-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.9px;
+}
+
+.kpi-grid--compact .kpi-value {
+    font-size: 1.35rem;
+}
+
+.kpi-grid--compact .grao-metrics {
+    margin-top: 0;
+    padding-top: 0.375rem;
+    gap: 0.25rem 0.5rem;
+}
+
+.kpi-grid--compact .grao-icon {
+    width: 0.875rem;
+    height: 0.875rem;
+}
+
+.kpi-grid--compact .grao-metric-name {
+    font-size: 0.5rem;
+}
+
+.kpi-grid--compact .grao-metric-value {
+    font-size: 0.78rem;
+}
+
+/* ============================================
+   KPI COM DESVIO DE META NO PROPRIO CARTAO
+   (tempo de ciclo acima da meta anda junto com o tempo medio)
+   ============================================ */
+.kpi-card--meta {
+    align-items: stretch;
+    gap: 0.375rem;
+}
+
+.kpi-meta-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.kpi-flag {
+    padding: 0.125rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.kpi-flag--alerta {
+    background: rgba(231, 76, 60, 0.18);
+    border: 1px solid rgba(231, 76, 60, 0.4);
+    color: var(--danger);
+}
+
+body.theme-light .kpi-flag--alerta {
+    background: rgba(179, 38, 30, 0.12);
+    border-color: rgba(179, 38, 30, 0.35);
+    color: #b3261e;
+}
+
+.kpi-meta-ref {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ============================================
+   CAMERA (uma por tela)
+   O <img> so entra em cena quando data-cam-src estiver preenchido;
+   sem stream publicado fica a moldura com o nome da camera.
+   ============================================ */
+
+.camera-frame {
+    position: relative;
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 6rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid var(--row-line);
+    border-radius: 10px;
+    background:
+        radial-gradient(120% 90% at 50% 0%, rgba(120, 160, 210, 0.10) 0%, rgba(0, 0, 0, 0) 70%),
+        var(--row-bg);
+}
+
+/* cantos de enquadramento */
+.camera-frame::before,
+.camera-frame::after {
+    content: '';
+    position: absolute;
+    width: 0.875rem;
+    height: 0.875rem;
+    border: 2px solid var(--panel-border);
+    pointer-events: none;
+}
+
+.camera-frame::before {
+    top: 0.5rem;
+    left: 0.5rem;
+    border-right: 0;
+    border-bottom: 0;
+    border-radius: 3px 0 0 0;
+}
+
+.camera-frame::after {
+    right: 0.5rem;
+    bottom: 0.5rem;
+    border-top: 0;
+    border-left: 0;
+    border-radius: 0 0 3px 0;
+}
+
+.camera-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.75rem;
+    text-align: center;
+}
+
+.camera-glyph {
+    width: 2.25rem;
+    height: 2.25rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    color: var(--faint);
+}
+
+.camera-name {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.camera-state {
+    font-size: 0.55rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--faint);
+}
+
+.camera-stream {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #000;
+}
+
+/* ============================================
+   RECEBIMENTO: REALIZADO EMPILHADO POR CULTURA
+   ============================================ */
+.forecast-chart--dias {
+    --chart-cols: 11;
+}
+
+.forecast-chart--dias .forecast-cap {
+    font-size: 0.55rem;
+}
+
+.forecast-summary--quad {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* a barra de realizado vira pilha: cada cultura e um segmento */
+.forecast-bar.is-stack {
+    display: flex;
+    flex-direction: column;
+    background: transparent;
+}
+
+/* o topo da pilha herda o arredondamento da barra */
+.forecast-bar.is-stack > .forecast-seg:first-of-type {
+    border-radius: 4px 4px 0 0;
+}
+
+.forecast-seg {
+    display: block;
+    width: 100%;
+    flex: 0 0 auto;
+}
+
+.forecast-seg--milho {
+    background: var(--grao-milho);
+}
+
+.forecast-seg--sorgo {
+    background: var(--grao-sorgo);
+}
+
+.forecast-seg--trigo {
+    background: var(--grao-trigo);
+}
+
+.forecast-seg--soja {
+    background: var(--grao-soja);
+}
+
+/* dias fechados ficam levemente recuados do dia corrente */
+.forecast-col.is-passado .forecast-bar--prog {
+    opacity: 0.55;
+}
+
+.legend-item--sep {
+    margin-left: 0.375rem;
+    padding-left: 0.875rem;
+    border-left: 1px solid var(--panel-border);
+}
+
+/* ============================================
+   HISTORICO DE TEMPERATURA (fornalha x massa)
+   ============================================ */
+.legend-dot--pulmao {
+    width: 0.625rem;
+    height: 0.625rem;
+    background: var(--accent);
+}
+
+.legend-dot--pulmao {
+    background: var(--accent);
+}
+
+/* ============================================
+   MOEGAS: cargas, umidade e impureza no cartao
+   ============================================ */
+.moega-item {
+    grid-template-areas:
+        'nome nome'
+        'pct  tons'
+        'stats stats'
+        'barra barra';
+    grid-template-rows: auto auto auto 1fr;
+}
+
+.moega-item .progress-label {
+    font-size: 1.7rem;
+}
+
+.moega-item .progress-bar {
+    height: 1.125rem;
+}
+
+.moega-stats {
+    grid-area: stats;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.875rem;
+    padding-top: 0.4375rem;
+    border-top: 1px solid var(--card-border);
+}
+
+.moega-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+}
+
+.moega-stat-label {
+    font-size: 0.5rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.moega-stat-value {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ============================================
+   SILOS SEPARADOS POR CULTURA (+ silo pulmao)
+   ============================================ */
+.silo-groups {
+    display: grid;
+    grid-template-columns: 3fr 2fr 2fr 1fr 1fr;
+    gap: 0.875rem;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.silo-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-height: 0;
+    padding: 0.625rem;
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    background: var(--row-bg);
+}
+
+.silo-group-head {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.silo-group-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+.silo-group-total {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.silo-group--1 .silo-grid {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.silo-group--2 .silo-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.silo-group--3 .silo-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* pulmao e transito, nao capacidade estatica: moldura tracejada */
+.silo-group--pulmao {
+    border-style: dashed;
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.silo-groups .silo-grid {
+    gap: 0.5rem;
+    min-height: 0;
+}
+
+.silo-groups .silo-item {
+    padding: 0.625rem 0.5rem;
+    gap: 0.5rem;
+}
+
+.silo-groups .silo-name {
+    font-size: 0.62rem;
+}
+
+.silo-groups .silo-temp {
+    font-size: 0.58rem;
+}
+
+.silo-groups .silo-footer {
+    font-size: 0.68rem;
+}
+
+.silo-groups .silo-visual {
+    width: 2.75rem;
+}
+
+.silo-item--milho .silo-fill {
+    background: var(--grao-milho);
+}
+
+.silo-item--sorgo .silo-fill {
+    background: var(--grao-sorgo);
+}
+
+.silo-item--trigo .silo-fill {
+    background: var(--grao-trigo);
+}
+
+.silo-item--soja .silo-fill {
+    background: var(--grao-soja);
+}
+
+/* ============================================
+   PREVISAO DO TEMPO
+   Numeros estaticos ate a API meteorologica ser ligada.
+   ============================================ */
+.weather-glyph {
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    color: var(--accent);
+}
+
+.weather-glyph--sm {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.weather-now {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.625rem;
+}
+
+.weather-now-main {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+}
+
+.weather-temp {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.weather-desc {
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.weather-facts {
+    flex: 0 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    padding-bottom: 0.625rem;
+    margin-bottom: 0.625rem;
+    border-bottom: 1px solid var(--row-line);
+}
+
+.weather-fact {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.weather-fact-label {
+    font-size: 0.55rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.weather-fact-value {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.weather-days {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-content: center;
+    gap: 0.5rem;
+}
+
+.weather-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 0.25rem;
+    border: 1px solid var(--row-line);
+    border-radius: 10px;
+    background: var(--row-bg);
+}
+
+.weather-day-name {
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+}
+
+.weather-day-temp {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.weather-day-temp small,
+.weather-city-temp small {
+    margin-left: 0.25rem;
+    font-size: 0.78em;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.weather-day-rain,
+.weather-city-rain {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+}
+
+.weather-day-rain.is-chuva,
+.weather-city-rain.is-chuva {
+    color: var(--accent);
+}
+
+.weather-cities {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.375rem;
+    overflow: auto;
+}
+
+.weather-city {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.4375rem 0.625rem;
+    border: 1px solid var(--row-line);
+    border-radius: 8px;
+    background: var(--row-bg);
+}
+
+.weather-city-name {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.weather-city-temp {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.weather-city-rain {
+    min-width: 2.25rem;
+    text-align: right;
+}
+
+/* ============================================
+   PRINT — sai so a tela ativa, sem cromo de navegacao
+   ============================================ */
+@media print {
+    html, body {
+        height: auto;
+        overflow: visible;
+        background: #fff;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .header,
+    .sidebar,
+    .sidebar-reveal,
+    .btn-table-toggle,
+    .alerts-page,
+    .viz-tooltip {
+        display: none !important;
+    }
+
+    .container,
+    .content {
+        display: block;
+        height: auto;
+        padding: 0;
+        overflow: visible;
+    }
+
+    .screen {
+        display: none !important;
+    }
+
+    .screen.active {
+        display: flex !important;
+        height: auto;
+    }
+}
+
+/* separa o total das culturas dentro do tooltip */
+.viz-tooltip-row.is-total {
+    margin-top: 0.25rem;
+    padding-top: 0.3125rem;
+    border-top: 1px solid var(--panel-border);
+}
+
+/* ============================================
+   AJUSTES DE ACABAMENTO
+   ============================================ */
+/* cor do icone acompanha a condicao do tempo */
+.weather-glyph--sol,
+.weather-glyph--solnuvem {
+    color: #e0a33c;
+}
+
+.weather-glyph--nuvem {
+    color: var(--muted);
+}
+
+.weather-glyph--chuva {
+    color: var(--accent);
+}
+
+/* pulmao usa o mesmo ponto redondo das culturas */
+.legend-dot--pulmao {
+    border-radius: 50%;
+}
+
+/* previsao: cartoes crescem ate um teto e ficam centrados; as linhas das
+   cidades dividem a altura do painel em vez de sobrar vao no fim */
+.weather-days {
+    grid-auto-rows: minmax(0, 8.5rem);
+    align-content: start;
+}
+
+.weather-day {
+    justify-content: center;
+}
+
+.weather-cities {
+    justify-content: stretch;
+}
+
+.weather-city {
+    flex: 1 1 0;
+    min-height: 2rem;
+}
+
+/* ============================================
+   MENU EM GRUPOS
+   Cada area e um grupo: o titulo abre, logo abaixo, a tela de dados
+   e a tela da camera daquela area.
+   ============================================ */
+.menu {
+    gap: 2px;
+}
+
+.menu-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-parent {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    min-height: 2.3125rem;
+    padding: 0.5625rem 0.875rem;
+    background: transparent;
+    border: none;
+    border-left: 3px solid transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-align: left;
+    letter-spacing: 0.005em;
+    counter-increment: screenNum;
+    transition: all 0.2s ease;
+}
+
+.menu-parent::before {
+    content: counter(screenNum, decimal-leading-zero) " · ";
+    color: var(--faint);
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.menu-parent .menu-text {
+    flex: 1 1 auto;
+}
+
+.menu-parent:hover {
+    background: var(--hover);
+    color: var(--text);
+}
+
+.menu-caret {
+    width: 0.875rem;
+    height: 0.875rem;
+    flex-shrink: 0;
+    color: var(--faint);
+    transition: transform 0.2s ease;
+}
+
+.menu-group.is-open > .menu-parent .menu-caret {
+    transform: rotate(180deg);
+}
+
+/* o grupo da tela em foco fica marcado mesmo com o submenu recolhido */
+.menu-group.is-current > .menu-parent {
+    color: var(--text);
+    border-left-color: var(--accent);
+}
+
+.menu-group.is-current > .menu-parent::before,
+.menu-group.is-open > .menu-parent .menu-caret {
+    color: var(--accent);
+}
+
+.submenu {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding-bottom: 0.25rem;
+}
+
+/* display:flex venceria o hidden do navegador; aqui o recolhido volta a valer */
+.submenu[hidden] {
+    display: none;
+}
+
+/* rotulos do submenu ("Camera da produtividade") pedem um pouco mais de calha */
+.sidebar {
+    width: 12.5rem;
+}
+
+.submenu .menu-item {
+    min-height: 2rem;
+    padding: 0.375rem 0.875rem 0.375rem 1.5rem;
+    font-size: 0.72rem;
+}
+
+/* marcador do item substitui a numeracao, que subiu para o grupo */
+.submenu .menu-item::before {
+    content: '';
+    width: 0.3125rem;
+    height: 0.3125rem;
+    margin-right: 0.5rem;
+    border-radius: 50%;
+    background: var(--faint);
+    flex-shrink: 0;
+}
+
+.submenu .menu-item.active::before {
+    background: var(--accent);
+}
+
+/* ============================================
+   TELA DE CÂMERA
+   ============================================ */
+.screen-badge--cam .badge-icon {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.screen > .camera-wall {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.camera-wall {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: 0.875rem;
+}
+
+.camera-tile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-height: 0;
+}
+
+
+
+/* em tela cheia a moldura ganha escala: glifo, nome e cantos maiores */
+.screen--camera .camera-glyph {
+    width: 4.5rem;
+    height: 4.5rem;
+}
+
+.screen--camera .camera-name {
+    font-size: 0.85rem;
+}
+
+.screen--camera .camera-state {
+    font-size: 0.68rem;
+}
+
+.screen--camera .camera-placeholder {
+    gap: 0.625rem;
+}
+
+.screen--camera .camera-frame::before,
+.screen--camera .camera-frame::after {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-width: 3px;
+}
+
+/* ============================================
+   MENU LATERAL EM TAMANHO FIXO
+   O resto da interface acompanha o --fit (cresce no videowall,
+   encolhe no notebook). O menu não: fica sempre do mesmo tamanho,
+   e quem ganha ou perde espaço é a tela. Por isso as medidas daqui
+   são px, não rem — os valores são os mesmos da referência
+   1600x900, onde 1rem valia 16px.
+   ============================================ */
+.sidebar {
+    width: 200px;
+    padding: 14px 0;
+}
+
+.sidebar-header {
+    padding: 4px 16px 12px;
+    font-size: 10.5px;
+}
+
+.sidebar-top {
+    gap: 8px;
+    padding: 4px 10px 12px 16px;
+}
+
+.sidebar-toggle {
+    width: 24px;
+    height: 24px;
+}
+
+.sidebar-toggle svg {
+    width: 14px;
+    height: 14px;
+}
+
+.menu-parent {
+    gap: 8px;
+    min-height: 37px;
+    padding: 9px 14px;
+    font-size: 12.5px;
+}
+
+.menu-caret {
+    width: 14px;
+    height: 14px;
+}
+
+.menu-item {
+    min-height: 37px;
+    padding: 9px 14px;
+    font-size: 12.5px;
+}
+
+.submenu {
+    padding-bottom: 4px;
+}
+
+.submenu .menu-item {
+    min-height: 32px;
+    padding: 6px 14px 6px 24px;
+    font-size: 11.5px;
+}
+
+.submenu .menu-item::before {
+    width: 5px;
+    height: 5px;
+    margin-right: 8px;
+}
+
+/* Os cortes por largura continuam valendo — precisam vir depois das
+   regras acima para não serem atropelados pela ordem da cascata. */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 145px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        padding: 8px 0;
+    }
+
+    .menu {
+        flex-direction: row;
+        gap: 4px;
+        padding: 0 8px;
+    }
+
+    .menu-parent,
+    .menu-item {
+        min-height: 32px;
+        padding: 8px 12px;
+    }
+
+    .submenu .menu-item {
+        padding: 6px 12px 6px 20px;
+    }
+}
+
+/* ============================================
+   RECEBIMENTO: GRÁFICO OU TABELA
+   Os dois trazem os mesmos números e a tela não tem altura para os dois.
+   Com a tabela aberta, o gráfico (e a legenda dele) saem de cena.
+   ============================================ */
+.forecast-section.is-tabela .forecast-chart,
+.forecast-section.is-tabela > .chart-legend {
+    display: none;
+}
+
+.forecast-section .forecast-table {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    margin-top: 0;
+}
+
+/* ============================================
+   SECADORES · UM BLOCO POR EQUIPAMENTO
+   Estado + nome no topo, os três dados do ciclo à esquerda e,
+   à direita, temperatura da massa subindo contra a umidade caindo.
+   Cada série tem escala própria (°C e %), por isso o rótulo do fim
+   da linha carrega o valor: é ele que ancora a leitura.
+   ============================================ */
+.secador-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-auto-rows: minmax(0, 1fr);
+    gap: 0.875rem;
+}
+
+.secador {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    min-height: 0;
+    padding: 0.875rem 1.125rem;
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
+}
+
+.secador-head {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.secador-nome {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+.secador-dot {
+    width: 0.6875rem;
+    height: 0.6875rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--faint);
+}
+
+.secador-dot.is-operando {
+    background: var(--ok);
+    box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.18);
+}
+
+.secador-dot.is-parado {
+    background: var(--warn);
+    box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.18);
+}
+
+.secador-tipo {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.secador-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 8.5rem minmax(0, 1fr);
+    gap: 1.125rem;
+}
+
+/* os três dados do ciclo, empilhados como no esboço */
+.secador-chips {
+    display: grid;
+    grid-auto-rows: minmax(0, 1fr);
+    gap: 0.5rem;
+    min-height: 0;
+}
+
+.secador-chip {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1px;
+    min-height: 0;
+    padding: 0.375rem 0.625rem;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+    box-shadow: var(--shadow-soft);
+}
+
+.secador-chip-label {
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.secador-chip-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.15;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+}
+
+/* área do gráfico: a calha da direita guarda os rótulos de fim de linha */
+.secador-chart {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding-right: 4.75rem;
+}
+
+.secador-plot {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 2.5rem;
+}
+
+.secador-grid {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    pointer-events: none;
+}
+
+.secador-grid i {
+    display: block;
+    height: 1px;
+    background: var(--row-line);
+}
+
+.secador-grid i:last-child {
+    background: var(--panel-border);
+}
+
+.secador-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.secador-linha {
+    fill: none;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.secador-linha--temp {
+    stroke: var(--grao-trigo);
+}
+
+.secador-linha--umi {
+    stroke: var(--viz-real);
+}
+
+/* rótulo na ponta da linha, alinhado com o último ponto */
+.serie-tag {
+    position: absolute;
+    left: 100%;
+    transform: translateY(-50%);
+    margin-left: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.serie-tag b {
+    font-size: 0.82rem;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.serie-tag--temp {
+    color: var(--grao-trigo);
+}
+
+.serie-tag--umi {
+    color: var(--viz-real);
+}
+
+.secador-horas {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 0.375rem;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
 }

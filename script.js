@@ -38,10 +38,62 @@ menuItems.forEach((item) => {
         if (target) {
             target.classList.add('active');
         }
+        syncMenuGroups();
         setAlertsPage(false);
         scheduleFit();
     });
 });
+
+// ============================================
+// MENU EM GRUPOS
+// Cada área abre dois destinos: a tela de dados e a tela da câmera.
+// ============================================
+const menuGroups = document.querySelectorAll('.menu-group');
+
+function setGroupOpen(group, open) {
+    group.classList.toggle('is-open', open);
+    const parent = group.querySelector('.menu-parent');
+    const submenu = group.querySelector('.submenu');
+    if (parent) parent.setAttribute('aria-expanded', String(open));
+    if (submenu) submenu.hidden = !open;
+}
+
+// um grupo aberto por vez: o menu inteiro continua cabendo sem rolagem
+function openOnlyGroup(group) {
+    menuGroups.forEach((g) => setGroupOpen(g, g === group));
+}
+
+function syncMenuGroups() {
+    menuGroups.forEach((g) => {
+        g.classList.toggle('is-current', !!g.querySelector('.menu-item.active'));
+    });
+}
+
+document.querySelectorAll('.menu-parent').forEach((parent) => {
+    parent.addEventListener('click', () => {
+        const group = parent.closest('.menu-group');
+        if (!group) return;
+
+        // clicar de novo no grupo aberto apenas recolhe, sem trocar de tela
+        if (group.classList.contains('is-open')) {
+            setGroupOpen(group, false);
+            scheduleFit();
+            return;
+        }
+
+        openOnlyGroup(group);
+        const tela = group.querySelector('.menu-item');
+        if (tela && !tela.classList.contains('active')) tela.click();
+        else scheduleFit();
+    });
+});
+
+// abre o grupo da tela que já está no ar
+const itemAtivo = document.querySelector('.menu-item.active');
+if (itemAtivo && itemAtivo.closest('.menu-group')) {
+    openOnlyGroup(itemAtivo.closest('.menu-group'));
+}
+syncMenuGroups();
 
 // ============================================
 // AJUSTE À TELA (qualquer resolução, sem rolagem)
@@ -297,8 +349,6 @@ const EDITABLE_SELECTORS = [
     '.data-table th',
     '.data-table td',
     '.flow-btn',
-    '.alert-badge',
-    '.alert-text',
     '.alert-title',
     '.alert-time',
     '.status-item span',
@@ -325,7 +375,31 @@ const EDITABLE_SELECTORS = [
     '.forecast-cap',
     '.forecast-day',
     '.forecast-yaxis span',
-    '.forecast-unit'
+    '.forecast-unit',
+    '.kpi-flag',
+    '.kpi-meta-ref',
+    '.moega-stat-label',
+    '.moega-stat-value',
+    '.silo-group-name',
+    '.silo-group-total',
+    '.camera-name',
+    '.camera-state',
+    '.weather-temp',
+    '.weather-desc',
+    '.weather-fact-label',
+    '.weather-fact-value',
+    '.weather-day-name',
+    '.weather-day-temp',
+    '.weather-day-rain',
+    '.weather-city-name',
+    '.weather-city-temp',
+    '.weather-city-rain',
+    '.secador-nome',
+    '.secador-tipo',
+    '.secador-chip-label',
+    '.secador-chip-value',
+    '.serie-tag',
+    '.secador-horas span'
 ];
 
 function applyTextEditing(enabled) {
@@ -333,7 +407,7 @@ function applyTextEditing(enabled) {
         document.querySelectorAll(selector).forEach((element) => {
             if (!(element instanceof HTMLElement)) return;
             if (element.tagName === 'BUTTON' && !element.classList.contains('flow-btn')) return;
-            if (element.classList.contains('screen-badge--alert')) return;
+            if (element.classList.contains('screen-badge') && element.querySelector('svg')) return;
 
             element.classList.toggle('editable', enabled);
             element.contentEditable = enabled ? 'true' : 'false';
@@ -352,7 +426,13 @@ const DRAG_CONFIG = [
     { selector: '.split-grid > .content-section', group: 'painel' },
     { selector: '.kpi-card', group: 'kpi' },
     { selector: '.kpi-card-small', group: 'kpi-small' },
+    { selector: '.secador', group: 'secador' },
+    { selector: '.secador-chip', group: 'secador-dado' },
+    { selector: '.silo-group', group: 'silo-cultura' },
     { selector: '.silo-item', group: 'silo' },
+    { selector: '.moega-item', group: 'moega' },
+    { selector: '.weather-day', group: 'previsao-dia' },
+    { selector: '.weather-city', group: 'previsao-cidade' },
     { selector: '.hour-item', group: 'hora' },
     { selector: '.alert-item', group: 'alerta' },
     { selector: '.summary-card', group: 'resumo' },
@@ -361,6 +441,7 @@ const DRAG_CONFIG = [
     { selector: '.status-row', group: 'status-linha' },
     { selector: '.flow-btn', group: 'fluxo' },
     { selector: '.stack-row', group: 'barra' },
+    { selector: '.menu-group', group: 'menu-grupo' },
     { selector: '.menu-item', group: 'menu' },
     { selector: '.data-table tbody tr', group: 'linha', inline: true }
 ];
@@ -589,6 +670,11 @@ const RESIZE_CONFIG = [
     { selector: '.forecast-stat', mode: 'size' },
     { selector: '.alert-item', mode: 'size' },
     { selector: '.silo-item', mode: 'size' },
+    { selector: '.moega-item', mode: 'size' },
+    { selector: '.weather-day', mode: 'size' },
+    { selector: '.weather-city', mode: 'size' },
+    { selector: '.camera-frame', mode: 'size' },
+    { selector: '.secador', mode: 'size' },
     { selector: '.hour-item', mode: 'size' },
     { selector: '.flow-btn', mode: 'size' },
     { selector: '.stack-track', mode: 'size' },
@@ -772,6 +858,16 @@ function formatTon(value) {
 
 let vizTooltip = null;
 
+// As quatro culturas somam o realizado; depois vem o total e o programado.
+const VIZ_SERIES = [
+    { chave: 'milho', nome: 'Milho', cor: 'var(--grao-milho)' },
+    { chave: 'sorgo', nome: 'Sorgo', cor: 'var(--grao-sorgo)' },
+    { chave: 'trigo', nome: 'Trigo', cor: 'var(--grao-trigo)' },
+    { chave: 'soja', nome: 'Soja', cor: 'var(--grao-soja)' },
+    { chave: 'recebido', nome: 'Recebido', cor: 'var(--viz-real)', total: true },
+    { chave: 'programado', nome: 'Programado', cor: 'var(--viz-prog)' }
+];
+
 function buildVizTooltip() {
     const box = document.createElement('div');
     box.className = 'viz-tooltip';
@@ -782,26 +878,26 @@ function buildVizTooltip() {
     box.appendChild(title);
 
     const values = {};
-    [['real', 'Recebido'], ['prog', 'Programado']].forEach((serie) => {
+    VIZ_SERIES.forEach((serie) => {
         const row = document.createElement('div');
-        row.className = 'viz-tooltip-row';
+        row.className = 'viz-tooltip-row' + (serie.total ? ' is-total' : '');
 
         const key = document.createElement('i');
         key.className = 'viz-tooltip-key';
-        key.style.background = 'var(--viz-' + serie[0] + ')';
+        key.style.background = serie.cor;
 
         const value = document.createElement('strong');
         value.className = 'viz-tooltip-value';
 
         const name = document.createElement('span');
         name.className = 'viz-tooltip-name';
-        name.textContent = serie[1];
+        name.textContent = serie.nome;
 
         row.appendChild(key);
         row.appendChild(value);
         row.appendChild(name);
         box.appendChild(row);
-        values[serie[0]] = value;
+        values[serie.chave] = value;
     });
 
     document.body.appendChild(box);
@@ -813,8 +909,9 @@ function showVizTooltip(col, clientX, clientY) {
 
     // Rótulos vêm de data-attributes: sempre textContent, nunca innerHTML.
     vizTooltip.title.textContent = col.dataset.dia || '';
-    vizTooltip.values.real.textContent = col.dataset.recebido || '—';
-    vizTooltip.values.prog.textContent = col.dataset.programado || '—';
+    VIZ_SERIES.forEach((serie) => {
+        vizTooltip.values[serie.chave].textContent = col.dataset[serie.chave] || '—';
+    });
     vizTooltip.box.classList.add('is-visible');
 
     const rect = vizTooltip.box.getBoundingClientRect();
@@ -842,7 +939,9 @@ document.querySelectorAll('.forecast-col').forEach((col) => {
     col.addEventListener('blur', hideVizTooltip);
 });
 
-// Tabela de apoio: os mesmos números sem depender do hover
+// Tabela de apoio: os mesmos números sem depender do hover.
+// A tela tem altura fixa e os dois mostram o mesmo dado, então a tabela
+// entra no lugar do gráfico — empilhados, um esmagava o outro.
 document.querySelectorAll('[data-forecast-toggle]').forEach((btn) => {
     btn.addEventListener('click', () => {
         const target = document.getElementById(btn.getAttribute('aria-controls'));
@@ -850,7 +949,10 @@ document.querySelectorAll('[data-forecast-toggle]').forEach((btn) => {
         const opening = target.hidden;
         target.hidden = !opening;
         btn.setAttribute('aria-expanded', String(opening));
-        btn.textContent = opening ? 'OCULTAR' : 'TABELA';
+        btn.textContent = opening ? 'GRÁFICO' : 'TABELA';
+
+        const secao = btn.closest('.content-section');
+        if (secao) secao.classList.toggle('is-tabela', opening);
         scheduleFit();
     });
 });
@@ -898,4 +1000,35 @@ document.addEventListener('pointermove', (e) => {
 
 document.addEventListener('pointerup', () => {
     forecastBar = null;
+});
+
+// ============================================
+// CÂMERAS (uma por tela)
+// A moldura fica com o nome da câmera enquanto não houver stream.
+// Basta preencher data-cam-src no HTML (MJPEG, snapshot ou qualquer
+// URL que o navegador saiba renderizar em <img>) que a imagem entra
+// por cima do espaço reservado — e some de novo se o sinal cair.
+// ============================================
+document.querySelectorAll('.camera-frame[data-cam-src]').forEach((frame) => {
+    const src = (frame.dataset.camSrc || '').trim();
+    if (!src) return;
+
+    const nome = frame.querySelector('.camera-name');
+    const img = document.createElement('img');
+    img.className = 'camera-stream';
+    img.alt = nome ? nome.textContent : 'Câmera ao vivo';
+    img.addEventListener('error', () => img.remove());
+    img.src = src;
+    frame.appendChild(img);
+});
+
+// ============================================
+// PRINT DA TELA ATIVA
+// O @media print deixa só a tela em foco na folha.
+// ============================================
+document.querySelectorAll('[data-print]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+        if (isEditing()) return;
+        window.print();
+    });
 });

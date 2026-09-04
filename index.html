@@ -37,6 +37,27 @@
             <path d="M12 13.4c2.4 0 4.4-2 4.4-4.4-2.4 0-4.4 2-4.4 4.4Z"></path>
             <path d="M12 8.6c-1.7-1.7-1.7-4.6 0-6.3 1.7 1.7 1.7 4.6 0 6.3Z"></path>
         </symbol>
+        <symbol id="ico-camera" viewBox="0 0 24 24">
+            <rect x="2.6" y="6.8" width="12.4" height="10.4" rx="2.4"></rect>
+            <path d="M15 11.4 20 8.7c.4-.2.9.1.9.6v9.4c0 .5-.5.8-.9.6L15 16.6v-5.2Z"></path>
+            <circle cx="6.6" cy="12" r="1.7"></circle>
+        </symbol>
+        <symbol id="ico-sol" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="4.2"></circle>
+            <path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"></path>
+        </symbol>
+        <symbol id="ico-sol-nuvem" viewBox="0 0 24 24">
+            <circle cx="8.2" cy="6.8" r="2.6"></circle>
+            <path d="M8.2 2.2v1.3M3.6 6.8H2.3M5 3.6l-.9-.9M11.4 3.6l.9-.9"></path>
+            <path d="M9.6 20.2h8.2a3.5 3.5 0 0 0 .3-7 4.9 4.9 0 0 0-9.4-.9 3.6 3.6 0 0 0 .9 7.9Z"></path>
+        </symbol>
+        <symbol id="ico-nuvem" viewBox="0 0 24 24">
+            <path d="M7.4 18.6h9.4a3.9 3.9 0 0 0 .3-7.8 5.5 5.5 0 0 0-10.5-1 4 4 0 0 0 .8 8.8Z"></path>
+        </symbol>
+        <symbol id="ico-chuva" viewBox="0 0 24 24">
+            <path d="M7.6 15.4h9a3.7 3.7 0 0 0 .3-7.4 5.2 5.2 0 0 0-10-1 3.8 3.8 0 0 0 .7 8.4Z"></path>
+            <path d="M9.2 18.2 8.3 20.8M13.1 18.2l-.9 2.6M17 18.2l-.9 2.6"></path>
+        </symbol>
     </svg>
     <!-- Header -->
     <header class="header">
@@ -71,33 +92,96 @@
                 <button class="sidebar-toggle" id="btnSidebarToggle" type="button" title="Recolher menu (Ctrl+B)" aria-label="Recolher menu de telas" aria-expanded="true" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
             </div>
             <nav class="menu">
-                <button class="menu-item active" data-screen="0">
-                    <span class="menu-text">Recepção</span>
-                </button>
-                <button class="menu-item" data-screen="1">
-                    <span class="menu-text">Qualidade</span>
-                </button>
-                <button class="menu-item" data-screen="2">
-                    <span class="menu-text">Moegas</span>
-                </button>
-                <button class="menu-item" data-screen="3">
-                    <span class="menu-text">Secagem</span>
-                </button>
-                <button class="menu-item" data-screen="4">
-                    <span class="menu-text">Produtividade</span>
-                </button>
-                <button class="menu-item" data-screen="5">
-                    <span class="menu-text">Silos</span>
-                </button>
-                <button class="menu-item" data-screen="6">
-                    <span class="menu-text">Aeração</span>
-                </button>
-                <button class="menu-item" data-screen="7">
-                    <span class="menu-text">Expedição · Dosagem</span>
-                </button>
-                <button class="menu-item" data-screen="8">
-                    <span class="menu-text">Central</span>
-                </button>
+                <div class="menu-group is-open is-current" data-group="0">
+                    <button class="menu-parent" type="button" aria-expanded="true" aria-controls="submenu-0">
+                        <span class="menu-text">Recepção</span>
+                        <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="submenu" id="submenu-0">
+                        <button class="menu-item active" data-screen="0"><span class="menu-text">Tela da recepção</span></button>
+                        <button class="menu-item" data-screen="cam-0"><span class="menu-text">Câmera da recepção</span></button>
+                    </div>
+                </div>
+                <div class="menu-group" data-group="1">
+                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-1">
+                        <span class="menu-text">Qualidade</span>
+                        <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="submenu" id="submenu-1" hidden>
+                        <button class="menu-item" data-screen="1"><span class="menu-text">Tela da qualidade</span></button>
+                        <button class="menu-item" data-screen="cam-1"><span class="menu-text">Câmera da qualidade</span></button>
+                    </div>
+                </div>
+                <div class="menu-group" data-group="2">
+                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-2">
+                        <span class="menu-text">Moegas</span>
+                        <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="submenu" id="submenu-2" hidden>
+                        <button class="menu-item" data-screen="2"><span class="menu-text">Tela das moegas</span></button>
+                        <button class="menu-item" data-screen="cam-2"><span class="menu-text">Câmera das moegas</span></button>
+                    </div>
+                </div>
+                <div class="menu-group" data-group="3">
+                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-3">
+                        <span class="menu-text">Secagem</span>
+                        <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="submenu" id="submenu-3" hidden>
+                        <button class="menu-item" data-screen="3"><span class="menu-text">Tela da secagem</span></button>
+                        <button class="menu-item" data-screen="cam-3"><span class="menu-text">Câmera da secagem</span></button>
+                    </div>
+                </div>
+                <div class="menu-group" data-group="4">
+                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-4">
+                        <span class="menu-text">Produtividade</span>
+                        <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="submenu" id="submenu-4" hidden>
+                        <button class="menu-item" data-screen="4"><span class="menu-text">Tela da produtividade</span></button>
+                        <button class="menu-item" data-screen="cam-4"><span class="menu-text">Câmera da produtividade</span></button>
+                    </div>
+                </div>
+                <div class="menu-group" data-group="5">
+                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-5">
+                        <span class="menu-text">Silos</span>
+                        <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="submenu" id="submenu-5" hidden>
+                        <button class="menu-item" data-screen="5"><span class="menu-text">Tela dos silos</span></button>
+                        <button class="menu-item" data-screen="cam-5"><span class="menu-text">Câmera dos silos</span></button>
+                    </div>
+                </div>
+                <div class="menu-group" data-group="6">
+                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-6">
+                        <span class="menu-text">Aeração</span>
+                        <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="submenu" id="submenu-6" hidden>
+                        <button class="menu-item" data-screen="6"><span class="menu-text">Tela da aeração</span></button>
+                        <button class="menu-item" data-screen="cam-6"><span class="menu-text">Câmera da aeração</span></button>
+                    </div>
+                </div>
+                <div class="menu-group" data-group="7">
+                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-7">
+                        <span class="menu-text">Expedição · Dosagem</span>
+                        <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="submenu" id="submenu-7" hidden>
+                        <button class="menu-item" data-screen="7"><span class="menu-text">Tela da expedição</span></button>
+                        <button class="menu-item" data-screen="cam-7"><span class="menu-text">Câmera da expedição</span></button>
+                    </div>
+                </div>
+                <div class="menu-group" data-group="8">
+                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-8">
+                        <span class="menu-text">Central</span>
+                        <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="submenu" id="submenu-8" hidden>
+                        <button class="menu-item" data-screen="8"><span class="menu-text">Tela da central</span></button>
+                        <button class="menu-item" data-screen="cam-8"><span class="menu-text">Câmera da central</span></button>
+                    </div>
+                </div>
             </nav>
         </aside>
 
@@ -115,7 +199,7 @@
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">5</span>s</div>
                     </div>
                 </div>
-                
+
                 <div class="kpi-grid">
                     <div class="kpi-card">
                         <div class="kpi-label">CAMINHÕES NA FILA</div>
@@ -125,13 +209,18 @@
                         <div class="kpi-label">ESPERA MÉDIA</div>
                         <div class="kpi-value">38 min</div>
                     </div>
-                    <div class="kpi-card">
+                    <!-- o desvio de ciclo mora dentro do proprio indicador, nao no rodape de alertas -->
+                    <div class="kpi-card kpi-card--meta alert">
                         <div class="kpi-label">TEMPO MÉDIO DE CICLO</div>
                         <div class="kpi-value">52 min</div>
+                        <div class="kpi-meta-row">
+                            <span class="kpi-flag kpi-flag--alerta">ACIMA DA META</span>
+                            <span class="kpi-meta-ref">meta 45 min · +7 min</span>
+                        </div>
                     </div>
                     <div class="kpi-card">
-                        <div class="kpi-label">RECEBIMENTO HOJE x ESPERADO DO DIA</div>
-                        <div class="kpi-value">1.240 <span class="kpi-value-ref">/ 1.500 t</span><span class="kpi-value-pct">83%</span></div>
+                        <div class="kpi-label">DESCARGAS CONCLUÍDAS HOJE</div>
+                        <div class="kpi-value">86 <span class="kpi-value-ref">cargas</span></div>
                     </div>
                 </div>
 
@@ -228,33 +317,41 @@
                     </div>
                 </div>
 
+                <!-- Realizado (empilhado por cultura) x programado: 7 dias fechados, hoje e 3 dias a frente -->
                 <div class="content-section forecast-section">
                     <div class="section-head">
-                        <h3>RECEBIMENTO · REALIZADO x PROGRAMADO — PRÓXIMOS 7 DIAS</h3>
+                        <h3>RECEBIMENTO · REALIZADO x PROGRAMADO — 7 DIAS ANTERIORES, HOJE E PRÓXIMOS 3</h3>
                         <button class="btn-table-toggle" type="button" data-forecast-toggle aria-expanded="false" aria-controls="forecastTable">TABELA</button>
                     </div>
 
-                    <div class="forecast-summary">
+                    <div class="forecast-summary forecast-summary--quad">
                         <div class="forecast-stat">
                             <span class="forecast-stat-label">Recebido hoje</span>
                             <span class="forecast-stat-value">1.240 t</span>
                         </div>
                         <div class="forecast-stat">
-                            <span class="forecast-stat-label">Programado · próximos 7 dias</span>
-                            <span class="forecast-stat-value">9.050 t</span>
+                            <span class="forecast-stat-label">Programado hoje</span>
+                            <span class="forecast-stat-value">1.500 t</span>
                         </div>
                         <div class="forecast-stat">
                             <span class="forecast-stat-label">Atingimento de hoje</span>
                             <span class="forecast-stat-value">83%</span>
                         </div>
+                        <div class="forecast-stat">
+                            <span class="forecast-stat-label">Média dos 7 dias anteriores</span>
+                            <span class="forecast-stat-value">1.161 t</span>
+                        </div>
                     </div>
 
                     <div class="chart-legend">
-                        <span class="legend-item"><i class="legend-dot legend-dot--real"></i>Recebido</span>
-                        <span class="legend-item"><i class="legend-dot legend-dot--prog"></i>Programado</span>
+                        <span class="legend-item"><i class="legend-dot legend-dot--milho"></i>Milho</span>
+                        <span class="legend-item"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
+                        <span class="legend-item"><i class="legend-dot legend-dot--trigo"></i>Trigo</span>
+                        <span class="legend-item"><i class="legend-dot legend-dot--soja"></i>Soja</span>
+                        <span class="legend-item legend-item--sep"><i class="legend-dot legend-dot--prog"></i>Programado</span>
                     </div>
 
-                    <div class="forecast-chart">
+                    <div class="forecast-chart forecast-chart--dias" data-chart-max="1800">
                         <div class="forecast-yaxis">
                             <span>1.800</span>
                             <span>1.200</span>
@@ -264,75 +361,97 @@
                         <div class="forecast-plot">
                             <div class="forecast-grid" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
                             <div class="forecast-cols">
-                                <div class="forecast-col is-today" tabindex="0" data-dia="Hoje · ter 01/09" data-recebido="1.240 t" data-programado="1.500 t">
-                                    <div class="forecast-bar forecast-bar--real" style="height: 68.9%"></div>
-                                    <div class="forecast-bar forecast-bar--prog" style="height: 83.3%"><span class="forecast-cap">1.500</span></div>
+                                <div class="forecast-col is-passado" tabindex="0" data-dia="Ter · 25/08" data-recebido="1.360 t" data-programado="1.400 t" data-milho="780 t" data-sorgo="300 t" data-trigo="190 t" data-soja="90 t">
+                                    <div class="forecast-bar forecast-bar--real is-stack" style="height: 75.6%"><span class="forecast-cap">1.360</span><i class="forecast-seg forecast-seg--soja" style="height: 6.5%"></i><i class="forecast-seg forecast-seg--trigo" style="height: 14.0%"></i><i class="forecast-seg forecast-seg--sorgo" style="height: 22.1%"></i><i class="forecast-seg forecast-seg--milho" style="height: 57.4%"></i></div>
+                                    <div class="forecast-bar forecast-bar--prog" style="height: 77.8%"></div>
                                 </div>
-                                <div class="forecast-col" tabindex="0" data-dia="Qua · 02/09" data-recebido="—" data-programado="1.620 t">
+                                <div class="forecast-col is-passado" tabindex="0" data-dia="Qua · 26/08" data-recebido="1.400 t" data-programado="1.500 t" data-milho="820 t" data-sorgo="260 t" data-trigo="210 t" data-soja="110 t">
+                                    <div class="forecast-bar forecast-bar--real is-stack" style="height: 77.8%"><span class="forecast-cap">1.400</span><i class="forecast-seg forecast-seg--soja" style="height: 7.8%"></i><i class="forecast-seg forecast-seg--trigo" style="height: 15.0%"></i><i class="forecast-seg forecast-seg--sorgo" style="height: 18.6%"></i><i class="forecast-seg forecast-seg--milho" style="height: 58.6%"></i></div>
+                                    <div class="forecast-bar forecast-bar--prog" style="height: 83.3%"></div>
+                                </div>
+                                <div class="forecast-col is-passado" tabindex="0" data-dia="Qui · 27/08" data-recebido="1.160 t" data-programado="1.450 t" data-milho="690 t" data-sorgo="240 t" data-trigo="160 t" data-soja="70 t">
+                                    <div class="forecast-bar forecast-bar--real is-stack" style="height: 64.4%"><span class="forecast-cap">1.160</span><i class="forecast-seg forecast-seg--soja" style="height: 6.0%"></i><i class="forecast-seg forecast-seg--trigo" style="height: 13.8%"></i><i class="forecast-seg forecast-seg--sorgo" style="height: 20.7%"></i><i class="forecast-seg forecast-seg--milho" style="height: 59.5%"></i></div>
+                                    <div class="forecast-bar forecast-bar--prog" style="height: 80.6%"></div>
+                                </div>
+                                <div class="forecast-col is-passado" tabindex="0" data-dia="Sex · 28/08" data-recebido="1.570 t" data-programado="1.600 t" data-milho="900 t" data-sorgo="320 t" data-trigo="230 t" data-soja="120 t">
+                                    <div class="forecast-bar forecast-bar--real is-stack" style="height: 87.2%"><span class="forecast-cap">1.570</span><i class="forecast-seg forecast-seg--soja" style="height: 7.7%"></i><i class="forecast-seg forecast-seg--trigo" style="height: 14.6%"></i><i class="forecast-seg forecast-seg--sorgo" style="height: 20.4%"></i><i class="forecast-seg forecast-seg--milho" style="height: 57.3%"></i></div>
+                                    <div class="forecast-bar forecast-bar--prog" style="height: 88.9%"></div>
+                                </div>
+                                <div class="forecast-col is-passado" tabindex="0" data-dia="Sáb · 29/08" data-recebido="880 t" data-programado="950 t" data-milho="520 t" data-sorgo="180 t" data-trigo="120 t" data-soja="60 t">
+                                    <div class="forecast-bar forecast-bar--real is-stack" style="height: 48.9%"><span class="forecast-cap">880</span><i class="forecast-seg forecast-seg--soja" style="height: 6.8%"></i><i class="forecast-seg forecast-seg--trigo" style="height: 13.6%"></i><i class="forecast-seg forecast-seg--sorgo" style="height: 20.5%"></i><i class="forecast-seg forecast-seg--milho" style="height: 59.1%"></i></div>
+                                    <div class="forecast-bar forecast-bar--prog" style="height: 52.8%"></div>
+                                </div>
+                                <div class="forecast-col is-passado" tabindex="0" data-dia="Dom · 30/08" data-recebido="360 t" data-programado="400 t" data-milho="210 t" data-sorgo="80 t" data-trigo="50 t" data-soja="20 t">
+                                    <div class="forecast-bar forecast-bar--real is-stack" style="height: 20.0%"><span class="forecast-cap">360</span><i class="forecast-seg forecast-seg--soja" style="height: 5.6%"></i><i class="forecast-seg forecast-seg--trigo" style="height: 13.9%"></i><i class="forecast-seg forecast-seg--sorgo" style="height: 22.2%"></i><i class="forecast-seg forecast-seg--milho" style="height: 58.3%"></i></div>
+                                    <div class="forecast-bar forecast-bar--prog" style="height: 22.2%"></div>
+                                </div>
+                                <div class="forecast-col is-passado" tabindex="0" data-dia="Seg · 31/08" data-recebido="1.400 t" data-programado="1.520 t" data-milho="810 t" data-sorgo="290 t" data-trigo="200 t" data-soja="100 t">
+                                    <div class="forecast-bar forecast-bar--real is-stack" style="height: 77.8%"><span class="forecast-cap">1.400</span><i class="forecast-seg forecast-seg--soja" style="height: 7.1%"></i><i class="forecast-seg forecast-seg--trigo" style="height: 14.3%"></i><i class="forecast-seg forecast-seg--sorgo" style="height: 20.7%"></i><i class="forecast-seg forecast-seg--milho" style="height: 57.9%"></i></div>
+                                    <div class="forecast-bar forecast-bar--prog" style="height: 84.4%"></div>
+                                </div>
+                                <div class="forecast-col is-today" tabindex="0" data-dia="Hoje · ter 01/09" data-recebido="1.240 t" data-programado="1.500 t" data-milho="700 t" data-sorgo="280 t" data-trigo="160 t" data-soja="100 t">
+                                    <div class="forecast-bar forecast-bar--real is-stack" style="height: 68.9%"><span class="forecast-cap">1.240</span><i class="forecast-seg forecast-seg--soja" style="height: 8.0%"></i><i class="forecast-seg forecast-seg--trigo" style="height: 12.9%"></i><i class="forecast-seg forecast-seg--sorgo" style="height: 22.6%"></i><i class="forecast-seg forecast-seg--milho" style="height: 56.5%"></i></div>
+                                    <div class="forecast-bar forecast-bar--prog" style="height: 83.3%"></div>
+                                </div>
+                                <div class="forecast-col" tabindex="0" data-dia="Qua · 02/09" data-recebido="—" data-programado="1.620 t" data-milho="—" data-sorgo="—" data-trigo="—" data-soja="—">
                                     <div class="forecast-bar forecast-bar--real is-empty" style="height: 0%"></div>
                                     <div class="forecast-bar forecast-bar--prog" style="height: 90.0%"><span class="forecast-cap">1.620</span></div>
                                 </div>
-                                <div class="forecast-col" tabindex="0" data-dia="Qui · 03/09" data-recebido="—" data-programado="1.480 t">
+                                <div class="forecast-col" tabindex="0" data-dia="Qui · 03/09" data-recebido="—" data-programado="1.480 t" data-milho="—" data-sorgo="—" data-trigo="—" data-soja="—">
                                     <div class="forecast-bar forecast-bar--real is-empty" style="height: 0%"></div>
                                     <div class="forecast-bar forecast-bar--prog" style="height: 82.2%"><span class="forecast-cap">1.480</span></div>
                                 </div>
-                                <div class="forecast-col" tabindex="0" data-dia="Sex · 04/09" data-recebido="—" data-programado="1.700 t">
+                                <div class="forecast-col" tabindex="0" data-dia="Sex · 04/09" data-recebido="—" data-programado="1.700 t" data-milho="—" data-sorgo="—" data-trigo="—" data-soja="—">
                                     <div class="forecast-bar forecast-bar--real is-empty" style="height: 0%"></div>
                                     <div class="forecast-bar forecast-bar--prog" style="height: 94.4%"><span class="forecast-cap">1.700</span></div>
-                                </div>
-                                <div class="forecast-col" tabindex="0" data-dia="Sáb · 05/09" data-recebido="—" data-programado="980 t">
-                                    <div class="forecast-bar forecast-bar--real is-empty" style="height: 0%"></div>
-                                    <div class="forecast-bar forecast-bar--prog" style="height: 54.4%"><span class="forecast-cap">980</span></div>
-                                </div>
-                                <div class="forecast-col" tabindex="0" data-dia="Dom · 06/09" data-recebido="—" data-programado="420 t">
-                                    <div class="forecast-bar forecast-bar--real is-empty" style="height: 0%"></div>
-                                    <div class="forecast-bar forecast-bar--prog" style="height: 23.3%"><span class="forecast-cap">420</span></div>
-                                </div>
-                                <div class="forecast-col" tabindex="0" data-dia="Seg · 07/09" data-recebido="—" data-programado="1.350 t">
-                                    <div class="forecast-bar forecast-bar--real is-empty" style="height: 0%"></div>
-                                    <div class="forecast-bar forecast-bar--prog" style="height: 75.0%"><span class="forecast-cap">1.350</span></div>
                                 </div>
                             </div>
                         </div>
                         <div class="forecast-xaxis">
+                            <span class="forecast-day">TER<small>25/08</small></span>
+                            <span class="forecast-day">QUA<small>26/08</small></span>
+                            <span class="forecast-day">QUI<small>27/08</small></span>
+                            <span class="forecast-day">SEX<small>28/08</small></span>
+                            <span class="forecast-day">SÁB<small>29/08</small></span>
+                            <span class="forecast-day">DOM<small>30/08</small></span>
+                            <span class="forecast-day">SEG<small>31/08</small></span>
                             <span class="forecast-day is-today">HOJE<small>ter 01/09</small></span>
                             <span class="forecast-day">QUA<small>02/09</small></span>
                             <span class="forecast-day">QUI<small>03/09</small></span>
                             <span class="forecast-day">SEX<small>04/09</small></span>
-                            <span class="forecast-day">SÁB<small>05/09</small></span>
-                            <span class="forecast-day">DOM<small>06/09</small></span>
-                            <span class="forecast-day">SEG<small>07/09</small></span>
                         </div>
                         <span class="forecast-unit">t</span>
                     </div>
 
                     <div class="forecast-table" id="forecastTable" hidden>
-                        <table class="data-table">
+                        <table class="data-table data-table--num">
                             <thead>
                                 <tr>
                                     <th>DIA</th>
-                                    <th>RECEBIDO</th>
+                                    <th>MILHO</th>
+                                    <th>SORGO</th>
+                                    <th>TRIGO</th>
+                                    <th>SOJA</th>
+                                    <th>REALIZADO</th>
                                     <th>PROGRAMADO</th>
                                     <th>% ATING.</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="is-today"><td>HOJE ter 01/09</td><td>1.240 t</td><td>1.500 t</td><td>83%</td></tr>
-                                <tr><td>QUA 02/09</td><td>—</td><td>1.620 t</td><td>—</td></tr>
-                                <tr><td>QUI 03/09</td><td>—</td><td>1.480 t</td><td>—</td></tr>
-                                <tr><td>SEX 04/09</td><td>—</td><td>1.700 t</td><td>—</td></tr>
-                                <tr><td>SÁB 05/09</td><td>—</td><td>980 t</td><td>—</td></tr>
-                                <tr><td>DOM 06/09</td><td>—</td><td>420 t</td><td>—</td></tr>
-                                <tr><td>SEG 07/09</td><td>—</td><td>1.350 t</td><td>—</td></tr>
+                                <tr><td>TER 25/08</td><td>780</td><td>300</td><td>190</td><td>90</td><td>1.360 t</td><td>1.400 t</td><td class="pct-ok">97%</td></tr>
+                                <tr><td>QUA 26/08</td><td>820</td><td>260</td><td>210</td><td>110</td><td>1.400 t</td><td>1.500 t</td><td class="pct-ok">93%</td></tr>
+                                <tr><td>QUI 27/08</td><td>690</td><td>240</td><td>160</td><td>70</td><td>1.160 t</td><td>1.450 t</td><td class="pct-mid">80%</td></tr>
+                                <tr><td>SEX 28/08</td><td>900</td><td>320</td><td>230</td><td>120</td><td>1.570 t</td><td>1.600 t</td><td class="pct-ok">98%</td></tr>
+                                <tr><td>SÁB 29/08</td><td>520</td><td>180</td><td>120</td><td>60</td><td>880 t</td><td>950 t</td><td class="pct-ok">93%</td></tr>
+                                <tr><td>DOM 30/08</td><td>210</td><td>80</td><td>50</td><td>20</td><td>360 t</td><td>400 t</td><td class="pct-ok">90%</td></tr>
+                                <tr><td>SEG 31/08</td><td>810</td><td>290</td><td>200</td><td>100</td><td>1.400 t</td><td>1.520 t</td><td class="pct-ok">92%</td></tr>
+                                <tr class="is-today"><td>HOJE ter 01/09</td><td>700</td><td>280</td><td>160</td><td>100</td><td>1.240 t</td><td>1.500 t</td><td class="pct-mid">83%</td></tr>
+                                <tr><td>QUA 02/09</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>1.620 t</td><td>—</td></tr>
+                                <tr><td>QUI 03/09</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>1.480 t</td><td>—</td></tr>
+                                <tr><td>SEX 04/09</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>1.700 t</td><td>—</td></tr>
                             </tbody>
                         </table>
                     </div>
-                </div>
-
-                <div class="alerts-section">
-                    <span class="alert-badge alert-red">FILA > LIMITE</span>
-                    <span class="alert-text">Tempo de ciclo acima da meta</span>
-                    <span class="alert-badge alert-green">OPERAÇÃO DENTRO DO RITMO</span>
                 </div>
             </section>
 
@@ -346,7 +465,8 @@
                     </div>
                 </div>
 
-                <div class="kpi-grid">
+                <!-- faixa compacta: os quatro indicadores de topo cedem altura para a tabela -->
+                <div class="kpi-grid kpi-grid--compact">
                     <div class="kpi-card kpi-card--grao">
                         <div class="kpi-label">UMIDADE MÉDIA</div>
                         <div class="kpi-value">12,3%</div>
@@ -470,57 +590,106 @@
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">7</span>s</div>
                     </div>
                 </div>
-                
+
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-label">CARGAS RECEBIDAS NAS MOEGAS</div>
+                        <div class="kpi-value">93 <span class="kpi-value-ref">hoje</span></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">TONELAGEM NAS MOEGAS</div>
+                        <div class="kpi-value">433,6 <span class="kpi-value-ref">/ 600 t</span></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">UMIDADE MÉDIA</div>
+                        <div class="kpi-value">12,4%</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">IMPUREZA MÉDIA</div>
+                        <div class="kpi-value">0,9%</div>
+                    </div>
+                </div>
+
                 <div class="content-section">
                     <h3>OCUPAÇÃO DAS MOEGAS</h3>
                     <div class="moega-grid">
                         <div class="moega-item moega-item--alerta">
                             <span class="moega-name"><i class="legend-dot legend-dot--milho"></i>Moega 1 · Milho</span>
                             <span class="moega-tons">110,4 <small>/ 120 t</small></span>
+                            <div class="progress-label">92<span class="pct-sign">%</span></div>
+                            <div class="moega-stats">
+                                <span class="moega-stat"><span class="moega-stat-label">Cargas</span><span class="moega-stat-value">24</span></span>
+                                <span class="moega-stat"><span class="moega-stat-label">Umidade</span><span class="moega-stat-value">12,6%</span></span>
+                                <span class="moega-stat"><span class="moega-stat-label">Impureza</span><span class="moega-stat-value">0,9%</span></span>
+                            </div>
                             <div class="progress-bar">
                                 <div class="progress progress--milho" style="width: 92%"></div>
                             </div>
-                            <div class="progress-label">92<span class="pct-sign">%</span></div>
                         </div>
                         <div class="moega-item">
                             <span class="moega-name"><i class="legend-dot legend-dot--milho"></i>Moega 2 · Milho</span>
                             <span class="moega-tons">68 <small>/ 100 t</small></span>
+                            <div class="progress-label">68<span class="pct-sign">%</span></div>
+                            <div class="moega-stats">
+                                <span class="moega-stat"><span class="moega-stat-label">Cargas</span><span class="moega-stat-value">15</span></span>
+                                <span class="moega-stat"><span class="moega-stat-label">Umidade</span><span class="moega-stat-value">12,4%</span></span>
+                                <span class="moega-stat"><span class="moega-stat-label">Impureza</span><span class="moega-stat-value">1,1%</span></span>
+                            </div>
                             <div class="progress-bar">
                                 <div class="progress progress--milho" style="width: 68%"></div>
                             </div>
-                            <div class="progress-label">68<span class="pct-sign">%</span></div>
                         </div>
                         <div class="moega-item">
                             <span class="moega-name"><i class="legend-dot legend-dot--sorgo"></i>Moega 3 · Sorgo</span>
                             <span class="moega-tons">102 <small>/ 120 t</small></span>
+                            <div class="progress-label">85<span class="pct-sign">%</span></div>
+                            <div class="moega-stats">
+                                <span class="moega-stat"><span class="moega-stat-label">Cargas</span><span class="moega-stat-value">21</span></span>
+                                <span class="moega-stat"><span class="moega-stat-label">Umidade</span><span class="moega-stat-value">12,1%</span></span>
+                                <span class="moega-stat"><span class="moega-stat-label">Impureza</span><span class="moega-stat-value">0,7%</span></span>
+                            </div>
                             <div class="progress-bar">
                                 <div class="progress progress--sorgo" style="width: 85%"></div>
                             </div>
-                            <div class="progress-label">85<span class="pct-sign">%</span></div>
                         </div>
                         <div class="moega-item">
                             <span class="moega-name"><i class="legend-dot legend-dot--trigo"></i>Moega 4 · Trigo</span>
                             <span class="moega-tons">60 <small>/ 80 t</small></span>
+                            <div class="progress-label">75<span class="pct-sign">%</span></div>
+                            <div class="moega-stats">
+                                <span class="moega-stat"><span class="moega-stat-label">Cargas</span><span class="moega-stat-value">13</span></span>
+                                <span class="moega-stat"><span class="moega-stat-label">Umidade</span><span class="moega-stat-value">11,9%</span></span>
+                                <span class="moega-stat"><span class="moega-stat-label">Impureza</span><span class="moega-stat-value">0,6%</span></span>
+                            </div>
                             <div class="progress-bar">
                                 <div class="progress progress--trigo" style="width: 75%"></div>
                             </div>
-                            <div class="progress-label">75<span class="pct-sign">%</span></div>
                         </div>
                         <div class="moega-item">
                             <span class="moega-name"><i class="legend-dot legend-dot--sorgo"></i>Moega 5 · Sorgo</span>
                             <span class="moega-tons">58 <small>/ 100 t</small></span>
+                            <div class="progress-label">58<span class="pct-sign">%</span></div>
+                            <div class="moega-stats">
+                                <span class="moega-stat"><span class="moega-stat-label">Cargas</span><span class="moega-stat-value">12</span></span>
+                                <span class="moega-stat"><span class="moega-stat-label">Umidade</span><span class="moega-stat-value">12,3%</span></span>
+                                <span class="moega-stat"><span class="moega-stat-label">Impureza</span><span class="moega-stat-value">0,8%</span></span>
+                            </div>
                             <div class="progress-bar">
                                 <div class="progress progress--sorgo" style="width: 58%"></div>
                             </div>
-                            <div class="progress-label">58<span class="pct-sign">%</span></div>
                         </div>
                         <div class="moega-item">
                             <span class="moega-name"><i class="legend-dot legend-dot--soja"></i>Moega 6 · Soja</span>
                             <span class="moega-tons">35,2 <small>/ 80 t</small></span>
+                            <div class="progress-label">44<span class="pct-sign">%</span></div>
+                            <div class="moega-stats">
+                                <span class="moega-stat"><span class="moega-stat-label">Cargas</span><span class="moega-stat-value">8</span></span>
+                                <span class="moega-stat"><span class="moega-stat-label">Umidade</span><span class="moega-stat-value">13,0%</span></span>
+                                <span class="moega-stat"><span class="moega-stat-label">Impureza</span><span class="moega-stat-value">1,2%</span></span>
+                            </div>
                             <div class="progress-bar">
                                 <div class="progress progress--soja" style="width: 44%"></div>
                             </div>
-                            <div class="progress-label">44<span class="pct-sign">%</span></div>
                         </div>
                     </div>
                 </div>
@@ -535,19 +704,19 @@
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">2</span>s</div>
                     </div>
                 </div>
-                
+
                 <div class="kpi-grid">
                     <div class="kpi-card">
-                        <div class="kpi-label">TEMP. ENTRADA</div>
-                        <div class="kpi-value">28°C</div>
+                        <div class="kpi-label">TEMP. FORNALHA</div>
+                        <div class="kpi-value">148°C</div>
                     </div>
                     <div class="kpi-card">
-                        <div class="kpi-label">TEMP. SAÍDA</div>
-                        <div class="kpi-value">18°C</div>
+                        <div class="kpi-label">TEMP. SECAGEM (MASSA)</div>
+                        <div class="kpi-value">92°C</div>
                     </div>
                     <div class="kpi-card">
-                        <div class="kpi-label">CONSUMO AR</div>
-                        <div class="kpi-value">8,5 m³/s</div>
+                        <div class="kpi-label">UMIDADE ENTRADA</div>
+                        <div class="kpi-value">18,4%</div>
                     </div>
                     <div class="kpi-card">
                         <div class="kpi-label">UMIDADE SAÍDA</div>
@@ -556,35 +725,106 @@
                 </div>
 
                 <div class="content-section">
-                    <h3>STATUS DOS SECADORES</h3>
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>SECADOR</th>
-                                <th>STATUS</th>
-                                <th>TEMPERATURA</th>
-                                <th>UMIDADE</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Secador 1</td>
-                                <td><span class="equip-estado is-operando">● Operando</span><span class="ciclo-tempo">em ciclo há 02:14</span></td>
-                                <td>25°C</td>
-                                <td>11,5%</td>
-                            </tr>
-                            <tr>
-                                <td>Secador 2</td>
-                                <td><span class="equip-estado is-parado">● Parado</span></td>
-                                <td>—</td>
-                                <td>—</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="section-head">
+                        <h3>SECADORES · TEMPERATURA x UMIDADE NAS ÚLTIMAS 8 H</h3>
+                        <button class="btn-table-toggle" type="button" data-print title="Gerar print desta tela">PRINT</button>
+                    </div>
+
+                    <!-- TIPO: os dois modos de secagem ainda dependem da definicao da reuniao da Suellen -->
+                    <div class="secador-list">
+                        <div class="secador">
+                            <div class="secador-head">
+                                <span class="secador-nome"><i class="secador-dot is-operando"></i>SECADOR 1</span>
+                                <span class="secador-tipo">Fluxo contínuo · Operando</span>
+                            </div>
+                            <div class="secador-body">
+                                <div class="secador-chips">
+                                    <div class="secador-chip">
+                                        <span class="secador-chip-label">TEMP</span>
+                                        <span class="secador-chip-value">92°C</span>
+                                    </div>
+                                    <div class="secador-chip">
+                                        <span class="secador-chip-label">CULTURA</span>
+                                        <span class="secador-chip-value">Milho</span>
+                                    </div>
+                                    <div class="secador-chip">
+                                        <span class="secador-chip-label">TEMPO EM CICLO</span>
+                                        <span class="secador-chip-value">02:14</span>
+                                    </div>
+                                </div>
+                                <div class="secador-chart">
+                                    <div class="secador-plot">
+                                        <div class="secador-grid" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+                                        <svg class="secador-svg" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label="Secador 1: temperatura da massa subindo de 62 para 92 graus e umidade caindo de 18,4 para 11,5 por cento nas últimas oito horas">
+                                            <polyline class="secador-linha secador-linha--temp" points="0,76 42.86,72 85.71,68 128.57,60 171.43,48 214.29,32 257.14,22 300,16"></polyline>
+                                            <polyline class="secador-linha secador-linha--umi" points="0,16 42.86,24 85.71,35 128.57,48 171.43,60 214.29,72 257.14,80 300,85"></polyline>
+                                        </svg>
+                                        <span class="serie-tag serie-tag--temp" style="top: 16%">TEMP<b>92°C</b></span>
+                                        <span class="serie-tag serie-tag--umi" style="top: 85%">UMI<b>11,5%</b></span>
+                                    </div>
+                                    <div class="secador-horas">
+                                        <span>07h</span>
+                                        <span>08h</span>
+                                        <span>09h</span>
+                                        <span>10h</span>
+                                        <span>11h</span>
+                                        <span>12h</span>
+                                        <span>13h</span>
+                                        <span>14h</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="secador">
+                            <div class="secador-head">
+                                <span class="secador-nome"><i class="secador-dot is-operando"></i>SECADOR 2</span>
+                                <span class="secador-tipo">Intermitente · Operando</span>
+                            </div>
+                            <div class="secador-body">
+                                <div class="secador-chips">
+                                    <div class="secador-chip">
+                                        <span class="secador-chip-label">TEMP</span>
+                                        <span class="secador-chip-value">84°C</span>
+                                    </div>
+                                    <div class="secador-chip">
+                                        <span class="secador-chip-label">CULTURA</span>
+                                        <span class="secador-chip-value">Sorgo</span>
+                                    </div>
+                                    <div class="secador-chip">
+                                        <span class="secador-chip-label">TEMPO EM CICLO</span>
+                                        <span class="secador-chip-value">01:52</span>
+                                    </div>
+                                </div>
+                                <div class="secador-chart">
+                                    <div class="secador-plot">
+                                        <div class="secador-grid" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+                                        <svg class="secador-svg" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label="Secador 2: temperatura da massa subindo de 60 para 84 graus e umidade caindo de 18,8 para 12,9 por cento nas últimas oito horas">
+                                            <polyline class="secador-linha secador-linha--temp" points="0,80 42.86,74 85.71,66 128.57,58 171.43,50 214.29,42 257.14,36 300,32"></polyline>
+                                            <polyline class="secador-linha secador-linha--umi" points="0,12 42.86,20 85.71,30 128.57,41 171.43,51 214.29,61 257.14,67 300,71"></polyline>
+                                        </svg>
+                                        <span class="serie-tag serie-tag--temp" style="top: 32%">TEMP<b>84°C</b></span>
+                                        <span class="serie-tag serie-tag--umi" style="top: 71%">UMI<b>12,9%</b></span>
+                                    </div>
+                                    <div class="secador-horas">
+                                        <span>07h</span>
+                                        <span>08h</span>
+                                        <span>09h</span>
+                                        <span>10h</span>
+                                        <span>11h</span>
+                                        <span>12h</span>
+                                        <span>13h</span>
+                                        <span>14h</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
             <!-- Screen 4: Produtividade -->
+            <!-- Pendente: o recorte de produtividade/vazao que o Luiz pediu na reuniao dele ainda nao foi incorporado -->
             <section class="screen" id="screen-4">
                 <div class="screen-header">
                     <div class="screen-badge">05</div>
@@ -593,7 +833,7 @@
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">4</span>s</div>
                     </div>
                 </div>
-                
+
                 <div class="kpi-grid">
                     <div class="kpi-card">
                         <div class="kpi-label">SECADO HOJE</div>
@@ -660,157 +900,209 @@
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">8</span>s</div>
                     </div>
                 </div>
-                
+
                 <div class="content-section">
-                    <h3>OCUPAÇÃO DOS SILOS</h3>
-                    <div class="silo-grid">
-                        <div class="silo-item">
-                            <div class="silo-header">
-                                <span class="silo-name">SILO 1</span>
-                                <span class="silo-temp">22°C</span>
+                    <h3>OCUPAÇÃO DOS SILOS POR CULTURA</h3>
+                    <div class="silo-groups">
+                        <div class="silo-group silo-group--3">
+                            <div class="silo-group-head">
+                                <span class="silo-group-name"><i class="legend-dot legend-dot--milho"></i>Milho</span>
+                                <span class="silo-group-total">10.160 t · 85%</span>
                             </div>
-                            <div class="silo-visual">
-                                <div class="silo-fill" style="height: 78%"></div>
-                            </div>
-                            <div class="silo-footer">
-                                <span class="silo-volume">3.120 t</span>
-                                <span class="silo-percent">78%</span>
-                            </div>
-                        </div>
-
-                        <div class="silo-item">
-                            <div class="silo-header">
-                                <span class="silo-name">SILO 2</span>
-                                <span class="silo-temp">21°C</span>
-                            </div>
-                            <div class="silo-visual">
-                                <div class="silo-fill" style="height: 92%"></div>
-                            </div>
-                            <div class="silo-footer">
-                                <span class="silo-volume">3.680 t</span>
-                                <span class="silo-percent">92%</span>
-                            </div>
-                        </div>
-
-                        <div class="silo-item">
-                            <div class="silo-header">
-                                <span class="silo-name">SILO 3</span>
-                                <span class="silo-temp">23°C</span>
-                            </div>
-                            <div class="silo-visual">
-                                <div class="silo-fill" style="height: 45%"></div>
-                            </div>
-                            <div class="silo-footer">
-                                <span class="silo-volume">1.800 t</span>
-                                <span class="silo-percent">45%</span>
-                            </div>
-                        </div>
-
-                        <div class="silo-item">
-                            <div class="silo-header">
-                                <span class="silo-name">SILO 4</span>
-                                <span class="silo-temp">22°C</span>
-                            </div>
-                            <div class="silo-visual">
-                                <div class="silo-fill" style="height: 68%"></div>
-                            </div>
-                            <div class="silo-footer">
-                                <span class="silo-volume">2.720 t</span>
-                                <span class="silo-percent">68%</span>
+                            <div class="silo-grid">
+                                <div class="silo-item silo-item--milho">
+                                    <div class="silo-header">
+                                        <span class="silo-name">SILO 1</span>
+                                        <span class="silo-temp">22°C</span>
+                                    </div>
+                                    <div class="silo-visual">
+                                        <div class="silo-fill" style="height: 78%"></div>
+                                    </div>
+                                    <div class="silo-footer">
+                                        <span class="silo-volume">3.120 t</span>
+                                        <span class="silo-percent">78%</span>
+                                    </div>
+                                </div>
+                                <div class="silo-item silo-item--milho">
+                                    <div class="silo-header">
+                                        <span class="silo-name">SILO 2</span>
+                                        <span class="silo-temp">21°C</span>
+                                    </div>
+                                    <div class="silo-visual">
+                                        <div class="silo-fill" style="height: 92%"></div>
+                                    </div>
+                                    <div class="silo-footer">
+                                        <span class="silo-volume">3.680 t</span>
+                                        <span class="silo-percent">92%</span>
+                                    </div>
+                                </div>
+                                <div class="silo-item silo-item--milho">
+                                    <div class="silo-header">
+                                        <span class="silo-name">SILO 5</span>
+                                        <span class="silo-temp">24°C</span>
+                                    </div>
+                                    <div class="silo-visual">
+                                        <div class="silo-fill" style="height: 84%"></div>
+                                    </div>
+                                    <div class="silo-footer">
+                                        <span class="silo-volume">3.360 t</span>
+                                        <span class="silo-percent">84%</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="silo-item">
-                            <div class="silo-header">
-                                <span class="silo-name">SILO 5</span>
-                                <span class="silo-temp">24°C</span>
+                        <div class="silo-group silo-group--2">
+                            <div class="silo-group-head">
+                                <span class="silo-group-name"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
+                                <span class="silo-group-total">4.080 t · 51%</span>
                             </div>
-                            <div class="silo-visual">
-                                <div class="silo-fill" style="height: 84%"></div>
-                            </div>
-                            <div class="silo-footer">
-                                <span class="silo-volume">3.360 t</span>
-                                <span class="silo-percent">84%</span>
-                            </div>
-                        </div>
-
-                        <div class="silo-item">
-                            <div class="silo-header">
-                                <span class="silo-name">SILO 6</span>
-                                <span class="silo-temp">20°C</span>
-                            </div>
-                            <div class="silo-visual">
-                                <div class="silo-fill" style="height: 57%"></div>
-                            </div>
-                            <div class="silo-footer">
-                                <span class="silo-volume">2.280 t</span>
-                                <span class="silo-percent">57%</span>
-                            </div>
-                        </div>
-
-                        <div class="silo-item">
-                            <div class="silo-header">
-                                <span class="silo-name">SILO 7</span>
-                                <span class="silo-temp">23°C</span>
-                            </div>
-                            <div class="silo-visual">
-                                <div class="silo-fill" style="height: 71%"></div>
-                            </div>
-                            <div class="silo-footer">
-                                <span class="silo-volume">2.840 t</span>
-                                <span class="silo-percent">71%</span>
+                            <div class="silo-grid">
+                                <div class="silo-item silo-item--sorgo">
+                                    <div class="silo-header">
+                                        <span class="silo-name">SILO 3</span>
+                                        <span class="silo-temp">23°C</span>
+                                    </div>
+                                    <div class="silo-visual">
+                                        <div class="silo-fill" style="height: 45%"></div>
+                                    </div>
+                                    <div class="silo-footer">
+                                        <span class="silo-volume">1.800 t</span>
+                                        <span class="silo-percent">45%</span>
+                                    </div>
+                                </div>
+                                <div class="silo-item silo-item--sorgo">
+                                    <div class="silo-header">
+                                        <span class="silo-name">SILO 6</span>
+                                        <span class="silo-temp">20°C</span>
+                                    </div>
+                                    <div class="silo-visual">
+                                        <div class="silo-fill" style="height: 57%"></div>
+                                    </div>
+                                    <div class="silo-footer">
+                                        <span class="silo-volume">2.280 t</span>
+                                        <span class="silo-percent">57%</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="silo-item">
-                            <div class="silo-header">
-                                <span class="silo-name">SILO 8</span>
-                                <span class="silo-temp">21°C</span>
+                        <div class="silo-group silo-group--2">
+                            <div class="silo-group-head">
+                                <span class="silo-group-name"><i class="legend-dot legend-dot--trigo"></i>Trigo</span>
+                                <span class="silo-group-total">5.560 t · 70%</span>
                             </div>
-                            <div class="silo-visual">
-                                <div class="silo-fill" style="height: 36%"></div>
+                            <div class="silo-grid">
+                                <div class="silo-item silo-item--trigo">
+                                    <div class="silo-header">
+                                        <span class="silo-name">SILO 4</span>
+                                        <span class="silo-temp">22°C</span>
+                                    </div>
+                                    <div class="silo-visual">
+                                        <div class="silo-fill" style="height: 68%"></div>
+                                    </div>
+                                    <div class="silo-footer">
+                                        <span class="silo-volume">2.720 t</span>
+                                        <span class="silo-percent">68%</span>
+                                    </div>
+                                </div>
+                                <div class="silo-item silo-item--trigo">
+                                    <div class="silo-header">
+                                        <span class="silo-name">SILO 7</span>
+                                        <span class="silo-temp">23°C</span>
+                                    </div>
+                                    <div class="silo-visual">
+                                        <div class="silo-fill" style="height: 71%"></div>
+                                    </div>
+                                    <div class="silo-footer">
+                                        <span class="silo-volume">2.840 t</span>
+                                        <span class="silo-percent">71%</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="silo-footer">
-                                <span class="silo-volume">1.440 t</span>
-                                <span class="silo-percent">36%</span>
+                        </div>
+
+                        <div class="silo-group silo-group--1">
+                            <div class="silo-group-head">
+                                <span class="silo-group-name"><i class="legend-dot legend-dot--soja"></i>Soja</span>
+                                <span class="silo-group-total">1.440 t · 36%</span>
+                            </div>
+                            <div class="silo-grid">
+                                <div class="silo-item silo-item--soja">
+                                    <div class="silo-header">
+                                        <span class="silo-name">SILO 8</span>
+                                        <span class="silo-temp">21°C</span>
+                                    </div>
+                                    <div class="silo-visual">
+                                        <div class="silo-fill" style="height: 36%"></div>
+                                    </div>
+                                    <div class="silo-footer">
+                                        <span class="silo-volume">1.440 t</span>
+                                        <span class="silo-percent">36%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- pulmao: transito entre moegas e secagem, fora da capacidade estatica -->
+                        <div class="silo-group silo-group--1 silo-group--pulmao">
+                            <div class="silo-group-head">
+                                <span class="silo-group-name"><i class="legend-dot legend-dot--pulmao"></i>Pulmão</span>
+                                <span class="silo-group-total">310 t · 62%</span>
+                            </div>
+                            <div class="silo-grid">
+                                <div class="silo-item silo-item--pulmao">
+                                    <div class="silo-header">
+                                        <span class="silo-name">SILO PULMÃO</span>
+                                        <span class="silo-temp">23°C</span>
+                                    </div>
+                                    <div class="silo-visual">
+                                        <div class="silo-fill" style="height: 62%"></div>
+                                    </div>
+                                    <div class="silo-footer">
+                                        <span class="silo-volume">310 t</span>
+                                        <span class="silo-percent">62%</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="split-grid">
+                <div class="split-grid split-grid--trio">
                     <div class="content-section">
-                        <h3>CAPACIDADE TOTAL x DISPONÍVEL (EM TON.)</h3>
+                        <h3>CAPACIDADE x ESTOQUE POR CULTURA · AVARÉ (EM TON.)</h3>
                         <div class="chart-legend">
                             <span class="legend-item"><i class="legend-dot legend-dot--free"></i>Espaço Disponível</span>
                             <span class="legend-item"><i class="legend-dot legend-dot--stock"></i>Produto em Estoque</span>
                         </div>
                         <div class="stack-chart">
                             <div class="stack-row">
-                                <span class="stack-label">Trigo</span>
+                                <span class="stack-label">Milho</span>
                                 <div class="stack-track">
-                                    <div class="stack-seg stack-seg--free" style="width: 75.9%"><span class="stack-value">55.539</span></div>
-                                    <div class="stack-seg stack-seg--stock" style="width: 24.1%"><span class="stack-value">17.607</span></div>
+                                    <div class="stack-seg stack-seg--free" style="width: 15.3%"><span class="stack-value">1.840</span></div>
+                                    <div class="stack-seg stack-seg--stock" style="width: 84.7%"><span class="stack-value">10.160</span></div>
                                 </div>
                             </div>
                             <div class="stack-row">
                                 <span class="stack-label">Sorgo</span>
                                 <div class="stack-track">
-                                    <div class="stack-seg stack-seg--free" style="width: 24.9%"><span class="stack-value">8.098</span></div>
-                                    <div class="stack-seg stack-seg--stock" style="width: 75.1%"><span class="stack-value">24.482</span></div>
+                                    <div class="stack-seg stack-seg--free" style="width: 49.0%"><span class="stack-value">3.920</span></div>
+                                    <div class="stack-seg stack-seg--stock" style="width: 51.0%"><span class="stack-value">4.080</span></div>
                                 </div>
                             </div>
                             <div class="stack-row">
-                                <span class="stack-label">Milho</span>
+                                <span class="stack-label">Trigo</span>
                                 <div class="stack-track">
-                                    <div class="stack-seg stack-seg--free" style="width: 14.4%"><span class="stack-value">7.647</span></div>
-                                    <div class="stack-seg stack-seg--stock" style="width: 85.6%"><span class="stack-value">45.290</span></div>
+                                    <div class="stack-seg stack-seg--free" style="width: 30.5%"><span class="stack-value">2.440</span></div>
+                                    <div class="stack-seg stack-seg--stock" style="width: 69.5%"><span class="stack-value">5.560</span></div>
                                 </div>
                             </div>
                             <div class="stack-row">
                                 <span class="stack-label">Soja</span>
                                 <div class="stack-track">
-                                    <div class="stack-seg stack-seg--stock" style="width: 100%"><span class="stack-value">6.714</span></div>
+                                    <div class="stack-seg stack-seg--free" style="width: 64.0%"><span class="stack-value">2.560</span></div>
+                                    <div class="stack-seg stack-seg--stock" style="width: 36.0%"><span class="stack-value">1.440</span></div>
                                 </div>
                             </div>
                             <div class="stack-axis">
@@ -819,7 +1111,7 @@
                                 <span>100%</span>
                             </div>
                         </div>
-                        <p class="stack-hint">Soja com espaço disponível negativo: o estoque excede a capacidade estática em 2.682 t. Valores consolidados da cooperativa — substituir pelo detalhamento por grão de Avaré.</p>
+                        <p class="stack-hint">Capacidade estática de 32.000 t distribuída nos 8 silos de Avaré. O silo pulmão (500 t) é trânsito para a secagem e não entra neste estoque.</p>
                     </div>
 
                     <div class="content-section">
@@ -831,15 +1123,54 @@
                             </div>
                             <div class="status-row">
                                 <span class="status-label">Silos monitorados</span>
-                                <span class="status-value">8</span>
+                                <span class="status-value">8 + 1 pulmão</span>
                             </div>
                             <div class="status-row">
                                 <span class="status-label">Ocupação média</span>
                                 <span class="status-value">66%</span>
                             </div>
-                            <div class="status-row">
-                                <span class="status-label">Espaço livre</span>
-                                <span class="status-value">34%</span>
+                        </div>
+                    </div>
+
+                    <!-- Previsao do tempo: valores estaticos ate ligar a API meteorologica -->
+                    <div class="content-section weather-section">
+                        <h3>PREVISÃO DO TEMPO · AVARÉ</h3>
+                        <div class="weather-now">
+                            <svg class="weather-glyph weather-glyph--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>
+                            <div class="weather-now-main">
+                                <span class="weather-temp">27°</span>
+                                <span class="weather-desc">Parcialmente nublado</span>
+                            </div>
+                        </div>
+                        <div class="weather-facts">
+                            <span class="weather-fact"><span class="weather-fact-label">Chuva</span><span class="weather-fact-value">20%</span></span>
+                            <span class="weather-fact"><span class="weather-fact-label">Umidade</span><span class="weather-fact-value">62%</span></span>
+                            <span class="weather-fact"><span class="weather-fact-label">Vento</span><span class="weather-fact-value">12 km/h</span></span>
+                        </div>
+                        <div class="weather-days">
+                            <div class="weather-day">
+                                <span class="weather-day-name">QUA</span>
+                                <svg class="weather-glyph weather-glyph--sm weather-glyph--sol" aria-hidden="true"><use href="#ico-sol"></use></svg>
+                                <span class="weather-day-temp">29°<small>18°</small></span>
+                                <span class="weather-day-rain">10%</span>
+                            </div>
+                            <div class="weather-day">
+                                <span class="weather-day-name">QUI</span>
+                                <svg class="weather-glyph weather-glyph--sm weather-glyph--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>
+                                <span class="weather-day-temp">28°<small>19°</small></span>
+                                <span class="weather-day-rain">20%</span>
+                            </div>
+                            <div class="weather-day">
+                                <span class="weather-day-name">SEX</span>
+                                <svg class="weather-glyph weather-glyph--sm weather-glyph--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>
+                                <span class="weather-day-temp">24°<small>17°</small></span>
+                                <span class="weather-day-rain is-chuva">70%</span>
+                            </div>
+                            <div class="weather-day">
+                                <span class="weather-day-name">SÁB</span>
+                                <svg class="weather-glyph weather-glyph--sm weather-glyph--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg>
+                                <span class="weather-day-temp">26°<small>17°</small></span>
+                                <span class="weather-day-rain">40%</span>
                             </div>
                         </div>
                     </div>
@@ -855,7 +1186,7 @@
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">3</span>s</div>
                     </div>
                 </div>
-                
+
                 <div class="kpi-grid">
                     <div class="kpi-card">
                         <div class="kpi-label">VENTILADOR 1</div>
@@ -1024,7 +1355,7 @@
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">2</span>s</div>
                     </div>
                 </div>
-                
+
                 <div class="kpi-grid">
                     <div class="kpi-card">
                         <div class="kpi-label">DISPONIBILIDADE</div>
@@ -1044,29 +1375,297 @@
                     </div>
                 </div>
 
-                <div class="content-section">
-                    <h3>STATUS GERAL DO SISTEMA</h3>
-                    <div class="system-status">
-                        <div class="status-row">
-                            <span class="status-label">Recepção</span>
-                            <span class="status-indicator ok">● Operacional</span>
+                <!-- Previsao do tempo: valores estaticos ate ligar a API meteorologica -->
+                <div class="split-grid">
+                    <div class="content-section weather-section">
+                        <h3>PREVISÃO DO TEMPO · AVARÉ (UNIDADE)</h3>
+                        <div class="weather-now">
+                            <svg class="weather-glyph weather-glyph--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>
+                            <div class="weather-now-main">
+                                <span class="weather-temp">27°</span>
+                                <span class="weather-desc">Parcialmente nublado</span>
+                            </div>
                         </div>
-                        <div class="status-row">
-                            <span class="status-label">Secagem</span>
-                            <span class="status-indicator ok">● Operacional</span>
+                        <div class="weather-facts">
+                            <span class="weather-fact"><span class="weather-fact-label">Chuva</span><span class="weather-fact-value">20%</span></span>
+                            <span class="weather-fact"><span class="weather-fact-label">Umidade</span><span class="weather-fact-value">62%</span></span>
+                            <span class="weather-fact"><span class="weather-fact-label">Vento</span><span class="weather-fact-value">12 km/h</span></span>
                         </div>
-                        <div class="status-row">
-                            <span class="status-label">Silos</span>
-                            <span class="status-indicator ok">● Operacional</span>
+                        <div class="weather-days">
+                            <div class="weather-day">
+                                <span class="weather-day-name">QUA</span>
+                                <svg class="weather-glyph weather-glyph--sm weather-glyph--sol" aria-hidden="true"><use href="#ico-sol"></use></svg>
+                                <span class="weather-day-temp">29°<small>18°</small></span>
+                                <span class="weather-day-rain">10%</span>
+                            </div>
+                            <div class="weather-day">
+                                <span class="weather-day-name">QUI</span>
+                                <svg class="weather-glyph weather-glyph--sm weather-glyph--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>
+                                <span class="weather-day-temp">28°<small>19°</small></span>
+                                <span class="weather-day-rain">20%</span>
+                            </div>
+                            <div class="weather-day">
+                                <span class="weather-day-name">SEX</span>
+                                <svg class="weather-glyph weather-glyph--sm weather-glyph--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>
+                                <span class="weather-day-temp">24°<small>17°</small></span>
+                                <span class="weather-day-rain is-chuva">70%</span>
+                            </div>
+                            <div class="weather-day">
+                                <span class="weather-day-name">SÁB</span>
+                                <svg class="weather-glyph weather-glyph--sm weather-glyph--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg>
+                                <span class="weather-day-temp">26°<small>17°</small></span>
+                                <span class="weather-day-rain">40%</span>
+                            </div>
                         </div>
-                        <div class="status-row">
-                            <span class="status-label">Expedição</span>
-                            <span class="status-indicator ok">● Operacional</span>
+                    </div>
+
+                    <div class="content-section weather-section">
+                        <h3>PREVISÃO NAS LOCALIDADES DOS COOPERADOS</h3>
+                        <div class="weather-cities">
+                            <div class="weather-city">
+                                <span class="weather-city-name">Itaí</span>
+                                <svg class="weather-glyph weather-glyph--sm weather-glyph--sol" aria-hidden="true"><use href="#ico-sol"></use></svg>
+                                <span class="weather-city-temp">30°<small>18°</small></span>
+                                <span class="weather-city-rain">10%</span>
+                            </div>
+                            <div class="weather-city">
+                                <span class="weather-city-name">Paranapanema</span>
+                                <svg class="weather-glyph weather-glyph--sm weather-glyph--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>
+                                <span class="weather-city-temp">28°<small>16°</small></span>
+                                <span class="weather-city-rain">25%</span>
+                            </div>
+                            <div class="weather-city">
+                                <span class="weather-city-name">Cerqueira César</span>
+                                <svg class="weather-glyph weather-glyph--sm weather-glyph--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>
+                                <span class="weather-city-temp">29°<small>18°</small></span>
+                                <span class="weather-city-rain">20%</span>
+                            </div>
+                            <div class="weather-city">
+                                <span class="weather-city-name">Taquarituba</span>
+                                <svg class="weather-glyph weather-glyph--sm weather-glyph--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg>
+                                <span class="weather-city-temp">27°<small>17°</small></span>
+                                <span class="weather-city-rain">45%</span>
+                            </div>
+                            <div class="weather-city">
+                                <span class="weather-city-name">Itatinga</span>
+                                <svg class="weather-glyph weather-glyph--sm weather-glyph--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>
+                                <span class="weather-city-temp">25°<small>16°</small></span>
+                                <span class="weather-city-rain is-chuva">65%</span>
+                            </div>
+                            <div class="weather-city">
+                                <span class="weather-city-name">Manduri</span>
+                                <svg class="weather-glyph weather-glyph--sm weather-glyph--sol" aria-hidden="true"><use href="#ico-sol"></use></svg>
+                                <span class="weather-city-temp">30°<small>19°</small></span>
+                                <span class="weather-city-rain">15%</span>
+                            </div>
                         </div>
-                        <div class="status-row">
-                            <span class="status-label">Aeração</span>
-                            <span class="status-indicator warning">● Atenção</span>
-                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Camera 0: Câmera · Recepção -->
+            <section class="screen screen--camera" id="screen-cam-0">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
+                    <div class="screen-title-section">
+                        <h2>Câmera · Recepção</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-01 · PÁTIO E BALANÇA</div>
+                    </div>
+                </div>
+
+                <div class="camera-wall">
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-01 · PÁTIO E BALANÇA</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Camera 1: Câmera · Qualidade -->
+            <section class="screen screen--camera" id="screen-cam-1">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
+                    <div class="screen-title-section">
+                        <h2>Câmera · Qualidade</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-02 · CALADO E CLASSIFICAÇÃO</div>
+                    </div>
+                </div>
+
+                <div class="camera-wall">
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-02 · CALADO E CLASSIFICAÇÃO</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Camera 2: Câmera · Moegas -->
+            <section class="screen screen--camera" id="screen-cam-2">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
+                    <div class="screen-title-section">
+                        <h2>Câmera · Moegas</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-03 · MOEGAS 1 A 3</div>
+                    </div>
+                </div>
+
+                <div class="camera-wall">
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-03 · MOEGAS 1 A 3</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Camera 3: Câmera · Secagem -->
+            <section class="screen screen--camera" id="screen-cam-3">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
+                    <div class="screen-title-section">
+                        <h2>Câmera · Secagem</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-04 · TORRE DE SECAGEM</div>
+                    </div>
+                </div>
+
+                <div class="camera-wall">
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-04 · TORRE DE SECAGEM</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Camera 4: Câmera · Produtividade -->
+            <section class="screen screen--camera" id="screen-cam-4">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
+                    <div class="screen-title-section">
+                        <h2>Câmera · Produtividade</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-05 · DESCARGA DA SECAGEM</div>
+                    </div>
+                </div>
+
+                <div class="camera-wall">
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-05 · DESCARGA DA SECAGEM</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Camera 5: Câmera · Silos -->
+            <section class="screen screen--camera" id="screen-cam-5">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
+                    <div class="screen-title-section">
+                        <h2>Câmera · Silos</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-06 · PÁTIO DE SILOS</div>
+                    </div>
+                </div>
+
+                <div class="camera-wall">
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-06 · PÁTIO DE SILOS</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Camera 6: Câmera · Aeração -->
+            <section class="screen screen--camera" id="screen-cam-6">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
+                    <div class="screen-title-section">
+                        <h2>Câmera · Aeração</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-07 · CASA DE VENTILADORES</div>
+                    </div>
+                </div>
+
+                <div class="camera-wall">
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-07 · CASA DE VENTILADORES</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Camera 7: Câmera · Expedição -->
+            <section class="screen screen--camera" id="screen-cam-7">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
+                    <div class="screen-title-section">
+                        <h2>Câmera · Expedição</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-08 · PLATAFORMA DE CARREGAMENTO</div>
+                    </div>
+                </div>
+
+                <div class="camera-wall">
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-08 · PLATAFORMA DE CARREGAMENTO</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Camera 8: Câmera · Central -->
+            <section class="screen screen--camera" id="screen-cam-8">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
+                    <div class="screen-title-section">
+                        <h2>Câmera · Central</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-09 · VISÃO GERAL DA UNIDADE</div>
+                    </div>
+                </div>
+
+                <div class="camera-wall">
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-09 · VISÃO GERAL DA UNIDADE</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
                     </div>
                 </div>
             </section>
