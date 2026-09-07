@@ -22,7 +22,9 @@ html {
    ============================================ */
 :root,
 body.theme-dark {
-    --header-h: 4.75rem;
+    /* Altura travada: 4.75rem na escala cheia (16 * --fit), de proposito
+       sem o --fit-adjust — o cabecalho nao encolhe junto com o conteudo. */
+    --header-h: calc(4.75 * 16 * var(--fit));
     --font-ui: 'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     --bg-top: #081221;
     --bg-bottom: #0d1c30;
@@ -157,7 +159,12 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: var(--header-h);
+    /* O zoom desfaz o --fit-adjust so aqui dentro: quando a tela ativa
+       transborda e a raiz encolhe, o cabecalho (logo, titulo e botoes,
+       inclusive o EDITAR) fica do mesmo tamanho. O min-height ja vem
+       multiplicado pelo fator para o zoom devolver a altura travada. */
+    zoom: calc(1 / var(--fit-adjust));
+    min-height: calc(var(--header-h) * var(--fit-adjust));
 }
 
 .header-content {
@@ -384,6 +391,18 @@ body.theme-light #btnClaro .btn-icon {
     background: var(--accent-soft);
     border-left-color: var(--accent);
     color: var(--text);
+}
+
+/* tela removida no editor: o item continua listado, mas sem destino */
+.menu-item.is-ausente {
+    opacity: 0.4;
+    cursor: not-allowed;
+    text-decoration: line-through;
+}
+
+.menu-item.is-ausente:hover {
+    background: transparent;
+    color: var(--muted);
 }
 
 .menu-text {
@@ -1524,11 +1543,6 @@ body.edit-mode .screen {
     box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2), var(--shadow);
 }
 
-body.edit-mode .menu-item {
-    border-left-style: dashed;
-    border-left-color: rgba(59, 130, 246, 0.5);
-}
-
 body.edit-mode .header-controls .btn-header.active {
     background: linear-gradient(135deg, #ffb000 0%, #ff8a00 100%);
     color: #fff;
@@ -1592,15 +1606,6 @@ body.edit-mode .drag-handle--inline {
     vertical-align: middle;
 }
 
-body.edit-mode .menu-item .drag-handle {
-    top: 50%;
-    right: 0.375rem;
-    transform: translateY(-50%);
-    width: 1rem;
-    height: 1rem;
-    font-size: 0.6rem;
-}
-
 .is-dragging {
     opacity: 0.4;
 }
@@ -1656,11 +1661,42 @@ body.edit-mode .resize-handle {
     line-height: 1;
     cursor: nwse-resize;
     user-select: none;
-    opacity: 0.7;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
 }
 
-body.edit-mode .resize-handle:hover {
-    opacity: 1;
+/* bloco de tela só muda de altura */
+body.edit-mode .resize-handle--altura {
+    cursor: ns-resize;
+}
+
+/* Uma alça de cada vez, e sempre a do bloco mais interno: como os
+   blocos são aninhados, antes as alças se empilhavam no mesmo canto e
+   não dava para saber qual delas ia pegar. */
+body.edit-mode [data-resize]:hover > .resize-handle,
+body.edit-mode [data-resize].is-selected > .resize-handle {
+    opacity: 0.85;
+    pointer-events: auto;
+}
+
+body.edit-mode [data-resize]:has([data-resize]:hover) > .resize-handle {
+    opacity: 0;
+    pointer-events: none;
+}
+
+body.edit-mode .resize-handle:hover,
+body.edit-mode [data-resize].is-resizing > .resize-handle {
+    opacity: 1 !important;
+    pointer-events: auto;
+}
+
+/* sem mouse para passar por cima, as alças ficam sempre à vista */
+@media (hover: none) {
+    body.edit-mode .resize-handle {
+        opacity: 0.7;
+        pointer-events: auto;
+    }
 }
 
 .is-resizing {
@@ -4401,20 +4437,50 @@ body.edit-mode .block-actions--mini {
     transform-origin: top right;
 }
 
-body.edit-mode .menu-item .block-actions {
-    top: 50%;
-    right: 0.375rem;
-    transform: translateY(-50%);
+/* ---- Alça de cada informação (rótulo, número, legenda) ----
+   São muitas em cada tela, então a alça fica invisível até o mouse
+   chegar perto: sem isso a tela em edição virava um campo de pontinhos. */
+body.edit-mode [data-drag-group="info"] {
+    outline: 1px dashed transparent;
+    outline-offset: 2px;
+    transition: outline-color 0.15s ease;
+}
+
+body.edit-mode [data-drag-group="info"]:hover,
+body.edit-mode [data-drag-group="info"]:focus-within {
+    outline-color: rgba(59, 130, 246, 0.45);
+}
+
+body.edit-mode .block-actions--texto {
+    top: -0.4375rem;
+    right: -0.4375rem;
     padding: 0;
+    gap: 0;
     background: none;
     border: none;
     box-shadow: none;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    z-index: 9;
 }
 
-body.edit-mode .menu-item .block-btn {
-    width: 1rem;
-    height: 1rem;
-    font-size: 0.58rem;
+body.edit-mode [data-drag-group="info"]:hover > .block-actions--texto,
+body.edit-mode [data-drag-group="info"]:focus-within > .block-actions--texto,
+body.edit-mode .is-selected > .block-actions--texto {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+body.edit-mode .block-actions--texto .drag-handle {
+    width: 0.875rem;
+    height: 0.875rem;
+    border-radius: 4px;
+    font-size: 0.5rem;
+    background: var(--accent);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.45);
 }
 
 /* bloco escolhido: vira âncora para inserir o próximo componente */
@@ -4426,16 +4492,23 @@ body.edit-mode .is-selected {
 /* ============================================
    EDITOR — BARRA FLUTUANTE
    ============================================ */
+/* Como o cabecalho, a barra fica travada na escala cheia: o zoom desfaz
+   o --fit-adjust, e as medidas em vw/vh (que o zoom nao encolhe) voltam a
+   bater quando multiplicadas pelo mesmo fator. Centralizada por margem
+   automatica em vez de left: 50%, que o zoom deslocaria. */
 .editor-bar {
     position: fixed;
-    left: 50%;
+    left: 0;
+    right: 0;
+    margin-inline: auto;
+    width: fit-content;
     bottom: 1rem;
     z-index: 60;
-    transform: translateX(-50%);
+    zoom: calc(1 / var(--fit-adjust));
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    max-width: 94vw;
+    max-width: calc(94vw * var(--fit-adjust));
     flex-wrap: wrap;
     justify-content: center;
     padding: 0.5rem 0.75rem;
@@ -4519,12 +4592,14 @@ body.edit-mode .is-selected {
     background: rgba(4, 10, 20, 0.62);
 }
 
+/* mesmo travamento de escala da barra de edicao */
 .editor-modal-box {
     position: relative;
     display: flex;
     flex-direction: column;
-    width: min(58rem, 92vw);
-    max-height: 88vh;
+    zoom: calc(1 / var(--fit-adjust));
+    width: min(58rem, calc(92vw * var(--fit-adjust)));
+    max-height: calc(88vh * var(--fit-adjust));
     border-radius: 14px;
     background: var(--header-bg);
     border: 1px solid var(--panel-border);
@@ -4732,12 +4807,18 @@ body.edit-mode .is-selected {
 /* ============================================
    EDITOR — AVISO CURTO
    ============================================ */
+/* mesma escala travada da barra de edicao */
 .editor-toast {
     position: fixed;
-    left: 50%;
+    left: 0;
+    right: 0;
+    margin-inline: auto;
+    width: fit-content;
+    max-width: calc(94vw * var(--fit-adjust));
     bottom: 4.25rem;
     z-index: 90;
-    transform: translate(-50%, 0.5rem);
+    zoom: calc(1 / var(--fit-adjust));
+    transform: translateY(0.5rem);
     padding: 0.5rem 0.875rem;
     border-radius: 10px;
     background: var(--header-bg);
@@ -4753,7 +4834,7 @@ body.edit-mode .is-selected {
 
 .editor-toast.is-visible {
     opacity: 1;
-    transform: translate(-50%, 0);
+    transform: translateY(0);
 }
 
 /* ============================================

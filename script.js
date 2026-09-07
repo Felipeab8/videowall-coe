@@ -37,12 +37,13 @@ menuItems.forEach((item) => {
     item.addEventListener('click', () => {
         const screenIndex = item.getAttribute('data-screen');
         const target = document.getElementById('screen-' + screenIndex);
+        // tela apagada no editor: sem destino, trocar so deixaria a area
+        // em branco — melhor ficar onde esta e avisar.
+        if (!target) return;
         menuItems.forEach((m) => m.classList.remove('active'));
         allScreens().forEach((s) => s.classList.remove('active'));
         item.classList.add('active');
-        if (target) {
-            target.classList.add('active');
-        }
+        target.classList.add('active');
         syncMenuGroups();
         setAlertsPage(false);
         scheduleFit();
@@ -334,11 +335,10 @@ function toggleTheme() {
 // ============================================
 // EDIÇÃO DE TEXTO (nomes, rótulos e valores)
 // ============================================
+// So vale o que esta dentro do palco (.content): o cabecalho e o menu de
+// telas ficam de fora da edicao — alem de nao serem conteudo de tela, eles
+// nao entram no layout salvo, entao qualquer troca ali se perdia no reload.
 const EDITABLE_SELECTORS = [
-    '.brand-main',
-    '.brand-sub',
-    '.sidebar-header',
-    '.menu-text',
     '.screen-badge',
     '.screen-title-section h2',
     '.screen-meta',
@@ -420,18 +420,72 @@ const EDITABLE_SELECTORS = [
     '.prod-secador-percent'
 ];
 
+// Cada informacao tambem anda de lugar: todo texto editavel vira um bloco
+// arrastavel proprio. Ficam de fora os que quebrariam a estrutura ou que ja
+// se movem por outro caminho.
+const TEXTO_NAO_MOVEL = [
+    '.data-table th',        // moveria a coluna inteira do lugar
+    '.data-table td',        // a linha ja se arrasta inteira
+    '.forecast-yaxis span',  // eixo e escala, nao informacao solta
+    '.linha-eixo span',
+    '.forecast-cap',         // vive dentro da barra que se arrasta pelo valor
+    '.flow-btn'              // ja tem grupo proprio
+];
+
+const TEXTO_MOVEL = EDITABLE_SELECTORS.filter(function (sel) {
+    return TEXTO_NAO_MOVEL.indexOf(sel) === -1;
+});
+
+// A alca mora dentro do proprio texto; ler ou reescrever o conteudo precisa
+// passar por aqui para nao engolir (nem virar texto) o simbolo de arraste.
+function textoSemAlca(el) {
+    if (!el) return '';
+    const acoes = el.querySelector(':scope > .block-actions');
+    if (!acoes) return el.textContent;
+    return Array.prototype.filter.call(el.childNodes, function (no) {
+        return no !== acoes;
+    }).map(function (no) {
+        return no.textContent;
+    }).join('');
+}
+
+function escreverTexto(el, texto) {
+    if (!el) return;
+    const acoes = el.querySelector(':scope > .block-actions');
+    el.textContent = texto;
+    if (acoes) el.insertBefore(acoes, el.firstChild);
+}
+
+// A edicao vive dentro do palco; fora dele nada vira editavel.
+function raizEdicao() {
+    return document.querySelector('.content');
+}
+
 function applyTextEditing(enabled) {
+    // limpa sempre no documento inteiro: assim nao sobra campo editavel
+    // de um layout antigo nem tabindex preso em botao de verdade.
+    document.querySelectorAll('[data-editable]').forEach((element) => {
+        element.classList.remove('editable');
+        element.removeAttribute('contenteditable');
+        element.removeAttribute('spellcheck');
+        element.removeAttribute('tabindex');
+        element.removeAttribute('data-editable');
+    });
+
+    const raiz = enabled ? raizEdicao() : null;
+    if (!raiz) return;
+
     EDITABLE_SELECTORS.forEach((selector) => {
-        document.querySelectorAll(selector).forEach((element) => {
+        raiz.querySelectorAll(selector).forEach((element) => {
             if (!(element instanceof HTMLElement)) return;
             if (element.tagName === 'BUTTON' && !element.classList.contains('flow-btn')) return;
             if (element.classList.contains('screen-badge') && element.querySelector('svg')) return;
 
-            element.classList.toggle('editable', enabled);
-            element.contentEditable = enabled ? 'true' : 'false';
+            element.classList.add('editable');
+            element.contentEditable = 'true';
             element.spellcheck = false;
-            element.tabIndex = enabled ? 0 : -1;
-            element.setAttribute('data-editable', String(enabled));
+            element.tabIndex = 0;
+            element.setAttribute('data-editable', 'true');
         });
     });
 }
@@ -459,8 +513,6 @@ const DRAG_CONFIG = [
     { selector: '.status-row', group: 'status-linha' },
     { selector: '.flow-btn', group: 'fluxo' },
     { selector: '.stack-row', group: 'barra' },
-    { selector: '.menu-group', group: 'menu-grupo' },
-    { selector: '.menu-item', group: 'menu' },
     { selector: '.data-table tbody tr', group: 'linha', inline: true },
     // graficos inteiros e listas: dao para mover e remover como qualquer bloco
     { selector: '.forecast-chart', group: 'grafico' },
@@ -479,7 +531,9 @@ const DRAG_CONFIG = [
     // pedacos finos: alca compacta para nao cobrir a barra
     { selector: '.forecast-col', group: 'coluna', mini: true },
     { selector: '.hora-col', group: 'coluna', mini: true },
-    { selector: '.donut-item', group: 'fatia', mini: true }
+    { selector: '.donut-item', group: 'fatia', mini: true },
+    // por ultimo: rotulo, numero e legenda soltos, so com a alca de mover
+    { selector: TEXTO_MOVEL.join(', '), group: 'info', texto: true }
 ];
 
 const DROP_CLASSES = ['drop-h-before', 'drop-h-after', 'drop-v-before', 'drop-v-after'];
@@ -520,10 +574,11 @@ function setupDragHandles(enabled) {
     });
     clearDropMarkers();
 
-    if (!enabled) return;
+    const raiz = enabled ? raizEdicao() : null;
+    if (!raiz) return;
 
     DRAG_CONFIG.forEach((cfg) => {
-        document.querySelectorAll(cfg.selector).forEach((el) => {
+        raiz.querySelectorAll(cfg.selector).forEach((el) => {
             if (el.dataset.dragGroup) return;
             const host = cfg.inline ? el.querySelector('td, th') : el;
             if (!host) return;
@@ -535,21 +590,26 @@ function setupDragHandles(enabled) {
                 + (cfg.section ? ' drag-handle--section' : '')
                 + (cfg.inline ? ' drag-handle--inline' : '');
             handle.textContent = '⠿';
-            handle.title = 'Arraste para mover';
+            handle.title = cfg.texto ? 'Arraste para mover esta informação' : 'Arraste para mover';
             handle.contentEditable = 'false';
 
             const acoes = document.createElement('div');
             acoes.className = 'block-actions'
                 + (cfg.section ? ' block-actions--section' : '')
                 + (cfg.inline ? ' block-actions--inline' : '')
-                + (cfg.mini ? ' block-actions--mini' : '');
+                + (cfg.mini ? ' block-actions--mini' : '')
+                + (cfg.texto ? ' block-actions--texto' : '');
             acoes.contentEditable = 'false';
             acoes.appendChild(handle);
-            if (el.dataset.comp) {
-                acoes.appendChild(criarBotaoBloco('config', '⚙', 'Configurar este componente'));
+            // no texto miúdo só cabe a alça: apagar sai pelo Del e duplicar
+            // continua nos botões do bloco que segura a informação.
+            if (!cfg.texto) {
+                if (el.dataset.comp) {
+                    acoes.appendChild(criarBotaoBloco('config', '⚙', 'Configurar este componente'));
+                }
+                acoes.appendChild(criarBotaoBloco('duplicar', '⧉', 'Duplicar'));
+                acoes.appendChild(criarBotaoBloco('remover', '✕', 'Remover'));
             }
-            acoes.appendChild(criarBotaoBloco('duplicar', '⧉', 'Duplicar'));
-            acoes.appendChild(criarBotaoBloco('remover', '✕', 'Remover'));
             host.insertBefore(acoes, host.firstChild);
         });
     });
@@ -674,20 +734,21 @@ function barFromEvent(target) {
 function syncBarLabel(bar, pct) {
     const siloItem = bar.container.closest('.silo-item');
     if (siloItem) {
-        const percent = siloItem.querySelector('.silo-percent');
-        if (percent) percent.textContent = pct + '%';
+        escreverTexto(siloItem.querySelector('.silo-percent'), pct + '%');
         return;
     }
     const label = bar.container.nextElementSibling;
     if (label && label.classList.contains('progress-label')) {
         const sign = label.querySelector('.pct-sign');
         if (sign) {
+            const acoes = label.querySelector(':scope > .block-actions');
             label.textContent = '';
+            if (acoes) label.appendChild(acoes);
             label.appendChild(document.createTextNode(String(pct)));
             label.appendChild(sign);
             return;
         }
-        label.textContent = label.textContent.replace(/\d+([.,]\d+)?\s*%/, pct + '%');
+        escreverTexto(label, textoSemAlca(label).replace(/\d+([.,]\d+)?\s*%/, pct + '%'));
     }
 }
 
@@ -749,10 +810,22 @@ const RESIZE_CONFIG = [
     { selector: '.donut-card', mode: 'size' },
     { selector: '.table-scroll', mode: 'size' },
     { selector: '.rank-list', mode: 'size' },
-    { selector: '.status-bar', mode: 'size' }
+    { selector: '.status-bar', mode: 'size' },
+    // os miudos de dentro: cada faixa, linha ou chip ajusta o proprio tamanho
+    { selector: '.status-item', mode: 'size' },
+    { selector: '.status-row', mode: 'size' },
+    { selector: '.rank-item', mode: 'size' },
+    { selector: '.prod-secador', mode: 'size' },
+    { selector: '.secador-chip', mode: 'size' },
+    { selector: '.silo-group', mode: 'size' },
+    { selector: '.stack-row', mode: 'size' },
+    { selector: '.donut-item', mode: 'size' }
 ];
 
+const RESIZE_ZONA_MORTA = 6; // px de folga antes de um eixo comecar a valer
+
 let resizing = null;
+let fotoTamanho = null; // como o palco estava antes de mexer no tamanho
 
 function setupResizeHandles(enabled) {
     document.querySelectorAll('.resize-handle').forEach((handle) => handle.remove());
@@ -761,35 +834,86 @@ function setupResizeHandles(enabled) {
         el.classList.remove('is-resizing');
     });
 
-    if (!enabled) return;
+    const raiz = enabled ? raizEdicao() : null;
+    if (!raiz) return;
 
     RESIZE_CONFIG.forEach((cfg) => {
-        document.querySelectorAll(cfg.selector).forEach((el) => {
+        raiz.querySelectorAll(cfg.selector).forEach((el) => {
             if (el.dataset.resize) return;
             el.dataset.resize = cfg.mode;
 
+            // bloco de tela so muda de altura: a largura dele e do layout,
+            // entao a alca ja avisa isso no simbolo e no cursor.
+            const soAltura = cfg.mode === 'min';
+
             const handle = document.createElement('span');
-            handle.className = 'resize-handle';
-            handle.textContent = '⤡';
-            handle.title = 'Arraste para redimensionar (duplo clique restaura)';
+            handle.className = 'resize-handle' + (soAltura ? ' resize-handle--altura' : '');
+            handle.textContent = soAltura ? '⇕' : '⤡';
+            handle.title = soAltura
+                ? 'Arraste para mudar a altura (duplo clique restaura)'
+                : 'Arraste para redimensionar (duplo clique restaura)';
             handle.contentEditable = 'false';
             el.appendChild(handle);
         });
     });
 }
 
+// A tela inteira e escrita em rem e encolhe junto pelo --fit. Gravar px
+// aqui prendia o bloco a uma resolucao so: em outro monitor ele ficava
+// fora de escala e, pior, o ajuste automatico encolhia todo o resto para
+// tentar caber em volta dele. Por isso o tamanho sai daqui em rem.
+let baseRem = 16;
+
+function lerBaseRem() {
+    const base = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    baseRem = base > 0 ? base : 16;
+}
+
+function emRem(px) {
+    return (px / baseRem).toFixed(3) + 'rem';
+}
+
+// Em qual eixo o pai empilha os filhos. Importa porque flex-basis vale
+// sempre para o eixo PRINCIPAL: num painel em coluna, gravar a largura no
+// flex esticava a ALTURA do bloco — era o que fazia uma faixa de status
+// virar uma caixa gigante e vazia ao ser arrastada de lado.
+function eixoDoPai(el) {
+    const parent = el.parentElement;
+    if (!parent) return '';
+    const cs = getComputedStyle(parent);
+    if (cs.display.indexOf('flex') === -1) return '';
+    return cs.flexDirection.indexOf('column') === 0 ? 'vertical' : 'horizontal';
+}
+
+// Nenhum bloco passa do espaco que tem: sem teto dava para esticar um
+// cartao a varias vezes a altura da tela, e o ajuste automatico entao
+// encolhia todo o resto tentando caber em volta dele.
+function tetoLargura(el) {
+    const parent = el.parentElement;
+    const largura = parent ? parent.clientWidth : 0;
+    return largura > 0 ? largura : Infinity;
+}
+
+function tetoAltura(el) {
+    const tela = el.closest('.screen, .alerts-page');
+    const altura = tela ? tela.clientHeight : 0;
+    return altura > 0 ? altura : Infinity;
+}
+
 function applyResizeWidth(el, width) {
     const parent = el.parentElement;
     if (!parent) return;
+    // bloco de tela ocupa a linha toda: fixar largura so quebrava o layout
+    if (el.dataset.resize === 'min') return;
 
     const cs = getComputedStyle(parent);
-    const w = Math.max(40, Math.round(width));
+    const w = Math.max(40, Math.min(Math.round(width), tetoLargura(el)));
 
     if (cs.display.indexOf('grid') !== -1) {
         const cols = cs.gridTemplateColumns.split(' ').filter(Boolean);
         if (cols.length > 1) {
             const gap = parseFloat(cs.columnGap) || 0;
-            const total = parent.getBoundingClientRect().width;
+            const total = parent.clientWidth;
             const unit = (total - gap * (cols.length - 1)) / cols.length;
             let span = Math.round((w + gap) / (unit + gap));
             span = Math.max(1, Math.min(cols.length, span));
@@ -799,19 +923,23 @@ function applyResizeWidth(el, width) {
         }
     }
 
-    if (cs.display.indexOf('flex') !== -1) {
-        el.style.flex = '0 0 ' + w + 'px';
-    }
-    el.style.width = w + 'px';
+    // so trava o flex quando a largura e mesmo o eixo principal do pai
+    if (eixoDoPai(el) === 'horizontal') el.style.flex = '0 0 ' + emRem(w);
+    el.style.width = emRem(w);
 }
 
 function applyResizeHeight(el, height) {
-    const h = Math.max(28, Math.round(height));
+    const h = Math.max(28, Math.min(Math.round(height), tetoAltura(el)));
+
     if (el.dataset.resize === 'min') {
-        el.style.minHeight = h + 'px';
-    } else {
-        el.style.height = h + 'px';
+        el.style.minHeight = emRem(h);
+        return;
     }
+
+    // em painel empilhado a altura e o eixo principal: sem travar o flex
+    // junto, o bloco voltava a esticar ou encolher sozinho
+    if (eixoDoPai(el) === 'vertical') el.style.flex = '0 0 ' + emRem(h);
+    el.style.height = emRem(h);
 }
 
 function resetSize(el) {
@@ -823,19 +951,25 @@ function resetSize(el) {
 }
 
 document.addEventListener('pointerdown', (e) => {
-    if (!isEditing() || !(e.target instanceof Element)) return;
+    if (!isEditing() || e.button !== 0 || !(e.target instanceof Element)) return;
     const handle = e.target.closest('.resize-handle');
     if (!handle || !handle.parentElement) return;
 
     e.preventDefault();
     const el = handle.parentElement;
     const rect = el.getBoundingClientRect();
+    lerBaseRem();
+    fotoTamanho = limparHTML(palco);
     resizing = {
         el: el,
         startX: e.clientX,
         startY: e.clientY,
         startW: rect.width,
-        startH: rect.height
+        startH: rect.height,
+        // cada eixo so entra em jogo depois de um empurrao de verdade:
+        // sem isso, puxar so para baixo tambem congelava a largura
+        eixoX: false,
+        eixoY: false
     };
     el.classList.add('is-resizing');
     if (handle.setPointerCapture) handle.setPointerCapture(e.pointerId);
@@ -843,14 +977,24 @@ document.addEventListener('pointerdown', (e) => {
 
 document.addEventListener('pointermove', (e) => {
     if (!resizing) return;
-    applyResizeWidth(resizing.el, resizing.startW + (e.clientX - resizing.startX));
-    applyResizeHeight(resizing.el, resizing.startH + (e.clientY - resizing.startY));
+
+    const dx = e.clientX - resizing.startX;
+    const dy = e.clientY - resizing.startY;
+
+    if (Math.abs(dx) > RESIZE_ZONA_MORTA) resizing.eixoX = true;
+    if (Math.abs(dy) > RESIZE_ZONA_MORTA) resizing.eixoY = true;
+
+    if (resizing.eixoX) applyResizeWidth(resizing.el, resizing.startW + dx);
+    if (resizing.eixoY) applyResizeHeight(resizing.el, resizing.startH + dy);
 });
 
 document.addEventListener('pointerup', () => {
     if (!resizing) return;
     resizing.el.classList.remove('is-resizing');
     resizing = null;
+    registrarSeMudou(fotoTamanho);
+    fotoTamanho = null;
+    scheduleFit();
 });
 
 document.addEventListener('dblclick', (e) => {
@@ -858,7 +1002,10 @@ document.addEventListener('dblclick', (e) => {
     const handle = e.target.closest('.resize-handle');
     if (!handle || !handle.parentElement) return;
     e.preventDefault();
+    const antes = limparHTML(palco);
     resetSize(handle.parentElement);
+    registrarSeMudou(antes);
+    scheduleFit();
 });
 
 // ============================================
@@ -1105,7 +1252,7 @@ function mountCameras(root) {
         const nome = frame.querySelector('.camera-name');
         const img = document.createElement('img');
         img.className = 'camera-stream';
-        img.alt = nome ? nome.textContent : 'Câmera ao vivo';
+        img.alt = nome ? textoSemAlca(nome).trim() : 'Câmera ao vivo';
         img.addEventListener('error', () => img.remove());
         img.src = src;
         frame.appendChild(img);
@@ -1326,6 +1473,16 @@ function registrar() {
     atualizarBotoesHistorico();
 }
 
+// Guarda a foto anterior so quando o gesto mexeu em alguma coisa: assim
+// arrastar sem querer nao enche o DESFAZER de passos vazios.
+function registrarSeMudou(antes) {
+    if (!antes || antes === limparHTML(palco)) return;
+    historico.push(antes);
+    if (historico.length > HISTORICO_MAX) historico.shift();
+    futuro.length = 0;
+    atualizarBotoesHistorico();
+}
+
 function aplicarHTML(html) {
     palco.innerHTML = html;
     remontar();
@@ -1375,8 +1532,38 @@ function carregarLayout() {
     }
     if (!salvo) return false;
     palco.innerHTML = salvo;
+    converterTamanhosParaRem(palco);
     remontar();
     return true;
+}
+
+// Layout guardado antes desta correcao pode trazer tamanho em px, que nao
+// acompanha o --fit: em outro monitor o bloco saia de escala e o ajuste
+// automatico encolhia o resto da tela em volta dele. Converte na entrada.
+function converterTamanhosParaRem(raiz) {
+    lerBaseRem();
+    const PROPS = ['width', 'height', 'minHeight', 'flexBasis'];
+    raiz.querySelectorAll('[style]').forEach((el) => {
+        PROPS.forEach((prop) => {
+            const valor = el.style[prop];
+            if (!valor || valor.indexOf('px') === -1) return;
+            const n = parseFloat(valor);
+            if (!(n > 0)) return;
+            el.style[prop] = emRem(n);
+        });
+        soltarBasisTorto(el);
+    });
+}
+
+// Em painel empilhado, o tamanho antigo escrevia a largura no flex-basis,
+// que ali e a altura: o bloco salvo abria esticado. Quando o basis nao bate
+// com a altura do proprio bloco, ele veio desse caminho e sai fora.
+function soltarBasisTorto(el) {
+    const basis = el.style.flexBasis;
+    if (!basis || basis === 'auto') return;
+    if (eixoDoPai(el) !== 'vertical') return;
+    if (el.style.height && el.style.height === basis) return;
+    el.style.flex = '';
 }
 
 function restaurarPadrao() {
@@ -1406,7 +1593,21 @@ function sincronizarMenuComTela() {
     });
     const atual = document.querySelector('.menu-item.active');
     if (atual && atual.closest('.menu-group')) openOnlyGroup(atual.closest('.menu-group'));
+    marcarTelasAusentes();
     syncMenuGroups();
+}
+
+// tela removida no editor deixa o item do menu sem destino: melhor
+// mostrar isso do que abrir uma area em branco. Volta sozinho se o
+// layout padrao for restaurado.
+function marcarTelasAusentes() {
+    menuItems.forEach((item) => {
+        const alvo = document.getElementById('screen-' + item.getAttribute('data-screen'));
+        item.disabled = !alvo;
+        item.classList.toggle('is-ausente', !alvo);
+        if (alvo) item.removeAttribute('title');
+        else item.title = 'Esta tela foi removida no modo de edição.';
+    });
 }
 
 function remontar() {
@@ -1488,7 +1689,7 @@ function desenharRosca(card) {
     const itens = Array.prototype.slice.call(card.querySelectorAll('.donut-item'));
     const valores = itens.map((item) => {
         const alvo = item.querySelector('.donut-valor');
-        return Math.max(0, paraNumero(alvo ? alvo.textContent : '0'));
+        return Math.max(0, paraNumero(textoSemAlca(alvo)));
     });
     const soma = valores.reduce((a, b) => a + b, 0);
     const total = soma > 0 ? soma : 1;
@@ -1511,8 +1712,7 @@ function desenharRosca(card) {
     if (visual && paradas.length) {
         visual.style.background = 'conic-gradient(' + paradas.join(', ') + ')';
     }
-    const totalEl = card.querySelector('.donut-total');
-    if (totalEl) totalEl.textContent = fmtNum(soma);
+    escreverTexto(card.querySelector('.donut-total'), fmtNum(soma));
 }
 
 function desenharRoscas(raiz) {
@@ -2304,7 +2504,7 @@ function desenharDestinos() {
     if (tela) {
         tela.querySelectorAll('.content-section, .split-grid').forEach((sec, i) => {
             const h = sec.querySelector('h3');
-            opcao('dentro:' + i, 'Dentro de: ' + (h ? h.textContent.trim().slice(0, 42) : 'painel ' + (i + 1)));
+            opcao('dentro:' + i, 'Dentro de: ' + (h ? textoSemAlca(h).trim().slice(0, 42) : 'painel ' + (i + 1)));
         });
     }
 }
@@ -2419,7 +2619,7 @@ function construirBarra() {
     });
 
     barra.appendChild(novo('span', 'editor-bar-dica',
-        'clique no texto para editar · ⠿ move · ⤡ redimensiona · ⧉ duplica · ✕ remove · Del apaga o selecionado'));
+        'clique no texto para editar · ⠿ move o bloco e também cada informação (a alça aparece ao passar o mouse) · ⤡ redimensiona · ⧉ duplica · ✕ remove · Del apaga o selecionado'));
 
     barra.addEventListener('click', (e) => {
         if (!(e.target instanceof Element)) return;
@@ -2507,14 +2707,9 @@ document.addEventListener('dragstart', () => {
 });
 
 document.addEventListener('drop', () => {
-    if (!fotoArraste) return;
     const antes = fotoArraste;
     fotoArraste = null;
-    if (antes === limparHTML(palco)) return;
-    historico.push(antes);
-    if (historico.length > HISTORICO_MAX) historico.shift();
-    futuro.length = 0;
-    atualizarBotoesHistorico();
+    registrarSeMudou(antes);
 });
 
 document.addEventListener('dragend', () => {
