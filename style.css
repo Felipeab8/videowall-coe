@@ -324,14 +324,6 @@ body.theme-light #btnClaro .btn-icon {
     text-transform: uppercase;
 }
 
-/* carimbo abaixo dos KPIs da tela ativa */
-.live-time--tela {
-    display: block;
-    margin: -0.5rem 0 0.875rem;
-    text-align: right;
-    opacity: 0.85;
-}
-
 /* ============================================
    CONTAINER LAYOUT
    ============================================ */

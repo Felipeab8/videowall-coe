@@ -1,35 +1,12 @@
 // ============================================
 // RELÓGIO / ÚLTIMA ATUALIZAÇÃO
 // ============================================
-// O carimbo mora dentro da tela ativa, logo abaixo dos KPIs. Como o editor
-// troca, duplica e recarrega telas inteiras, o elemento e reposicionado a
-// cada tique em vez de ficar preso a um lugar fixo do HTML.
-function posicionarLiveTime() {
-    const tela = document.querySelector('.screen.active');
-    if (!tela) return null;
-    let el = document.getElementById('liveTime');
-    if (!el) {
-        el = document.createElement('div');
-        el.id = 'liveTime';
-        el.className = 'live-time live-time--tela';
-    }
-    const ancora = tela.querySelector('.kpi-grid') || tela.querySelector('.screen-header');
-    if (ancora) {
-        if (el.previousElementSibling !== ancora) {
-            ancora.parentElement.insertBefore(el, ancora.nextSibling);
-        }
-    } else if (el.parentElement !== tela) {
-        tela.appendChild(el);
-    }
-    return el;
-}
-
 function updateLiveTime() {
     const now = new Date();
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
-    const liveTime = posicionarLiveTime();
+    const liveTime = document.getElementById('liveTime');
     if (liveTime) {
         liveTime.textContent = `ÚLTIMA ATUALIZAÇÃO: ${hours}:${minutes}:${seconds}`;
     }
@@ -1588,7 +1565,7 @@ function aviso(texto) {
 // LIMPEZA: o layout salvo não leva as alças da edição
 // ============================================
 function limparArtefatos(raiz) {
-    raiz.querySelectorAll('.block-actions, .drag-handle, .resize-handle, .camera-stream, .live-time--tela')
+    raiz.querySelectorAll('.block-actions, .drag-handle, .resize-handle, .camera-stream')
         .forEach((el) => el.remove());
     raiz.querySelectorAll('[data-editable]').forEach((el) => {
         el.removeAttribute('data-editable');
