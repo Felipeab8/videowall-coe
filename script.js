@@ -1,12 +1,35 @@
 // ============================================
 // RELÓGIO / ÚLTIMA ATUALIZAÇÃO
 // ============================================
+// O carimbo mora dentro da tela ativa, logo abaixo dos KPIs. Como o editor
+// troca, duplica e recarrega telas inteiras, o elemento e reposicionado a
+// cada tique em vez de ficar preso a um lugar fixo do HTML.
+function posicionarLiveTime() {
+    const tela = document.querySelector('.screen.active');
+    if (!tela) return null;
+    let el = document.getElementById('liveTime');
+    if (!el) {
+        el = document.createElement('div');
+        el.id = 'liveTime';
+        el.className = 'live-time live-time--tela';
+    }
+    const ancora = tela.querySelector('.kpi-grid') || tela.querySelector('.screen-header');
+    if (ancora) {
+        if (el.previousElementSibling !== ancora) {
+            ancora.parentElement.insertBefore(el, ancora.nextSibling);
+        }
+    } else if (el.parentElement !== tela) {
+        tela.appendChild(el);
+    }
+    return el;
+}
+
 function updateLiveTime() {
     const now = new Date();
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
-    const liveTime = document.getElementById('liveTime');
+    const liveTime = posicionarLiveTime();
     if (liveTime) {
         liveTime.textContent = `ÚLTIMA ATUALIZAÇÃO: ${hours}:${minutes}:${seconds}`;
     }
@@ -1012,6 +1035,9 @@ document.addEventListener('dblclick', (e) => {
 // MODO DE EDIÇÃO
 // ============================================
 function applyEditMode(enabled) {
+    // o recorte por cultura sai antes das alcas entrarem: a edicao mexe no
+    // HTML e o salva, entao o layout precisa voltar ao estado inteiro
+    if (enabled) limparFiltrosGrao();
     applyTextEditing(enabled);
     setupDragHandles(enabled);
     setupResizeHandles(enabled);
@@ -1134,10 +1160,15 @@ function showVizTooltip(col, clientX, clientY) {
 
     // Rótulos vêm de data-attributes: sempre textContent, nunca innerHTML.
     vizTooltip.title.textContent = col.dataset.dia || '';
+    // com o filtro de cultura ligado a linha das outras culturas nao entra
+    const secao = col.closest('.forecast-section');
+    const grao = secao ? graoAtivoDe(secao) : 'todas';
     VIZ_SERIES.forEach((serie) => {
         const dado = col.dataset[serie.chave];
         vizTooltip.values[serie.chave].textContent = dado || '—';
-        if (serie.grao) vizTooltip.rows[serie.chave].hidden = !dado;
+        if (serie.grao) {
+            vizTooltip.rows[serie.chave].hidden = !dado || (grao !== 'todas' && serie.chave !== grao);
+        }
     });
     vizTooltip.box.classList.add('is-visible');
 
@@ -1169,6 +1200,146 @@ document.addEventListener('focusin', (e) => {
 });
 
 document.addEventListener('focusout', hideVizTooltip);
+
+// ============================================
+// POR QUE ESTA ATRASADO
+// O numero sozinho nao explica o desvio. Cada indicador de atraso da
+// recepcao carrega a causa em data-attributes e o mouse over abre a conta:
+// as parcelas que somam o desvio mais uma nota de contexto.
+// Formato de data-motivo-lista: "rotulo::valor::desvio::tom" por item,
+// itens separados por "|". Tom aceita ruim | bom | neutro.
+// ============================================
+let motivoTip = null;
+let motivoAtual = null;
+
+function buildMotivoTip() {
+    const box = document.createElement('div');
+    box.className = 'motivo-tip';
+    box.id = 'motivoTip';
+    box.setAttribute('role', 'tooltip');
+
+    const titulo = document.createElement('strong');
+    titulo.className = 'motivo-tip-titulo';
+
+    const resumo = document.createElement('span');
+    resumo.className = 'motivo-tip-resumo';
+
+    const lista = document.createElement('ul');
+    lista.className = 'motivo-tip-lista';
+
+    const nota = document.createElement('span');
+    nota.className = 'motivo-tip-nota';
+
+    box.appendChild(titulo);
+    box.appendChild(resumo);
+    box.appendChild(lista);
+    box.appendChild(nota);
+    document.body.appendChild(box);
+    return { box: box, titulo: titulo, resumo: resumo, lista: lista, nota: nota };
+}
+
+const MOTIVO_TONS = { ruim: 'is-ruim', bom: 'is-bom' };
+
+function preencherMotivo(alvo) {
+    // Tudo vem de data-attributes: sempre textContent, nunca innerHTML.
+    motivoTip.titulo.textContent = alvo.dataset.motivoTitulo || '';
+    motivoTip.resumo.textContent = alvo.dataset.motivoResumo || '';
+    motivoTip.nota.textContent = alvo.dataset.motivoNota || '';
+
+    motivoTip.lista.textContent = '';
+    const bruto = alvo.dataset.motivoLista || '';
+    bruto.split('|').forEach(function (linha) {
+        const campos = linha.split('::');
+        const rotulo = (campos[0] || '').trim();
+        if (!rotulo) return;
+
+        const item = document.createElement('li');
+        const tom = MOTIVO_TONS[(campos[3] || '').trim()];
+        item.className = 'motivo-tip-item' + (tom ? ' ' + tom : '');
+
+        const elRotulo = document.createElement('span');
+        elRotulo.className = 'motivo-tip-rotulo';
+        elRotulo.textContent = rotulo;
+
+        const elValor = document.createElement('strong');
+        elValor.className = 'motivo-tip-valor';
+        elValor.textContent = (campos[1] || '').trim();
+
+        const elDesvio = document.createElement('span');
+        elDesvio.className = 'motivo-tip-desvio';
+        elDesvio.textContent = (campos[2] || '').trim();
+
+        item.appendChild(elRotulo);
+        item.appendChild(elValor);
+        item.appendChild(elDesvio);
+        motivoTip.lista.appendChild(item);
+    });
+}
+
+// A caixa se ancora no proprio indicador, nao no cursor: assim ela nunca
+// cobre o numero que esta explicando e nao balanca junto com o mouse.
+function posicionarMotivo(alvo) {
+    const base = alvo.getBoundingClientRect();
+    const caixa = motivoTip.box.getBoundingClientRect();
+    const left = Math.max(8, Math.min(
+        window.innerWidth - caixa.width - 8,
+        base.left + base.width / 2 - caixa.width / 2
+    ));
+
+    // abaixo do indicador; se faltar espaco, sobe para cima dele
+    let top = base.bottom + 10;
+    if (top + caixa.height > window.innerHeight - 8) {
+        const acima = base.top - caixa.height - 10;
+        top = acima >= 8 ? acima : Math.max(8, window.innerHeight - caixa.height - 8);
+    }
+
+    motivoTip.box.style.left = left + 'px';
+    motivoTip.box.style.top = top + 'px';
+}
+
+function showMotivo(alvo) {
+    if (!motivoTip) motivoTip = buildMotivoTip();
+    if (alvo === motivoAtual) return;
+    preencherMotivo(alvo);
+    motivoAtual = alvo;
+    alvo.setAttribute('aria-describedby', 'motivoTip');
+    motivoTip.box.classList.add('is-visible');
+    posicionarMotivo(alvo);
+}
+
+function hideMotivo() {
+    if (!motivoTip) return;
+    motivoTip.box.classList.remove('is-visible');
+    if (motivoAtual) motivoAtual.removeAttribute('aria-describedby');
+    motivoAtual = null;
+}
+
+document.addEventListener('pointermove', (e) => {
+    const alvo = e.target instanceof Element ? e.target.closest('[data-motivo]') : null;
+    if (!alvo || isEditing()) {
+        hideMotivo();
+        return;
+    }
+    showMotivo(alvo);
+});
+
+document.addEventListener('pointerleave', hideMotivo);
+
+document.addEventListener('focusin', (e) => {
+    const alvo = e.target instanceof Element ? e.target.closest('[data-motivo]') : null;
+    if (!alvo || isEditing()) return;
+    showMotivo(alvo);
+});
+
+document.addEventListener('focusout', hideMotivo);
+
+document.addEventListener('scroll', hideMotivo, true);
+
+window.addEventListener('resize', hideMotivo);
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') hideMotivo();
+});
 
 // Tabela de apoio: os mesmos números sem depender do hover.
 // A tela tem altura fixa e os dois mostram o mesmo dado, então a tabela
@@ -1282,6 +1453,12 @@ document.addEventListener('click', (event) => {
 var editorPronto = false;
 
 const LAYOUT_KEY = 'videowall:layout';
+// Assinatura do HTML da pagina no momento do salvamento. Sem isto, um layout
+// guardado entra no lugar do index.html e qualquer alteracao feita no arquivo
+// nunca aparece na tela — a pagina abre sempre com a copia velha do navegador.
+const LAYOUT_BASE_KEY = 'videowall:layout:base';
+// Copia do layout descartado, para nao perder de vez o que ja tinha sido salvo.
+const LAYOUT_BACKUP_KEY = 'videowall:layout:backup';
 const HISTORICO_MAX = 40;
 
 const palco = document.querySelector('.content');
@@ -1411,7 +1588,7 @@ function aviso(texto) {
 // LIMPEZA: o layout salvo não leva as alças da edição
 // ============================================
 function limparArtefatos(raiz) {
-    raiz.querySelectorAll('.block-actions, .drag-handle, .resize-handle, .camera-stream')
+    raiz.querySelectorAll('.block-actions, .drag-handle, .resize-handle, .camera-stream, .live-time--tela')
         .forEach((el) => el.remove());
     raiz.querySelectorAll('[data-editable]').forEach((el) => {
         el.removeAttribute('data-editable');
@@ -1514,9 +1691,17 @@ function refazer() {
 // ============================================
 let layoutOriginal = '';
 
+// hash curto (djb2) so para saber se o index.html mudou desde o salvamento
+function assinaturaLayout(html) {
+    let h = 5381;
+    for (let i = 0; i < html.length; i++) h = ((h * 33) ^ html.charCodeAt(i)) >>> 0;
+    return html.length + '-' + h.toString(36);
+}
+
 function salvarLayout(silencioso) {
     try {
         localStorage.setItem(LAYOUT_KEY, limparHTML(palco));
+        localStorage.setItem(LAYOUT_BASE_KEY, assinaturaLayout(layoutOriginal));
         if (!silencioso) aviso('Layout salvo neste navegador.');
     } catch (err) {
         aviso('Não foi possível salvar: armazenamento indisponível.');
@@ -1531,6 +1716,27 @@ function carregarLayout() {
         salvo = null;
     }
     if (!salvo) return false;
+
+    // O index.html mudou depois deste salvamento: aplicar o layout velho
+    // esconderia a alteracao. Guarda como backup e abre a pagina nova.
+    let base = null;
+    try {
+        base = localStorage.getItem(LAYOUT_BASE_KEY);
+    } catch (err) {
+        base = null;
+    }
+    if (base !== assinaturaLayout(layoutOriginal)) {
+        try {
+            localStorage.setItem(LAYOUT_BACKUP_KEY, salvo);
+            localStorage.removeItem(LAYOUT_KEY);
+            localStorage.removeItem(LAYOUT_BASE_KEY);
+        } catch (err) {
+            /* segue sem backup */
+        }
+        aviso('A página foi atualizada — o layout salvo anterior foi descartado.');
+        return false;
+    }
+
     palco.innerHTML = salvo;
     converterTamanhosParaRem(palco);
     remontar();
@@ -1566,11 +1772,56 @@ function soltarBasisTorto(el) {
     el.style.flex = '';
 }
 
+// ============================================
+// EXPLICACAO DO ATRASO EM LAYOUT JA SALVO
+// O layout guardado no navegador foi gravado antes das explicacoes existirem
+// e entra no lugar do HTML da pagina. Sem isto, quem ja salvou uma vez nunca
+// veria o mouse over. Aqui as causas voltam para o indicador correspondente,
+// casado por tela + rotulo, e seguem junto no proximo salvamento.
+// ============================================
+const MOTIVO_ALVOS = '.kpi-card, .forecast-stat';
+
+function chaveDoMotivo(el) {
+    const rotulo = el.querySelector('.kpi-label, .kpi-label-small, .forecast-stat-label');
+    if (!rotulo) return '';
+    const tela = el.closest('.screen');
+    return (tela && tela.id ? tela.id : '?') + '|' + rotulo.textContent.trim().toUpperCase();
+}
+
+function aplicarMotivo(destino, fonte) {
+    Array.prototype.forEach.call(fonte.attributes, function (attr) {
+        if (attr.name.indexOf('data-motivo') === 0) destino.setAttribute(attr.name, attr.value);
+    });
+    if (fonte.classList.contains('kpi-card--motivo')) destino.classList.add('kpi-card--motivo');
+    if (fonte.classList.contains('forecast-stat--motivo')) destino.classList.add('forecast-stat--motivo');
+    if (!destino.hasAttribute('tabindex')) destino.setAttribute('tabindex', '0');
+}
+
+function reidratarMotivos() {
+    if (!palco || !layoutOriginal) return;
+
+    const molde = document.createElement('div');
+    molde.innerHTML = layoutOriginal;
+
+    const mapa = {};
+    molde.querySelectorAll('[data-motivo]').forEach(function (el) {
+        const chave = chaveDoMotivo(el);
+        if (chave) mapa[chave] = el;
+    });
+
+    palco.querySelectorAll(MOTIVO_ALVOS).forEach(function (el) {
+        if (el.hasAttribute('data-motivo')) return;
+        const fonte = mapa[chaveDoMotivo(el)];
+        if (fonte) aplicarMotivo(el, fonte);
+    });
+}
+
 function restaurarPadrao() {
     if (!window.confirm('Restaurar o layout original? Tudo que foi editado e salvo será perdido.')) return;
     registrar();
     try {
         localStorage.removeItem(LAYOUT_KEY);
+        localStorage.removeItem(LAYOUT_BASE_KEY);
     } catch (err) {
         /* segue só em memória */
     }
@@ -2655,6 +2906,318 @@ function sincronizarEditor(ativo) {
     atualizarBotoesHistorico();
 }
 
+
+// ============================================
+// FILTRO DE CULTURA (RECEBIMENTO POR GRAO)
+// O grafico empilha ate quatro culturas no mesmo dia. O menu isola uma delas
+// e o resto da secao acompanha: resumo, legenda, eixo, tabela e tooltip.
+// Nada fica guardado em memoria: cada estado (inclusive TODAS) e reconstruido
+// a partir dos data-attributes por cultura das colunas, que sao a fonte.
+// ============================================
+const GRAO_CHAVES = ['milho', 'sorgo', 'trigo', 'soja'];
+const GRAO_VAZIO = '\u2014';
+
+function graoNumero(txt) {
+    const limpo = String(txt).replace(/\./g, '').replace(',', '.').replace(/[^0-9.]/g, '');
+    const n = parseFloat(limpo);
+    return isFinite(n) ? n : 0;
+}
+
+// "900 t \u00b7 prog 950 t" ou "\u2014 \u00b7 prog 1.100 t";
+// atributo ausente = a cultura nao veio naquele dia
+function lerCultura(col, chave) {
+    const bruto = col.dataset[chave];
+    if (!bruto) return null;
+    const partes = String(bruto).split('\u00b7');
+    const real = partes[0];
+    const prog = partes[1] || '';
+    return {
+        real: real.indexOf(GRAO_VAZIO) >= 0 ? null : graoNumero(real),
+        prog: !prog || prog.indexOf(GRAO_VAZIO) >= 0 ? null : graoNumero(prog)
+    };
+}
+
+function graoAtivoDe(secao) {
+    const btn = secao ? secao.querySelector('.grao-filter-btn.is-active') : null;
+    return btn ? btn.dataset.grao : 'todas';
+}
+
+// soma das culturas escolhidas na coluna; null = sem dado (dia futuro)
+function totaisDaColuna(col, grao) {
+    const chaves = grao === 'todas' ? GRAO_CHAVES : [grao];
+    const itens = [];
+    let real = null;
+    let prog = null;
+    chaves.forEach((k) => {
+        const d = lerCultura(col, k);
+        if (!d) return;
+        itens.push({ chave: k, real: d.real, prog: d.prog });
+        if (d.real != null) real = (real || 0) + d.real;
+        if (d.prog != null) prog = (prog || 0) + d.prog;
+    });
+    return { itens: itens, real: real, prog: prog };
+}
+
+function pintarBarra(bar, itens, campo, total, max, comCap) {
+    if (!bar) return;
+
+    Array.prototype.slice.call(bar.querySelectorAll('.forecast-seg')).forEach((seg) => seg.remove());
+
+    const cap = bar.querySelector('.forecast-cap');
+    const vazia = total == null || total <= 0 || !(max > 0);
+    bar.classList.toggle('is-empty', vazia);
+    bar.classList.toggle('is-stack', !vazia);
+    bar.style.height = vazia ? '0%' : Math.min(100, (total / max) * 100).toFixed(1) + '%';
+
+    if (comCap && !vazia) {
+        if (cap) {
+            escreverTexto(cap, formatTon(total));
+        } else {
+            bar.insertBefore(novo('span', 'forecast-cap', formatTon(total)), bar.firstChild);
+        }
+    } else if (cap) {
+        cap.remove();
+    }
+
+    if (vazia) return;
+
+    // a pilha desenha de cima para baixo: a ultima cultura da lista fica na base
+    itens.slice().reverse().forEach((item) => {
+        const valor = item[campo];
+        if (valor == null || valor <= 0) return;
+        const seg = novo('i', 'forecast-seg forecast-seg--' + item.chave);
+        seg.style.height = ((valor / total) * 100).toFixed(1) + '%';
+        bar.appendChild(seg);
+    });
+}
+
+function pintarEixo(chart, max) {
+    const spans = chart.querySelectorAll('.forecast-yaxis span');
+    chart.dataset.chartMax = String(max);
+    const passos = spans.length - 1;
+    if (passos < 1) return;
+    spans.forEach((span, i) => {
+        escreverTexto(span, formatTon(max * (passos - i) / passos));
+    });
+}
+
+// com uma cultura so, o eixo cheio deixaria as barras rasteiras: a escala
+// encolhe em degraus redondos, nunca passando do topo original
+function escalaPara(pico, base) {
+    if (!(pico > 0)) return base;
+    const passo = base / 6;
+    const alvo = Math.ceil(pico / passo) * passo;
+    return Math.min(base, Math.max(passo, alvo));
+}
+
+function atualizarResumoGrao(secao, grao) {
+    const stats = secao.querySelectorAll('.forecast-summary .forecast-stat-value');
+    if (stats.length < 4) return;
+
+    const hoje = secao.querySelector('.forecast-col.is-today');
+    const passados = secao.querySelectorAll('.forecast-col.is-passado');
+    const t = hoje ? totaisDaColuna(hoje, grao) : { real: null, prog: null };
+
+    escreverTexto(stats[0], t.real == null ? GRAO_VAZIO : formatTon(t.real) + ' t');
+    escreverTexto(stats[1], t.prog == null ? GRAO_VAZIO : formatTon(t.prog) + ' t');
+    escreverTexto(stats[2], t.real == null || !(t.prog > 0)
+        ? GRAO_VAZIO
+        : Math.round((t.real / t.prog) * 100) + '%');
+
+    let soma = 0;
+    passados.forEach((col) => {
+        soma += totaisDaColuna(col, grao).real || 0;
+    });
+    escreverTexto(stats[3], passados.length ? formatTon(soma / passados.length) + ' t' : GRAO_VAZIO);
+}
+
+function atualizarTabelaGrao(secao, grao) {
+    const tabela = secao.querySelector('.forecast-table .data-table');
+    if (!tabela) return;
+
+    const cabecalhos = Array.prototype.slice.call(tabela.querySelectorAll('thead th'));
+    // a posicao de cada cultura sai do proprio cabecalho, nao de indice fixo
+    const escondida = {};
+    cabecalhos.forEach((th, i) => {
+        const nome = textoSemAlca(th).trim().toLowerCase();
+        const cultura = GRAO_CHAVES.filter((k) => nome.indexOf(k) === 0)[0];
+        if (cultura) escondida[i] = grao !== 'todas' && cultura !== grao;
+        th.classList.toggle('is-oculto', !!escondida[i]);
+    });
+
+    const colunas = secao.querySelectorAll('.forecast-col');
+    tabela.querySelectorAll('tbody tr').forEach((tr, i) => {
+        const celulas = tr.querySelectorAll('td');
+        celulas.forEach((td, j) => td.classList.toggle('is-oculto', !!escondida[j]));
+
+        const col = colunas[i];
+        if (!col || celulas.length < 3) return;
+
+        const d = totaisDaColuna(col, grao);
+        const real = celulas[celulas.length - 3];
+        const prog = celulas[celulas.length - 2];
+        const pct = celulas[celulas.length - 1];
+
+        escreverTexto(real, d.real == null ? GRAO_VAZIO : formatTon(d.real) + ' t');
+        escreverTexto(prog, d.prog == null ? GRAO_VAZIO : formatTon(d.prog) + ' t');
+        real.classList.toggle('is-vazio', d.real == null);
+        prog.classList.toggle('is-vazio', d.prog == null);
+
+        const temPct = d.real != null && d.prog > 0;
+        const valor = temPct ? Math.round((d.real / d.prog) * 100) : 0;
+        escreverTexto(pct, temPct ? valor + '%' : GRAO_VAZIO);
+        pct.classList.toggle('pct-ok', temPct && valor >= 90);
+        pct.classList.toggle('pct-mid', temPct && valor < 90);
+    });
+}
+
+function aplicarFiltroGrao(secao, grao) {
+    const chart = secao.querySelector('.forecast-chart--dias');
+    const colunas = secao.querySelectorAll('.forecast-col');
+    if (!chart || !colunas.length) return;
+
+    // o topo do eixo de TODAS e a referencia; o filtro so encolhe a escala
+    if (!chart.dataset.chartMaxBase) {
+        chart.dataset.chartMaxBase = chart.dataset.chartMax || String(FORECAST_MAX);
+    }
+    const base = Number(chart.dataset.chartMaxBase) || FORECAST_MAX;
+
+    const dados = [];
+    let pico = 0;
+    colunas.forEach((col) => {
+        const d = totaisDaColuna(col, grao);
+        dados.push(d);
+        pico = Math.max(pico, d.real || 0, d.prog || 0);
+    });
+
+    const max = escalaPara(pico, base);
+    pintarEixo(chart, max);
+
+    colunas.forEach((col, i) => {
+        const d = dados[i];
+        const temReal = d.real != null && d.real > 0;
+        pintarBarra(col.querySelector('.forecast-bar--real'), d.itens, 'real', d.real, max, true);
+        pintarBarra(col.querySelector('.forecast-bar--prog'), d.itens, 'prog', d.prog, max, !temReal);
+        col.dataset.recebido = d.real == null ? GRAO_VAZIO : formatTon(d.real) + ' t';
+        col.dataset.programado = d.prog == null ? GRAO_VAZIO : formatTon(d.prog) + ' t';
+    });
+
+    secao.querySelectorAll('.chart-legend .legend-item').forEach((item) => {
+        const texto = textoSemAlca(item).trim().toLowerCase();
+        const cultura = GRAO_CHAVES.filter((k) => texto.indexOf(k) >= 0)[0];
+        item.classList.toggle('is-oculto', !!cultura && grao !== 'todas' && cultura !== grao);
+    });
+
+    atualizarResumoGrao(secao, grao);
+    atualizarTabelaGrao(secao, grao);
+
+    // cultura sem nenhum dia na janela: o botao segue clicavel, mas avisa
+    secao.querySelectorAll('.grao-filter-btn').forEach((btn) => {
+        const k = btn.dataset.grao;
+        if (k === 'todas') return;
+        let tem = false;
+        colunas.forEach((col) => {
+            if (col.dataset[k]) tem = true;
+        });
+        btn.classList.toggle('is-vazia', !tem);
+    });
+}
+
+// O selo "POR QUE?" saiu dos cartoes: a explicacao continua no mouse over,
+// sem o rotulo ocupando espaco. No atingimento do dia a conta saiu inteira,
+// porque era do dia todo e nao acompanhava o filtro de cultura. Layout salvo
+// antes disso ainda traz as duas coisas, entao elas caem na entrada.
+function limparSelosPorQue(raiz) {
+    const alvo = raiz || document;
+    alvo.querySelectorAll('.motivo-hint').forEach((selo) => selo.remove());
+    alvo.querySelectorAll('.forecast-section .forecast-stat').forEach((stat) => {
+        stat.classList.remove('forecast-stat--motivo');
+        stat.removeAttribute('tabindex');
+        Array.prototype.slice.call(stat.attributes).forEach((attr) => {
+            if (attr.name.indexOf('data-motivo') === 0) stat.removeAttribute(attr.name);
+        });
+    });
+}
+
+// Layout guardado antes deste menu existir traz a secao sem o filtro: o
+// HTML salvo substitui o original inteiro. Em vez de exigir um reset de
+// layout, o menu e remontado por cima do que veio do armazenamento.
+function garantirFiltroGrao(raiz) {
+    const alvo = raiz || document;
+    alvo.querySelectorAll('.forecast-section').forEach((secao) => {
+        if (!secao.querySelector('.forecast-chart--dias')) return;
+        if (secao.querySelector('[data-grao-filter]')) return;
+
+        const cabeca = secao.querySelector('.section-head');
+        if (!cabeca) return;
+
+        const menu = novo('div', 'grao-filter');
+        menu.dataset.graoFilter = '';
+        menu.setAttribute('role', 'group');
+        menu.setAttribute('aria-label', 'Filtrar por cultura');
+        menu.appendChild(botaoGrao('todas', 'TODAS', true));
+        GRAO_CHAVES.forEach((k) => {
+            menu.appendChild(botaoGrao(k, k.toUpperCase(), false));
+        });
+
+        // o menu divide a barra com o botao de tabela, quando ele existe
+        const tabela = cabeca.querySelector('.btn-table-toggle');
+        const grupo = novo('div', 'section-head-tools');
+        cabeca.appendChild(grupo);
+        grupo.appendChild(menu);
+        if (tabela) grupo.appendChild(tabela);
+    });
+}
+
+function botaoGrao(chave, rotulo, ativo) {
+    const btn = novo('button', 'grao-filter-btn' + (ativo ? ' is-active' : ''));
+    btn.type = 'button';
+    btn.dataset.grao = chave;
+    btn.setAttribute('aria-pressed', String(ativo));
+
+    if (chave !== 'todas') {
+        const NS = 'http://www.w3.org/2000/svg';
+        const svg = document.createElementNS(NS, 'svg');
+        svg.setAttribute('class', 'grao-icon grao-icon--' + chave);
+        svg.setAttribute('aria-hidden', 'true');
+        const uso = document.createElementNS(NS, 'use');
+        uso.setAttribute('href', '#ico-' + chave);
+        svg.appendChild(uso);
+        btn.appendChild(svg);
+    }
+
+    btn.appendChild(document.createTextNode(rotulo));
+    return btn;
+}
+
+function selecionarGrao(secao, grao) {
+    secao.querySelectorAll('.grao-filter-btn').forEach((btn) => {
+        const ativo = btn.dataset.grao === grao;
+        btn.classList.toggle('is-active', ativo);
+        btn.setAttribute('aria-pressed', String(ativo));
+    });
+    aplicarFiltroGrao(secao, grao);
+    hideVizTooltip();
+    hideMotivo();
+    scheduleFit();
+}
+
+document.addEventListener('click', (e) => {
+    const btn = e.target instanceof Element ? e.target.closest('.grao-filter-btn') : null;
+    if (!btn || isEditing()) return;
+    const secao = btn.closest('.forecast-section');
+    if (secao) selecionarGrao(secao, btn.dataset.grao || 'todas');
+});
+
+// A edicao mexe no HTML e o salva: o layout volta ao estado inteiro antes,
+// senao o recorte de uma cultura viraria o dado guardado.
+function limparFiltrosGrao() {
+    document.querySelectorAll('.forecast-section').forEach((secao) => {
+        if (!secao.querySelector('[data-grao-filter]')) return;
+        if (graoAtivoDe(secao) !== 'todas') selecionarGrao(secao, 'todas');
+    });
+}
+
 // ============================================
 // ATALHOS
 // ============================================
@@ -2722,7 +3285,179 @@ document.addEventListener('dragend', () => {
 if (palco) {
     layoutOriginal = limparHTML(palco);
     editorPronto = true;
-    carregarLayout();
+    if (carregarLayout()) reidratarMotivos();
+    limparSelosPorQue(palco);
+    garantirFiltroGrao(palco);
     desenharRoscas(palco);
     sincronizarEditor(isEditing());
 }
+
+// ============================================
+// HORÁRIO DE PONTA (AERAÇÃO)
+// ============================================
+// A ponta é a janela cara da tarifa: 18h às 21h em dias úteis. A tela da
+// aeração precisa responder "estamos dentro dela?" de longe, então o
+// cartão, o selo e a régua de 24h são repintados a cada segundo. Os
+// alvos são procurados a cada tique porque o editor duplica e recarrega
+// telas — guardar referências fixas apontaria para nós já descartados.
+const PONTA_INICIO = 18;
+const PONTA_FIM = 21;
+
+function ehDiaUtil(data) {
+    const dia = data.getDay();
+    return dia >= 1 && dia <= 5;
+}
+
+function emPonta(agora) {
+    const h = agora.getHours();
+    return ehDiaUtil(agora) && h >= PONTA_INICIO && h < PONTA_FIM;
+}
+
+// Próxima virada: o fim da ponta quando estamos dentro dela, senão a
+// próxima abertura de janela (pulando fim de semana).
+function proximaViradaPonta(agora) {
+    const alvo = new Date(agora);
+    alvo.setMinutes(0, 0, 0);
+    if (emPonta(agora)) {
+        alvo.setHours(PONTA_FIM);
+        return alvo;
+    }
+    if (!ehDiaUtil(agora) || agora.getHours() >= PONTA_FIM) {
+        alvo.setDate(alvo.getDate() + 1);
+    }
+    alvo.setHours(PONTA_INICIO);
+    while (!ehDiaUtil(alvo)) {
+        alvo.setDate(alvo.getDate() + 1);
+    }
+    return alvo;
+}
+
+function formatarContagem(ms) {
+    const total = Math.max(0, Math.floor(ms / 1000));
+    const dias = Math.floor(total / 86400);
+    const horas = String(Math.floor((total % 86400) / 3600)).padStart(2, '0');
+    const minutos = String(Math.floor((total % 3600) / 60)).padStart(2, '0');
+    const segundos = String(total % 60).padStart(2, '0');
+    if (dias > 0) return `${dias}d ${horas}:${minutos}`;
+    return `${horas}:${minutos}:${segundos}`;
+}
+
+function atualizarPonta() {
+    const agora = new Date();
+    const dentro = emPonta(agora);
+    const contagem = formatarContagem(proximaViradaPonta(agora) - agora);
+    const minutoDoDia = agora.getHours() * 60 + agora.getMinutes();
+    const posicao = (minutoDoDia / 1440) * 100;
+
+    document.querySelectorAll('[data-ponta-card]').forEach((el) => {
+        el.classList.toggle('ponta-on', dentro);
+    });
+    document.querySelectorAll('[data-ponta-tarifa]').forEach((el) => {
+        el.textContent = dentro ? 'EM PONTA' : 'FORA DE PONTA';
+    });
+    document.querySelectorAll('[data-ponta-contagem-label]').forEach((el) => {
+        el.textContent = dentro ? 'SAI DA PONTA EM' : 'ENTRA EM PONTA EM';
+    });
+    document.querySelectorAll('[data-ponta-contagem]').forEach((el) => {
+        el.textContent = contagem;
+    });
+    document.querySelectorAll('[data-ponta-status]').forEach((el) => {
+        el.classList.toggle('ponta-on', dentro);
+    });
+    document.querySelectorAll('[data-ponta-badge]').forEach((el) => {
+        el.textContent = dentro ? 'EM PONTA' : 'FORA DE PONTA';
+    });
+    document.querySelectorAll('[data-ponta-msg]').forEach((el) => {
+        el.textContent = dentro
+            ? 'Zonas A e C desligadas · 30 kW fora da ponta · retorno às 21:00'
+            : 'Ventiladores liberados · ponta das 18h às 21h (seg–sex)';
+    });
+    document.querySelectorAll('[data-ponta-agora]').forEach((el) => {
+        el.style.left = `${posicao}%`;
+    });
+}
+
+setInterval(atualizarPonta, 1000);
+atualizarPonta();
+
+// ============================================
+// RELÓGIO DE AERAÇÃO POR CULTURA
+// ============================================
+// Cada cartão carrega o ciclo nos próprios atributos: a meta em horas, as
+// horas já ventiladas quando a tela subiu e o estado da zona. A contagem
+// anda a partir do carregamento — na planta o acumulado viria do CLP, aqui
+// ele avança sozinho para o mostrador não congelar no videowall.
+// Zonas marcadas com data-pausa-ponta param sozinhas das 18h às 21h,
+// acompanhando o corte de carga descrito na tabela ao lado.
+const RELOGIO_INICIO = Date.now();
+
+function formatarTempoRelogio(segundos) {
+    const total = Math.max(0, Math.floor(segundos));
+    const horas = String(Math.floor(total / 3600)).padStart(2, '0');
+    const minutos = String(Math.floor((total % 3600) / 60)).padStart(2, '0');
+    const restoSeg = String(total % 60).padStart(2, '0');
+    return `${horas}:${minutos}:${restoSeg}`;
+}
+
+// O que falta é leitura de relance: horas e minutos bastam, segundos só poluem.
+function formatarRestanteRelogio(segundos) {
+    const total = Math.max(0, Math.round(segundos));
+    const horas = Math.floor(total / 3600);
+    const minutos = Math.floor((total % 3600) / 60);
+    if (horas > 0) return `faltam ${horas}h${String(minutos).padStart(2, '0')}`;
+    return `faltam ${minutos}min`;
+}
+
+function atualizarRelogiosAeracao() {
+    const dentroPonta = emPonta(new Date());
+    const decorrido = (Date.now() - RELOGIO_INICIO) / 1000;
+
+    document.querySelectorAll('[data-relogio]').forEach((card) => {
+        // o estado escrito no HTML é a fonte; o efetivo pode virar pausado
+        // pela ponta ou concluído quando a meta fecha
+        if (!card.dataset.estadoBase) card.dataset.estadoBase = card.dataset.estado || 'ativo';
+        const base = card.dataset.estadoBase;
+        const metaSeg = Math.max(1, paraNumero(card.dataset.metaH) * 3600);
+        const pausadoPorPonta = base === 'ativo' && card.dataset.pausaPonta === '1' && dentroPonta;
+        const correndo = base === 'ativo' && !pausadoPorPonta;
+
+        const acumulado = Math.min(
+            metaSeg,
+            paraNumero(card.dataset.acumuladoH) * 3600 + (correndo ? decorrido : 0)
+        );
+        const fracao = Math.max(0, Math.min(1, acumulado / metaSeg));
+        const concluido = acumulado >= metaSeg;
+
+        let estado = base;
+        let rotulo = 'PARADO';
+        if (concluido) {
+            estado = 'concluido';
+            rotulo = 'CONCLUÍDO';
+        } else if (pausadoPorPonta) {
+            estado = 'pausado';
+            rotulo = 'PAUSADO · PONTA';
+        } else if (base === 'pausado') {
+            rotulo = 'PAUSADO';
+        } else if (base === 'ativo') {
+            rotulo = 'AERANDO';
+        }
+
+        card.dataset.estado = estado;
+        card.style.setProperty('--relogio-angulo', `${(fracao * 360).toFixed(2)}deg`);
+        if (card.dataset.motivo && !concluido) card.title = card.dataset.motivo;
+
+        escreverTexto(card.querySelector('[data-relogio-tempo]'), formatarTempoRelogio(acumulado));
+        escreverTexto(
+            card.querySelector('[data-relogio-meta]'),
+            `de ${fmtNum(paraNumero(card.dataset.metaH))}h`
+        );
+        escreverTexto(card.querySelector('[data-relogio-estado]'), rotulo);
+        escreverTexto(
+            card.querySelector('[data-relogio-restante]'),
+            concluido ? 'meta cumprida' : formatarRestanteRelogio(metaSeg - acumulado)
+        );
+    });
+}
+
+setInterval(atualizarRelogiosAeracao, 1000);
+atualizarRelogiosAeracao();

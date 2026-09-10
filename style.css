@@ -324,6 +324,14 @@ body.theme-light #btnClaro .btn-icon {
     text-transform: uppercase;
 }
 
+/* carimbo abaixo dos KPIs da tela ativa */
+.live-time--tela {
+    display: block;
+    margin: -0.5rem 0 0.875rem;
+    text-align: right;
+    opacity: 0.85;
+}
+
 /* ============================================
    CONTAINER LAYOUT
    ============================================ */
@@ -1053,6 +1061,26 @@ body.sidebar-collapsed .sidebar-reveal {
     color: var(--faint);
     font-weight: 600;
     letter-spacing: 0.08em;
+}
+
+/* Capacidade x estoque: capacidade total da cultura ao lado do nome */
+.stack-chart--capacidade .stack-label {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    width: 6.75rem;
+}
+
+.stack-chart--capacidade .stack-cap {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.stack-chart--capacidade .stack-axis {
+    margin-left: 7.5rem;
 }
 
 .stack-hint {
@@ -1796,6 +1824,92 @@ body.theme-light ::-webkit-scrollbar-thumb:hover {
     color: var(--accent);
 }
 
+/* ============================================
+   FILTRO DE CULTURA (RECEBIMENTO POR GRAO)
+   O grafico empilha ate quatro culturas no mesmo dia; o menu isola uma
+   delas e o restante da secao (resumo, legenda, tabela) acompanha.
+   ============================================ */
+.section-head-tools {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+/* o titulo desta secao e longo: em tela estreita o menu desce em vez de
+   espremer as duas coisas na mesma linha */
+.forecast-section .section-head {
+    flex-wrap: wrap;
+}
+
+.forecast-section .section-head h3 {
+    flex: 1 1 16rem;
+    min-width: 0;
+}
+
+.grao-filter {
+    display: flex;
+    align-items: center;
+    gap: 0.1875rem;
+    padding: 0.1875rem;
+    background: var(--hover);
+    border: 1px solid var(--panel-border);
+    border-radius: 999px;
+}
+
+.grao-filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3125rem;
+    padding: 0.25rem 0.625rem;
+    background: transparent;
+    border: 0;
+    border-radius: 999px;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.grao-filter-btn .grao-icon {
+    width: 0.875rem;
+    height: 0.875rem;
+    opacity: 0.75;
+    transition: opacity 0.2s ease;
+}
+
+.grao-filter-btn:hover {
+    color: var(--text);
+    background: var(--panel-border);
+}
+
+.grao-filter-btn.is-active {
+    background: var(--accent-soft);
+    color: var(--accent);
+    box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.grao-filter-btn.is-active .grao-icon {
+    opacity: 1;
+}
+
+/* sem dado da cultura em nenhum dia da janela: o botao continua legivel,
+   mas avisa que a serie esta vazia */
+.grao-filter-btn.is-vazia {
+    opacity: 0.4;
+}
+
+/* legenda e colunas da tabela que nao pertencem a cultura escolhida saem
+   de cena em vez de ficarem zeradas */
+.forecast-section .legend-item.is-oculto,
+.forecast-section .forecast-table .is-oculto {
+    display: none;
+}
+
 .forecast-summary {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2296,6 +2410,22 @@ body.theme-light {
 
 .kpi-grid--six {
     grid-template-columns: repeat(6, 1fr);
+}
+
+.kpi-grid--seven {
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.kpi-grid--eight {
+    grid-template-columns: repeat(8, 1fr);
+}
+
+.kpi-grid--three {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.kpi-grid--four {
+    grid-template-columns: repeat(4, 1fr);
 }
 
 .kpi-grid--six .kpi-card {
@@ -3246,7 +3376,7 @@ body.theme-light .kpi-flag--alerta {
    ============================================ */
 .silo-groups {
     display: grid;
-    grid-template-columns: 3fr 2fr 2fr 1fr 1fr;
+    grid-template-columns: 3fr 2fr 2fr 1fr 2fr;
     gap: 0.875rem;
     flex: 1 1 auto;
     min-height: 0;
@@ -3548,8 +3678,10 @@ body.theme-light .kpi-flag--alerta {
     .sidebar,
     .sidebar-reveal,
     .btn-table-toggle,
+    .grao-filter,
     .alerts-page,
-    .viz-tooltip {
+    .viz-tooltip,
+    .motivo-tip {
         display: none !important;
     }
 
@@ -3980,15 +4112,15 @@ body.theme-light .kpi-flag--alerta {
     flex: 1 1 auto;
     min-height: 0;
     display: grid;
-    grid-template-columns: 8.5rem minmax(0, 1fr);
+    grid-template-columns: 7.5rem minmax(0, 1fr);
     gap: 1.125rem;
 }
 
-/* os três dados do ciclo, empilhados como no esboço */
+/* os dados do ciclo (três temperaturas, cultura e início), empilhados como no esboço */
 .secador-chips {
     display: grid;
     grid-auto-rows: minmax(0, 1fr);
-    gap: 0.5rem;
+    gap: 0.375rem;
     min-height: 0;
 }
 
@@ -3998,14 +4130,14 @@ body.theme-light .kpi-flag--alerta {
     justify-content: center;
     gap: 1px;
     min-height: 0;
-    padding: 0.375rem 0.625rem;
+    padding: 0.25rem 0.5rem;
     border-radius: 8px;
     background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
     box-shadow: var(--shadow-soft);
 }
 
 .secador-chip-label {
-    font-size: 0.55rem;
+    font-size: 0.5rem;
     font-weight: 700;
     letter-spacing: 0.11em;
     text-transform: uppercase;
@@ -4013,7 +4145,7 @@ body.theme-light .kpi-flag--alerta {
 }
 
 .secador-chip-value {
-    font-size: 0.95rem;
+    font-size: 0.8rem;
     font-weight: 700;
     line-height: 1.15;
     color: #fff;
@@ -4075,6 +4207,129 @@ body.theme-light .kpi-flag--alerta {
 
 .secador-linha--umi {
     stroke: var(--viz-real);
+}
+
+/* ============================================
+   FASES DO TURNO (07h as 17h)
+   O eixo deixou de ser o tempo relativo do ciclo e passou
+   a ser o turno inteiro. As faixas de fundo dizem em que
+   etapa o secador estava em cada hora - carga, aquecimento,
+   secagem e resfriamento -, porque a linha de temperatura
+   sozinha nao separava troca de lote de queda de regime.
+   ============================================ */
+.secador-fases {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: 4px;
+}
+
+.secador-fase {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 2px;
+    box-shadow: inset 1px 0 0 var(--row-line);
+    overflow: hidden;
+}
+
+.secador-fase:first-child {
+    box-shadow: none;
+}
+
+.secador-fase b {
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--faint);
+    white-space: nowrap;
+}
+
+/* faixa curta demais para o rotulo: fica so a cor, lida pela legenda */
+.secador-fase.is-curta b {
+    display: none;
+}
+
+.secador-fase--carga {
+    background: rgba(142, 163, 186, 0.14);
+}
+
+.secador-fase--aquec {
+    background: rgba(243, 156, 18, 0.13);
+}
+
+.secador-fase--secagem {
+    background: rgba(46, 204, 113, 0.10);
+}
+
+.secador-fase--resfr {
+    background: rgba(59, 130, 246, 0.13);
+}
+
+body.theme-light .secador-fase--carga {
+    background: rgba(60, 70, 80, 0.08);
+}
+
+body.theme-light .secador-fase--aquec {
+    background: rgba(243, 156, 18, 0.18);
+}
+
+body.theme-light .secador-fase--secagem {
+    background: rgba(46, 204, 113, 0.16);
+}
+
+body.theme-light .secador-fase--resfr {
+    background: rgba(61, 111, 165, 0.14);
+}
+
+/* legenda das fases no cabecalho da secao */
+.fase-legenda {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+.fase-legenda-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.fase-legenda-item::before {
+    content: "";
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 3px;
+    border: 1px solid var(--card-border);
+}
+
+.fase-legenda-item--carga::before {
+    background: rgba(142, 163, 186, 0.35);
+}
+
+.fase-legenda-item--aquec::before {
+    background: rgba(243, 156, 18, 0.45);
+}
+
+.fase-legenda-item--secagem::before {
+    background: rgba(46, 204, 113, 0.4);
+}
+
+.fase-legenda-item--resfr::before {
+    background: rgba(59, 130, 246, 0.45);
 }
 
 /* rótulo na ponta da linha, alinhado com o último ponto */
@@ -4174,10 +4429,17 @@ body.theme-light .kpi-flag--alerta {
     background: linear-gradient(90deg, var(--accent) 0%, var(--accent-strong) 100%);
 }
 
+.prod-secador-chips {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.375rem;
+    min-height: 0;
+}
+
 .prod-secador-foot {
     display: flex;
     align-items: baseline;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 0.75rem;
 }
 
@@ -5066,4 +5328,462 @@ body.edit-mode .is-selected {
     .resize-handle {
         display: none !important;
     }
+}
+
+/* ============================================
+   POR QUE ESTA ATRASADO
+   Todo indicador de atraso da recepcao carrega a explicacao junto:
+   o mouse over abre a conta que fecha o desvio (parcelas + nota de
+   contexto), sem selo ocupando espaco no cartao.
+   ============================================ */
+.kpi-card--motivo,
+.forecast-stat--motivo {
+    position: relative;
+    cursor: help;
+}
+
+.kpi-card--motivo:focus-visible,
+.forecast-stat--motivo:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.motivo-tip {
+    position: fixed;
+    z-index: 70;
+    width: max-content;
+    max-width: 23rem;
+    padding: 0.6875rem 0.8125rem;
+    background: var(--header-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    box-shadow: var(--shadow-soft);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.12s ease;
+}
+
+.motivo-tip.is-visible {
+    opacity: 1;
+}
+
+.motivo-tip-titulo {
+    display: block;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+.motivo-tip-resumo {
+    display: block;
+    margin-top: 0.1875rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.motivo-tip-resumo:empty {
+    display: none;
+}
+
+.motivo-tip-lista {
+    margin: 0.5rem 0 0;
+    padding: 0.5rem 0 0;
+    border-top: 1px solid var(--panel-border);
+    list-style: none;
+    display: grid;
+    gap: 0.3125rem;
+}
+
+.motivo-tip-lista:empty {
+    display: none;
+}
+
+.motivo-tip-item {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.motivo-tip-rotulo {
+    font-size: 0.68rem;
+    color: var(--muted);
+}
+
+.motivo-tip-valor {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.motivo-tip-desvio {
+    padding: 0.0625rem 0.375rem;
+    border-radius: 999px;
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    background: rgba(148, 163, 184, 0.16);
+    color: var(--muted);
+}
+
+.motivo-tip-desvio:empty {
+    display: none;
+}
+
+.motivo-tip-item.is-ruim .motivo-tip-desvio {
+    background: rgba(231, 76, 60, 0.18);
+    color: var(--danger);
+}
+
+.motivo-tip-item.is-bom .motivo-tip-desvio {
+    background: rgba(46, 204, 113, 0.18);
+    color: var(--ok);
+}
+
+body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
+    background: rgba(179, 38, 30, 0.12);
+    color: #b3261e;
+}
+
+.motivo-tip-nota {
+    display: block;
+    margin-top: 0.5rem;
+    padding-top: 0.4375rem;
+    border-top: 1px solid var(--panel-border);
+    font-size: 0.63rem;
+    line-height: 1.45;
+    color: var(--muted);
+}
+
+.motivo-tip-nota:empty {
+    display: none;
+}
+
+@media (max-width: 900px) {
+    .motivo-tip {
+        max-width: 16rem;
+    }
+}
+
+/* ============================================
+   HORÁRIO DE PONTA — AERAÇÃO
+   Ponta = 18h–21h em dias úteis. Os ventiladores das zonas não
+   críticas saem nessa janela, então a tela precisa dizer, sem
+   ninguém ter que olhar o relógio, se estamos dentro dela.
+   ============================================ */
+.kpi-value--tarifa {
+    font-size: 1.05rem;
+    letter-spacing: 0.06em;
+    font-weight: 800;
+    color: var(--ok);
+}
+
+.kpi-card.ponta-on {
+    border-color: rgba(243, 156, 18, 0.45);
+    background: linear-gradient(180deg, rgba(243, 156, 18, 0.16) 0%, rgba(243, 156, 18, 0.04) 100%);
+}
+
+.kpi-card.ponta-on .kpi-value--tarifa {
+    color: var(--warn);
+}
+
+.ponta-status {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    flex-wrap: wrap;
+    margin: 0.25rem 0 0.875rem;
+}
+
+.ponta-badge {
+    padding: 0.25rem 0.625rem;
+    border-radius: 999px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    white-space: nowrap;
+    color: var(--ok);
+    background: rgba(46, 204, 113, 0.14);
+    border: 1px solid rgba(46, 204, 113, 0.4);
+}
+
+.ponta-status.ponta-on .ponta-badge {
+    color: var(--warn);
+    background: rgba(243, 156, 18, 0.16);
+    border-color: rgba(243, 156, 18, 0.45);
+}
+
+.ponta-msg {
+    font-size: 0.72rem;
+    color: var(--muted);
+}
+
+.ponta-timeline {
+    margin-bottom: 0.875rem;
+}
+
+.ponta-track {
+    position: relative;
+    height: 0.75rem;
+    border-radius: 999px;
+    background: var(--row-bg);
+    border: 1px solid var(--row-line);
+    overflow: hidden;
+}
+
+/* 18h–21h em uma régua de 24h: 75% de deslocamento, 12,5% de largura */
+.ponta-band {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 75%;
+    width: 12.5%;
+    background: linear-gradient(180deg, rgba(243, 156, 18, 0.6) 0%, rgba(243, 156, 18, 0.3) 100%);
+}
+
+.ponta-now {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 0.15rem;
+    margin-left: -0.075rem;
+    background: var(--text);
+    box-shadow: 0 0 0.375rem rgba(0, 0, 0, 0.45);
+}
+
+.ponta-scale {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.3125rem;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+}
+
+/* ============================================
+   RELÓGIO DE AERAÇÃO POR CULTURA
+   Um mostrador por grão: o arco (conic-gradient) cobre a fração da meta
+   de horas já cumprida, o ponteiro marca o mesmo ângulo e o centro traz
+   o tempo corrido. A cor sai do token do grão, então o cartão se lê pela
+   mesma paleta usada nas barras e legendas das outras telas.
+   ============================================ */
+.relogios-section .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.relogios-section .section-head h3 {
+    margin-bottom: 0;
+}
+
+.relogio-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.875rem;
+}
+
+.relogio-card {
+    --relogio-cor: var(--accent);
+    --relogio-angulo: 0deg;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.875rem 1rem;
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.relogio-card--milho {
+    --relogio-cor: var(--grao-milho);
+}
+
+.relogio-card--sorgo {
+    --relogio-cor: var(--grao-sorgo);
+}
+
+.relogio-card--trigo {
+    --relogio-cor: var(--grao-trigo);
+}
+
+.relogio-card--soja {
+    --relogio-cor: var(--grao-soja);
+}
+
+.relogio-dial {
+    position: relative;
+    flex: 0 0 auto;
+    width: 6.5rem;
+    height: 6.5rem;
+    border-radius: 50%;
+}
+
+/* arco do progresso: parte preenchida na cor do grão, resto em trilho */
+.relogio-arco {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(var(--relogio-cor) 0deg var(--relogio-angulo), var(--row-line) var(--relogio-angulo) 360deg);
+    transition: background 0.4s linear;
+}
+
+/* 12 marcas de hora, como num relógio de parede */
+.relogio-marcas {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: repeating-conic-gradient(var(--bg-top) 0deg 1.4deg, transparent 1.4deg 30deg);
+    -webkit-mask: radial-gradient(circle closest-side, transparent 0 66%, #000 66% 100%);
+    mask: radial-gradient(circle closest-side, transparent 0 66%, #000 66% 100%);
+    opacity: 0.75;
+}
+
+.relogio-ponteiro {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0.125rem;
+    height: 2.4rem;
+    margin-left: -0.0625rem;
+    border-radius: 999px;
+    background: var(--text);
+    transform-origin: 50% 100%;
+    transform: translateY(-100%) rotate(var(--relogio-angulo));
+    transition: transform 0.4s linear;
+}
+
+.relogio-ponteiro::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -0.1875rem;
+    width: 0.375rem;
+    height: 0.375rem;
+    margin-left: -0.1875rem;
+    border-radius: 50%;
+    background: var(--text);
+}
+
+.relogio-centro {
+    position: absolute;
+    inset: 17%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    border-radius: 50%;
+    background: var(--section-bg);
+    box-shadow: inset 0 0 0 1px var(--panel-border);
+}
+
+.relogio-tempo {
+    font-size: 0.92rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.relogio-meta {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--faint);
+}
+
+.relogio-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.relogio-nome {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.relogio-local {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* selo do estado: verde aerando, âmbar pausado, azul concluído */
+.relogio-estado {
+    align-self: flex-start;
+    padding: 0.125rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.58rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    background: var(--row-bg);
+    color: var(--muted);
+}
+
+.relogio-card[data-estado='ativo'] .relogio-estado {
+    background: rgba(46, 204, 113, 0.16);
+    color: var(--ok);
+}
+
+.relogio-card[data-estado='pausado'] .relogio-estado {
+    background: rgba(243, 156, 18, 0.16);
+    color: var(--warn);
+}
+
+.relogio-card[data-estado='concluido'] .relogio-estado {
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
+.relogio-card[data-estado='ativo'] {
+    border-color: rgba(46, 204, 113, 0.34);
+}
+
+.relogio-card[data-estado='pausado'] .relogio-ponteiro,
+.relogio-card[data-estado='concluido'] .relogio-ponteiro {
+    opacity: 0.55;
+}
+
+/* enquanto conta, o mostrador pisca de leve no ritmo do segundo */
+.relogio-card[data-estado='ativo'] .relogio-tempo {
+    animation: relogio-pulso 2s ease-in-out infinite;
+}
+
+@keyframes relogio-pulso {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.72; }
+}
+
+.relogio-restante {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+}
+
+/* no tema claro a marca de hora precisa da cor do fundo claro */
+body.theme-light .relogio-marcas {
+    background: repeating-conic-gradient(var(--section-bg) 0deg 1.4deg, transparent 1.4deg 30deg);
 }
