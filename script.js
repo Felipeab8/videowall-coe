@@ -419,7 +419,10 @@ const EDITABLE_SELECTORS = [
     '.nota-texto',
     '.linha-eixo span',
     '.prod-secador-volume',
-    '.prod-secador-percent'
+    '.prod-secador-percent',
+    '.secador-chip-sub',
+    '.prod-linha-item',
+    '.forecast-meta-line span'
 ];
 
 // Cada informacao tambem anda de lugar: todo texto editavel vira um bloco
@@ -1110,6 +1113,7 @@ function buildVizTooltip() {
 
     const values = {};
     const rows = {};
+    const names = {};
     VIZ_SERIES.forEach((serie) => {
         const row = document.createElement('div');
         row.className = 'viz-tooltip-row' + (serie.total ? ' is-total' : '');
@@ -1131,10 +1135,11 @@ function buildVizTooltip() {
         box.appendChild(row);
         values[serie.chave] = value;
         rows[serie.chave] = row;
+        names[serie.chave] = name;
     });
 
     document.body.appendChild(box);
-    return { box: box, title: title, values: values, rows: rows };
+    return { box: box, title: title, values: values, rows: rows, names: names };
 }
 
 function showVizTooltip(col, clientX, clientY) {
@@ -1148,8 +1153,13 @@ function showVizTooltip(col, clientX, clientY) {
     VIZ_SERIES.forEach((serie) => {
         const dado = col.dataset[serie.chave];
         vizTooltip.values[serie.chave].textContent = dado || '—';
+        // a coluna pode renomear a linha (ex.: "Secador 1 · Milho" no grafico de secagem)
+        const apelido = col.dataset['nome' + serie.chave.charAt(0).toUpperCase() + serie.chave.slice(1)];
+        vizTooltip.names[serie.chave].textContent = apelido || serie.nome;
         if (serie.grao) {
             vizTooltip.rows[serie.chave].hidden = !dado || (grao !== 'todas' && serie.chave !== grao);
+        } else if (!serie.total) {
+            vizTooltip.rows[serie.chave].hidden = !dado;
         }
     });
     vizTooltip.box.classList.add('is-visible');
@@ -1166,7 +1176,7 @@ function hideVizTooltip() {
 }
 
 document.addEventListener('pointermove', (e) => {
-    const col = e.target instanceof Element ? e.target.closest('.forecast-col') : null;
+    const col = e.target instanceof Element ? e.target.closest('.forecast-col, .hora-col[data-dia]') : null;
     if (!col || isEditing()) {
         hideVizTooltip();
         return;
@@ -1175,7 +1185,7 @@ document.addEventListener('pointermove', (e) => {
 });
 
 document.addEventListener('focusin', (e) => {
-    const col = e.target instanceof Element ? e.target.closest('.forecast-col') : null;
+    const col = e.target instanceof Element ? e.target.closest('.forecast-col, .hora-col[data-dia]') : null;
     if (!col || isEditing()) return;
     const rect = col.getBoundingClientRect();
     showVizTooltip(col, rect.left + rect.width / 2, rect.top);

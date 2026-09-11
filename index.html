@@ -1094,39 +1094,84 @@
             </section>
 
             <!-- Screen 4: Produtividade -->
-            <!-- Pendente: o recorte de produtividade/vazao que o Luiz pediu na reuniao dele ainda nao foi incorporado -->
+            <!-- Recorte de produtividade/vazao pedido pelo Luiz: a tela responde "vai bater a meta as 17h?"
+                 e confronta a vazao real com a capacidade nominal de cada secador. -->
             <section class="screen" id="screen-4">
                 <div class="screen-header">
                     <div class="screen-badge">06</div>
                     <div class="screen-title-section">
                         <h2>Produtividade da Secagem</h2>
-                        <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">4</span>s</div>
+                        <div class="screen-meta"><span class="live-dot"></span>LIVE • TURNO 07h–17h • ATUALIZADO HÁ <span class="time-update">4</span>s</div>
                     </div>
                 </div>
 
                 <div class="kpi-grid">
-                    <div class="kpi-card">
+                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Secado hoje por secador"
+                        data-motivo-resumo="1.120 t · meta 1.300 t · faltam 180 t"
+                        data-motivo-lista="Secador 1 (milho)::640 t::meta 750 t · 85%::bom|Secador 2 (sorgo)::480 t::meta 550 t · 87%::bom|Turno decorrido::7h50 de 10h::78% do turno::neutro"
+                        data-motivo-nota="86% da meta com 78% do turno decorrido: secagem adiantada em relação ao ritmo previsto.">
                         <div class="kpi-label">SECADO HOJE</div>
                         <div class="kpi-value">1.120 t</div>
+                        <div class="kpi-meta-row">
+                            <span class="kpi-flag kpi-flag--ok">86% DA META</span>
+                            <span class="kpi-meta-ref">meta 1.300 t · faltam 180 t</span>
+                        </div>
                     </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">META HOJE</div>
-                        <div class="kpi-value">1.300 t</div>
+                    <div class="kpi-card kpi-card--meta kpi-card--motivo ok" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Como a projeção das 17h é calculada"
+                        data-motivo-resumo="1.120 t secadas + 400 t previstas até 17h"
+                        data-motivo-lista="Resto da hora 14h::+21 t::fecha em 135 t::neutro|15h e 16h::+270 t::135 t/h nos dois secadores::neutro|17h::+108 t::Secador 2 em resfriamento::neutro|Fechamento::1.520 t::+220 t sobre a meta::bom"
+                        data-motivo-nota="Projeção considera a vazão atual e as fases já programadas de cada secador.">
+                        <div class="kpi-label">PROJEÇÃO PARA 17h</div>
+                        <div class="kpi-value">1.520 t</div>
+                        <div class="kpi-meta-row">
+                            <span class="kpi-flag kpi-flag--ok">BATE A META</span>
+                            <span class="kpi-meta-ref">+220 t · 3h10 restantes</span>
+                        </div>
                     </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">PERCENTUAL</div>
-                        <div class="kpi-value">86,2%</div>
+                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Vazão atual x capacidade nominal"
+                        data-motivo-resumo="135 t/h · nominal 140 t/h · 96%"
+                        data-motivo-lista="Secador 1 (milho)::78 t/h::nominal 80 t/h · 98%::bom|Secador 2 (sorgo)::57 t/h::nominal 60 t/h · 95%::bom|Média do dia::143 t/h::1.120 t em 7h50::bom"
+                        data-motivo-nota="Nominal é a soma da capacidade de placa dos dois secadores.">
+                        <div class="kpi-label">VAZÃO ATUAL</div>
+                        <div class="kpi-value">135 <span class="kpi-value-ref">t/h</span></div>
+                        <div class="kpi-meta-row">
+                            <span class="kpi-flag kpi-flag--ok">96% DO NOMINAL</span>
+                            <span class="kpi-meta-ref">nominal 140 t/h · média do dia 143 t/h</span>
+                        </div>
                     </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">RITMO MÉDIO</div>
-                        <div class="kpi-value">140 t/h</div>
+                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Umidade de saída x alvo"
+                        data-motivo-resumo="média 12,0% · alvo 13,0–14,0%"
+                        data-motivo-lista="Secador 1 (milho)::18,4% → 11,2%::1,8 pt abaixo do alvo::ruim|Secador 2 (sorgo)::18,8% → 12,9%::0,1 pt abaixo do alvo::neutro|Pontos retirados::6,6 pt::média dos dois::neutro"
+                        data-motivo-nota="Secar além do alvo consome mais fornalha e perde peso na balança de saída.">
+                        <div class="kpi-label">UMIDADE ENTRADA → SAÍDA</div>
+                        <div class="kpi-value">18,6% → 12,0%</div>
+                        <div class="kpi-meta-row">
+                            <span class="kpi-flag kpi-flag--atencao">ABAIXO DO ALVO</span>
+                            <span class="kpi-meta-ref">alvo de saída 13,0–14,0%</span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="split-grid split-grid--prod">
                     <div class="content-section">
-                        <h3>SECAGEM POR HORA</h3>
-                        <div class="forecast-chart forecast-chart--horas" data-chart-max="200">
+                        <div class="section-head">
+                            <h3>SECAGEM POR HORA · POR SECADOR x META</h3>
+                            <div class="chart-legend chart-legend--inline">
+                                <span class="legend-item"><i class="legend-dot legend-dot--milho"></i>S1 · Milho</span>
+                                <span class="legend-item"><i class="legend-dot legend-dot--sorgo"></i>S2 · Sorgo</span>
+                                <span class="legend-item"><i class="legend-dot legend-dot--meta-key"></i>Meta 130 t/h</span>
+                                <span class="legend-item"><i class="legend-dot legend-dot--proj-key"></i>Projeção</span>
+                            </div>
+                        </div>
+                        <div class="forecast-chart forecast-chart--horas forecast-chart--turno" data-chart-max="200">
                             <div class="forecast-yaxis">
                                 <span>200</span>
                                 <span>150</span>
@@ -1137,15 +1182,20 @@
                             <div class="forecast-plot">
                                 <div class="forecast-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
                                 <div class="forecast-cols">
-                                    <div class="hora-col"><div class="forecast-bar forecast-bar--hora" style="height: 71.0%"><span class="forecast-cap">142</span></div></div>
-                                    <div class="hora-col"><div class="forecast-bar forecast-bar--hora" style="height: 77.5%"><span class="forecast-cap">155</span></div></div>
-                                    <div class="hora-col"><div class="forecast-bar forecast-bar--hora" style="height: 74.0%"><span class="forecast-cap">148</span></div></div>
-                                    <div class="hora-col"><div class="forecast-bar forecast-bar--hora" style="height: 81.0%"><span class="forecast-cap">162</span></div></div>
-                                    <div class="hora-col"><div class="forecast-bar forecast-bar--hora" style="height: 68.5%"><span class="forecast-cap">137</span></div></div>
-                                    <div class="hora-col"><div class="forecast-bar forecast-bar--hora" style="height: 52.0%"><span class="forecast-cap">104</span></div></div>
-                                    <div class="hora-col"><div class="forecast-bar forecast-bar--hora" style="height: 79.0%"><span class="forecast-cap">158</span></div></div>
-                                    <div class="hora-col"><div class="forecast-bar forecast-bar--hora" style="height: 57.0%"><span class="forecast-cap">114</span></div></div>
+                                    <div class="hora-col" tabindex="0" data-dia="07h" data-recebido="142 t" data-nome-recebido="Secado" data-milho="80 t" data-nome-milho="Secador 1 · Milho" data-sorgo="62 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 71.0%"><span class="forecast-cap">142</span><i class="forecast-seg forecast-seg--sorgo" style="height: 43.7%"></i><i class="forecast-seg forecast-seg--milho" style="height: 56.3%"></i></div></div>
+                                    <div class="hora-col" tabindex="0" data-dia="08h" data-recebido="155 t" data-nome-recebido="Secado" data-milho="86 t" data-nome-milho="Secador 1 · Milho" data-sorgo="69 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 77.5%"><span class="forecast-cap">155</span><i class="forecast-seg forecast-seg--sorgo" style="height: 44.5%"></i><i class="forecast-seg forecast-seg--milho" style="height: 55.5%"></i></div></div>
+                                    <div class="hora-col" tabindex="0" data-dia="09h" data-recebido="148 t" data-nome-recebido="Secado" data-milho="84 t" data-nome-milho="Secador 1 · Milho" data-sorgo="64 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 74.0%"><span class="forecast-cap">148</span><i class="forecast-seg forecast-seg--sorgo" style="height: 43.2%"></i><i class="forecast-seg forecast-seg--milho" style="height: 56.8%"></i></div></div>
+                                    <div class="hora-col" tabindex="0" data-dia="10h" data-recebido="162 t" data-nome-recebido="Secado" data-milho="88 t" data-nome-milho="Secador 1 · Milho" data-sorgo="74 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 81.0%"><span class="forecast-cap">162</span><i class="forecast-seg forecast-seg--sorgo" style="height: 45.7%"></i><i class="forecast-seg forecast-seg--milho" style="height: 54.3%"></i></div></div>
+                                    <div class="hora-col" tabindex="0" data-dia="11h" data-recebido="137 t" data-nome-recebido="Secado" data-milho="80 t" data-nome-milho="Secador 1 · Milho" data-sorgo="57 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 68.5%"><span class="forecast-cap">137</span><i class="forecast-seg forecast-seg--sorgo" style="height: 41.6%"></i><i class="forecast-seg forecast-seg--milho" style="height: 58.4%"></i></div></div>
+                                    <div class="hora-col is-abaixo" tabindex="0" data-dia="12h · recarga do S2" data-recebido="104 t" data-nome-recebido="Secado" data-milho="76 t" data-nome-milho="Secador 1 · Milho" data-sorgo="28 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 52.0%"><span class="forecast-cap">104</span><i class="forecast-seg forecast-seg--sorgo" style="height: 26.9%"></i><i class="forecast-seg forecast-seg--milho" style="height: 73.1%"></i></div></div>
+                                    <div class="hora-col" tabindex="0" data-dia="13h" data-recebido="158 t" data-nome-recebido="Secado" data-milho="86 t" data-nome-milho="Secador 1 · Milho" data-sorgo="72 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 79.0%"><span class="forecast-cap">158</span><i class="forecast-seg forecast-seg--sorgo" style="height: 45.6%"></i><i class="forecast-seg forecast-seg--milho" style="height: 54.4%"></i></div></div>
+                                    <div class="hora-col" tabindex="0" data-dia="14h · parcial" data-recebido="114 t" data-nome-recebido="Secado" data-milho="62 t" data-nome-milho="Secador 1 · Milho" data-sorgo="52 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 57.0%"><span class="forecast-cap">114</span><i class="forecast-seg forecast-seg--sorgo" style="height: 45.6%"></i><i class="forecast-seg forecast-seg--milho" style="height: 54.4%"></i></div></div>
+                                    <div class="hora-col is-futuro"><div class="forecast-bar forecast-bar--hora is-projecao" style="height: 67.5%"><span class="forecast-cap">~135</span></div></div>
+                                    <div class="hora-col is-futuro"><div class="forecast-bar forecast-bar--hora is-projecao" style="height: 67.5%"><span class="forecast-cap">~135</span></div></div>
+                                    <div class="hora-col is-futuro"><div class="forecast-bar forecast-bar--hora is-projecao" style="height: 54.0%"><span class="forecast-cap">~108</span></div></div>
                                 </div>
+                                <!-- meta horaria: 1.300 t / 10h de turno -->
+                                <div class="forecast-meta-line" style="bottom: 65%" aria-hidden="true"><span>META 130 t/h</span></div>
                             </div>
                             <div class="forecast-xaxis">
                                 <span class="forecast-day">07h</span>
@@ -1153,78 +1203,97 @@
                                 <span class="forecast-day">09h</span>
                                 <span class="forecast-day">10h</span>
                                 <span class="forecast-day">11h</span>
-                                <span class="forecast-day">12h</span>
+                                <span class="forecast-day">12h<small>S2 recarga</small></span>
                                 <span class="forecast-day">13h</span>
                                 <span class="forecast-day is-agora">14h<small>parcial</small></span>
+                                <span class="forecast-day is-futuro">15h</span>
+                                <span class="forecast-day is-futuro">16h</span>
+                                <span class="forecast-day is-futuro">17h<small>S2 resfr.</small></span>
                             </div>
                             <span class="forecast-unit">t</span>
                         </div>
                     </div>
 
                     <div class="content-section">
-                        <h3>PRODUTIVIDADE POR SECADOR</h3>
+                        <h3>PRODUTIVIDADE POR SECADOR · SECADO x META DO DIA</h3>
                         <div class="prod-secador-list">
                             <div class="prod-secador">
                                 <div class="prod-secador-head">
                                     <span class="secador-nome"><i class="secador-dot is-operando"></i>SECADOR 1</span>
-                                    <span class="secador-tipo">Milho · 80 t/h</span>
-                                </div>
-                                <div class="prod-secador-track">
-                                    <div class="prod-secador-fill" style="width: 100%"></div>
+                                    <span class="secador-tipo">Milho · Fluxo contínuo · nominal 80 t/h</span>
                                 </div>
                                 <div class="prod-secador-chips">
                                     <div class="secador-chip">
                                         <span class="secador-chip-label">SECADO HOJE</span>
                                         <span class="secador-chip-value">640 t</span>
+                                        <span class="secador-chip-sub">meta 750 t</span>
                                     </div>
                                     <div class="secador-chip">
-                                        <span class="secador-chip-label">RITMO ATUAL</span>
+                                        <span class="secador-chip-label">VAZÃO ATUAL</span>
                                         <span class="secador-chip-value">78 t/h</span>
+                                        <span class="secador-chip-sub">98% nominal</span>
                                     </div>
-                                    <div class="secador-chip">
+                                    <div class="secador-chip is-atencao">
                                         <span class="secador-chip-label">UMIDADE</span>
                                         <span class="secador-chip-value">18,4% → 11,2%</span>
+                                        <span class="secador-chip-sub">alvo 13–14%</span>
                                     </div>
                                     <div class="secador-chip">
                                         <span class="secador-chip-label">TEMP MASSA</span>
                                         <span class="secador-chip-value">92°C</span>
+                                        <span class="secador-chip-sub">setada 92°C</span>
                                     </div>
                                     <div class="secador-chip">
-                                        <span class="secador-chip-label">CICLOS NO TURNO</span>
-                                        <span class="secador-chip-value">2</span>
+                                        <span class="secador-chip-label">CICLO</span>
+                                        <span class="secador-chip-value">2º de 2</span>
+                                        <span class="secador-chip-sub">fecha 17h</span>
                                     </div>
+                                </div>
+                                <div class="prod-secador-linha">
+                                    <span class="prod-linha-item"><b>PROJEÇÃO 17h</b>~885 t <em class="is-bom">+135 t sobre a meta</em></span>
+                                    <span class="prod-linha-item"><b>MELHOR HORA</b>88 t <em>10h</em></span>
+                                    <span class="prod-linha-item"><b>ÚLTIMA HORA</b>86 t <em>13h</em></span>
+                                    <span class="prod-linha-item"><b>PARADAS HOJE</b>0 <em>nenhuma</em></span>
                                 </div>
                             </div>
 
                             <div class="prod-secador">
                                 <div class="prod-secador-head">
                                     <span class="secador-nome"><i class="secador-dot is-operando"></i>SECADOR 2</span>
-                                    <span class="secador-tipo">Sorgo · 60 t/h</span>
-                                </div>
-                                <div class="prod-secador-track">
-                                    <div class="prod-secador-fill" style="width: 100%"></div>
+                                    <span class="secador-tipo">Sorgo · Intermitente · nominal 60 t/h</span>
                                 </div>
                                 <div class="prod-secador-chips">
                                     <div class="secador-chip">
                                         <span class="secador-chip-label">SECADO HOJE</span>
                                         <span class="secador-chip-value">480 t</span>
+                                        <span class="secador-chip-sub">meta 550 t</span>
                                     </div>
                                     <div class="secador-chip">
-                                        <span class="secador-chip-label">RITMO ATUAL</span>
+                                        <span class="secador-chip-label">VAZÃO ATUAL</span>
                                         <span class="secador-chip-value">57 t/h</span>
+                                        <span class="secador-chip-sub">95% nominal</span>
                                     </div>
                                     <div class="secador-chip">
                                         <span class="secador-chip-label">UMIDADE</span>
                                         <span class="secador-chip-value">18,8% → 12,9%</span>
+                                        <span class="secador-chip-sub">alvo 13–14%</span>
                                     </div>
                                     <div class="secador-chip">
                                         <span class="secador-chip-label">TEMP MASSA</span>
                                         <span class="secador-chip-value">83°C</span>
+                                        <span class="secador-chip-sub">setada 85°C</span>
                                     </div>
                                     <div class="secador-chip">
-                                        <span class="secador-chip-label">CICLOS NO TURNO</span>
-                                        <span class="secador-chip-value">2</span>
+                                        <span class="secador-chip-label">CICLO</span>
+                                        <span class="secador-chip-value">2º de 2</span>
+                                        <span class="secador-chip-sub">resfr. 16h</span>
                                     </div>
+                                </div>
+                                <div class="prod-secador-linha">
+                                    <span class="prod-linha-item"><b>PROJEÇÃO 17h</b>~635 t <em class="is-bom">+85 t sobre a meta</em></span>
+                                    <span class="prod-linha-item"><b>MELHOR HORA</b>74 t <em>10h</em></span>
+                                    <span class="prod-linha-item"><b>ÚLTIMA HORA</b>72 t <em>13h</em></span>
+                                    <span class="prod-linha-item"><b>PARADAS HOJE</b>1 <em>recarga 12h · 34 min</em></span>
                                 </div>
                             </div>
                         </div>
