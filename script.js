@@ -46,6 +46,7 @@ menuItems.forEach((item) => {
         target.classList.add('active');
         syncMenuGroups();
         setAlertsPage(false);
+        if (isMobile()) setSidebarCollapsed(true, false);
         scheduleFit();
     });
 });
@@ -102,6 +103,31 @@ if (itemAtivo && itemAtivo.closest('.menu-group')) {
 syncMenuGroups();
 
 // ============================================
+// CELULAR
+// Abaixo de 768px o CSS desliga a escala fluida e a pagina rola por
+// inteiro; aqui o script acompanha: sem ajuste de escala e com o menu
+// de telas em gaveta (comeca fechado, fecha ao escolher uma tela).
+// ============================================
+const mobileQuery = window.matchMedia('(max-width: 768px)');
+
+function isMobile() {
+    return mobileQuery.matches;
+}
+
+// O cabecalho quebra em duas linhas no celular; a gaveta do menu precisa
+// da altura real dele, medida aqui (--header-real), nao da travada no CSS.
+const headerEl = document.querySelector('.header');
+
+function measureHeader() {
+    if (!headerEl) return;
+    document.documentElement.style.setProperty('--header-real', headerEl.offsetHeight + 'px');
+}
+
+window.addEventListener('resize', measureHeader);
+window.addEventListener('load', measureHeader);
+measureHeader();
+
+// ============================================
 // AJUSTE À TELA (qualquer resolução, sem rolagem)
 // O CSS já escala tudo proporcionalmente pela variável --fit.
 // Aqui vem a rede de segurança: se a tela ativa ainda transbordar
@@ -139,6 +165,9 @@ function fitToScreen() {
     const root = document.documentElement;
     root.style.setProperty('--fit-adjust', '1');
 
+    // no celular a pagina rola inteira: nada para encolher
+    if (isMobile()) return;
+
     const targets = fitTargets();
     if (!targets.length) return;
 
@@ -163,10 +192,14 @@ if (document.fonts && document.fonts.ready) {
 
 // ============================================
 // MENU RECOLHÍVEL (tela cheia)
+// No celular o mesmo estado vira gaveta: aberta por cima da tela,
+// com fundo escurecido, sem lembrar a escolha entre visitas.
 // ============================================
 const SIDEBAR_STORAGE_KEY = 'videowall:sidebar-collapsed';
 const btnSidebarToggle = document.getElementById('btnSidebarToggle');
 const btnSidebarReveal = document.getElementById('btnSidebarReveal');
+const btnMenuMobile = document.getElementById('btnMenuMobile');
+const sidebarBackdrop = document.getElementById('sidebarBackdrop');
 
 function setSidebarCollapsed(collapsed, persist = true) {
     document.body.classList.toggle('sidebar-collapsed', collapsed);
@@ -178,8 +211,14 @@ function setSidebarCollapsed(collapsed, persist = true) {
         btnSidebarReveal.setAttribute('aria-expanded', String(!collapsed));
         btnSidebarReveal.tabIndex = collapsed ? 0 : -1;
     }
+    if (btnMenuMobile) {
+        btnMenuMobile.setAttribute('aria-expanded', String(!collapsed));
+    }
+    if (sidebarBackdrop) {
+        sidebarBackdrop.hidden = collapsed || !isMobile();
+    }
 
-    if (!persist) return;
+    if (!persist || isMobile()) return;
     try {
         localStorage.setItem(SIDEBAR_STORAGE_KEY, collapsed ? '1' : '0');
     } catch (err) {
@@ -200,6 +239,14 @@ if (btnSidebarReveal) {
     btnSidebarReveal.addEventListener('click', toggleSidebar);
 }
 
+if (btnMenuMobile) {
+    btnMenuMobile.addEventListener('click', toggleSidebar);
+}
+
+if (sidebarBackdrop) {
+    sidebarBackdrop.addEventListener('click', () => setSidebarCollapsed(true, false));
+}
+
 document.addEventListener('keydown', (event) => {
     if (!(event.ctrlKey || event.metaKey) || event.altKey) return;
     if (event.key !== 'b' && event.key !== 'B') return;
@@ -207,13 +254,24 @@ document.addEventListener('keydown', (event) => {
     toggleSidebar();
 });
 
-let sidebarStartCollapsed = false;
-try {
-    sidebarStartCollapsed = localStorage.getItem(SIDEBAR_STORAGE_KEY) === '1';
-} catch (err) {
-    sidebarStartCollapsed = false;
+function sidebarStoredCollapsed() {
+    try {
+        return localStorage.getItem(SIDEBAR_STORAGE_KEY) === '1';
+    } catch (err) {
+        return false;
+    }
 }
-setSidebarCollapsed(sidebarStartCollapsed, false);
+
+// celular: gaveta sempre fechada ao abrir; desktop: como ficou da ultima vez
+setSidebarCollapsed(isMobile() || sidebarStoredCollapsed(), false);
+
+// girar o aparelho ou redimensionar a janela cruza o corte: reaplica o padrao
+const onMobileChange = () => {
+    setSidebarCollapsed(isMobile() || sidebarStoredCollapsed(), false);
+    scheduleFit();
+};
+if (mobileQuery.addEventListener) mobileQuery.addEventListener('change', onMobileChange);
+else if (mobileQuery.addListener) mobileQuery.addListener(onMobileChange);
 
 // ============================================
 // PÁGINA DE ALERTAS (funcionalidade acessada pelo cabeçalho)
@@ -249,6 +307,7 @@ function setAlertsPage(open) {
         btnAlertas.setAttribute('aria-expanded', String(open));
     }
     if (open) {
+        if (isMobile()) setSidebarCollapsed(true, false);
         refreshAlertsBadge();
         alertsPage.scrollIntoView({ block: 'start' });
     }

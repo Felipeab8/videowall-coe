@@ -2249,54 +2249,6 @@ body.edit-mode .forecast-bar.is-empty {
 }
 
 @media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        width: 100%;
-        height: auto;
-        padding: 0.5rem 0;
-        border-right: none;
-        border-bottom: 1px solid var(--sidebar-border);
-        overflow-x: auto;
-    }
-
-    .sidebar-header {
-        display: none;
-    }
-
-    .menu {
-        flex-direction: row;
-        gap: 0.25rem;
-        padding: 0 0.5rem;
-    }
-
-    .menu-item {
-        min-width: fit-content;
-        padding: 0.5rem 0.75rem;
-        border-left: none;
-        border-bottom: 3px solid transparent;
-        border-radius: 8px;
-    }
-
-    .menu-item.active {
-        border-left: none;
-        border-bottom-color: var(--accent);
-    }
-
-    body.sidebar-collapsed .sidebar {
-        width: 100%;
-        height: 0;
-        padding-top: 0;
-        padding-bottom: 0;
-        border-bottom-width: 0;
-    }
-
-    .sidebar-reveal {
-        top: calc(var(--header-h) + 0.5rem);
-    }
-
     .kpi-grid,
     .kpi-grid-small {
         grid-template-columns: repeat(2, 1fr);
@@ -3985,29 +3937,6 @@ body.theme-light .kpi-flag--alerta {
 @media (max-width: 1024px) {
     .sidebar {
         width: 145px;
-    }
-}
-
-@media (max-width: 768px) {
-    .sidebar {
-        width: 100%;
-        padding: 8px 0;
-    }
-
-    .menu {
-        flex-direction: row;
-        gap: 4px;
-        padding: 0 8px;
-    }
-
-    .menu-parent,
-    .menu-item {
-        min-height: 32px;
-        padding: 8px 12px;
-    }
-
-    .submenu .menu-item {
-        padding: 6px 12px 6px 20px;
     }
 }
 
@@ -6382,4 +6311,432 @@ span[data-fluxo-filtro].fluxo-etapa-pill:focus-visible {
 
 body.edit-mode .fluxo-etapa-pill {
     cursor: text;
+}
+
+/* hamburguer e fundo da gaveta so existem no celular (bloco abaixo) */
+.btn-menu-mobile,
+.sidebar-backdrop {
+    display: none;
+}
+
+/* ============================================
+   CELULAR (ate 768px)
+   O videowall escala tudo pelo --fit para caber sem rolagem numa tela
+   larga. No celular isso nao serve: a tela e estreita e alta, entao a
+   escala fluida sai de cena (fonte fixa), a pagina passa a rolar por
+   inteiro, as grades empilham em uma ou duas colunas e o menu lateral
+   vira uma gaveta aberta pelo botao no cabecalho. Fica por ultimo no
+   arquivo para ganhar de qualquer regra acima na cascata.
+   ============================================ */
+@media (max-width: 768px) {
+    :root {
+        --fit: 0.875px;
+        --header-h: 3.75rem;
+    }
+
+    html {
+        font-size: 14px;
+    }
+
+    html,
+    body {
+        height: auto;
+        min-height: 100%;
+        overflow: visible;
+        overflow-x: hidden;
+    }
+
+    /* ---- Cabecalho ---- */
+    .header {
+        zoom: 1;
+        min-height: var(--header-h);
+        padding: 0.5rem 0.75rem;
+    }
+
+    .header-content {
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-menu-mobile {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 2.5rem;
+        height: 2.5rem;
+        padding: 0;
+        background: var(--hover);
+        border: 1px solid var(--panel-border);
+        border-radius: 10px;
+        color: var(--text);
+        cursor: pointer;
+        font-family: inherit;
+    }
+
+    .btn-menu-mobile svg {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    .btn-menu-mobile[aria-expanded="true"] {
+        background: var(--accent-soft);
+        border-color: var(--accent);
+        color: var(--accent);
+    }
+
+    .logo-section {
+        flex: 1 1 auto;
+        min-width: 0;
+        gap: 0.5rem;
+    }
+
+    .logo {
+        height: 2.25rem;
+    }
+
+    .header h1 {
+        white-space: normal;
+        min-width: 0;
+    }
+
+    .brand-main {
+        font-size: 0.95rem;
+    }
+
+    .brand-sub {
+        display: none;
+    }
+
+    .header-controls {
+        flex: 1 0 100%;
+        justify-content: space-between;
+        gap: 0.375rem;
+    }
+
+    .header-controls .btn-header {
+        flex: 1 1 0;
+        padding: 0.5rem 0.25rem;
+        font-size: 0.62rem;
+        letter-spacing: 0.04em;
+        gap: 0.25rem;
+        min-height: 2.25rem;
+    }
+
+    .header-controls .btn-alertas span:not(.btn-badge) {
+        display: none;
+    }
+
+    .header-controls .btn-alertas .btn-badge {
+        display: inline-flex;
+    }
+
+    .live-time {
+        display: none;
+    }
+
+    /* ---- Estrutura: a pagina rola inteira ---- */
+    .container {
+        display: block;
+        height: auto;
+        min-height: calc(100vh - var(--header-h));
+        overflow: visible;
+    }
+
+    .content {
+        display: block;
+        overflow: visible;
+        padding: 0.75rem 0.75rem 1.5rem;
+    }
+
+    .screen,
+    .alerts-page {
+        flex: none;
+        padding: 0.875rem 0.75rem;
+        border-radius: 12px;
+    }
+
+    .screen.active,
+    .alerts-page:not([hidden]) {
+        gap: 0.75rem;
+    }
+
+    .screen > *,
+    .alerts-page > * {
+        flex: none;
+    }
+
+    .content-section {
+        flex: none;
+        overflow: visible;
+        padding: 0.875rem 0.75rem;
+    }
+
+    .content-section--livre {
+        overflow: visible;
+    }
+
+    .table-scroll,
+    .hourly-data,
+    .system-status,
+    .silo-grid,
+    .forecast-chart,
+    .alerts-list {
+        flex: none;
+    }
+
+    /* tabelas largas rolam de lado dentro do proprio bloco */
+    .table-scroll,
+    .forecast-table {
+        overflow-x: auto;
+        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .screen-header {
+        gap: 0.625rem;
+        flex-wrap: wrap;
+    }
+
+    .screen-badge {
+        width: 2.125rem;
+        height: 2.125rem;
+    }
+
+    .screen-title-section h2 {
+        font-size: 1rem;
+    }
+
+    .section-head,
+    .fluxo-tabela-head,
+    .status-bar,
+    .chart-legend,
+    .grao-filter {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+
+    .section-head-tools {
+        flex: 1 1 100%;
+        max-width: 100%;
+        flex-wrap: wrap;
+        row-gap: 0.375rem;
+    }
+
+    .grao-filter {
+        max-width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .forecast-xaxis {
+        font-size: 0.5rem;
+    }
+
+
+    .secador {
+        padding: 0.75rem 0.75rem;
+    }
+
+    .secador-head {
+        flex-wrap: wrap;
+        gap: 0.25rem 0.75rem;
+    }
+
+    .secador-tipo {
+        white-space: normal;
+    }
+
+    .secador-chips {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-auto-rows: auto;
+    }
+
+    .secador-chip {
+        padding: 0.375rem 0.5rem;
+    }
+
+    .secador-chart {
+        padding-right: 3.5rem;
+    }
+
+
+    .kpi-value--tarifa {
+        font-size: 0.95rem;
+    }
+
+
+    /* o cabecalho fixo nao pode cobrir o topo do painel ao rolar ate ele */
+    .alerts-page {
+        scroll-margin-top: calc(var(--header-real, var(--header-h)) + 0.75rem);
+    }
+
+    .alerts-summary {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+
+    /* sem altura de tela para preencher, a moldura da camera segue o 16:9 */
+    .camera-frame {
+        flex: none;
+        aspect-ratio: 16 / 9;
+        max-width: 100%;
+    }
+
+    /* ---- Menu lateral em gaveta ---- */
+    .sidebar {
+        position: fixed;
+        top: var(--header-real, var(--header-h));
+        left: 0;
+        bottom: 0;
+        width: min(82vw, 300px);
+        height: auto;
+        padding: 12px 0 24px;
+        border-right: 1px solid var(--sidebar-border);
+        box-shadow: var(--shadow);
+        z-index: 90;
+        overflow-y: auto;
+        transform: translateX(0);
+        transition: transform 0.25s ease;
+    }
+
+    body.sidebar-collapsed .sidebar {
+        width: min(82vw, 300px);
+        padding: 12px 0 24px;
+        border-right-width: 1px;
+        transform: translateX(-100%);
+        pointer-events: none;
+    }
+
+    .sidebar-backdrop {
+        position: fixed;
+        inset: var(--header-real, var(--header-h)) 0 0 0;
+        z-index: 85;
+        background: rgba(4, 10, 20, 0.55);
+    }
+
+    .sidebar-backdrop[hidden] {
+        display: none;
+    }
+
+    /* a alca lateral do desktop nao faz sentido: o hamburguer assume */
+    .sidebar-reveal,
+    body.sidebar-collapsed .sidebar-reveal {
+        display: none;
+    }
+
+    .menu-parent,
+    .menu-item {
+        min-height: 44px;
+        font-size: 14px;
+    }
+
+    .submenu .menu-item {
+        min-height: 40px;
+        font-size: 13.5px;
+    }
+
+    /* ---- Grades: empilham ---- */
+    .kpi-grid,
+    .kpi-grid--three,
+    .kpi-grid--four,
+    .kpi-grid--six,
+    .kpi-grid--seven,
+    .kpi-grid--eight,
+    .kpi-grid-small,
+    .kpi-grid-small--quad,
+    .kpi-grid-small--breakdown,
+    .kpi-breakdown,
+    .alerts-summary,
+    .forecast-summary,
+    .forecast-summary--quad,
+    .moega-grid,
+    .weather-days,
+    .prod-secador-chips,
+    .prod-secador-linha,
+    .silo-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.625rem;
+    }
+
+    .kpi-grid-small--breakdown .kpi-card-small {
+        grid-column: span 1;
+    }
+
+    .split-grid,
+    .split-grid--moegas,
+    .split-grid--trio,
+    .split-grid--prod,
+    .silo-groups,
+    .camera-wall,
+    .secador-body,
+    .fluxo-etapas,
+    .relogio-grid,
+    .editor-modal-body,
+    .editor-form {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hourly-data {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .kpi-card {
+        padding: 0.75rem 0.875rem;
+    }
+
+    .kpi-value {
+        font-size: 1.5rem;
+    }
+
+    /* ---- Graficos: fora do flex de altura fixa precisam de altura propria ---- */
+    .forecast-chart {
+        grid-template-rows: 12rem auto;
+    }
+
+    .forecast-bar {
+        width: 1rem;
+    }
+
+    .forecast-bar--hora,
+    .forecast-chart--turno .forecast-bar--hora {
+        width: 2rem;
+    }
+
+    .silo-visual,
+    .silo-groups .silo-visual {
+        height: 6rem;
+        flex: none;
+    }
+
+    .hour-bar {
+        height: 3.25rem;
+        flex: none;
+    }
+
+    .secador-chart {
+        min-height: 9rem;
+    }
+
+    /* ---- Editor ---- */
+    .editor-bar {
+        zoom: 1;
+        max-width: 96vw;
+        bottom: 0.5rem;
+    }
+
+    .editor-modal-box {
+        zoom: 1;
+        width: 94vw;
+        max-height: 90vh;
+    }
+
+    .editor-campo--destino {
+        max-width: none;
+    }
+
+    .viz-tooltip,
+    .motivo-tip {
+        max-width: 90vw;
+    }
 }

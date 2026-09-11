@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-    <link rel="stylesheet" href="style.css?v=20260910">
+    <link rel="stylesheet" href="style.css?v=20260911">
 </head>
 <body class="theme-dark">
 
@@ -68,6 +68,8 @@
     <!-- Header -->
     <header class="header">
         <div class="header-content">
+            <!-- Celular: abre o menu de telas em gaveta (escondido no desktop) -->
+            <button class="btn-menu-mobile" id="btnMenuMobile" type="button" title="Menu de telas" aria-label="Abrir menu de telas" aria-expanded="false" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="17" x2="20" y2="17"></line></svg></button>
             <div class="logo-section">
                 <div class="logo">
                     <img class="logo-img" src="logo-holambra.png" alt="Cooperativa Holambra"
@@ -182,6 +184,9 @@
                 </div>
             </nav>
         </aside>
+
+        <!-- Celular: fundo escurecido atrás da gaveta do menu; tocar fora fecha -->
+        <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
 
         <!-- Alça flutuante: reabre o menu quando ele está recolhido -->
         <button class="sidebar-reveal" id="btnSidebarReveal" type="button" title="Mostrar menu de telas (Ctrl+B)" aria-label="Mostrar menu de telas" aria-expanded="false" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
@@ -2311,6 +2316,6 @@
         </main>
     </div>
 
-    <script src="script.js?v=20260910"></script>
+    <script src="script.js?v=20260911"></script>
 </body>
 </html>
