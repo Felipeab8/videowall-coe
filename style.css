@@ -657,6 +657,11 @@ body.sidebar-collapsed .sidebar-reveal {
     margin-bottom: 1rem;
 }
 
+/* Fila de caminhoes: 3 KPIs no topo (descargas concluidas mora em Previsao e Ritmo) */
+.kpi-grid--tres {
+    grid-template-columns: repeat(3, 1fr);
+}
+
 .kpi-card {
     background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
     border: 1px solid var(--card-border);
@@ -795,7 +800,7 @@ body.sidebar-collapsed .sidebar-reveal {
 }
 
 .kpi-grid-small--breakdown .kpi-card-small {
-    grid-column: span 3;
+    grid-column: span 2;
 }
 
 .kpi-grid-small--breakdown .kpi-card-small--wide {
@@ -806,7 +811,7 @@ body.sidebar-collapsed .sidebar-reveal {
 
 .kpi-breakdown {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 0.625rem;
 }
 
@@ -6075,9 +6080,14 @@ body.theme-light .kpi-card--destaque .kpi-value {
     gap: 1.75rem;
 }
 
-/* fila / moega / balanca de saida / liberacao: as mesmas etapas da tabela */
-.fluxo-etapas--quatro {
-    grid-template-columns: repeat(4, 1fr);
+/* fila / 1ª pesagem / classificacao / moega / 2ª pesagem / liberacao: as mesmas etapas da tabela */
+.fluxo-etapas--seis {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1.5rem;
+}
+
+.fluxo-etapas--seis .fluxo-etapa:not(:last-child)::after {
+    right: calc(-1.5rem + 0.4rem);
 }
 
 .fluxo-etapa {
@@ -6198,7 +6208,8 @@ body.theme-light .fluxo-etapa--alerta .fluxo-etapa-estado {
         gap: 1.5rem;
     }
 
-    .fluxo-etapa:not(:last-child)::after {
+    .fluxo-etapa:not(:last-child)::after,
+    .fluxo-etapas--seis .fluxo-etapa:not(:last-child)::after {
         top: auto;
         right: auto;
         left: 50%;
@@ -6339,7 +6350,19 @@ body.theme-light .fluxo-tag {
     border-color: rgba(243, 156, 18, 0.38);
 }
 
-.fluxo-etapa-pill--saida {
+.fluxo-etapa-pill--pesagem1 {
+    color: #a78bfa;
+    background: rgba(139, 92, 246, 0.14);
+    border-color: rgba(139, 92, 246, 0.38);
+}
+
+.fluxo-etapa-pill--classificacao {
+    color: #2dd4bf;
+    background: rgba(20, 184, 166, 0.14);
+    border-color: rgba(20, 184, 166, 0.38);
+}
+
+.fluxo-etapa-pill--pesagem2 {
     color: var(--accent);
     background: rgba(59, 130, 246, 0.14);
     border-color: rgba(59, 130, 246, 0.38);
@@ -6359,7 +6382,15 @@ body.theme-light .fluxo-etapa-pill--moega {
     color: #9a5b00;
 }
 
-body.theme-light .fluxo-etapa-pill--saida {
+body.theme-light .fluxo-etapa-pill--pesagem1 {
+    color: #6d28d9;
+}
+
+body.theme-light .fluxo-etapa-pill--classificacao {
+    color: #0f766e;
+}
+
+body.theme-light .fluxo-etapa-pill--pesagem2 {
     color: var(--accent-strong);
 }
 
