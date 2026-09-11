@@ -315,6 +315,60 @@ body.theme-light #btnClaro .btn-icon {
     box-shadow: 0 6px 16px rgba(46, 204, 113, 0.28);
 }
 
+/* ---- Exportar PDF: botao com menu de duas opcoes ---- */
+.pdf-menu {
+    position: relative;
+    display: inline-flex;
+}
+
+#btnPdf[aria-expanded="true"] {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.pdf-menu-list {
+    position: absolute;
+    top: calc(100% + 0.375rem);
+    right: 0;
+    z-index: 60;
+    min-width: 11rem;
+    padding: 0.375rem;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.pdf-menu-list[hidden] {
+    display: none;
+}
+
+.pdf-menu-list [data-pdf] {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    border-radius: 7px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.pdf-menu-list [data-pdf]:hover,
+.pdf-menu-list [data-pdf]:focus-visible {
+    background: var(--accent-soft);
+    color: var(--accent);
+    outline: none;
+}
+
 .live-time {
     font-size: 0.68rem;
     color: var(--faint);
@@ -2210,13 +2264,13 @@ body.edit-mode .forecast-bar.is-empty {
     background: var(--accent-soft);
 }
 
-@media (max-width: 1200px) {
+@media screen and (max-width: 1200px) {
     .split-grid {
         grid-template-columns: 1fr;
     }
 }
 
-@media (max-width: 1024px) {
+@media screen and (max-width: 1024px) {
     .sidebar {
         width: 9.0625rem;
     }
@@ -2248,7 +2302,7 @@ body.edit-mode .forecast-bar.is-empty {
     }
 }
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
     .kpi-grid,
     .kpi-grid-small {
         grid-template-columns: repeat(2, 1fr);
@@ -3645,6 +3699,38 @@ body.theme-light .kpi-flag--alerta {
         display: flex !important;
         height: auto;
     }
+
+    .pdf-menu {
+        display: none !important;
+    }
+
+    :root {
+        --fit-adjust: 1 !important;
+    }
+
+    /* "Todas as telas": uma tela por folha, na ordem do menu */
+    body.print-all .screen {
+        display: flex !important;
+        flex-direction: column;
+        gap: 0.75rem;
+        height: auto;
+        break-after: page;
+        page-break-after: always;
+        animation: none;
+    }
+
+    body.print-all .screen:last-of-type {
+        break-after: auto;
+        page-break-after: auto;
+    }
+}
+
+/* Folha na proporcao do videowall (16:9 em px de CSS): assim nenhum
+   breakpoint de tablet/celular dispara e a tela sai igual ao painel.
+   Ao imprimir em papel o driver encaixa a folha no A4 sozinho. */
+@page {
+    size: 1600px 960px;
+    margin: 24px;
 }
 
 /* separa o total das culturas dentro do tooltip */
@@ -3934,7 +4020,7 @@ body.theme-light .kpi-flag--alerta {
 
 /* Os cortes por largura continuam valendo — precisam vir depois das
    regras acima para não serem atropelados pela ordem da cascata. */
-@media (max-width: 1024px) {
+@media screen and (max-width: 1024px) {
     .sidebar {
         width: 145px;
     }
@@ -5641,7 +5727,7 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     display: none;
 }
 
-@media (max-width: 900px) {
+@media screen and (max-width: 900px) {
     .motivo-tip {
         max-width: 16rem;
     }
@@ -6101,7 +6187,7 @@ body.theme-light .fluxo-etapa--alerta .fluxo-etapa-estado {
 }
 
 /* em tela estreita as etapas empilham e a seta vira para baixo */
-@media (max-width: 1024px) {
+@media screen and (max-width: 1024px) {
     .fluxo-etapas {
         grid-template-columns: 1fr;
         gap: 1.5rem;
@@ -6328,7 +6414,7 @@ body.edit-mode .fluxo-etapa-pill {
    vira uma gaveta aberta pelo botao no cabecalho. Fica por ultimo no
    arquivo para ganhar de qualquer regra acima na cascata.
    ============================================ */
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
     :root {
         --fit: 0.875px;
         --header-h: 3.75rem;
@@ -6421,6 +6507,14 @@ body.edit-mode .fluxo-etapa-pill {
         letter-spacing: 0.04em;
         gap: 0.25rem;
         min-height: 2.25rem;
+    }
+
+    .header-controls .pdf-menu {
+        flex: 1 1 0;
+    }
+
+    .header-controls .pdf-menu .btn-header {
+        width: 100%;
     }
 
     .header-controls .btn-alertas span:not(.btn-badge) {

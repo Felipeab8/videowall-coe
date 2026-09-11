@@ -1491,8 +1491,112 @@ document.addEventListener('click', (event) => {
     if (!(event.target instanceof Element)) return;
     if (!event.target.closest('[data-print]')) return;
     if (isEditing()) return;
-    window.print();
+    exportarPdf('atual');
 });
+
+// ============================================
+// EXPORTAR PDF
+// Usa a impressao do navegador (destino "Salvar como PDF"): e o unico
+// caminho que preserva graficos SVG, fontes e cores sem depender de
+// biblioteca externa. O @media print cuida de esconder o cromo; aqui
+// so escolhemos o que entra (tela ativa ou todas) e o nome do arquivo.
+// ============================================
+const btnPdf = document.getElementById('btnPdf');
+const pdfMenu = document.getElementById('pdfMenu');
+const pdfMenuList = document.getElementById('pdfMenuList');
+
+function tituloDaTela(screen) {
+    const h2 = screen && screen.querySelector('.screen-title-section h2');
+    return h2 ? h2.textContent.trim() : '';
+}
+
+function nomeArquivoPdf(modo) {
+    const data = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    const carimbo = `${data.getFullYear()}-${pad(data.getMonth() + 1)}-${pad(data.getDate())}_${pad(data.getHours())}h${pad(data.getMinutes())}`;
+    const tela = modo === 'todas'
+        ? 'Todas as telas'
+        : (tituloDaTela(document.querySelector('.screen.active')) || 'Tela');
+    return `COE - ${tela} - ${carimbo}`;
+}
+
+function fecharMenuPdf() {
+    if (!pdfMenuList || pdfMenuList.hidden) return;
+    pdfMenuList.hidden = true;
+    if (btnPdf) btnPdf.setAttribute('aria-expanded', 'false');
+}
+
+function abrirMenuPdf() {
+    if (!pdfMenuList) return;
+    pdfMenuList.hidden = false;
+    if (btnPdf) btnPdf.setAttribute('aria-expanded', 'true');
+    const primeiro = pdfMenuList.querySelector('[data-pdf]');
+    if (primeiro) primeiro.focus();
+}
+
+function exportarPdf(modo) {
+    fecharMenuPdf();
+    if (isEditing()) return;
+
+    const tituloOriginal = document.title;
+    // o titulo do documento vira o nome sugerido do arquivo PDF
+    document.title = nomeArquivoPdf(modo);
+    document.body.classList.toggle('print-all', modo === 'todas');
+
+    const restaurar = () => {
+        document.title = tituloOriginal;
+        document.body.classList.remove('print-all');
+        window.removeEventListener('afterprint', restaurar);
+    };
+    window.addEventListener('afterprint', restaurar);
+
+    // garante que o layout esteja assentado antes de abrir o dialogo
+    requestAnimationFrame(() => {
+        window.print();
+        // navegadores sem afterprint (ou quando o dialogo e cancelado
+        // rapido) ainda voltam ao normal
+        setTimeout(restaurar, 1500);
+    });
+}
+
+if (btnPdf && pdfMenuList) {
+    btnPdf.addEventListener('click', (event) => {
+        event.stopPropagation();
+        if (pdfMenuList.hidden) abrirMenuPdf();
+        else fecharMenuPdf();
+    });
+
+    pdfMenuList.addEventListener('click', (event) => {
+        const opcao = event.target instanceof Element ? event.target.closest('[data-pdf]') : null;
+        if (!opcao) return;
+        event.stopPropagation();
+        exportarPdf(opcao.getAttribute('data-pdf'));
+    });
+
+    pdfMenuList.addEventListener('keydown', (event) => {
+        const itens = Array.from(pdfMenuList.querySelectorAll('[data-pdf]'));
+        const idx = itens.indexOf(document.activeElement);
+        if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            itens[(idx + 1) % itens.length].focus();
+        } else if (event.key === 'ArrowUp') {
+            event.preventDefault();
+            itens[(idx - 1 + itens.length) % itens.length].focus();
+        } else if (event.key === 'Escape') {
+            event.preventDefault();
+            fecharMenuPdf();
+            btnPdf.focus();
+        }
+    });
+
+    document.addEventListener('click', (event) => {
+        if (pdfMenu && event.target instanceof Element && pdfMenu.contains(event.target)) return;
+        fecharMenuPdf();
+    });
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') fecharMenuPdf();
+    });
+}
 
 // ============================================
 // EDITOR DE LAYOUT
