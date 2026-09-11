@@ -118,7 +118,9 @@ function fitTargets() {
         ? alertsPage
         : document.querySelector('.screen.active');
     if (!active) return [];
-    return [active, ...active.querySelectorAll('.content-section, .table-scroll, .alerts-list')];
+    // .table-scroll--livre rola por dentro em vez de encolher a tela inteira
+    // (lista longa de caminhoes): fica fora da conta.
+    return [active, ...active.querySelectorAll('.content-section:not(.content-section--livre), .table-scroll:not(.table-scroll--livre), .alerts-list')];
 }
 
 function fitOverflow(targets) {
@@ -1014,7 +1016,10 @@ document.addEventListener('dblclick', (e) => {
 function applyEditMode(enabled) {
     // o recorte por cultura sai antes das alcas entrarem: a edicao mexe no
     // HTML e o salva, entao o layout precisa voltar ao estado inteiro
-    if (enabled) limparFiltrosGrao();
+    if (enabled) {
+        limparFiltrosGrao();
+        limparFiltrosFluxo();
+    }
     applyTextEditing(enabled);
     setupDragHandles(enabled);
     setupResizeHandles(enabled);
@@ -3192,6 +3197,77 @@ function limparFiltrosGrao() {
     document.querySelectorAll('.forecast-section').forEach((secao) => {
         if (!secao.querySelector('[data-grao-filter]')) return;
         if (graoAtivoDe(secao) !== 'todas') selecionarGrao(secao, 'todas');
+    });
+}
+
+// ============================================
+// FLUXO DE CAMINHOES · FILTRO POR ETAPA
+// Os selos de etapa (no cabecalho da tabela e em cada linha) filtram a
+// lista: um clique mostra so aquela etapa, outro clique (ou "Todos")
+// devolve a lista inteira. Cada linha carrega a etapa em data-etapa.
+// ============================================
+function filtrarFluxo(secao, etapa) {
+    const linhas = secao.querySelectorAll('tbody tr[data-etapa]');
+    let visiveis = 0;
+    linhas.forEach((tr) => {
+        const mostra = etapa === 'todos' || tr.dataset.etapa === etapa;
+        tr.hidden = !mostra;
+        if (mostra) visiveis += 1;
+    });
+    secao.querySelectorAll('.fluxo-tabela-resumo [data-fluxo-filtro]').forEach((btn) => {
+        const ativo = (btn.dataset.fluxoFiltro || 'todos') === etapa;
+        btn.classList.toggle('is-active', ativo);
+        btn.setAttribute('aria-pressed', String(ativo));
+    });
+    secao.classList.toggle('is-filtrada', etapa !== 'todos');
+    secao.dataset.fluxoEtapa = etapa;
+
+    // sem linha para mostrar (dado editado): avisa em vez de deixar vazio
+    let vazio = secao.querySelector('.fluxo-vazio');
+    if (!visiveis) {
+        if (!vazio) {
+            vazio = document.createElement('p');
+            vazio.className = 'fluxo-vazio';
+            vazio.textContent = 'Nenhum caminhão nesta etapa agora.';
+            const rolagem = secao.querySelector('.table-scroll');
+            if (rolagem) rolagem.appendChild(vazio);
+        }
+    } else if (vazio) {
+        vazio.remove();
+    }
+    if (secao.querySelector('.table-scroll')) secao.querySelector('.table-scroll').scrollTop = 0;
+}
+
+function acionarFiltroFluxo(alvo) {
+    const secao = alvo.closest('.content-section');
+    if (!secao) return;
+    const pedida = alvo.dataset.fluxoFiltro || 'todos';
+    const atual = secao.dataset.fluxoEtapa || 'todos';
+    // clicar na etapa ja ativa desfaz o filtro
+    filtrarFluxo(secao, pedida !== 'todos' && pedida === atual ? 'todos' : pedida);
+}
+
+document.addEventListener('click', (e) => {
+    const alvo = e.target instanceof Element ? e.target.closest('[data-fluxo-filtro]') : null;
+    if (!alvo || isEditing()) return;
+    e.preventDefault();
+    acionarFiltroFluxo(alvo);
+});
+
+// selo dentro da linha e um span: Enter/Espaco fazem o mesmo que o clique
+document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const alvo = e.target instanceof Element ? e.target.closest('span[data-fluxo-filtro]') : null;
+    if (!alvo || isEditing()) return;
+    e.preventDefault();
+    acionarFiltroFluxo(alvo);
+});
+
+// o editor salva o HTML como esta: o filtro volta para "todos" antes,
+// senao as linhas escondidas virariam o dado guardado.
+function limparFiltrosFluxo() {
+    document.querySelectorAll('.content-section[data-fluxo-etapa]').forEach((secao) => {
+        if (secao.dataset.fluxoEtapa !== 'todos') filtrarFluxo(secao, 'todos');
     });
 }
 

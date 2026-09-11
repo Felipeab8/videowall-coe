@@ -5779,3 +5779,353 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 body.theme-light .relogio-marcas {
     background: repeating-conic-gradient(var(--section-bg) 0deg 1.4deg, transparent 1.4deg 30deg);
 }
+
+/* ============================================
+   FLUXO DE CAMINHOES · ETAPAS DO PROCESSO
+   Tela da recepcao que segue o grao do portao a expedicao. Cada etapa
+   e um cartao ligado ao proximo por uma seta; o mouse over (data-motivo)
+   abre o detalhe da etapa, do mesmo jeito que nos indicadores.
+   ============================================ */
+.kpi-card--destaque {
+    border-color: rgba(59, 130, 246, 0.45);
+    background: linear-gradient(180deg, rgba(59, 130, 246, 0.16) 0%, rgba(59, 130, 246, 0.04) 100%);
+}
+
+.kpi-card--destaque .kpi-value {
+    font-size: 2.4rem;
+    color: var(--accent);
+}
+
+body.theme-light .kpi-card--destaque .kpi-value {
+    color: var(--accent-strong);
+}
+
+.fluxo-etapas {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.75rem;
+}
+
+.fluxo-etapa {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.875rem 1rem 0.875rem 1.125rem;
+    background: var(--row-bg);
+    border: 1px solid var(--card-border);
+    border-left: 3px solid var(--ok);
+    border-radius: 10px;
+    cursor: help;
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fluxo-etapa:hover {
+    border-color: var(--accent);
+    border-left-color: var(--ok);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-soft);
+}
+
+.fluxo-etapa:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* seta entre uma etapa e a proxima, desenhada no vao do grid */
+.fluxo-etapa:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: calc(-1.75rem + 0.45rem);
+    width: 0.85rem;
+    height: 0.85rem;
+    border-top: 2px solid var(--faint);
+    border-right: 2px solid var(--faint);
+    transform: translateY(-50%) rotate(45deg);
+}
+
+.fluxo-etapa-num {
+    position: absolute;
+    top: 0.625rem;
+    right: 0.75rem;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+}
+
+.fluxo-etapa-nome {
+    padding-right: 1.25rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.fluxo-etapa-valor {
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.fluxo-etapa-valor small {
+    font-size: 0.55em;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.fluxo-etapa-sub {
+    font-size: 0.66rem;
+    font-weight: 600;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.fluxo-etapa-estado {
+    margin-top: 0.25rem;
+    align-self: flex-start;
+    padding: 0.125rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--ok);
+    background: rgba(46, 204, 113, 0.14);
+    border: 1px solid rgba(46, 204, 113, 0.35);
+}
+
+.fluxo-etapa--alerta,
+.fluxo-etapa--alerta:hover {
+    border-left-color: var(--danger);
+}
+
+.fluxo-etapa--alerta .fluxo-etapa-estado {
+    color: var(--danger);
+    background: rgba(231, 76, 60, 0.16);
+    border-color: rgba(231, 76, 60, 0.4);
+}
+
+body.theme-light .fluxo-etapa--alerta .fluxo-etapa-estado {
+    color: #b3261e;
+    background: rgba(179, 38, 30, 0.12);
+    border-color: rgba(179, 38, 30, 0.35);
+}
+
+/* em tela estreita as etapas empilham e a seta vira para baixo */
+@media (max-width: 1024px) {
+    .fluxo-etapas {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .fluxo-etapa:not(:last-child)::after {
+        top: auto;
+        right: auto;
+        left: 50%;
+        bottom: calc(-1.5rem + 0.4rem);
+        transform: translateX(-50%) rotate(135deg);
+    }
+}
+
+/* ============================================
+   FLUXO · TABELA DOS CAMINHOES EM PROCESSAMENTO
+   Uma linha por caminhao dentro do patio: tag, onde esta e ha quanto
+   tempo. A etapa vem como selo colorido para bater com o resumo do topo.
+   ============================================ */
+.fluxo-tabela-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.fluxo-tabela-resumo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.data-table--fluxo {
+    font-size: 0.78rem;
+    min-width: 62rem;
+}
+
+.data-table--fluxo th,
+.data-table--fluxo td {
+    padding: 0.4375rem 0.625rem;
+    white-space: nowrap;
+}
+
+.data-table--fluxo td {
+    font-size: 0.78rem;
+}
+
+.data-table--fluxo td .legend-dot {
+    margin-right: 0.4rem;
+    vertical-align: middle;
+}
+
+.fluxo-tag {
+    display: inline-block;
+    padding: 0.1rem 0.45rem;
+    border-radius: 6px;
+    background: var(--accent-soft);
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+}
+
+body.theme-light .fluxo-tag {
+    color: var(--accent-strong);
+}
+
+.fluxo-etapa-pill {
+    display: inline-block;
+    padding: 0.125rem 0.5rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.fluxo-etapa-pill--fila {
+    color: var(--danger);
+    background: rgba(231, 76, 60, 0.14);
+    border-color: rgba(231, 76, 60, 0.38);
+}
+
+.fluxo-etapa-pill--moega {
+    color: var(--warn);
+    background: rgba(243, 156, 18, 0.14);
+    border-color: rgba(243, 156, 18, 0.38);
+}
+
+.fluxo-etapa-pill--saida {
+    color: var(--accent);
+    background: rgba(59, 130, 246, 0.14);
+    border-color: rgba(59, 130, 246, 0.38);
+}
+
+.fluxo-etapa-pill--liberacao {
+    color: var(--ok);
+    background: rgba(46, 204, 113, 0.14);
+    border-color: rgba(46, 204, 113, 0.38);
+}
+
+body.theme-light .fluxo-etapa-pill--fila {
+    color: #b3261e;
+}
+
+body.theme-light .fluxo-etapa-pill--moega {
+    color: #9a5b00;
+}
+
+body.theme-light .fluxo-etapa-pill--saida {
+    color: var(--accent-strong);
+}
+
+body.theme-light .fluxo-etapa-pill--liberacao {
+    color: #1e7a45;
+}
+
+/* tempo parado na fila: a partir de 20 min chama atencao, 30 min e' desvio */
+.fluxo-tempo--atencao {
+    color: var(--warn);
+    font-weight: 600;
+}
+
+.fluxo-tempo--ruim {
+    color: var(--danger);
+    font-weight: 700;
+}
+
+.fluxo-nota {
+    color: var(--muted);
+}
+
+/* as etapas ficam com altura natural; a tabela toma a sobra e rola por
+   dentro (cabecalho fixo), sem puxar a tela inteira para o piso do fit */
+.screen > .content-section--etapas {
+    flex: 0 0 auto;
+}
+
+.content-section--livre {
+    overflow: hidden;
+}
+
+.content-section--livre > .fluxo-tabela-head {
+    flex: 0 0 auto;
+}
+
+.table-scroll--livre {
+    overflow: auto;
+    min-height: 6rem;
+}
+
+.data-table--fluxo thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--header-bg);
+}
+
+/* selo de etapa como filtro: botao no cabecalho e span clicavel na linha */
+button.fluxo-etapa-pill,
+span[data-fluxo-filtro].fluxo-etapa-pill {
+    cursor: pointer;
+    font-family: inherit;
+    transition: filter 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease;
+}
+
+button.fluxo-etapa-pill:hover,
+span[data-fluxo-filtro].fluxo-etapa-pill:hover {
+    filter: brightness(1.25);
+}
+
+button.fluxo-etapa-pill:focus-visible,
+span[data-fluxo-filtro].fluxo-etapa-pill:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.fluxo-etapa-pill--todos {
+    color: var(--muted);
+    background: var(--row-bg);
+    border-color: var(--card-border);
+}
+
+/* o selo ativo ganha contorno; com filtro ligado os demais apagam um pouco */
+.fluxo-tabela-resumo .fluxo-etapa-pill.is-active {
+    box-shadow: 0 0 0 2px currentColor inset;
+}
+
+.content-section.is-filtrada .fluxo-tabela-resumo .fluxo-etapa-pill:not(.is-active) {
+    opacity: 0.5;
+}
+
+.content-section.is-filtrada .fluxo-tabela-resumo .fluxo-etapa-pill:not(.is-active):hover {
+    opacity: 1;
+}
+
+.fluxo-vazio {
+    margin: 1rem 0.625rem;
+    font-size: 0.78rem;
+    color: var(--muted);
+}
+
+body.edit-mode .fluxo-etapa-pill {
+    cursor: text;
+}
