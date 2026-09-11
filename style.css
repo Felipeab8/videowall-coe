@@ -6075,6 +6075,11 @@ body.theme-light .kpi-card--destaque .kpi-value {
     gap: 1.75rem;
 }
 
+/* fila / moega / balanca de saida / liberacao: as mesmas etapas da tabela */
+.fluxo-etapas--quatro {
+    grid-template-columns: repeat(4, 1fr);
+}
+
 .fluxo-etapa {
     position: relative;
     display: flex;
@@ -6223,14 +6228,66 @@ body.theme-light .fluxo-etapa--alerta .fluxo-etapa-estado {
 }
 
 .data-table--fluxo {
-    font-size: 0.78rem;
-    min-width: 62rem;
+    font-size: 0.74rem;
+    width: 100%;
+    /* largura fixa por coluna (colgroup) e quebra de linha: a tabela inteira
+       sempre cabe na tela, sem cortar coluna nem scroll lateral */
+    table-layout: fixed;
+}
+
+/* a tabela precisa caber sem scroll lateral: cabecalho pode quebrar linha */
+.data-table--fluxo thead th {
+    white-space: normal;
+    line-height: 1.15;
+    vertical-align: bottom;
+}
+
+/* data/hora completa (dd/mm/aaaa HH:MM:SS) em todas as etapas, como no relatorio;
+   fonte menor e colunas de texto podem quebrar pra caber sem scroll lateral */
+.data-table--fluxo .fluxo-dt--cheia {
+    font-size: 0.72rem;
+    line-height: 1.25;
+}
+
+.data-table--fluxo .fluxo-etapa-pill {
+    white-space: normal;
+    line-height: 1.2;
+}
+
+.data-table--fluxo .fluxo-tag {
+    font-size: 0.64rem;
+    letter-spacing: 0.02em;
+    overflow-wrap: anywhere;
+}
+
+/* no celular a tabela nao cabe: ai sim volta o scroll lateral */
+@media screen and (max-width: 768px) {
+    .table-scroll--livre {
+        overflow-x: auto;
+    }
+
+    .data-table--fluxo {
+        min-width: 56rem;
+    }
+}
+
+/* colunas de data/hora de cada etapa (mesmo layout do relatorio MovAgricola) */
+.data-table--fluxo .fluxo-dt {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.01em;
+}
+
+.data-table--fluxo .fluxo-dt--vazio {
+    color: var(--muted);
+    text-align: center;
 }
 
 .data-table--fluxo th,
 .data-table--fluxo td {
-    padding: 0.4375rem 0.625rem;
-    white-space: nowrap;
+    padding: 0.4rem 0.35rem;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    vertical-align: middle;
 }
 
 .data-table--fluxo td {
@@ -6340,7 +6397,8 @@ body.theme-light .fluxo-etapa-pill--liberacao {
 }
 
 .table-scroll--livre {
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     min-height: 6rem;
 }
 
