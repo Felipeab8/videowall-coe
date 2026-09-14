@@ -2300,7 +2300,7 @@ const CATALOGO = [
         icone: '●',
         resumo: 'Bolinhas coloridas com texto — ok, atenção e alerta.',
         campos: [
-            { nome: 'titulo', rotulo: 'Título', tipo: 'text', padrao: 'DISTRIBUIÇÃO DE QUALIDADE' },
+            { nome: 'titulo', rotulo: 'Título', tipo: 'text', padrao: 'DISTRIBUIÇÃO DE CLASSIFICAÇÃO' },
             { nome: 'rotulos', rotulo: 'Textos', tipo: 'textarea', padrao: 'Dentro do padrão: 98%, Atenção: 1%, Fora do padrão: 1%' },
             { nome: 'estados', rotulo: 'Estados', tipo: 'textarea', padrao: 'ok, atencao, alerta', dica: 'ok, atencao ou alerta — um por texto' }
         ],
@@ -3456,6 +3456,33 @@ function limparFiltrosFluxo() {
         if (secao.dataset.fluxoEtapa !== 'todos') filtrarFluxo(secao, 'todos');
     });
 }
+
+// ============================================
+// CLASSIFICACAO · HISTORICO POR CULTURA
+// Os botoes do cabecalho escolhem a cultura; a secao guarda a escolha em
+// data-hist-cultura e o CSS mostra so a linha correspondente. Delegado no
+// documento porque o editor pode remontar o palco inteiro.
+// ============================================
+function escolherCulturaHistorico(alvo) {
+    const secao = alvo.closest('.hist-section');
+    if (!secao) return;
+    const cultura = alvo.dataset.histCultura;
+    if (!cultura) return;
+    secao.dataset.histCultura = cultura;
+    secao.querySelectorAll('.hist-seletor-btn').forEach((btn) => {
+        const ativo = btn.dataset.histCultura === cultura;
+        btn.classList.toggle('is-active', ativo);
+        btn.setAttribute('aria-pressed', String(ativo));
+    });
+    scheduleFit();
+}
+
+document.addEventListener('click', (e) => {
+    const alvo = e.target instanceof Element ? e.target.closest('.hist-seletor-btn') : null;
+    if (!alvo || isEditing()) return;
+    e.preventDefault();
+    escolherCulturaHistorico(alvo);
+});
 
 // ============================================
 // ATALHOS

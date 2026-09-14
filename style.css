@@ -774,7 +774,7 @@ body.sidebar-collapsed .sidebar-reveal {
     font-variant-numeric: tabular-nums;
 }
 
-/* Qualidade: 4 KPIs por linha dentro da secao */
+/* Classificacao: 4 KPIs por linha dentro da secao */
 .kpi-grid-small--quad {
     grid-template-columns: repeat(4, 1fr);
 }
@@ -784,7 +784,7 @@ body.sidebar-collapsed .sidebar-reveal {
     background: linear-gradient(180deg, rgba(231, 76, 60, 0.14) 0%, rgba(231, 76, 60, 0.04) 100%);
 }
 
-/* Subtitulo interno de secao (ex.: DISTRIBUICAO DE QUALIDADE) */
+/* Subtitulo interno de secao (ex.: DISTRIBUICAO DE CLASSIFICACAO) */
 .subsection-title {
     margin: 1.125rem 0 0.75rem;
     color: var(--muted);
@@ -3033,7 +3033,7 @@ body.edit-mode .header-controls .btn-alertas.active {
 }
 
 /* ============================================
-   KPIs COMPACTOS (qualidade: o topo cede altura a tabela)
+   KPIs COMPACTOS (classificacao: o topo cede altura a tabela)
    ============================================ */
 .kpi-grid--compact .kpi-card {
     min-height: 4.25rem;
@@ -5679,15 +5679,23 @@ body.edit-mode .is-selected {
    contexto), sem selo ocupando espaco no cartao.
    ============================================ */
 .kpi-card--motivo,
-.forecast-stat--motivo {
+.forecast-stat--motivo,
+.mensal-bar-row--motivo {
     position: relative;
     cursor: help;
 }
 
 .kpi-card--motivo:focus-visible,
-.forecast-stat--motivo:focus-visible {
+.forecast-stat--motivo:focus-visible,
+.mensal-bar-row--motivo:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
+}
+
+/* a marca do ritmo ganha destaque enquanto a conta esta aberta */
+.mensal-bar-row--motivo:hover .mensal-ritmo,
+.mensal-bar-row--motivo:focus-visible .mensal-ritmo {
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35), 0 0 0 3px rgba(255, 255, 255, 0.22);
 }
 
 .motivo-tip {
@@ -6156,14 +6164,9 @@ body.theme-light .kpi-card--destaque .kpi-value {
     gap: 1.75rem;
 }
 
-/* fila / 1ª pesagem / classificacao / moega / 2ª pesagem / liberacao: as mesmas etapas da tabela */
-.fluxo-etapas--seis {
-    grid-template-columns: repeat(6, 1fr);
-    gap: 1.5rem;
-}
-
-.fluxo-etapas--seis .fluxo-etapa:not(:last-child)::after {
-    right: calc(-1.5rem + 0.4rem);
+/* fila / 1ª pesagem + classificacao / moega / 2ª pesagem + liberacao */
+.fluxo-etapas--quatro {
+    grid-template-columns: repeat(4, 1fr);
 }
 
 .fluxo-etapa {
@@ -6284,8 +6287,7 @@ body.theme-light .fluxo-etapa--alerta .fluxo-etapa-estado {
         gap: 1.5rem;
     }
 
-    .fluxo-etapa:not(:last-child)::after,
-    .fluxo-etapas--seis .fluxo-etapa:not(:last-child)::after {
+    .fluxo-etapa:not(:last-child)::after {
         top: auto;
         right: auto;
         left: 50%;
@@ -7744,10 +7746,6 @@ body.theme-light .kpi-flag--info {
     font-weight: 700;
 }
 
-.etapa-seg.is-maior {
-    box-shadow: inset 0 0 0 2px var(--danger);
-}
-
 .etapa-axis {
     position: relative;
     height: 1.125rem;
@@ -7778,7 +7776,7 @@ body.theme-light .kpi-flag--info {
    O deslocamento soma o padding do card e a coluna da cultura (6.5rem + gap 0.75rem). */
 .etapa-meta {
     position: absolute;
-    top: 0.5rem;
+    top: 1.125rem;
     bottom: 1.5rem;
     left: calc(0.875rem + 7.25rem + (100% - 0.875rem * 2 - 7.25rem) * var(--etapa-meta) / var(--etapa-max));
     border-left: 1px dashed var(--danger);
@@ -7788,7 +7786,7 @@ body.theme-light .kpi-flag--info {
 
 .etapa-meta-label {
     position: absolute;
-    top: -1.1rem;
+    top: -0.95rem;
     left: 50%;
     transform: translateX(-50%);
     white-space: nowrap;
@@ -7858,21 +7856,25 @@ body.theme-light .kpi-flag--info {
 }
 
 .mensal-bar-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     gap: 0.625rem;
 }
 
-/* trilho no molde do stack-track, com grade a cada 25% */
+/* trilho no molde do stack-track, com grade a cada 25%.
+   --escala = meta da cultura / maior meta da coluna: o trilho encolhe
+   proporcionalmente e a grade continua marcando a mesma tonelagem em todas as linhas */
 .mensal-track {
+    --escala: 1;
     position: relative;
-    flex: 1 1 auto;
+    width: calc(var(--escala) * 100%);
     height: 0.875rem;
     border-radius: 5px;
     border: 1px solid var(--row-line);
     background-color: var(--row-bg);
     background-image: linear-gradient(to right, var(--row-line) 1px, transparent 1px);
-    background-size: 25% 100%;
+    background-size: calc(25% / var(--escala)) 100%;
     overflow: visible;
 }
 
@@ -7947,6 +7949,502 @@ body.theme-light .kpi-flag--info {
 body.theme-light .mensal-ritmo {
     background: #1c2733;
     box-shadow: none;
+}
+
+/* ============================================
+   CLASSIFICACAO — KPIs DE TOPO
+   Quatro cartoes em tamanho cheio; a tabela do meio
+   rola por dentro, o historico tem altura fixa.
+   ============================================ */
+.kpi-grid--class .kpi-card {
+    min-height: 5.25rem;
+    padding: 0.75rem 1rem;
+}
+
+.kpi-grid--class .kpi-value {
+    font-size: 1.8rem;
+}
+
+/* os quatro graos ficam numa linha so, dividindo a largura do cartao */
+.kpi-grid--class .grao-metrics {
+    flex-wrap: nowrap;
+    gap: 0.25rem 0.5rem;
+}
+
+.kpi-grid--class .grao-metric {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.kpi-grid--class .grao-metric-value {
+    font-size: 0.9rem;
+}
+
+.kpi-grid--class .grao-metric-name {
+    font-size: 0.52rem;
+}
+
+.kpi-grid--class .grao-icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* ============================================
+   CLASSIFICACAO — DETALHE POR CARGA
+   Colunas de resultado ficam em cor quando passam
+   da faixa de atencao ou da meta.
+   ============================================ */
+.class-table th:nth-child(n+4),
+.class-table td:nth-child(n+4) {
+    font-variant-numeric: tabular-nums;
+}
+
+.class-table td:nth-child(2) {
+    white-space: nowrap;
+}
+
+.class-table td {
+    padding: 0.5rem 0.625rem;
+}
+
+.class-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--header-bg);
+}
+
+/* a tabela cede: rola por dentro em vez de encolher a tela inteira */
+.screen > .class-detalhe {
+    flex: 1 1 auto;
+    min-height: 9rem;
+}
+
+.screen > .hist-section {
+    flex: 0 0 auto;
+}
+
+.class-table .legend-dot {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    margin-right: 0.4rem;
+    vertical-align: 0.05rem;
+}
+
+.class-val {
+    font-weight: 700;
+}
+
+.class-val--atencao {
+    color: var(--warn);
+}
+
+.class-val--fora {
+    color: var(--danger);
+}
+
+.class-status {
+    display: inline-block;
+    padding: 0.125rem 0.5rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.class-status--ok {
+    color: var(--ok);
+    background: rgba(46, 204, 113, 0.14);
+    border-color: rgba(46, 204, 113, 0.38);
+}
+
+.class-status--atencao {
+    color: var(--warn);
+    background: rgba(243, 156, 18, 0.14);
+    border-color: rgba(243, 156, 18, 0.38);
+}
+
+.class-status--fora {
+    color: var(--danger);
+    background: rgba(231, 76, 60, 0.14);
+    border-color: rgba(231, 76, 60, 0.38);
+}
+
+body.theme-light .class-status--ok {
+    color: #1e7a45;
+}
+
+body.theme-light .class-status--atencao,
+body.theme-light .class-val--atencao {
+    color: #9a5b00;
+}
+
+body.theme-light .class-status--fora,
+body.theme-light .class-val--fora {
+    color: #b3261e;
+}
+
+/* ============================================
+   CLASSIFICACAO — HISTORICO POR CULTURA
+   Cada celula: sparkline dos 7 dias + tres barras
+   (sem/mes/ano) na mesma escala, meta tracejada
+   atravessando os dois.
+   ============================================ */
+.hist-legend {
+    flex-shrink: 0;
+}
+
+.hist-legend-linha {
+    display: inline-block;
+    width: 1.125rem;
+    height: 0;
+    border-top: 2px solid var(--muted);
+    flex-shrink: 0;
+}
+
+.hist-legend-barra {
+    display: inline-block;
+    width: 0.5625rem;
+    height: 0.6875rem;
+    border-radius: 2px;
+    background: var(--muted);
+    flex-shrink: 0;
+}
+
+.hist-tools {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+/* seletor de cultura: um botao por grao, o ativo ganha a cor do proprio grao */
+.hist-seletor {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    flex-wrap: wrap;
+}
+
+.hist-seletor-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 999px;
+    border: 1px solid var(--card-border);
+    background: var(--row-bg);
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.hist-seletor-btn .legend-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.hist-seletor-btn:hover {
+    color: var(--text);
+    border-color: var(--accent);
+}
+
+.hist-seletor-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.hist-seletor-btn.is-active {
+    color: var(--text);
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent) inset;
+}
+
+.hist-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.625rem 0.75rem;
+    align-items: stretch;
+}
+
+.hist-grid--head {
+    margin-bottom: 0.375rem;
+}
+
+/* so a linha da cultura escolhida (data-hist-cultura na secao) aparece */
+.hist-row {
+    display: none;
+}
+
+.hist-section[data-hist-cultura="milho"] .hist-row[data-hist-cultura="milho"],
+.hist-section[data-hist-cultura="sorgo"] .hist-row[data-hist-cultura="sorgo"],
+.hist-section[data-hist-cultura="trigo"] .hist-row[data-hist-cultura="trigo"],
+.hist-section[data-hist-cultura="soja"] .hist-row[data-hist-cultura="soja"] {
+    display: grid;
+}
+
+.hist-head {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: center;
+    padding-bottom: 0.125rem;
+    align-self: end;
+}
+
+.hist-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+    padding: 0.75rem 0.875rem 0.625rem;
+    background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    transition: border-color 0.25s ease;
+}
+
+.hist-cell:hover {
+    border-color: var(--accent);
+}
+
+/* so aparece no mobile, quando os cabecalhos das colunas somem */
+.hist-cell-label {
+    display: none;
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--faint);
+}
+
+.hist-plot {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: 0 0.875rem;
+    height: 6.5rem;
+    padding-top: 1rem;       /* espaco para o rotulo da meta e dos valores */
+    padding-bottom: 1.125rem; /* espaco para o eixo (dias / sem-mes-ano) */
+}
+
+/* meta: linha tracejada que atravessa sparkline e barras */
+.hist-meta-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 1rem;               /* mesma area util do plot (descontando os paddings) */
+    bottom: 1.125rem;
+    pointer-events: none;
+}
+
+.hist-meta-line::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: var(--meta);
+    border-top: 1px dashed var(--faint);
+}
+
+/* rotulo da meta fica sobre a linha dos 7 dias, longe das barras */
+.hist-meta-lbl {
+    position: absolute;
+    left: 0;
+    transform: translateY(calc(-100% - 0.125rem));
+    font-style: normal;
+    font-size: 0.56rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+}
+
+.hist-spark,
+.hist-bars {
+    position: relative;
+    min-width: 0;
+    height: 100%;
+}
+
+.hist-spark svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.hist-linha {
+    fill: none;
+    stroke: var(--cor);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.hist-ponto {
+    position: absolute;
+    right: 0;
+    width: 0.48rem;
+    height: 0.48rem;
+    border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 0 1.5px var(--card-bg-bottom);
+    transform: translate(50%, 50%);
+}
+
+.hist-spark-val {
+    position: absolute;
+    right: 0;
+    transform: translateY(calc(-100% - 0.2rem));
+    font-size: 0.76rem;
+    font-weight: 800;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
+.hist-eixo {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 0.3rem;
+    font-size: 0.56rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+}
+
+.hist-eixo span {
+    flex: 0 0 auto;
+    width: 0.6rem;
+    text-align: center;
+}
+
+.hist-bars {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    gap: 0.5rem;
+    border-left: 1px solid var(--row-line);
+    padding-left: 0.75rem;
+}
+
+/* ano passado: uma barra sozinha, antes da linha dos 7 dias */
+.hist-bars--antes {
+    border-left: none;
+    border-right: 1px solid var(--row-line);
+    padding-left: 0;
+    padding-right: 0.75rem;
+}
+
+.hist-bar {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100%;
+    flex: 0 1 1.875rem;
+    min-width: 1.125rem;
+}
+
+.hist-bars--antes .hist-bar {
+    flex: 0 0 1.875rem;
+}
+
+.hist-bar-fill {
+    display: block;
+    width: 100%;
+    border-radius: 3px 3px 0 0;
+    background: var(--cor);
+    opacity: 0.92;
+}
+
+.hist-bar-val {
+    margin-bottom: 0.2rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.hist-bar-lbl {
+    position: absolute;
+    top: 100%;
+    padding-top: 0.3rem;
+    font-size: 0.56rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+    white-space: nowrap;
+}
+
+@media screen and (max-width: 1024px) {
+    .hist-grid {
+        gap: 0.5rem;
+    }
+
+    .hist-plot {
+        grid-template-columns: auto minmax(0, 1.3fr) minmax(0, 1fr);
+        gap: 0 0.5rem;
+    }
+
+    .hist-bars {
+        padding-left: 0.5rem;
+        gap: 0.3rem;
+    }
+
+    .hist-bars--antes {
+        padding-left: 0;
+        padding-right: 0.5rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .hist-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .hist-grid--head {
+        display: none;
+    }
+
+    .hist-cell-label {
+        display: block;
+    }
+
+    .hist-legend {
+        display: none;
+    }
+
+    .hist-tools {
+        align-items: flex-start;
+    }
 }
 
 @media screen and (max-width: 768px) {

@@ -11,7 +11,7 @@
 </head>
 <body class="theme-dark">
 
-    <!-- Icones dos graos (referenciados via <use> nos KPIs de qualidade) -->
+    <!-- Icones dos graos (referenciados via <use> nos KPIs de classificação) -->
     <svg class="grao-sprite" aria-hidden="true" focusable="false">
         <symbol id="ico-milho" viewBox="0 0 24 24">
             <path d="M12 2.2c2.3 2 3.6 5 3.6 8.8 0 4.6-1.4 8.1-3.6 9.8-2.2-1.7-3.6-5.2-3.6-9.8 0-3.8 1.3-6.8 3.6-8.8Z"></path>
@@ -121,12 +121,12 @@
                 </div>
                 <div class="menu-group" data-group="1">
                     <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-1">
-                        <span class="menu-text">Qualidade</span>
+                        <span class="menu-text">Classificação</span>
                         <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
                     <div class="submenu" id="submenu-1" hidden>
-                        <button class="menu-item" data-screen="1"><span class="menu-text">Tela da qualidade</span></button>
-                        <button class="menu-item" data-screen="cam-1"><span class="menu-text">Câmera da qualidade</span></button>
+                        <button class="menu-item" data-screen="1"><span class="menu-text">Tela da classificação</span></button>
+                        <button class="menu-item" data-screen="cam-1"><span class="menu-text">Câmera da classificação</span></button>
                     </div>
                 </div>
                 <div class="menu-group" data-group="2">
@@ -236,10 +236,10 @@
                         <div class="geral-card-foot"><span>Fila acima do limite desde 14:35</span><span class="geral-card-link">Ver tela →</span></div>
                     </button>
 
-                    <button class="geral-card ok" type="button" data-goto="1" title="Abrir tela da qualidade">
+                    <button class="geral-card ok" type="button" data-goto="1" title="Abrir tela da classificação">
                         <div class="geral-card-head">
                             <span class="geral-card-num">02</span>
-                            <span class="geral-card-name">Qualidade</span>
+                            <span class="geral-card-name">Classificação</span>
                             <span class="kpi-flag kpi-flag--ok">OK</span>
                         </div>
                         <div class="geral-kpis">
@@ -479,7 +479,7 @@
                                 <span class="etapa-seg etapa-fill--fila" style="--min: 9"><b>FILA</b><span>9 min</span></span>
                                 <span class="etapa-seg etapa-fill--p1" style="--min: 4"><b>P1</b><span>4 min</span></span>
                                 <span class="etapa-seg etapa-fill--classif" style="--min: 7"><b>CLASSIF.</b><span>7 min</span></span>
-                                <span class="etapa-seg etapa-fill--moega is-maior" style="--min: 18"><b>⚠ MOEGA</b><span>18 min · maior etapa</span></span>
+                                <span class="etapa-seg etapa-fill--moega" style="--min: 18"><b>MOEGA</b><span>18 min</span></span>
                                 <span class="etapa-seg etapa-fill--p2" style="--min: 4"><b>P2</b><span>4 min</span></span>
                             </div>
                         </div>
@@ -492,7 +492,7 @@
                                 <span class="etapa-seg etapa-fill--fila" style="--min: 6"><b>FILA</b><span>6 min</span></span>
                                 <span class="etapa-seg etapa-fill--p1" style="--min: 3"><b>P1</b><span>3 min</span></span>
                                 <span class="etapa-seg etapa-fill--classif" style="--min: 5"><b>CLASSIF.</b><span>5 min</span></span>
-                                <span class="etapa-seg etapa-fill--moega is-maior" style="--min: 13"><b>⚠ MOEGA</b><span>13 min · maior etapa</span></span>
+                                <span class="etapa-seg etapa-fill--moega" style="--min: 13"><b>MOEGA</b><span>13 min</span></span>
                                 <span class="etapa-seg etapa-fill--p2" style="--min: 3"><b>P2</b><span>3 min</span></span>
                             </div>
                         </div>
@@ -531,7 +531,12 @@
                         </div>
                         <div class="mensal-cell">
                             <span class="mensal-cell-label">Mês atual · Set · dia 14/30</span>
-                            <div class="mensal-bar-row">
+                            <div class="mensal-bar-row mensal-bar-row--motivo" tabindex="0"
+                                data-motivo
+                                data-motivo-titulo="Ritmo do milho em setembro"
+                                data-motivo-resumo="102% · 9.800 t realizadas vs. 9.567 t esperadas até o dia 14"
+                                data-motivo-lista="Meta do mês::20.500 t::30 dias|Ritmo necessário::683 t/dia::20.500 ÷ 30|Esperado até hoje::9.567 t::683 × 14 dias|Realizado até hoje::9.800 t::+233 t::bom|Projeção fim do mês::21.000 t::+500 t vs. meta::bom"
+                                data-motivo-nota="A marca branca é onde a barra deveria estar hoje (dia 14/30).">
                                 <div class="mensal-track"><span class="mensal-fill is-ok" style="width: 47.8%"></span><span class="mensal-ritmo" style="left: 46.7%"></span></div>
                                 <span class="mensal-pct is-ok">102% ritmo</span>
                             </div>
@@ -549,15 +554,20 @@
                         <div class="mensal-cell">
                             <span class="mensal-cell-label">Mês passado · Ago</span>
                             <div class="mensal-bar-row">
-                                <div class="mensal-track"><span class="mensal-fill is-warn" style="width: 84%"></span></div>
+                                <div class="mensal-track" style="--escala: 0.386"><span class="mensal-fill is-warn" style="width: 84%"></span></div>
                                 <span class="mensal-pct is-warn">84%</span>
                             </div>
                             <span class="mensal-note">7.100 t / 8.500 t previstos</span>
                         </div>
                         <div class="mensal-cell">
                             <span class="mensal-cell-label">Mês atual · Set · dia 14/30</span>
-                            <div class="mensal-bar-row">
-                                <div class="mensal-track"><span class="mensal-fill is-warn" style="width: 37.8%"></span><span class="mensal-ritmo" style="left: 46.7%"></span></div>
+                            <div class="mensal-bar-row mensal-bar-row--motivo" tabindex="0"
+                                data-motivo
+                                data-motivo-titulo="Ritmo do sorgo em setembro"
+                                data-motivo-resumo="81% · 3.400 t realizadas vs. 4.200 t esperadas até o dia 14"
+                                data-motivo-lista="Meta do mês::9.000 t::30 dias|Ritmo necessário::300 t/dia::9.000 ÷ 30|Esperado até hoje::4.200 t::300 × 14 dias|Realizado até hoje::3.400 t::−800 t::ruim|Projeção fim do mês::7.286 t::−1.714 t vs. meta::ruim"
+                                data-motivo-nota="Para fechar a meta, precisa de 350 t/dia nos 16 dias restantes.">
+                                <div class="mensal-track" style="--escala: 0.439"><span class="mensal-fill is-warn" style="width: 37.8%"></span><span class="mensal-ritmo" style="left: 46.7%"></span></div>
                                 <span class="mensal-pct is-warn">81% ritmo</span>
                             </div>
                             <span class="mensal-note">3.400 t / 9.000 t previstos</span>
@@ -565,7 +575,7 @@
                         <div class="mensal-cell">
                             <span class="mensal-cell-label">Próximo mês · Out (projeção)</span>
                             <div class="mensal-bar-row">
-                                <div class="mensal-track mensal-track--proj"><span class="mensal-fill mensal-fill--proj" style="width: 45.8%; --cor: var(--grao-sorgo)"></span></div>
+                                <div class="mensal-track mensal-track--proj" style="--escala: 0.458"><span class="mensal-fill mensal-fill--proj" style="width: 100%; --cor: var(--grao-sorgo)"></span></div>
                             </div>
                             <span class="mensal-note">8.800 t previstos</span>
                         </div>
@@ -588,7 +598,7 @@
                         <div class="mensal-cell">
                             <span class="mensal-cell-label">Próximo mês · Out (projeção)</span>
                             <div class="mensal-bar-row">
-                                <div class="mensal-track mensal-track--proj"><span class="mensal-fill mensal-fill--proj" style="width: 33.3%; --cor: var(--grao-trigo)"></span></div>
+                                <div class="mensal-track mensal-track--proj" style="--escala: 0.333"><span class="mensal-fill mensal-fill--proj" style="width: 100%; --cor: var(--grao-trigo)"></span></div>
                             </div>
                             <span class="mensal-note">6.400 t previstos · início de safra</span>
                         </div>
@@ -606,46 +616,9 @@
                     </div>
                 </div>
 
-                <div class="kpi-grid">
-                    <!-- o numero sozinho nao diz o que conta: o mouse over abre a definicao e a divisao por etapa -->
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo kpi-card--destaque" tabindex="0"
-                        data-motivo
-                        data-motivo-titulo="O que este número representa"
-                        data-motivo-resumo="27 caminhões dentro do pátio · do portão até a liberação"
-                        data-motivo-lista="Na fila (portaria)::2::aguardando 1ª pesagem::neutro|Na 1ª pesagem::4::peso bruto::ruim|Na classificação::6::aguardando laudo::ruim|Descarregando na moega::6::em andamento::neutro|Na 2ª pesagem::5::tara e peso líquido::neutro|Em liberação (documentos)::4::saindo::bom"
-                        data-motivo-nota="Conta todo caminhão que já entrou no pátio e ainda não foi liberado. Sai da conta ao passar pela 2ª pesagem e ser liberado.">
-                        <div class="kpi-label">CAMINHÕES EM PROCESSAMENTO</div>
-                        <div class="kpi-value">27</div>
-                        <div class="kpi-meta-row">
-                            <span class="kpi-meta-ref">2 na fila · 4 na 1ª pesagem · 6 na classificação · 6 na moega · 5 na 2ª pesagem · 4 em liberação</span>
-                        </div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">ENTRADAS HOJE</div>
-                        <div class="kpi-value">113 <span class="kpi-value-ref">caminhões</span></div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">LIBERADOS HOJE</div>
-                        <div class="kpi-value">86 <span class="kpi-value-ref">caminhões</span></div>
-                    </div>
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo alert" tabindex="0"
-                        data-motivo
-                        data-motivo-titulo="Por que o tempo no pátio está 7 min acima da meta"
-                        data-motivo-resumo="52 min · meta 45 min · +7 min"
-                        data-motivo-lista="Balança de entrada::14 min::+6 min::ruim|Espera pela moega::19 min::+3 min::ruim|Descarga::12 min::no alvo::neutro|Saída e liberação::7 min::−2 min::bom"
-                        data-motivo-nota="Balança 2 em aferição desde as 11h20 responde pela maior parte do desvio.">
-                        <div class="kpi-label">TEMPO MÉDIO NO PÁTIO</div>
-                        <div class="kpi-value">52 min</div>
-                        <div class="kpi-meta-row">
-                            <span class="kpi-flag kpi-flag--alerta">ACIMA DA META</span>
-                            <span class="kpi-meta-ref">meta 45 min · +7 min</span>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="content-section content-section--etapas">
                     <h3>ETAPAS DO PROCESSO · DA FILA À LIBERAÇÃO</h3>
-                    <div class="fluxo-etapas fluxo-etapas--seis">
+                    <div class="fluxo-etapas fluxo-etapas--quatro">
                         <div class="fluxo-etapa" tabindex="0"
                             data-motivo
                             data-motivo-titulo="Fila"
@@ -660,27 +633,15 @@
                         </div>
                         <div class="fluxo-etapa fluxo-etapa--alerta" tabindex="0"
                             data-motivo
-                            data-motivo-titulo="Primeira pesagem"
-                            data-motivo-resumo="4 caminhões na pesagem de entrada · peso bruto"
-                            data-motivo-lista="Balanças de entrada::1 de 2::balança 2 em aferição::ruim|Espera média::14 min::meta 8 min::ruim|Tempo médio de pesagem::4 min::meta 5 min::bom"
-                            data-motivo-nota="Pesagem do caminhão carregado. Balança 2 em aferição desde as 11h20.">
+                            data-motivo-titulo="1ª pesagem e classificação"
+                            data-motivo-resumo="10 caminhões · 4 na pesagem de entrada · 6 na classificação"
+                            data-motivo-lista="Balanças de entrada::1 de 2::balança 2 em aferição::ruim|Espera na pesagem::14 min::meta 8 min::ruim|Amostras coletadas::6 de 6::completo::bom|Laudos emitidos::3 de 6::3 aguardando::ruim|Tempo médio até o laudo::11 min::meta 8 min::ruim"
+                            data-motivo-nota="Peso bruto na balança 1 (balança 2 em aferição desde as 11h20) e coleta de amostra, umidade e impurezas. O laudo define o desconto e a moega de destino.">
                             <span class="fluxo-etapa-num">2</span>
-                            <span class="fluxo-etapa-nome">1ª Pesagem</span>
-                            <span class="fluxo-etapa-valor">4 <small>pesando</small></span>
-                            <span class="fluxo-etapa-sub">balança 1 de 2 · espera 14 min</span>
-                            <span class="fluxo-etapa-estado">Balança 2 em aferição</span>
-                        </div>
-                        <div class="fluxo-etapa fluxo-etapa--alerta" tabindex="0"
-                            data-motivo
-                            data-motivo-titulo="Classificação"
-                            data-motivo-resumo="6 caminhões na classificação · amostra e laudo"
-                            data-motivo-lista="Amostras coletadas::6 de 6::completo::bom|Laudos emitidos::3 de 6::3 aguardando::ruim|Tempo médio até o laudo::11 min::meta 8 min::ruim"
-                            data-motivo-nota="Coleta de amostra, umidade e impurezas. Define o desconto e a moega de destino.">
-                            <span class="fluxo-etapa-num">3</span>
-                            <span class="fluxo-etapa-nome">Classificação</span>
-                            <span class="fluxo-etapa-valor">6 <small>classificando</small></span>
-                            <span class="fluxo-etapa-sub">laudo 3 de 6 · 11 min até o laudo</span>
-                            <span class="fluxo-etapa-estado">Laudo acima da meta</span>
+                            <span class="fluxo-etapa-nome">1ª Pesagem &amp; Classificação</span>
+                            <span class="fluxo-etapa-valor">10 <small>4 pesando · 6 classificando</small></span>
+                            <span class="fluxo-etapa-sub">balança 1 de 2 · laudo 3 de 6 · 11 min até o laudo</span>
+                            <span class="fluxo-etapa-estado">Balança 2 em aferição · laudo acima da meta</span>
                         </div>
                         <div class="fluxo-etapa fluxo-etapa--alerta" tabindex="0"
                             data-motivo
@@ -688,7 +649,7 @@
                             data-motivo-resumo="6 caminhões descarregando · 6 de 6 moegas em uso"
                             data-motivo-lista="Moega 1 · Milho::ocupada::BWI5241::ruim|Moega 2 · Sorgo::ocupada::ACA4652::ruim|Moega 3 · Trigo::ocupada::CLJ7I79::ruim|Moega 4 · Sorgo::ocupada::SSS8G95::ruim|Moega 5 · Milho::ocupada::QPB4954::ruim|Moega 6 · Milho::ocupada::FOT5D69::ruim"
                             data-motivo-nota="Descarga e segregação por cultura antes da limpeza.">
-                            <span class="fluxo-etapa-num">4</span>
+                            <span class="fluxo-etapa-num">3</span>
                             <span class="fluxo-etapa-nome">Moega</span>
                             <span class="fluxo-etapa-valor">6 <small>descarregando</small></span>
                             <span class="fluxo-etapa-sub">0 de 6 moegas livres</span>
@@ -696,26 +657,14 @@
                         </div>
                         <div class="fluxo-etapa" tabindex="0"
                             data-motivo
-                            data-motivo-titulo="Segunda pesagem"
-                            data-motivo-resumo="5 caminhões na pesagem de saída · tara e peso líquido"
-                            data-motivo-lista="Balança de saída::1 de 1::operando::bom|Tempo médio de pesagem::4 min::meta 5 min::bom|Divergência de peso::0 de 5::sem ocorrência::bom"
-                            data-motivo-nota="Pesagem do caminhão vazio para fechar o peso líquido descarregado.">
-                            <span class="fluxo-etapa-num">5</span>
-                            <span class="fluxo-etapa-nome">2ª Pesagem</span>
-                            <span class="fluxo-etapa-valor">5 <small>pesando</small></span>
-                            <span class="fluxo-etapa-sub">1 balança · 4 min por caminhão</span>
-                            <span class="fluxo-etapa-estado">Operando</span>
-                        </div>
-                        <div class="fluxo-etapa" tabindex="0"
-                            data-motivo
-                            data-motivo-titulo="Liberação"
-                            data-motivo-resumo="4 caminhões aguardando liberação · nota e romaneio"
-                            data-motivo-lista="Romaneios emitidos::4 de 4::completo::bom|Tempo médio até saída::6 min::meta 8 min::bom|Pendências fiscais::0::sem ocorrência::bom"
-                            data-motivo-nota="Emissão de romaneio e liberação do caminhão na portaria de saída.">
-                            <span class="fluxo-etapa-num">6</span>
-                            <span class="fluxo-etapa-nome">Liberação</span>
-                            <span class="fluxo-etapa-valor">4 <small>liberando</small></span>
-                            <span class="fluxo-etapa-sub">romaneio 4 de 4 · 6 min até saída</span>
+                            data-motivo-titulo="2ª pesagem e liberação"
+                            data-motivo-resumo="9 caminhões · 5 na pesagem de saída · 4 aguardando liberação"
+                            data-motivo-lista="Balança de saída::1 de 1::operando::bom|Tempo médio de pesagem::4 min::meta 5 min::bom|Divergência de peso::0 de 5::sem ocorrência::bom|Romaneios emitidos::4 de 4::completo::bom|Tempo médio até saída::6 min::meta 8 min::bom"
+                            data-motivo-nota="Tara do caminhão vazio para fechar o peso líquido, emissão do romaneio e liberação na portaria de saída.">
+                            <span class="fluxo-etapa-num">4</span>
+                            <span class="fluxo-etapa-nome">2ª Pesagem &amp; Liberação</span>
+                            <span class="fluxo-etapa-valor">9 <small>5 pesando · 4 liberando</small></span>
+                            <span class="fluxo-etapa-sub">1 balança · romaneio 4 de 4 · 6 min até saída</span>
                             <span class="fluxo-etapa-estado">Operando</span>
                         </div>
                     </div>
@@ -801,18 +750,52 @@
                 </div>
             </section>
 
-            <!-- Screen 1: Qualidade -->
+            <!-- Screen 1: Classificação -->
             <section class="screen" id="screen-1">
                 <div class="screen-header">
                     <div class="screen-badge">03</div>
                     <div class="screen-title-section">
-                        <h2>Controle de Qualidade</h2>
+                        <h2>Controle de Classificação</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">4</span>s</div>
                     </div>
                 </div>
 
                 <!-- faixa compacta: os quatro indicadores de topo cedem altura para a tabela -->
-                <div class="kpi-grid kpi-grid--compact kpi-grid--four">
+                <div class="kpi-grid kpi-grid--four kpi-grid--class">
+                    <div class="kpi-card kpi-card--grao ok">
+                        <div class="kpi-label">CARGAS CLASSIFICADAS</div>
+                        <div class="kpi-value">100</div>
+                        <div class="grao-metrics">
+                            <span class="grao-metric">
+                                <svg class="grao-icon grao-icon--milho" aria-hidden="true"><use href="#ico-milho"></use></svg>
+                                <span class="grao-metric-text">
+                                    <span class="grao-metric-name">Milho</span>
+                                    <span class="grao-metric-value">42</span>
+                                </span>
+                            </span>
+                            <span class="grao-metric">
+                                <svg class="grao-icon grao-icon--sorgo" aria-hidden="true"><use href="#ico-sorgo"></use></svg>
+                                <span class="grao-metric-text">
+                                    <span class="grao-metric-name">Sorgo</span>
+                                    <span class="grao-metric-value">26</span>
+                                </span>
+                            </span>
+                            <span class="grao-metric">
+                                <svg class="grao-icon grao-icon--trigo" aria-hidden="true"><use href="#ico-trigo"></use></svg>
+                                <span class="grao-metric-text">
+                                    <span class="grao-metric-name">Trigo</span>
+                                    <span class="grao-metric-value">18</span>
+                                </span>
+                            </span>
+                            <span class="grao-metric">
+                                <svg class="grao-icon grao-icon--soja" aria-hidden="true"><use href="#ico-soja"></use></svg>
+                                <span class="grao-metric-text">
+                                    <span class="grao-metric-name">Soja</span>
+                                    <span class="grao-metric-value">14</span>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
                     <div class="kpi-card kpi-card--grao">
                         <div class="kpi-label">UMIDADE MÉDIA</div>
                         <div class="kpi-value">12,3%</div>
@@ -915,86 +898,282 @@
                             </span>
                         </div>
                     </div>
-                    <div class="kpi-card kpi-card--grao ok">
-                        <div class="kpi-label">CARGAS RECEBIDAS</div>
-                        <div class="kpi-value">100</div>
-                        <div class="grao-metrics">
-                            <span class="grao-metric">
-                                <svg class="grao-icon grao-icon--milho" aria-hidden="true"><use href="#ico-milho"></use></svg>
-                                <span class="grao-metric-text">
-                                    <span class="grao-metric-name">Milho</span>
-                                    <span class="grao-metric-value">42</span>
-                                </span>
-                            </span>
-                            <span class="grao-metric">
-                                <svg class="grao-icon grao-icon--sorgo" aria-hidden="true"><use href="#ico-sorgo"></use></svg>
-                                <span class="grao-metric-text">
-                                    <span class="grao-metric-name">Sorgo</span>
-                                    <span class="grao-metric-value">26</span>
-                                </span>
-                            </span>
-                            <span class="grao-metric">
-                                <svg class="grao-icon grao-icon--trigo" aria-hidden="true"><use href="#ico-trigo"></use></svg>
-                                <span class="grao-metric-text">
-                                    <span class="grao-metric-name">Trigo</span>
-                                    <span class="grao-metric-value">18</span>
-                                </span>
-                            </span>
-                            <span class="grao-metric">
-                                <svg class="grao-icon grao-icon--soja" aria-hidden="true"><use href="#ico-soja"></use></svg>
-                                <span class="grao-metric-text">
-                                    <span class="grao-metric-name">Soja</span>
-                                    <span class="grao-metric-value">14</span>
-                                </span>
-                            </span>
-                        </div>
-                    </div>
                 </div>
 
-                <div class="content-section">
-                    <h3>RECEPÇÃO DE MILHO, SORGO, TRIGO, SOJA</h3>
-                    <div class="table-scroll">
-                        <table class="data-table data-table--grouped">
+                <div class="content-section content-section--livre class-detalhe">
+                    <div class="section-head-text">
+                        <h3>CARGAS CLASSIFICADAS HOJE · DETALHE</h3>
+                        <p class="section-sub">Resultado de classificação por carga — identidade compartilhada com Fluxo de Caminhões, colunas específicas de classificação</p>
+                    </div>
+                    <div class="table-scroll table-scroll--livre">
+                        <table class="data-table class-table">
                             <thead>
                                 <tr>
-                                    <th>UNIDADE</th>
-                                    <th>PESO BRUTO</th>
-                                    <th>% IMPUREZA</th>
-                                    <th>DESC. IMP</th>
-                                    <th>% UMID. INICIAL</th>
-                                    <th>DESC. UMID.</th>
-                                    <th>% AVARIADOS</th>
-                                    <th>OUTROS DESC.</th>
-                                    <th>PESO LÍQUIDO</th>
-                                    <th>META DIA</th>
-                                    <th>% META DIA</th>
+                                    <th>TAG</th>
+                                    <th>CULTURA</th>
+                                    <th>FAZENDA</th>
+                                    <th>UMIDADE</th>
+                                    <th>IMPUREZA</th>
+                                    <th>AVARIADOS</th>
+                                    <th>DESÁGIO</th>
+                                    <th>STATUS</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="row-group" data-group="ava"><td><button class="row-toggle" type="button" contenteditable="false" aria-expanded="true">−</button>Avaré</td><td>748,2</td><td>1,3</td><td>5,4</td><td>16,6</td><td>26,3</td><td>4,0</td><td>0,0</td><td>716,6</td><td>432</td><td class="pct-ok">173,1%</td></tr>
-                                <tr class="row-child" data-parent="ava"><td>Milho</td><td>748,2</td><td>1,3</td><td>5,4</td><td>16,6</td><td>26,3</td><td>4,0</td><td>0,0</td><td>716,6</td><td>306</td><td class="pct-ok">244,2%</td></tr>
-                                <tr class="row-child" data-parent="ava"><td>Sorgo</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>65</td><td class="pct-zero">0,0%</td></tr>
-                                <tr class="row-child" data-parent="ava"><td>Trigo</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>61</td><td class="pct-zero">0,0%</td></tr>
-                                <tr class="row-child" data-parent="ava"><td>Soja</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>40</td><td class="pct-zero">0,0%</td></tr>
+                                <tr data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD126174</span></td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Santa Rita</td><td>12,4%</td><td>0,6%</td><td>2,8%</td><td>1,1%</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
+                                <tr data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD0FED74</span></td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Faz. Três Lagoas</td><td>12,0%</td><td>0,7%</td><td>2,9%</td><td>1,0%</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
+                                <tr data-status="fora"><td><span class="fluxo-tag">E2806995000050136FDE16474</span></td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Coop. Holambra</td><td class="class-val class-val--fora">14,6%</td><td class="class-val class-val--atencao">0,9%</td><td class="class-val class-val--fora">7,2%</td><td>4,3%</td><td><span class="class-status class-status--fora">Fora do padrão</span></td></tr>
+                                <tr data-status="ok"><td><span class="fluxo-tag">E2806995000050136FD4DCA74</span></td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Palmeiras</td><td>12,9%</td><td>0,4%</td><td>3,1%</td><td>1,2%</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
+                                <tr data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD253074</span></td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Sítio Boa Vista</td><td>11,9%</td><td>0,6%</td><td>2,0%</td><td>0,6%</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
+                                <tr data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD7A2C74</span></td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Faz. Bela Vista</td><td>12,7%</td><td>0,8%</td><td>3,5%</td><td>1,4%</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
+                                <tr data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD9B1E74</span></td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Santa Rita</td><td class="class-val class-val--atencao">13,6%</td><td class="class-val class-val--fora">1,2%</td><td>4,9%</td><td>2,8%</td><td><span class="class-status class-status--fora">Fora do padrão</span></td></tr>
+                                <tr data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD3C8874</span></td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Coop. Holambra</td><td>12,3%</td><td>0,7%</td><td>2,6%</td><td>0,9%</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
+                                <tr data-status="ok"><td><span class="fluxo-tag">E2806995000050136FD61F074</span></td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Faz. Palmeiras</td><td>12,1%</td><td>0,5%</td><td>2,2%</td><td>0,7%</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
+                                <tr data-status="atencao"><td><span class="fluxo-tag">E2806995000040136FD84D274</span></td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Sítio Boa Vista</td><td>12,8%</td><td class="class-val class-val--atencao">0,9%</td><td>3,3%</td><td>1,3%</td><td><span class="class-status class-status--atencao">Atenção</span></td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <div class="content-section">
-                    <h3>DISTRIBUIÇÃO DE QUALIDADE</h3>
-                    <div class="status-bar">
-                        <div class="status-item ok">
-                            <div class="status-dot"></div>
-                            <span>Dentro do Padrão: 98%</span>
+                <!-- Uma cultura por vez (seletor no cabecalho; data-hist-cultura na secao
+                     diz qual linha aparece). Em cada celula: barra do ano passado, linha
+                     dos ultimos 7 dias e barras sem/mes/ano, todas na mesma escala vertical;
+                     o tracejado e a meta. -->
+                <div class="content-section hist-section" data-hist-cultura="milho">
+                    <div class="section-head section-head--top">
+                        <div class="section-head-text">
+                            <h3>HISTÓRICO DE CLASSIFICAÇÃO POR CULTURA</h3>
+                            <p class="section-sub">Barra = ano passado · linha = média de cada dia dos últimos 7 dias · barras = acumulado da semana, do mês e do ano · tracejado = meta</p>
                         </div>
-                        <div class="status-item warning">
-                            <div class="status-dot"></div>
-                            <span>Atenção: 1%</span>
+                        <div class="hist-tools">
+                            <div class="chart-legend chart-legend--inline hist-legend">
+                                <span class="legend-item"><i class="hist-legend-linha"></i>dia a dia (7 dias)</span>
+                                <span class="legend-item"><i class="hist-legend-barra"></i>acumulado 2025 · sem · mês · ano</span>
+                            </div>
+                            <div class="hist-seletor" role="group" aria-label="Escolher a cultura do histórico">
+                            <button type="button" class="hist-seletor-btn is-active" data-hist-cultura="milho" aria-pressed="true"><i class="legend-dot legend-dot--milho"></i>Milho</button>
+                            <button type="button" class="hist-seletor-btn" data-hist-cultura="sorgo" aria-pressed="false"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</button>
+                            <button type="button" class="hist-seletor-btn" data-hist-cultura="trigo" aria-pressed="false"><i class="legend-dot legend-dot--trigo"></i>Trigo</button>
+                            <button type="button" class="hist-seletor-btn" data-hist-cultura="soja" aria-pressed="false"><i class="legend-dot legend-dot--soja"></i>Soja</button>
+                            </div>
                         </div>
-                        <div class="status-item alert">
-                            <div class="status-dot"></div>
-                            <span>Fora do Padrão: 1%</span>
+                    </div>
+
+                    <div class="hist-grid hist-grid--head">
+                        <div class="hist-head">UMIDADE</div>
+                        <div class="hist-head">IMPUREZA</div>
+                        <div class="hist-head">AVARIADOS</div>
+                    </div>
+                    <div class="hist-grid hist-row" data-hist-cultura="milho">
+                        <div class="hist-cell" data-metrica="umidade" style="--cor: var(--grao-milho)">
+                            <span class="hist-cell-label">UMIDADE</span>
+                            <div class="hist-plot">
+                                <span class="hist-meta-line" style="--meta:75.0%"></span>
+                                <div class="hist-bars hist-bars--antes"><div class="hist-bar"><b class="hist-bar-val">13,2</b><i class="hist-bar-fill" style="height:55.0%"></i><span class="hist-bar-lbl">2025</span></div></div>
+                                <div class="hist-spark">
+                                    <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
+                                        <polyline class="hist-linha" points="0.0,21.0 16.7,16.0 33.3,23.0 50.0,19.0 66.7,14.0 83.3,26.0 100.0,24.0"></polyline>
+                                    </svg>
+                                    <em class="hist-meta-lbl" style="bottom:75.0%">meta 14,0</em>
+                                    <i class="hist-ponto" style="bottom:40.0%"></i>
+                                    <b class="hist-spark-val" style="bottom:40.0%">12,6</b>
+                                    <div class="hist-eixo"><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span><span>D</span><span>S</span></div>
+                                </div>
+                                <div class="hist-bars"><div class="hist-bar"><b class="hist-bar-val">12,9</b><i class="hist-bar-fill" style="height:47.5%"></i><span class="hist-bar-lbl">SEM</span></div><div class="hist-bar"><b class="hist-bar-val">13,0</b><i class="hist-bar-fill" style="height:50.0%"></i><span class="hist-bar-lbl">MÊS</span></div><div class="hist-bar"><b class="hist-bar-val">12,7</b><i class="hist-bar-fill" style="height:42.5%"></i><span class="hist-bar-lbl">ANO</span></div></div>
+                            </div>
+                        </div>
+                        <div class="hist-cell" data-metrica="impureza" style="--cor: var(--grao-milho)">
+                            <span class="hist-cell-label">IMPUREZA</span>
+                            <div class="hist-plot">
+                                <span class="hist-meta-line" style="--meta:75.0%"></span>
+                                <div class="hist-bars hist-bars--antes"><div class="hist-bar"><b class="hist-bar-val">1,0</b><i class="hist-bar-fill" style="height:75.0%"></i><span class="hist-bar-lbl">2025</span></div></div>
+                                <div class="hist-spark">
+                                    <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
+                                        <polyline class="hist-linha" points="0.0,20.0 16.7,10.0 33.3,15.0 50.0,25.0 66.7,5.0 83.3,20.0 100.0,15.0"></polyline>
+                                    </svg>
+                                    <em class="hist-meta-lbl" style="bottom:75.0%">meta 1,0</em>
+                                    <i class="hist-ponto" style="bottom:62.5%"></i>
+                                    <b class="hist-spark-val" style="bottom:62.5%">0,9</b>
+                                    <div class="hist-eixo"><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span><span>D</span><span>S</span></div>
+                                </div>
+                                <div class="hist-bars"><div class="hist-bar"><b class="hist-bar-val">0,9</b><i class="hist-bar-fill" style="height:62.5%"></i><span class="hist-bar-lbl">SEM</span></div><div class="hist-bar"><b class="hist-bar-val">0,8</b><i class="hist-bar-fill" style="height:50.0%"></i><span class="hist-bar-lbl">MÊS</span></div><div class="hist-bar"><b class="hist-bar-val">0,9</b><i class="hist-bar-fill" style="height:62.5%"></i><span class="hist-bar-lbl">ANO</span></div></div>
+                            </div>
+                        </div>
+                        <div class="hist-cell" data-metrica="avariados" style="--cor: var(--grao-milho)">
+                            <span class="hist-cell-label">AVARIADOS</span>
+                            <div class="hist-plot">
+                                <span class="hist-meta-line" style="--meta:83.3%"></span>
+                                <div class="hist-bars hist-bars--antes"><div class="hist-bar"><b class="hist-bar-val">4,3</b><i class="hist-bar-fill" style="height:55.0%"></i><span class="hist-bar-lbl">2025</span></div></div>
+                                <div class="hist-spark">
+                                    <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
+                                        <polyline class="hist-linha" points="0.0,22.7 16.7,18.7 33.3,20.7 50.0,17.3 66.7,22.0 83.3,19.3 100.0,20.0"></polyline>
+                                    </svg>
+                                    <em class="hist-meta-lbl" style="bottom:83.3%">meta 6,0</em>
+                                    <i class="hist-ponto" style="bottom:50.0%"></i>
+                                    <b class="hist-spark-val" style="bottom:50.0%">4,0</b>
+                                    <div class="hist-eixo"><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span><span>D</span><span>S</span></div>
+                                </div>
+                                <div class="hist-bars"><div class="hist-bar"><b class="hist-bar-val">4,0</b><i class="hist-bar-fill" style="height:50.0%"></i><span class="hist-bar-lbl">SEM</span></div><div class="hist-bar"><b class="hist-bar-val">3,8</b><i class="hist-bar-fill" style="height:46.7%"></i><span class="hist-bar-lbl">MÊS</span></div><div class="hist-bar"><b class="hist-bar-val">3,5</b><i class="hist-bar-fill" style="height:41.7%"></i><span class="hist-bar-lbl">ANO</span></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hist-grid hist-row" data-hist-cultura="sorgo">
+                        <div class="hist-cell" data-metrica="umidade" style="--cor: var(--grao-sorgo)">
+                            <span class="hist-cell-label">UMIDADE</span>
+                            <div class="hist-plot">
+                                <span class="hist-meta-line" style="--meta:75.0%"></span>
+                                <div class="hist-bars hist-bars--antes"><div class="hist-bar"><b class="hist-bar-val">12,7</b><i class="hist-bar-fill" style="height:42.5%"></i><span class="hist-bar-lbl">2025</span></div></div>
+                                <div class="hist-spark">
+                                    <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
+                                        <polyline class="hist-linha" points="0.0,24.0 16.7,27.0 33.3,22.0 50.0,30.0 66.7,26.0 83.3,31.0 100.0,29.0"></polyline>
+                                    </svg>
+                                    <em class="hist-meta-lbl" style="bottom:75.0%">meta 14,0</em>
+                                    <i class="hist-ponto" style="bottom:27.5%"></i>
+                                    <b class="hist-spark-val" style="bottom:27.5%">12,1</b>
+                                    <div class="hist-eixo"><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span><span>D</span><span>S</span></div>
+                                </div>
+                                <div class="hist-bars"><div class="hist-bar"><b class="hist-bar-val">12,3</b><i class="hist-bar-fill" style="height:32.5%"></i><span class="hist-bar-lbl">SEM</span></div><div class="hist-bar"><b class="hist-bar-val">12,5</b><i class="hist-bar-fill" style="height:37.5%"></i><span class="hist-bar-lbl">MÊS</span></div><div class="hist-bar"><b class="hist-bar-val">12,4</b><i class="hist-bar-fill" style="height:35.0%"></i><span class="hist-bar-lbl">ANO</span></div></div>
+                            </div>
+                        </div>
+                        <div class="hist-cell" data-metrica="impureza" style="--cor: var(--grao-sorgo)">
+                            <span class="hist-cell-label">IMPUREZA</span>
+                            <div class="hist-plot">
+                                <span class="hist-meta-line" style="--meta:75.0%"></span>
+                                <div class="hist-bars hist-bars--antes"><div class="hist-bar"><b class="hist-bar-val">0,8</b><i class="hist-bar-fill" style="height:50.0%"></i><span class="hist-bar-lbl">2025</span></div></div>
+                                <div class="hist-spark">
+                                    <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
+                                        <polyline class="hist-linha" points="0.0,30.0 16.7,20.0 33.3,25.0 50.0,15.0 66.7,30.0 83.3,25.0 100.0,25.0"></polyline>
+                                    </svg>
+                                    <em class="hist-meta-lbl" style="bottom:75.0%">meta 1,0</em>
+                                    <i class="hist-ponto" style="bottom:37.5%"></i>
+                                    <b class="hist-spark-val" style="bottom:37.5%">0,7</b>
+                                    <div class="hist-eixo"><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span><span>D</span><span>S</span></div>
+                                </div>
+                                <div class="hist-bars"><div class="hist-bar"><b class="hist-bar-val">0,7</b><i class="hist-bar-fill" style="height:37.5%"></i><span class="hist-bar-lbl">SEM</span></div><div class="hist-bar"><b class="hist-bar-val">0,7</b><i class="hist-bar-fill" style="height:37.5%"></i><span class="hist-bar-lbl">MÊS</span></div><div class="hist-bar"><b class="hist-bar-val">0,8</b><i class="hist-bar-fill" style="height:50.0%"></i><span class="hist-bar-lbl">ANO</span></div></div>
+                            </div>
+                        </div>
+                        <div class="hist-cell" data-metrica="avariados" style="--cor: var(--grao-sorgo)">
+                            <span class="hist-cell-label">AVARIADOS</span>
+                            <div class="hist-plot">
+                                <span class="hist-meta-line" style="--meta:83.3%"></span>
+                                <div class="hist-bars hist-bars--antes"><div class="hist-bar"><b class="hist-bar-val">3,3</b><i class="hist-bar-fill" style="height:38.3%"></i><span class="hist-bar-lbl">2025</span></div></div>
+                                <div class="hist-spark">
+                                    <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
+                                        <polyline class="hist-linha" points="0.0,26.0 16.7,29.3 33.3,27.3 50.0,24.7 66.7,28.7 83.3,26.7 100.0,28.0"></polyline>
+                                    </svg>
+                                    <em class="hist-meta-lbl" style="bottom:83.3%">meta 6,0</em>
+                                    <i class="hist-ponto" style="bottom:30.0%"></i>
+                                    <b class="hist-spark-val" style="bottom:30.0%">2,8</b>
+                                    <div class="hist-eixo"><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span><span>D</span><span>S</span></div>
+                                </div>
+                                <div class="hist-bars"><div class="hist-bar"><b class="hist-bar-val">2,9</b><i class="hist-bar-fill" style="height:31.7%"></i><span class="hist-bar-lbl">SEM</span></div><div class="hist-bar"><b class="hist-bar-val">3,0</b><i class="hist-bar-fill" style="height:33.3%"></i><span class="hist-bar-lbl">MÊS</span></div><div class="hist-bar"><b class="hist-bar-val">3,1</b><i class="hist-bar-fill" style="height:35.0%"></i><span class="hist-bar-lbl">ANO</span></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hist-grid hist-row" data-hist-cultura="trigo">
+                        <div class="hist-cell" data-metrica="umidade" style="--cor: var(--grao-trigo)">
+                            <span class="hist-cell-label">UMIDADE</span>
+                            <div class="hist-plot">
+                                <span class="hist-meta-line" style="--meta:75.0%"></span>
+                                <div class="hist-bars hist-bars--antes"><div class="hist-bar"><b class="hist-bar-val">12,4</b><i class="hist-bar-fill" style="height:35.0%"></i><span class="hist-bar-lbl">2025</span></div></div>
+                                <div class="hist-spark">
+                                    <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
+                                        <polyline class="hist-linha" points="0.0,28.0 16.7,33.0 33.3,26.0 50.0,32.0 66.7,29.0 83.3,27.0 100.0,31.0"></polyline>
+                                    </svg>
+                                    <em class="hist-meta-lbl" style="bottom:75.0%">meta 14,0</em>
+                                    <i class="hist-ponto" style="bottom:22.5%"></i>
+                                    <b class="hist-spark-val" style="bottom:22.5%">11,9</b>
+                                    <div class="hist-eixo"><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span><span>D</span><span>S</span></div>
+                                </div>
+                                <div class="hist-bars"><div class="hist-bar"><b class="hist-bar-val">12,1</b><i class="hist-bar-fill" style="height:27.5%"></i><span class="hist-bar-lbl">SEM</span></div><div class="hist-bar"><b class="hist-bar-val">12,2</b><i class="hist-bar-fill" style="height:30.0%"></i><span class="hist-bar-lbl">MÊS</span></div><div class="hist-bar"><b class="hist-bar-val">12,0</b><i class="hist-bar-fill" style="height:25.0%"></i><span class="hist-bar-lbl">ANO</span></div></div>
+                            </div>
+                        </div>
+                        <div class="hist-cell" data-metrica="impureza" style="--cor: var(--grao-trigo)">
+                            <span class="hist-cell-label">IMPUREZA</span>
+                            <div class="hist-plot">
+                                <span class="hist-meta-line" style="--meta:75.0%"></span>
+                                <div class="hist-bars hist-bars--antes"><div class="hist-bar"><b class="hist-bar-val">0,7</b><i class="hist-bar-fill" style="height:37.5%"></i><span class="hist-bar-lbl">2025</span></div></div>
+                                <div class="hist-spark">
+                                    <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
+                                        <polyline class="hist-linha" points="0.0,35.0 16.7,25.0 33.3,30.0 50.0,20.0 66.7,35.0 83.3,30.0 100.0,30.0"></polyline>
+                                    </svg>
+                                    <em class="hist-meta-lbl" style="bottom:75.0%">meta 1,0</em>
+                                    <i class="hist-ponto" style="bottom:25.0%"></i>
+                                    <b class="hist-spark-val" style="bottom:25.0%">0,6</b>
+                                    <div class="hist-eixo"><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span><span>D</span><span>S</span></div>
+                                </div>
+                                <div class="hist-bars"><div class="hist-bar"><b class="hist-bar-val">0,6</b><i class="hist-bar-fill" style="height:25.0%"></i><span class="hist-bar-lbl">SEM</span></div><div class="hist-bar"><b class="hist-bar-val">0,7</b><i class="hist-bar-fill" style="height:37.5%"></i><span class="hist-bar-lbl">MÊS</span></div><div class="hist-bar"><b class="hist-bar-val">0,6</b><i class="hist-bar-fill" style="height:25.0%"></i><span class="hist-bar-lbl">ANO</span></div></div>
+                            </div>
+                        </div>
+                        <div class="hist-cell" data-metrica="avariados" style="--cor: var(--grao-trigo)">
+                            <span class="hist-cell-label">AVARIADOS</span>
+                            <div class="hist-plot">
+                                <span class="hist-meta-line" style="--meta:83.3%"></span>
+                                <div class="hist-bars hist-bars--antes"><div class="hist-bar"><b class="hist-bar-val">2,6</b><i class="hist-bar-fill" style="height:26.7%"></i><span class="hist-bar-lbl">2025</span></div></div>
+                                <div class="hist-spark">
+                                    <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
+                                        <polyline class="hist-linha" points="0.0,30.7 16.7,34.0 33.3,31.3 50.0,29.3 66.7,33.3 83.3,32.0 100.0,32.7"></polyline>
+                                    </svg>
+                                    <em class="hist-meta-lbl" style="bottom:83.3%">meta 6,0</em>
+                                    <i class="hist-ponto" style="bottom:18.3%"></i>
+                                    <b class="hist-spark-val" style="bottom:18.3%">2,1</b>
+                                    <div class="hist-eixo"><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span><span>D</span><span>S</span></div>
+                                </div>
+                                <div class="hist-bars"><div class="hist-bar"><b class="hist-bar-val">2,2</b><i class="hist-bar-fill" style="height:20.0%"></i><span class="hist-bar-lbl">SEM</span></div><div class="hist-bar"><b class="hist-bar-val">2,3</b><i class="hist-bar-fill" style="height:21.7%"></i><span class="hist-bar-lbl">MÊS</span></div><div class="hist-bar"><b class="hist-bar-val">2,4</b><i class="hist-bar-fill" style="height:23.3%"></i><span class="hist-bar-lbl">ANO</span></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hist-grid hist-row" data-hist-cultura="soja">
+                        <div class="hist-cell" data-metrica="umidade" style="--cor: var(--grao-soja)">
+                            <span class="hist-cell-label">UMIDADE</span>
+                            <div class="hist-plot">
+                                <span class="hist-meta-line" style="--meta:75.0%"></span>
+                                <div class="hist-bars hist-bars--antes"><div class="hist-bar"><b class="hist-bar-val">13,1</b><i class="hist-bar-fill" style="height:52.5%"></i><span class="hist-bar-lbl">2025</span></div></div>
+                                <div class="hist-spark">
+                                    <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
+                                        <polyline class="hist-linha" points="0.0,19.0 16.7,24.0 33.3,17.0 50.0,21.0 66.7,26.0 83.3,20.0 100.0,22.0"></polyline>
+                                    </svg>
+                                    <em class="hist-meta-lbl" style="bottom:75.0%">meta 14,0</em>
+                                    <i class="hist-ponto" style="bottom:45.0%"></i>
+                                    <b class="hist-spark-val" style="bottom:45.0%">12,8</b>
+                                    <div class="hist-eixo"><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span><span>D</span><span>S</span></div>
+                                </div>
+                                <div class="hist-bars"><div class="hist-bar"><b class="hist-bar-val">12,9</b><i class="hist-bar-fill" style="height:47.5%"></i><span class="hist-bar-lbl">SEM</span></div><div class="hist-bar"><b class="hist-bar-val">13,0</b><i class="hist-bar-fill" style="height:50.0%"></i><span class="hist-bar-lbl">MÊS</span></div><div class="hist-bar"><b class="hist-bar-val">12,8</b><i class="hist-bar-fill" style="height:45.0%"></i><span class="hist-bar-lbl">ANO</span></div></div>
+                            </div>
+                        </div>
+                        <div class="hist-cell" data-metrica="impureza" style="--cor: var(--grao-soja)">
+                            <span class="hist-cell-label">IMPUREZA</span>
+                            <div class="hist-plot">
+                                <span class="hist-meta-line" style="--meta:75.0%"></span>
+                                <div class="hist-bars hist-bars--antes"><div class="hist-bar"><b class="hist-bar-val">0,9</b><i class="hist-bar-fill" style="height:62.5%"></i><span class="hist-bar-lbl">2025</span></div></div>
+                                <div class="hist-spark">
+                                    <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
+                                        <polyline class="hist-linha" points="0.0,10.0 16.7,20.0 33.3,25.0 50.0,5.0 66.7,15.0 83.3,20.0 100.0,15.0"></polyline>
+                                    </svg>
+                                    <em class="hist-meta-lbl" style="bottom:75.0%">meta 1,0</em>
+                                    <i class="hist-ponto" style="bottom:62.5%"></i>
+                                    <b class="hist-spark-val" style="bottom:62.5%">0,9</b>
+                                    <div class="hist-eixo"><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span><span>D</span><span>S</span></div>
+                                </div>
+                                <div class="hist-bars"><div class="hist-bar"><b class="hist-bar-val">0,9</b><i class="hist-bar-fill" style="height:62.5%"></i><span class="hist-bar-lbl">SEM</span></div><div class="hist-bar"><b class="hist-bar-val">0,9</b><i class="hist-bar-fill" style="height:62.5%"></i><span class="hist-bar-lbl">MÊS</span></div><div class="hist-bar"><b class="hist-bar-val">0,8</b><i class="hist-bar-fill" style="height:50.0%"></i><span class="hist-bar-lbl">ANO</span></div></div>
+                            </div>
+                        </div>
+                        <div class="hist-cell" data-metrica="avariados" style="--cor: var(--grao-soja)">
+                            <span class="hist-cell-label">AVARIADOS</span>
+                            <div class="hist-plot">
+                                <span class="hist-meta-line" style="--meta:83.3%"></span>
+                                <div class="hist-bars hist-bars--antes"><div class="hist-bar"><b class="hist-bar-val">3,6</b><i class="hist-bar-fill" style="height:43.3%"></i><span class="hist-bar-lbl">2025</span></div></div>
+                                <div class="hist-spark">
+                                    <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
+                                        <polyline class="hist-linha" points="0.0,26.7 16.7,22.7 33.3,25.3 50.0,21.3 66.7,23.3 83.3,26.0 100.0,24.0"></polyline>
+                                    </svg>
+                                    <em class="hist-meta-lbl" style="bottom:83.3%">meta 6,0</em>
+                                    <i class="hist-ponto" style="bottom:40.0%"></i>
+                                    <b class="hist-spark-val" style="bottom:40.0%">3,4</b>
+                                    <div class="hist-eixo"><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span><span>D</span><span>S</span></div>
+                                </div>
+                                <div class="hist-bars"><div class="hist-bar"><b class="hist-bar-val">3,4</b><i class="hist-bar-fill" style="height:40.0%"></i><span class="hist-bar-lbl">SEM</span></div><div class="hist-bar"><b class="hist-bar-val">3,3</b><i class="hist-bar-fill" style="height:38.3%"></i><span class="hist-bar-lbl">MÊS</span></div><div class="hist-bar"><b class="hist-bar-val">3,2</b><i class="hist-bar-fill" style="height:36.7%"></i><span class="hist-bar-lbl">ANO</span></div></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2256,12 +2435,12 @@
                 </div>
             </section>
 
-            <!-- Camera 1: Câmera · Qualidade -->
+            <!-- Camera 1: Câmera · Classificação -->
             <section class="screen screen--camera" id="screen-cam-1">
                 <div class="screen-header">
                     <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
                     <div class="screen-title-section">
-                        <h2>Câmera · Qualidade</h2>
+                        <h2>Câmera · Classificação</h2>
                         <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-02 · CALADO E CLASSIFICAÇÃO</div>
                     </div>
                 </div>
