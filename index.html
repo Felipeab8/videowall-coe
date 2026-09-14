@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-    <link rel="stylesheet" href="style.css?v=20260911b">
+    <link rel="stylesheet" href="style.css?v=20260914d">
 </head>
 <body class="theme-dark">
 
@@ -107,13 +107,14 @@
                 <button class="sidebar-toggle" id="btnSidebarToggle" type="button" title="Recolher menu (Ctrl+B)" aria-label="Recolher menu de telas" aria-expanded="true" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
             </div>
             <nav class="menu">
-                <div class="menu-group is-open is-current" data-group="0">
-                    <button class="menu-parent" type="button" aria-expanded="true" aria-controls="submenu-0">
+                <button class="menu-item menu-item--geral active" data-screen="geral"><span class="menu-text">Visão geral</span></button>
+                <div class="menu-group" data-group="0">
+                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-0">
                         <span class="menu-text">Recepção</span>
                         <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
-                    <div class="submenu" id="submenu-0">
-                        <button class="menu-item active" data-screen="0"><span class="menu-text">Tela da recepção</span></button>
+                    <div class="submenu" id="submenu-0" hidden>
+                        <button class="menu-item" data-screen="0"><span class="menu-text">Tela da recepção</span></button>
                         <button class="menu-item" data-screen="fluxo"><span class="menu-text">Fluxo de caminhões</span></button>
                         <button class="menu-item" data-screen="cam-0"><span class="menu-text">Câmera da recepção</span></button>
                     </div>
@@ -201,7 +202,201 @@
         <!-- Main Content Area -->
         <main class="content">
             <!-- Screen 0: Recepção -->
-            <section class="screen active" id="screen-0">
+            <!-- Visão geral: um card por área, na ordem do fluxo do grão.
+                 Cada card resume os indicadores da tela correspondente (3 em
+                 destaque + linhas de detalhe com meta/referência) e leva até
+                 ela (data-goto usa a mesma chave do menu lateral). -->
+            <section class="screen active" id="screen-geral">
+                <div class="screen-header">
+                    <div class="screen-badge">00</div>
+                    <div class="screen-title-section">
+                        <h2>Visão Geral da Unidade</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">5</span>s</div>
+                    </div>
+                </div>
+
+                <div class="geral-grid">
+                    <button class="geral-card alert" type="button" data-goto="0" title="Abrir tela da recepção">
+                        <div class="geral-card-head">
+                            <span class="geral-card-num">01</span>
+                            <span class="geral-card-name">Recepção</span>
+                            <span class="kpi-flag kpi-flag--alerta">Alerta</span>
+                        </div>
+                        <div class="geral-kpis">
+                            <div class="geral-kpi geral-kpi--ruim"><span class="geral-kpi-label">Fila</span><span class="geral-kpi-value">12 <small>cam.</small></span><span class="geral-kpi-ref">limite 8</span></div>
+                            <div class="geral-kpi geral-kpi--ruim"><span class="geral-kpi-label">Espera</span><span class="geral-kpi-value">38 <small>min</small></span><span class="geral-kpi-ref">meta 25</span></div>
+                            <div class="geral-kpi"><span class="geral-kpi-label">Ritmo</span><span class="geral-kpi-value">82 <small>t/h</small></span><span class="geral-kpi-ref">meta 95</span></div>
+                        </div>
+                        <div class="geral-rows">
+                            <div class="geral-row geral-row--ruim"><span class="geral-row-label">Ciclo médio</span><span class="geral-row-value">52 min</span><span class="geral-row-ref">meta 45 · +7</span></div>
+                            <div class="geral-row"><span class="geral-row-label">Descargas hoje</span><span class="geral-row-value">86 cargas</span><span class="geral-row-ref">92% do previsto</span></div>
+                            <div class="geral-bar"><span class="geral-bar-fill" style="width: 92%"></span></div>
+                            <div class="geral-row"><span class="geral-row-label">Pico de chegadas</span><span class="geral-row-value">13h–15h</span><span class="geral-row-ref">41% das cargas</span></div>
+                        </div>
+                        <div class="geral-card-foot"><span>Fila acima do limite desde 14:35</span><span class="geral-card-link">Ver tela →</span></div>
+                    </button>
+
+                    <button class="geral-card ok" type="button" data-goto="1" title="Abrir tela da qualidade">
+                        <div class="geral-card-head">
+                            <span class="geral-card-num">02</span>
+                            <span class="geral-card-name">Qualidade</span>
+                            <span class="kpi-flag kpi-flag--ok">OK</span>
+                        </div>
+                        <div class="geral-kpis">
+                            <div class="geral-kpi"><span class="geral-kpi-label">Umidade</span><span class="geral-kpi-value">12,3<small>%</small></span><span class="geral-kpi-ref">limite 14%</span></div>
+                            <div class="geral-kpi"><span class="geral-kpi-label">Impureza</span><span class="geral-kpi-value">0,8<small>%</small></span><span class="geral-kpi-ref">limite 1%</span></div>
+                            <div class="geral-kpi"><span class="geral-kpi-label">Avariados</span><span class="geral-kpi-value">3,2<small>%</small></span><span class="geral-kpi-ref">limite 6%</span></div>
+                        </div>
+                        <div class="geral-rows">
+                            <div class="geral-row"><span class="geral-row-label">Cargas analisadas</span><span class="geral-row-value">100</span><span class="geral-row-ref">milho 42 · sorgo 26</span></div>
+                            <div class="geral-row geral-row--atencao"><span class="geral-row-label">Maior umidade</span><span class="geral-row-value">Soja 12,8%</span><span class="geral-row-ref">milho 12,6%</span></div>
+                            <div class="geral-row geral-row--atencao"><span class="geral-row-label">Mais avariados</span><span class="geral-row-value">Milho 4,0%</span><span class="geral-row-ref">soja 3,4%</span></div>
+                        </div>
+                        <div class="geral-card-foot"><span>Todas as culturas dentro dos limites</span><span class="geral-card-link">Ver tela →</span></div>
+                    </button>
+
+                    <button class="geral-card ok" type="button" data-goto="2" title="Abrir tela das moegas">
+                        <div class="geral-card-head">
+                            <span class="geral-card-num">03</span>
+                            <span class="geral-card-name">Moegas</span>
+                            <span class="kpi-flag kpi-flag--ok">OK</span>
+                        </div>
+                        <div class="geral-kpis">
+                            <div class="geral-kpi"><span class="geral-kpi-label">Ocupação</span><span class="geral-kpi-value">72<small>%</small></span><span class="geral-kpi-ref">433,6 / 600 t</span></div>
+                            <div class="geral-kpi"><span class="geral-kpi-label">Cargas hoje</span><span class="geral-kpi-value">93</span><span class="geral-kpi-ref">6 moegas</span></div>
+                            <div class="geral-kpi"><span class="geral-kpi-label">Umidade</span><span class="geral-kpi-value">12,4<small>%</small></span><span class="geral-kpi-ref">impureza 0,9%</span></div>
+                        </div>
+                        <div class="geral-rows">
+                            <div class="geral-row-label geral-row-label--solo">Ocupação por moega</div>
+                            <div class="geral-strip">
+                                <div class="geral-strip-item geral-strip-item--alto"><span class="geral-strip-name">M1</span><span class="geral-strip-bar"><span style="height: 92%"></span></span><span class="geral-strip-val">92%</span></div>
+                                <div class="geral-strip-item"><span class="geral-strip-name">M2</span><span class="geral-strip-bar"><span style="height: 68%"></span></span><span class="geral-strip-val">68%</span></div>
+                                <div class="geral-strip-item geral-strip-item--alto"><span class="geral-strip-name">M3</span><span class="geral-strip-bar"><span style="height: 85%"></span></span><span class="geral-strip-val">85%</span></div>
+                                <div class="geral-strip-item"><span class="geral-strip-name">M4</span><span class="geral-strip-bar"><span style="height: 75%"></span></span><span class="geral-strip-val">75%</span></div>
+                                <div class="geral-strip-item"><span class="geral-strip-name">M5</span><span class="geral-strip-bar"><span style="height: 58%"></span></span><span class="geral-strip-val">58%</span></div>
+                                <div class="geral-strip-item"><span class="geral-strip-name">M6</span><span class="geral-strip-bar"><span style="height: 44%"></span></span><span class="geral-strip-val">44%</span></div>
+                            </div>
+                        </div>
+                        <div class="geral-card-foot"><span>M1 em 92% · M6 umidade 13%</span><span class="geral-card-link">Ver tela →</span></div>
+                    </button>
+
+                    <button class="geral-card atencao" type="button" data-goto="3" title="Abrir tela da secagem">
+                        <div class="geral-card-head">
+                            <span class="geral-card-num">04</span>
+                            <span class="geral-card-name">Secagem</span>
+                            <span class="kpi-flag kpi-flag--atencao">Atenção</span>
+                        </div>
+                        <div class="geral-kpis">
+                            <div class="geral-kpi"><span class="geral-kpi-label">Secado hoje</span><span class="geral-kpi-value">1.120 <small>t</small></span><span class="geral-kpi-ref">86% da meta</span></div>
+                            <div class="geral-kpi"><span class="geral-kpi-label">Vazão</span><span class="geral-kpi-value">135 <small>t/h</small></span><span class="geral-kpi-ref">96% do nominal</span></div>
+                            <div class="geral-kpi geral-kpi--ruim"><span class="geral-kpi-label">Fornalha</span><span class="geral-kpi-value">148<small>°C</small></span><span class="geral-kpi-ref">setada 92°C</span></div>
+                        </div>
+                        <div class="geral-rows">
+                            <div class="geral-row"><span class="geral-row-label">Meta do dia</span><span class="geral-row-value">1.120 / 1.300 t</span><span class="geral-row-ref">falta 180 t</span></div>
+                            <div class="geral-bar"><span class="geral-bar-fill" style="width: 86%"></span></div>
+                            <div class="geral-row geral-row--ok"><span class="geral-row-label">Projeção 17h</span><span class="geral-row-value">1.520 t</span><span class="geral-row-ref">bate a meta</span></div>
+                            <div class="geral-row"><span class="geral-row-label">Umidade entrada → saída</span><span class="geral-row-value">18,4% → 11,2%</span><span class="geral-row-ref">alvo 12,0%</span></div>
+                        </div>
+                        <div class="geral-card-foot"><span>Temperatura do secador elevada</span><span class="geral-card-link">Ver tela →</span></div>
+                    </button>
+
+                    <button class="geral-card ok" type="button" data-goto="5" title="Abrir tela dos silos">
+                        <div class="geral-card-head">
+                            <span class="geral-card-num">05</span>
+                            <span class="geral-card-name">Silos</span>
+                            <span class="kpi-flag kpi-flag--ok">OK</span>
+                        </div>
+                        <div class="geral-kpis">
+                            <div class="geral-kpi"><span class="geral-kpi-label">Estocado</span><span class="geral-kpi-value">21.770 <small>t</small></span><span class="geral-kpi-ref">de 32.900 t</span></div>
+                            <div class="geral-kpi"><span class="geral-kpi-label">Ocupação</span><span class="geral-kpi-value">66<small>%</small></span><span class="geral-kpi-ref">10 silos</span></div>
+                            <div class="geral-kpi"><span class="geral-kpi-label">Temp. máx.</span><span class="geral-kpi-value">24<small>°C</small></span><span class="geral-kpi-ref">Silo 5</span></div>
+                        </div>
+                        <div class="geral-rows geral-rows--barras">
+                            <div class="geral-row geral-row--atencao"><span class="geral-row-label">Milho</span><span class="geral-row-value">10.160 t</span><span class="geral-row-ref">85%</span></div>
+                            <div class="geral-bar"><span class="geral-bar-fill" style="width: 85%"></span></div>
+                            <div class="geral-row"><span class="geral-row-label">Trigo</span><span class="geral-row-value">5.560 t</span><span class="geral-row-ref">70%</span></div>
+                            <div class="geral-bar"><span class="geral-bar-fill" style="width: 70%"></span></div>
+                            <div class="geral-row"><span class="geral-row-label">Sorgo</span><span class="geral-row-value">4.080 t</span><span class="geral-row-ref">51%</span></div>
+                            <div class="geral-bar"><span class="geral-bar-fill" style="width: 51%"></span></div>
+                            <div class="geral-row"><span class="geral-row-label">Soja</span><span class="geral-row-value">1.440 t</span><span class="geral-row-ref">36%</span></div>
+                            <div class="geral-bar"><span class="geral-bar-fill" style="width: 36%"></span></div>
+                        </div>
+                        <div class="geral-card-foot"><span>Silo 2 em 92% · pulmões 530 t</span><span class="geral-card-link">Ver tela →</span></div>
+                    </button>
+
+                    <button class="geral-card ok" type="button" data-goto="6" title="Abrir tela da aeração" data-ponta-status>
+                        <div class="geral-card-head">
+                            <span class="geral-card-num">06</span>
+                            <span class="geral-card-name">Aeração</span>
+                            <span class="kpi-flag kpi-flag--ok">OK</span>
+                        </div>
+                        <div class="geral-kpis">
+                            <div class="geral-kpi"><span class="geral-kpi-label">Ventiladores</span><span class="geral-kpi-value">2 <small>/ 2 on</small></span><span class="geral-kpi-ref">zonas A–D</span></div>
+                            <div class="geral-kpi"><span class="geral-kpi-label">Consumo</span><span class="geral-kpi-value">45 <small>kW</small></span><span class="geral-kpi-ref">30 kW na ponta</span></div>
+                            <div class="geral-kpi"><span class="geral-kpi-label">Fluxo ar</span><span class="geral-kpi-value">8,2 <small>m³/s</small></span><span class="geral-kpi-ref">nominal 8,5</span></div>
+                        </div>
+                        <div class="geral-rows">
+                            <div class="geral-row geral-row--ok"><span class="geral-row-label">Tarifa agora</span><span class="geral-row-value" data-ponta-tarifa>FORA DE PONTA</span><span class="geral-row-ref">ponta 18h–21h</span></div>
+                            <div class="geral-row"><span class="geral-row-label" data-ponta-contagem-label>Entra em ponta em</span><span class="geral-row-value" data-ponta-contagem>--:--</span><span class="geral-row-ref">seg–sex</span></div>
+                            <div class="geral-row"><span class="geral-row-label">Temp. média do grão</span><span class="geral-row-value">22°C</span><span class="geral-row-ref">20°C a 24°C</span></div>
+                        </div>
+                        <div class="geral-card-foot"><span>Ventiladores liberados</span><span class="geral-card-link">Ver tela →</span></div>
+                    </button>
+
+                    <button class="geral-card ok" type="button" data-goto="7" title="Abrir tela da expedição">
+                        <div class="geral-card-head">
+                            <span class="geral-card-num">07</span>
+                            <span class="geral-card-name">Expedição</span>
+                            <span class="kpi-flag kpi-flag--ok">OK</span>
+                        </div>
+                        <div class="geral-kpis">
+                            <div class="geral-kpi"><span class="geral-kpi-label">Expedidas</span><span class="geral-kpi-value">28</span><span class="geral-kpi-ref">1.120 t</span></div>
+                            <div class="geral-kpi"><span class="geral-kpi-label">Aguardando</span><span class="geral-kpi-value">6</span><span class="geral-kpi-ref">18 min médio</span></div>
+                            <div class="geral-kpi"><span class="geral-kpi-label">Dosagem</span><span class="geral-kpi-value">99,2<small>%</small></span><span class="geral-kpi-ref">meta 99%</span></div>
+                        </div>
+                        <div class="geral-rows">
+                            <div class="geral-row"><span class="geral-row-label">Dosagem impureza</span><span class="geral-row-value">1,4%</span><span class="geral-row-ref">limite 1,5%</span></div>
+                            <div class="geral-row"><span class="geral-row-label">Dosagem umidade</span><span class="geral-row-value">0,8%</span><span class="geral-row-ref">limite 1,0%</span></div>
+                            <div class="geral-row geral-row--atencao"><span class="geral-row-label">Cargas reprovadas</span><span class="geral-row-value">2</span><span class="geral-row-ref">7% do total</span></div>
+                        </div>
+                        <div class="geral-card-foot"><span>Dosagem dentro da meta</span><span class="geral-card-link">Ver tela →</span></div>
+                    </button>
+
+                    <button class="geral-card" type="button" data-goto="8" title="Abrir tela da central">
+                        <div class="geral-card-head">
+                            <span class="geral-card-num">08</span>
+                            <span class="geral-card-name">Central</span>
+                            <span class="kpi-flag kpi-flag--info">Tempo</span>
+                        </div>
+                        <div class="geral-kpis">
+                            <div class="geral-kpi"><span class="geral-kpi-label">Avaré</span><span class="geral-kpi-value">27<small>°</small></span><span class="geral-kpi-ref">parc. nublado</span></div>
+                            <div class="geral-kpi"><span class="geral-kpi-label">Chuva</span><span class="geral-kpi-value">20<small>%</small></span><span class="geral-kpi-ref">sem alerta</span></div>
+                            <div class="geral-kpi"><span class="geral-kpi-label">Vento</span><span class="geral-kpi-value">12 <small>km/h</small></span><span class="geral-kpi-ref">leste</span></div>
+                        </div>
+                        <div class="geral-rows">
+                            <div class="geral-row-label geral-row-label--solo">Próximos dias · Avaré</div>
+                            <div class="geral-strip geral-strip--dias">
+                                <div class="geral-strip-item"><span class="geral-strip-name">Qua</span><span class="geral-strip-val">29°</span></div>
+                                <div class="geral-strip-item"><span class="geral-strip-name">Qui</span><span class="geral-strip-val">28°</span></div>
+                                <div class="geral-strip-item"><span class="geral-strip-name">Sex</span><span class="geral-strip-val">24°</span></div>
+                                <div class="geral-strip-item"><span class="geral-strip-name">Sáb</span><span class="geral-strip-val">26°</span></div>
+                            </div>
+                            <div class="geral-row"><span class="geral-row-label">Cooperados</span><span class="geral-row-value">25° a 30°</span><span class="geral-row-ref">Itaí e Manduri 30°</span></div>
+                        </div>
+                        <div class="geral-card-foot"><span>6 localidades monitoradas</span><span class="geral-card-link">Ver tela →</span></div>
+                    </button>
+                </div>
+
+                <!-- espelho da pagina ALERTAS: os mesmos 3 itens, cada um leva a area de origem -->
+                <div class="geral-alerts">
+                    <div class="geral-alerts-title">Alertas ativos <span class="geral-alerts-count">3</span></div>
+                    <button class="geral-alert geral-alert--critico" type="button" data-goto="0"><span class="geral-alert-dot"></span><span class="geral-alert-area">Recepção</span><span class="geral-alert-text">Fila acima do limite</span><span class="geral-alert-time">14:35</span></button>
+                    <button class="geral-alert geral-alert--aviso" type="button" data-goto="3"><span class="geral-alert-dot"></span><span class="geral-alert-area">Secagem</span><span class="geral-alert-text">Temperatura secador elevada</span><span class="geral-alert-time">14:28</span></button>
+                    <button class="geral-alert geral-alert--info" type="button" data-goto="3"><span class="geral-alert-dot"></span><span class="geral-alert-area">Secagem</span><span class="geral-alert-text">Manutenção secador 2 programada</span><span class="geral-alert-time">14:20</span></button>
+                </div>
+            </section>
+
+            <section class="screen" id="screen-0">
                 <div class="screen-header">
                     <div class="screen-badge">01</div>
                     <div class="screen-title-section">
@@ -209,16 +404,19 @@
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">5</span>s</div>
                     </div>
                 </div>
-
                 <div class="kpi-grid kpi-grid--tres">
-                    <div class="kpi-card kpi-card--motivo" tabindex="0"
+                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Por que a fila está em 12 caminhões"
                         data-motivo-resumo="12 na fila · limite 8 · +4 desde as 13h40"
                         data-motivo-lista="Chegadas na última hora::18 cargas::+6 vs. média::ruim|Ritmo de descarga::82 t/h::meta 95 t/h::ruim"
                         data-motivo-nota="Alerta FILA ACIMA DO LIMITE aberto às 14:35.">
-                        <div class="kpi-label">CAMINHÕES NA FILA</div>
+                        <div class="kpi-label">CAMINHÕES NA FILA (COM TAG)</div>
                         <div class="kpi-value">12</div>
+                        <div class="kpi-sub">
+                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--milho"></i><b>Milho</b> 8</span>
+                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--sorgo"></i><b>Sorgo</b> 4</span>
+                        </div>
                     </div>
                     <div class="kpi-card kpi-card--meta kpi-card--motivo alert" tabindex="0"
                         data-motivo
@@ -226,229 +424,174 @@
                         data-motivo-resumo="38 min · meta 25 min · +13 min"
                         data-motivo-lista="Chegada até a balança::14 min::+6 min::ruim|Balança até a moega::19 min::+3 min::ruim|Pico de chegadas 13h–15h::41% das cargas::concentração::ruim"
                         data-motivo-nota="A fila do milho responde por 9 dos 12 caminhões parados.">
-                        <div class="kpi-label">ESPERA MÉDIA</div>
-                        <div class="kpi-value">38 min</div>
-                        <div class="kpi-meta-row">
-                            <span class="kpi-flag kpi-flag--alerta">ACIMA DA META</span>
-                            <span class="kpi-meta-ref">meta 25 min · +13 min</span>
+                        <div class="kpi-label">ESPERA MÉDIA NA FILA</div>
+                        <div class="kpi-value-row">
+                            <div class="kpi-value">38 <span class="kpi-value-unit">min</span></div>
+                            <span class="kpi-flag kpi-flag--alerta">↑ +13 min vs meta 25</span>
+                        </div>
+                        <div class="kpi-sub">
+                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--milho"></i><b>Milho</b> 42 min</span>
+                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--sorgo"></i><b>Sorgo</b> 30 min</span>
                         </div>
                     </div>
-                    <!-- o desvio de ciclo mora dentro do proprio indicador, nao no rodape de alertas -->
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo alert" tabindex="0"
+                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
-                        data-motivo-titulo="Por que o ciclo está 7 min acima da meta"
-                        data-motivo-resumo="52 min · meta 45 min · +7 min"
-                        data-motivo-lista="Balança de entrada::14 min::+6 min::ruim|Espera pela moega::19 min::+3 min::ruim|Descarga::12 min::no alvo::neutro|Saída e liberação::7 min::−2 min::bom"
-                        data-motivo-nota="Balança 2 em aferição desde as 11h20 responde pela maior parte do desvio.">
-                        <div class="kpi-label">TEMPO MÉDIO DE CICLO</div>
-                        <div class="kpi-value">52 min</div>
-                        <div class="kpi-meta-row">
-                            <span class="kpi-flag kpi-flag--alerta">ACIMA DA META</span>
-                            <span class="kpi-meta-ref">meta 45 min · +7 min</span>
+                        data-motivo-titulo="Recebido hoje por cultura"
+                        data-motivo-resumo="1.240 t · 48 caminhões · programado 1.500 t"
+                        data-motivo-lista="Milho::860 t::34 caminhões::neutro|Sorgo::380 t::14 caminhões::neutro|Atingimento do programado::83%::meta 100%::ruim"
+                        data-motivo-nota="Ritmo atual de 82 t/h contra meta de 95 t/h.">
+                        <div class="kpi-label">TONELADAS RECEBIDAS HOJE</div>
+                        <div class="kpi-value-row">
+                            <div class="kpi-value">1.240 <span class="kpi-value-unit">t</span></div>
+                            <span class="kpi-value-ref">48 caminhões</span>
+                        </div>
+                        <div class="kpi-sub">
+                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--milho"></i><b>Milho</b> 860 t · 34 cam.</span>
+                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--sorgo"></i><b>Sorgo</b> 380 t · 14 cam.</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="content-section content-section--ritmo">
-                    <h3>PREVISÃO E RITMO DO DIA</h3>
-                    <div class="kpi-grid-small kpi-grid-small--breakdown">
-                        <div class="kpi-card-small kpi-card-small--wide">
-                            <div class="kpi-label-small">PREVISÃO DO DIA</div>
-                            <div class="kpi-breakdown">
-                                <div class="kpi-breakdown-item">
-                                    <span class="kpi-breakdown-label">Milho</span>
-                                    <span class="kpi-breakdown-value">1.040 t</span>
-                                </div>
-                                <div class="kpi-breakdown-item">
-                                    <span class="kpi-breakdown-label">Sorgo</span>
-                                    <span class="kpi-breakdown-value">460 t</span>
-                                </div>
-                                <div class="kpi-breakdown-item">
-                                    <span class="kpi-breakdown-label">Trigo</span>
-                                    <span class="kpi-breakdown-value">320 t</span>
-                                </div>
-                                <div class="kpi-breakdown-item">
-                                    <span class="kpi-breakdown-label">Soja</span>
-                                    <span class="kpi-breakdown-value">280 t</span>
-                                </div>
-                                <div class="kpi-breakdown-item kpi-breakdown-item--total">
-                                    <span class="kpi-breakdown-label">Total</span>
-                                    <span class="kpi-breakdown-value">2.100 t</span>
-                                </div>
-                            </div>
+                <!-- Espera decomposta por etapa: barra empilhada por cultura, escala 0-50 min,
+                     meta institucional em 25 min. A etapa mais longa ganha a moldura de alerta. -->
+                <div class="content-section etapa-section">
+                    <div class="section-head section-head--top">
+                        <div class="section-head-text">
+                            <h3>TEMPO DE ESPERA POR ETAPA</h3>
+                            <p class="section-sub">Decomposição por etapa · culturas ativas hoje · meta institucional 25 min</p>
                         </div>
-                        <div class="kpi-card-small">
-                            <div class="kpi-label-small">RITMO ATUAL</div>
-                            <div class="kpi-value-small">82 t/h</div>
-                        </div>
-                        <div class="kpi-card-small">
-                            <div class="kpi-label-small">PREVISTO VS REALIZADO</div>
-                            <div class="kpi-value-small">92%</div>
-                        </div>
-                        <div class="kpi-card-small">
-                            <div class="kpi-label-small">DESCARGAS CONCLUÍDAS HOJE</div>
-                            <div class="kpi-value-small">86 <span class="kpi-value-ref">cargas</span></div>
+                        <div class="chart-legend chart-legend--etapas">
+                            <span class="legend-item"><i class="legend-sq etapa-fill--fila"></i>Fila</span>
+                            <span class="legend-item"><i class="legend-sq etapa-fill--p1"></i>Pesagem 1</span>
+                            <span class="legend-item"><i class="legend-sq etapa-fill--classif"></i>Classificação</span>
+                            <span class="legend-item"><i class="legend-sq etapa-fill--moega"></i>Moega</span>
+                            <span class="legend-item"><i class="legend-sq etapa-fill--p2"></i>Pesagem 2</span>
                         </div>
                     </div>
-                    <div class="totaldia ritmo-recebido">
-                        <div class="section-head">
-                            <h3>RECEBIDO NO DIA · 1.240 T</h3>
-                            <div class="chart-legend">
-                                <span class="legend-item"><i class="legend-dot legend-dot--milho"></i>Milho</span>
-                                <span class="legend-item"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
+
+                    <div class="etapa-chart" style="--etapa-max: 50; --etapa-meta: 25">
+                        <div class="etapa-row">
+                            <div class="etapa-cultura">
+                                <span class="etapa-cultura-nome"><i class="legend-dot legend-dot--milho"></i>MILHO</span>
+                                <span class="etapa-cultura-total">total <b>42 min</b></span>
+                            </div>
+                            <div class="etapa-track">
+                                <span class="etapa-seg etapa-fill--fila" style="--min: 9"><b>FILA</b><span>9 min</span></span>
+                                <span class="etapa-seg etapa-fill--p1" style="--min: 4"><b>P1</b><span>4 min</span></span>
+                                <span class="etapa-seg etapa-fill--classif" style="--min: 7"><b>CLASSIF.</b><span>7 min</span></span>
+                                <span class="etapa-seg etapa-fill--moega is-maior" style="--min: 18"><b>⚠ MOEGA</b><span>18 min · maior etapa</span></span>
+                                <span class="etapa-seg etapa-fill--p2" style="--min: 4"><b>P2</b><span>4 min</span></span>
                             </div>
                         </div>
-                        <div class="stack-track">
-                            <div class="stack-seg stack-seg--milho" style="width: 69.4%"><span class="stack-value">Milho · 860 t</span></div>
-                            <div class="stack-seg stack-seg--sorgo" style="width: 30.6%"><span class="stack-value">Sorgo · 380 t</span></div>
+                        <div class="etapa-row">
+                            <div class="etapa-cultura">
+                                <span class="etapa-cultura-nome"><i class="legend-dot legend-dot--sorgo"></i>SORGO</span>
+                                <span class="etapa-cultura-total">total <b>30 min</b></span>
+                            </div>
+                            <div class="etapa-track">
+                                <span class="etapa-seg etapa-fill--fila" style="--min: 6"><b>FILA</b><span>6 min</span></span>
+                                <span class="etapa-seg etapa-fill--p1" style="--min: 3"><b>P1</b><span>3 min</span></span>
+                                <span class="etapa-seg etapa-fill--classif" style="--min: 5"><b>CLASSIF.</b><span>5 min</span></span>
+                                <span class="etapa-seg etapa-fill--moega is-maior" style="--min: 13"><b>⚠ MOEGA</b><span>13 min · maior etapa</span></span>
+                                <span class="etapa-seg etapa-fill--p2" style="--min: 3"><b>P2</b><span>3 min</span></span>
+                            </div>
                         </div>
+                        <div class="etapa-row etapa-row--axis">
+                            <div class="etapa-cultura"></div>
+                            <div class="etapa-axis">
+                                <span style="--t: 0">0</span><span style="--t: 10">10</span><span style="--t: 20">20</span><span style="--t: 30">30</span><span style="--t: 40">40</span><span style="--t: 50">50 min</span>
+                            </div>
+                        </div>
+                        <div class="etapa-meta" aria-hidden="true"><span class="etapa-meta-label">meta 25 min</span></div>
                     </div>
                 </div>
 
-                <!-- Realizado (empilhado por cultura) x programado: 7 dias fechados, hoje e 3 dias a frente -->
-                <div class="content-section forecast-section">
-                    <div class="section-head">
-                        <h3>RECEBIMENTO POR GRÃO · REALIZADO x PROGRAMADO — 7 DIAS ANTERIORES, HOJE E PRÓXIMOS 3</h3>
-                        <div class="section-head-tools">
-                            <div class="grao-filter" role="group" aria-label="Filtrar por cultura" data-grao-filter>
-                            <button class="grao-filter-btn is-active" type="button" data-grao="todas" aria-pressed="true">TODAS</button>
-                            <button class="grao-filter-btn" type="button" data-grao="milho" aria-pressed="false"><svg class="grao-icon grao-icon--milho" aria-hidden="true"><use href="#ico-milho"></use></svg>MILHO</button>
-                            <button class="grao-filter-btn" type="button" data-grao="sorgo" aria-pressed="false"><svg class="grao-icon grao-icon--sorgo" aria-hidden="true"><use href="#ico-sorgo"></use></svg>SORGO</button>
-                            <button class="grao-filter-btn" type="button" data-grao="trigo" aria-pressed="false"><svg class="grao-icon grao-icon--trigo" aria-hidden="true"><use href="#ico-trigo"></use></svg>TRIGO</button>
-                            <button class="grao-filter-btn" type="button" data-grao="soja" aria-pressed="false"><svg class="grao-icon grao-icon--soja" aria-hidden="true"><use href="#ico-soja"></use></svg>SOJA</button>
+                <!-- Mes fechado x mes em andamento x projecao. No mes atual a marca branca
+                     e o ponto onde a barra deveria estar no dia 14/30 (ritmo). -->
+                <div class="content-section mensal-section">
+                    <div class="section-head-text">
+                        <h3>VISÃO MENSAL POR CULTURA</h3>
+                        <p class="section-sub">Realizado vs. forecast — mês anterior fechado, andamento do mês atual e projeção do próximo</p>
+                    </div>
+
+                    <div class="mensal-grid">
+                        <div class="mensal-head"></div>
+                        <div class="mensal-head">MÊS PASSADO · AGO (FECHADO)</div>
+                        <div class="mensal-head">MÊS ATUAL · SET · DIA 14/30</div>
+                        <div class="mensal-head">PRÓXIMO MÊS · OUT (PROJEÇÃO)</div>
+
+                        <div class="mensal-cultura"><i class="legend-dot legend-dot--milho"></i>MILHO</div>
+                        <div class="mensal-cell">
+                            <span class="mensal-cell-label">Mês passado · Ago</span>
+                            <div class="mensal-bar-row">
+                                <div class="mensal-track"><span class="mensal-fill is-ok" style="width: 97%"></span></div>
+                                <span class="mensal-pct is-ok">97%</span>
                             </div>
-                            <button class="btn-table-toggle" type="button" data-forecast-toggle aria-expanded="false" aria-controls="forecastTable">TABELA</button>
+                            <span class="mensal-note">21.400 t / 22.000 t previstos</span>
                         </div>
-                    </div>
-
-                    <div class="forecast-summary forecast-summary--quad">
-                        <div class="forecast-stat">
-                            <span class="forecast-stat-label">Recebido hoje</span>
-                            <span class="forecast-stat-value">1.240 t</span>
-                        </div>
-                        <div class="forecast-stat">
-                            <span class="forecast-stat-label">Programado hoje</span>
-                            <span class="forecast-stat-value">1.500 t</span>
-                        </div>
-                        <div class="forecast-stat">
-                            <span class="forecast-stat-label">Atingimento de hoje</span>
-                            <span class="forecast-stat-value">83%</span>
-                        </div>
-                        <div class="forecast-stat">
-                            <span class="forecast-stat-label">Média dos 7 dias anteriores</span>
-                            <span class="forecast-stat-value">1.161 t</span>
-                        </div>
-                    </div>
-
-                    <div class="chart-legend">
-                        <span class="legend-item"><i class="legend-dot legend-dot--milho"></i>Milho</span>
-                        <span class="legend-item"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
-                        <span class="legend-item"><i class="legend-dot legend-dot--trigo"></i>Trigo</span>
-                        <span class="legend-item"><i class="legend-dot legend-dot--soja"></i>Soja</span>
-                        <span class="legend-item legend-item--sep"><i class="legend-dot legend-dot--real-key"></i>Realizado</span>
-                        <span class="legend-item"><i class="legend-dot legend-dot--prog-key"></i>Programado</span>
-                    </div>
-
-                    <div class="forecast-chart forecast-chart--dias" data-chart-max="1800">
-                        <div class="forecast-yaxis">
-                            <span>1.800</span>
-                            <span>1.200</span>
-                            <span>600</span>
-                            <span>0</span>
-                        </div>
-                        <div class="forecast-plot">
-                            <div class="forecast-grid" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-                            <div class="forecast-cols">
-                                <div class="forecast-col is-passado" tabindex="0" data-dia="Ter · 25/08" data-recebido="1.360 t" data-programado="1.400 t" data-milho="900 t · prog 950 t" data-sorgo="460 t · prog 450 t">
-                                    <div class="forecast-bar forecast-bar--real is-stack" style="height: 75.6%"><span class="forecast-cap">1.360</span><i class="forecast-seg forecast-seg--sorgo" style="height: 33.8%"></i><i class="forecast-seg forecast-seg--milho" style="height: 66.2%"></i></div>
-                                    <div class="forecast-bar forecast-bar--prog is-stack" style="height: 77.8%"><i class="forecast-seg forecast-seg--sorgo" style="height: 32.1%"></i><i class="forecast-seg forecast-seg--milho" style="height: 67.9%"></i></div>
-                                </div>
-                                <div class="forecast-col is-passado" tabindex="0" data-dia="Qua · 26/08" data-recebido="1.400 t" data-programado="1.500 t" data-milho="980 t · prog 1.050 t" data-trigo="420 t · prog 450 t">
-                                    <div class="forecast-bar forecast-bar--real is-stack" style="height: 77.8%"><span class="forecast-cap">1.400</span><i class="forecast-seg forecast-seg--trigo" style="height: 30.0%"></i><i class="forecast-seg forecast-seg--milho" style="height: 70.0%"></i></div>
-                                    <div class="forecast-bar forecast-bar--prog is-stack" style="height: 83.3%"><i class="forecast-seg forecast-seg--trigo" style="height: 30.0%"></i><i class="forecast-seg forecast-seg--milho" style="height: 70.0%"></i></div>
-                                </div>
-                                <div class="forecast-col is-passado" tabindex="0" data-dia="Qui · 27/08" data-recebido="1.160 t" data-programado="1.450 t" data-sorgo="520 t · prog 650 t" data-trigo="640 t · prog 800 t">
-                                    <div class="forecast-bar forecast-bar--real is-stack" style="height: 64.4%"><span class="forecast-cap">1.160</span><i class="forecast-seg forecast-seg--trigo" style="height: 55.2%"></i><i class="forecast-seg forecast-seg--sorgo" style="height: 44.8%"></i></div>
-                                    <div class="forecast-bar forecast-bar--prog is-stack" style="height: 80.6%"><i class="forecast-seg forecast-seg--trigo" style="height: 55.2%"></i><i class="forecast-seg forecast-seg--sorgo" style="height: 44.8%"></i></div>
-                                </div>
-                                <div class="forecast-col is-passado" tabindex="0" data-dia="Sex · 28/08" data-recebido="1.570 t" data-programado="1.600 t" data-milho="1.050 t · prog 1.080 t" data-soja="520 t · prog 520 t">
-                                    <div class="forecast-bar forecast-bar--real is-stack" style="height: 87.2%"><span class="forecast-cap">1.570</span><i class="forecast-seg forecast-seg--soja" style="height: 33.1%"></i><i class="forecast-seg forecast-seg--milho" style="height: 66.9%"></i></div>
-                                    <div class="forecast-bar forecast-bar--prog is-stack" style="height: 88.9%"><i class="forecast-seg forecast-seg--soja" style="height: 32.5%"></i><i class="forecast-seg forecast-seg--milho" style="height: 67.5%"></i></div>
-                                </div>
-                                <div class="forecast-col is-passado" tabindex="0" data-dia="Sáb · 29/08" data-recebido="880 t" data-programado="950 t" data-milho="600 t · prog 650 t" data-soja="280 t · prog 300 t">
-                                    <div class="forecast-bar forecast-bar--real is-stack" style="height: 48.9%"><span class="forecast-cap">880</span><i class="forecast-seg forecast-seg--soja" style="height: 31.8%"></i><i class="forecast-seg forecast-seg--milho" style="height: 68.2%"></i></div>
-                                    <div class="forecast-bar forecast-bar--prog is-stack" style="height: 52.8%"><i class="forecast-seg forecast-seg--soja" style="height: 31.6%"></i><i class="forecast-seg forecast-seg--milho" style="height: 68.4%"></i></div>
-                                </div>
-                                <div class="forecast-col is-passado" tabindex="0" data-dia="Dom · 30/08" data-recebido="360 t" data-programado="400 t" data-sorgo="360 t · prog 400 t">
-                                    <div class="forecast-bar forecast-bar--real is-stack" style="height: 20.0%"><span class="forecast-cap">360</span><i class="forecast-seg forecast-seg--sorgo" style="height: 100.0%"></i></div>
-                                    <div class="forecast-bar forecast-bar--prog is-stack" style="height: 22.2%"><i class="forecast-seg forecast-seg--sorgo" style="height: 100.0%"></i></div>
-                                </div>
-                                <div class="forecast-col is-passado" tabindex="0" data-dia="Seg · 31/08" data-recebido="1.400 t" data-programado="1.520 t" data-milho="950 t · prog 1.020 t" data-trigo="450 t · prog 500 t">
-                                    <div class="forecast-bar forecast-bar--real is-stack" style="height: 77.8%"><span class="forecast-cap">1.400</span><i class="forecast-seg forecast-seg--trigo" style="height: 32.1%"></i><i class="forecast-seg forecast-seg--milho" style="height: 67.9%"></i></div>
-                                    <div class="forecast-bar forecast-bar--prog is-stack" style="height: 84.4%"><i class="forecast-seg forecast-seg--trigo" style="height: 32.9%"></i><i class="forecast-seg forecast-seg--milho" style="height: 67.1%"></i></div>
-                                </div>
-                                <div class="forecast-col is-today" tabindex="0" data-dia="Hoje · ter 01/09" data-recebido="1.240 t" data-programado="1.500 t" data-milho="860 t · prog 1.040 t" data-sorgo="380 t · prog 460 t">
-                                    <div class="forecast-bar forecast-bar--real is-stack" style="height: 68.9%"><span class="forecast-cap">1.240</span><i class="forecast-seg forecast-seg--sorgo" style="height: 30.6%"></i><i class="forecast-seg forecast-seg--milho" style="height: 69.4%"></i></div>
-                                    <div class="forecast-bar forecast-bar--prog is-stack" style="height: 83.3%"><i class="forecast-seg forecast-seg--sorgo" style="height: 30.7%"></i><i class="forecast-seg forecast-seg--milho" style="height: 69.3%"></i></div>
-                                </div>
-                                <div class="forecast-col" tabindex="0" data-dia="Qua · 02/09" data-recebido="—" data-programado="1.620 t" data-milho="— · prog 1.100 t" data-trigo="— · prog 520 t">
-                                    <div class="forecast-bar forecast-bar--real is-empty" style="height: 0%"></div>
-                                    <div class="forecast-bar forecast-bar--prog is-stack" style="height: 90.0%"><span class="forecast-cap">1.620</span><i class="forecast-seg forecast-seg--trigo" style="height: 32.1%"></i><i class="forecast-seg forecast-seg--milho" style="height: 67.9%"></i></div>
-                                </div>
-                                <div class="forecast-col" tabindex="0" data-dia="Qui · 03/09" data-recebido="—" data-programado="1.480 t" data-sorgo="— · prog 620 t" data-soja="— · prog 860 t">
-                                    <div class="forecast-bar forecast-bar--real is-empty" style="height: 0%"></div>
-                                    <div class="forecast-bar forecast-bar--prog is-stack" style="height: 82.2%"><span class="forecast-cap">1.480</span><i class="forecast-seg forecast-seg--soja" style="height: 58.1%"></i><i class="forecast-seg forecast-seg--sorgo" style="height: 41.9%"></i></div>
-                                </div>
-                                <div class="forecast-col" tabindex="0" data-dia="Sex · 04/09" data-recebido="—" data-programado="1.700 t" data-milho="— · prog 1.150 t" data-soja="— · prog 550 t">
-                                    <div class="forecast-bar forecast-bar--real is-empty" style="height: 0%"></div>
-                                    <div class="forecast-bar forecast-bar--prog is-stack" style="height: 94.4%"><span class="forecast-cap">1.700</span><i class="forecast-seg forecast-seg--soja" style="height: 32.4%"></i><i class="forecast-seg forecast-seg--milho" style="height: 67.6%"></i></div>
-                                </div>
+                        <div class="mensal-cell">
+                            <span class="mensal-cell-label">Mês atual · Set · dia 14/30</span>
+                            <div class="mensal-bar-row">
+                                <div class="mensal-track"><span class="mensal-fill is-ok" style="width: 47.8%"></span><span class="mensal-ritmo" style="left: 46.7%"></span></div>
+                                <span class="mensal-pct is-ok">102% ritmo</span>
                             </div>
+                            <span class="mensal-note">9.800 t / 20.500 t previstos</span>
                         </div>
-                        <div class="forecast-xaxis">
-                            <span class="forecast-day">TER<small>25/08</small></span>
-                            <span class="forecast-day">QUA<small>26/08</small></span>
-                            <span class="forecast-day">QUI<small>27/08</small></span>
-                            <span class="forecast-day">SEX<small>28/08</small></span>
-                            <span class="forecast-day">SÁB<small>29/08</small></span>
-                            <span class="forecast-day">DOM<small>30/08</small></span>
-                            <span class="forecast-day">SEG<small>31/08</small></span>
-                            <span class="forecast-day is-today">HOJE<small>ter 01/09</small></span>
-                            <span class="forecast-day">QUA<small>02/09</small></span>
-                            <span class="forecast-day">QUI<small>03/09</small></span>
-                            <span class="forecast-day">SEX<small>04/09</small></span>
+                        <div class="mensal-cell">
+                            <span class="mensal-cell-label">Próximo mês · Out (projeção)</span>
+                            <div class="mensal-bar-row">
+                                <div class="mensal-track mensal-track--proj"><span class="mensal-fill mensal-fill--proj" style="width: 100%; --cor: var(--grao-milho)"></span></div>
+                            </div>
+                            <span class="mensal-note">19.200 t previstos</span>
                         </div>
-                        <span class="forecast-unit">t</span>
-                    </div>
 
-                    <div class="forecast-table" id="forecastTable" hidden>
-                        <table class="data-table data-table--num">
-                            <thead>
-                                <tr>
-                                    <th>DIA</th>
-                                    <th>MILHO<small>real / prog</small></th>
-                                    <th>SORGO<small>real / prog</small></th>
-                                    <th>TRIGO<small>real / prog</small></th>
-                                    <th>SOJA<small>real / prog</small></th>
-                                    <th>REALIZADO</th>
-                                    <th>PROGRAMADO</th>
-                                    <th>% ATING.</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td>TER 25/08</td><td>900 / 950</td><td>460 / 450</td><td class="is-vazio">—</td><td class="is-vazio">—</td><td>1.360 t</td><td>1.400 t</td><td class="pct-ok">97%</td></tr>
-                                <tr><td>QUA 26/08</td><td>980 / 1.050</td><td class="is-vazio">—</td><td>420 / 450</td><td class="is-vazio">—</td><td>1.400 t</td><td>1.500 t</td><td class="pct-ok">93%</td></tr>
-                                <tr><td>QUI 27/08</td><td class="is-vazio">—</td><td>520 / 650</td><td>640 / 800</td><td class="is-vazio">—</td><td>1.160 t</td><td>1.450 t</td><td class="pct-mid">80%</td></tr>
-                                <tr><td>SEX 28/08</td><td>1.050 / 1.080</td><td class="is-vazio">—</td><td class="is-vazio">—</td><td>520 / 520</td><td>1.570 t</td><td>1.600 t</td><td class="pct-ok">98%</td></tr>
-                                <tr><td>SÁB 29/08</td><td>600 / 650</td><td class="is-vazio">—</td><td class="is-vazio">—</td><td>280 / 300</td><td>880 t</td><td>950 t</td><td class="pct-ok">93%</td></tr>
-                                <tr><td>DOM 30/08</td><td class="is-vazio">—</td><td>360 / 400</td><td class="is-vazio">—</td><td class="is-vazio">—</td><td>360 t</td><td>400 t</td><td class="pct-ok">90%</td></tr>
-                                <tr><td>SEG 31/08</td><td>950 / 1.020</td><td class="is-vazio">—</td><td>450 / 500</td><td class="is-vazio">—</td><td>1.400 t</td><td>1.520 t</td><td class="pct-ok">92%</td></tr>
-                                <tr class="is-today"><td>HOJE ter 01/09</td><td>860 / 1.040</td><td>380 / 460</td><td class="is-vazio">—</td><td class="is-vazio">—</td><td>1.240 t</td><td>1.500 t</td><td class="pct-mid">83%</td></tr>
-                                <tr><td>QUA 02/09</td><td>— / 1.100</td><td class="is-vazio">—</td><td>— / 520</td><td class="is-vazio">—</td><td>—</td><td>1.620 t</td><td>—</td></tr>
-                                <tr><td>QUI 03/09</td><td class="is-vazio">—</td><td>— / 620</td><td class="is-vazio">—</td><td>— / 860</td><td>—</td><td>1.480 t</td><td>—</td></tr>
-                                <tr><td>SEX 04/09</td><td>— / 1.150</td><td class="is-vazio">—</td><td class="is-vazio">—</td><td>— / 550</td><td>—</td><td>1.700 t</td><td>—</td></tr>
-                            </tbody>
-                        </table>
+                        <div class="mensal-cultura"><i class="legend-dot legend-dot--sorgo"></i>SORGO</div>
+                        <div class="mensal-cell">
+                            <span class="mensal-cell-label">Mês passado · Ago</span>
+                            <div class="mensal-bar-row">
+                                <div class="mensal-track"><span class="mensal-fill is-warn" style="width: 84%"></span></div>
+                                <span class="mensal-pct is-warn">84%</span>
+                            </div>
+                            <span class="mensal-note">7.100 t / 8.500 t previstos</span>
+                        </div>
+                        <div class="mensal-cell">
+                            <span class="mensal-cell-label">Mês atual · Set · dia 14/30</span>
+                            <div class="mensal-bar-row">
+                                <div class="mensal-track"><span class="mensal-fill is-warn" style="width: 37.8%"></span><span class="mensal-ritmo" style="left: 46.7%"></span></div>
+                                <span class="mensal-pct is-warn">81% ritmo</span>
+                            </div>
+                            <span class="mensal-note">3.400 t / 9.000 t previstos</span>
+                        </div>
+                        <div class="mensal-cell">
+                            <span class="mensal-cell-label">Próximo mês · Out (projeção)</span>
+                            <div class="mensal-bar-row">
+                                <div class="mensal-track mensal-track--proj"><span class="mensal-fill mensal-fill--proj" style="width: 45.8%; --cor: var(--grao-sorgo)"></span></div>
+                            </div>
+                            <span class="mensal-note">8.800 t previstos</span>
+                        </div>
+
+                        <div class="mensal-cultura"><i class="legend-dot legend-dot--trigo"></i>TRIGO</div>
+                        <div class="mensal-cell">
+                            <span class="mensal-cell-label">Mês passado · Ago</span>
+                            <div class="mensal-bar-row">
+                                <div class="mensal-track mensal-track--proj"></div>
+                            </div>
+                            <span class="mensal-note is-vazio">sem safra nesta janela</span>
+                        </div>
+                        <div class="mensal-cell">
+                            <span class="mensal-cell-label">Mês atual · Set · dia 14/30</span>
+                            <div class="mensal-bar-row">
+                                <div class="mensal-track mensal-track--proj"></div>
+                            </div>
+                            <span class="mensal-note is-vazio">sem safra nesta janela</span>
+                        </div>
+                        <div class="mensal-cell">
+                            <span class="mensal-cell-label">Próximo mês · Out (projeção)</span>
+                            <div class="mensal-bar-row">
+                                <div class="mensal-track mensal-track--proj"><span class="mensal-fill mensal-fill--proj" style="width: 33.3%; --cor: var(--grao-trigo)"></span></div>
+                            </div>
+                            <span class="mensal-note">6.400 t previstos · início de safra</span>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1146,7 +1289,8 @@
 
             <!-- Screen 4: Produtividade -->
             <!-- Recorte de produtividade/vazao pedido pelo Luiz: a tela responde "vai bater a meta as 17h?"
-                 e confronta a vazao real com a capacidade nominal de cada secador. -->
+                 e confronta a vazao real com a capacidade nominal de cada secador.
+                 Cores por secador (S1 azul, S2 laranja), nao por cultura: aqui a pergunta e "qual secador". -->
             <section class="screen" id="screen-4">
                 <div class="screen-header">
                     <div class="screen-badge">06</div>
@@ -1159,192 +1303,154 @@
                 <div class="kpi-grid">
                     <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
-                        data-motivo-titulo="Secado hoje por secador"
-                        data-motivo-resumo="1.120 t · meta 1.300 t · faltam 180 t"
-                        data-motivo-lista="Secador 1 (milho)::640 t::meta 750 t · 85%::bom|Secador 2 (sorgo)::480 t::meta 550 t · 87%::bom|Turno decorrido::7h50 de 10h::78% do turno::neutro"
-                        data-motivo-nota="86% da meta com 78% do turno decorrido: secagem adiantada em relação ao ritmo previsto.">
-                        <div class="kpi-label">SECADO HOJE</div>
-                        <div class="kpi-value">1.120 t</div>
+                        data-motivo-titulo="Secado no turno por secador"
+                        data-motivo-resumo="1.000 t · meta 1.200 t · faltam 200 t"
+                        data-motivo-lista="Secador 1 (milho)::597 t::meta 700 t · 85%::bom|Secador 2 (sorgo)::403 t::meta 500 t · 81%::bom|Turno decorrido::7h50 de 10h::78% do turno::neutro"
+                        data-motivo-nota="83% da meta com 78% do turno decorrido: secagem adiantada em relação ao ritmo previsto.">
+                        <div class="kpi-label">SECADO NO TURNO</div>
+                        <div class="kpi-value">1.000 <span class="kpi-value-ref">t</span></div>
+                        <div class="kpi-meta-bar" aria-hidden="true"><i style="width: 83%"></i></div>
                         <div class="kpi-meta-row">
-                            <span class="kpi-flag kpi-flag--ok">86% DA META</span>
-                            <span class="kpi-meta-ref">meta 1.300 t · faltam 180 t</span>
-                        </div>
-                    </div>
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo ok" tabindex="0"
-                        data-motivo
-                        data-motivo-titulo="Como a projeção das 17h é calculada"
-                        data-motivo-resumo="1.120 t secadas + 400 t previstas até 17h"
-                        data-motivo-lista="Resto da hora 14h::+21 t::fecha em 135 t::neutro|15h e 16h::+270 t::135 t/h nos dois secadores::neutro|17h::+108 t::Secador 2 em resfriamento::neutro|Fechamento::1.520 t::+220 t sobre a meta::bom"
-                        data-motivo-nota="Projeção considera a vazão atual e as fases já programadas de cada secador.">
-                        <div class="kpi-label">PROJEÇÃO PARA 17h</div>
-                        <div class="kpi-value">1.520 t</div>
-                        <div class="kpi-meta-row">
-                            <span class="kpi-flag kpi-flag--ok">BATE A META</span>
-                            <span class="kpi-meta-ref">+220 t · 3h10 restantes</span>
+                            <span class="kpi-flag kpi-flag--atencao">83% DA META</span>
+                            <span class="kpi-meta-ref">meta 1.200 t · faltam 200 t</span>
                         </div>
                     </div>
                     <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
-                        data-motivo-titulo="Vazão atual x capacidade nominal"
-                        data-motivo-resumo="135 t/h · nominal 140 t/h · 96%"
-                        data-motivo-lista="Secador 1 (milho)::78 t/h::nominal 80 t/h · 98%::bom|Secador 2 (sorgo)::57 t/h::nominal 60 t/h · 95%::bom|Média do dia::143 t/h::1.120 t em 7h50::bom"
-                        data-motivo-nota="Nominal é a soma da capacidade de placa dos dois secadores.">
-                        <div class="kpi-label">VAZÃO ATUAL</div>
-                        <div class="kpi-value">135 <span class="kpi-value-ref">t/h</span></div>
+                        data-motivo-titulo="Como a projeção das 17h é calculada"
+                        data-motivo-resumo="1.000 t secadas + 280 t previstas até 17h"
+                        data-motivo-lista="Resto da hora 14h::+22 t::fecha em 134 t::neutro|15h::+134 t::ritmo atual dos dois secadores::neutro|16h::+124 t::Secador 2 em resfriamento no fim::neutro|Fechamento::1.280 t::+80 t sobre a meta::bom"
+                        data-motivo-nota="Projeção considera o ritmo atual e as fases já programadas de cada secador.">
+                        <div class="kpi-label">PROJEÇÃO PARA 17H</div>
+                        <div class="kpi-value">1.280 <span class="kpi-value-ref">t</span></div>
                         <div class="kpi-meta-row">
-                            <span class="kpi-flag kpi-flag--ok">96% DO NOMINAL</span>
-                            <span class="kpi-meta-ref">nominal 140 t/h · média do dia 143 t/h</span>
+                            <span class="kpi-flag kpi-flag--ok">BATE A META · +80 t</span>
+                            <span class="kpi-meta-ref">no ritmo atual · restam 2h10</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Ritmo atual x capacidade nominal"
+                        data-motivo-resumo="134 t/h · nominal 140 t/h · 96%"
+                        data-motivo-lista="Secador 1 (milho)::78 t/h::nominal 80 t/h · 98%::bom|Secador 2 (sorgo)::56 t/h::nominal 60 t/h · 93%::bom|Necessário p/ meta::92 t/h::200 t em 2h10::bom"
+                        data-motivo-nota="Nominal é a soma da capacidade de placa dos dois secadores.">
+                        <div class="kpi-label">RITMO</div>
+                        <div class="kpi-value">134 <span class="kpi-value-ref">t/h</span> <span class="kpi-value-nota">96% do nominal (140 t/h)</span></div>
+                        <div class="kpi-meta-row">
+                            <span class="kpi-flag kpi-flag--ok">RITMO SUFICIENTE</span>
+                            <span class="kpi-meta-ref">bastam 92 t/h para fechar a meta</span>
                         </div>
                     </div>
                     <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Umidade de saída x alvo"
                         data-motivo-resumo="média 12,0% · alvo 13,0–14,0%"
-                        data-motivo-lista="Secador 1 (milho)::18,4% → 11,2%::1,8 pt abaixo do alvo::ruim|Secador 2 (sorgo)::18,8% → 12,9%::0,1 pt abaixo do alvo::neutro|Pontos retirados::6,6 pt::média dos dois::neutro"
+                        data-motivo-lista="Secador 1 (milho)::18,4% → 11,2%::1,8 p.p. abaixo do alvo::ruim|Secador 2 (sorgo)::18,8% → 12,9%::0,1 p.p. abaixo do alvo::neutro|Peso perdido::≈ 11 t::secar 1 p.p. além do alvo::ruim"
                         data-motivo-nota="Secar além do alvo consome mais fornalha e perde peso na balança de saída.">
-                        <div class="kpi-label">UMIDADE ENTRADA → SAÍDA</div>
-                        <div class="kpi-value">18,6% → 12,0%</div>
+                        <div class="kpi-label">UMIDADE DE SAÍDA VS ALVO</div>
+                        <div class="kpi-value">18,6% <span class="kpi-value-seta">→</span> 12,0%</div>
                         <div class="kpi-meta-row">
                             <span class="kpi-flag kpi-flag--atencao">ABAIXO DO ALVO</span>
-                            <span class="kpi-meta-ref">alvo de saída 13,0–14,0%</span>
+                            <span class="kpi-meta-ref">1,0 p.p. abaixo · alvo 13,0–14,0% · ≈ 11 t de peso perdido</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="split-grid split-grid--prod">
                     <div class="content-section">
-                        <div class="section-head">
-                            <h3>SECAGEM POR HORA · POR SECADOR x META</h3>
+                        <div class="section-head section-head--top">
+                            <div class="section-head-text">
+                                <h3>SECAGEM POR HORA · SECADOR 1 + SECADOR 2</h3>
+                                <p class="section-sub">Toneladas secas em cada hora do turno, empilhadas por secador, contra a meta horária</p>
+                            </div>
                             <div class="chart-legend chart-legend--inline">
-                                <span class="legend-item"><i class="legend-dot legend-dot--milho"></i>S1 · Milho</span>
-                                <span class="legend-item"><i class="legend-dot legend-dot--sorgo"></i>S2 · Sorgo</span>
-                                <span class="legend-item"><i class="legend-dot legend-dot--meta-key"></i>Meta 130 t/h</span>
+                                <span class="legend-item"><i class="legend-dot legend-dot--sec1"></i>Secador 1</span>
+                                <span class="legend-item"><i class="legend-dot legend-dot--sec2"></i>Secador 2</span>
                                 <span class="legend-item"><i class="legend-dot legend-dot--proj-key"></i>Projeção</span>
                             </div>
                         </div>
-                        <div class="forecast-chart forecast-chart--horas forecast-chart--turno" data-chart-max="200">
+                        <div class="forecast-chart forecast-chart--horas forecast-chart--turno" data-chart-max="160">
                             <div class="forecast-yaxis">
-                                <span>200</span>
-                                <span>150</span>
-                                <span>100</span>
-                                <span>50</span>
+                                <span>160</span>
+                                <span>120</span>
+                                <span>80</span>
+                                <span>40</span>
                                 <span>0</span>
                             </div>
                             <div class="forecast-plot">
                                 <div class="forecast-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
                                 <div class="forecast-cols">
-                                    <div class="hora-col" tabindex="0" data-dia="07h" data-recebido="142 t" data-nome-recebido="Secado" data-milho="80 t" data-nome-milho="Secador 1 · Milho" data-sorgo="62 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 71.0%"><span class="forecast-cap">142</span><i class="forecast-seg forecast-seg--sorgo" style="height: 43.7%"></i><i class="forecast-seg forecast-seg--milho" style="height: 56.3%"></i></div></div>
-                                    <div class="hora-col" tabindex="0" data-dia="08h" data-recebido="155 t" data-nome-recebido="Secado" data-milho="86 t" data-nome-milho="Secador 1 · Milho" data-sorgo="69 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 77.5%"><span class="forecast-cap">155</span><i class="forecast-seg forecast-seg--sorgo" style="height: 44.5%"></i><i class="forecast-seg forecast-seg--milho" style="height: 55.5%"></i></div></div>
-                                    <div class="hora-col" tabindex="0" data-dia="09h" data-recebido="148 t" data-nome-recebido="Secado" data-milho="84 t" data-nome-milho="Secador 1 · Milho" data-sorgo="64 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 74.0%"><span class="forecast-cap">148</span><i class="forecast-seg forecast-seg--sorgo" style="height: 43.2%"></i><i class="forecast-seg forecast-seg--milho" style="height: 56.8%"></i></div></div>
-                                    <div class="hora-col" tabindex="0" data-dia="10h" data-recebido="162 t" data-nome-recebido="Secado" data-milho="88 t" data-nome-milho="Secador 1 · Milho" data-sorgo="74 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 81.0%"><span class="forecast-cap">162</span><i class="forecast-seg forecast-seg--sorgo" style="height: 45.7%"></i><i class="forecast-seg forecast-seg--milho" style="height: 54.3%"></i></div></div>
-                                    <div class="hora-col" tabindex="0" data-dia="11h" data-recebido="137 t" data-nome-recebido="Secado" data-milho="80 t" data-nome-milho="Secador 1 · Milho" data-sorgo="57 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 68.5%"><span class="forecast-cap">137</span><i class="forecast-seg forecast-seg--sorgo" style="height: 41.6%"></i><i class="forecast-seg forecast-seg--milho" style="height: 58.4%"></i></div></div>
-                                    <div class="hora-col is-abaixo" tabindex="0" data-dia="12h · recarga do S2" data-recebido="104 t" data-nome-recebido="Secado" data-milho="76 t" data-nome-milho="Secador 1 · Milho" data-sorgo="28 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 52.0%"><span class="forecast-cap">104</span><i class="forecast-seg forecast-seg--sorgo" style="height: 26.9%"></i><i class="forecast-seg forecast-seg--milho" style="height: 73.1%"></i></div></div>
-                                    <div class="hora-col" tabindex="0" data-dia="13h" data-recebido="158 t" data-nome-recebido="Secado" data-milho="86 t" data-nome-milho="Secador 1 · Milho" data-sorgo="72 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 79.0%"><span class="forecast-cap">158</span><i class="forecast-seg forecast-seg--sorgo" style="height: 45.6%"></i><i class="forecast-seg forecast-seg--milho" style="height: 54.4%"></i></div></div>
-                                    <div class="hora-col" tabindex="0" data-dia="14h · parcial" data-recebido="114 t" data-nome-recebido="Secado" data-milho="62 t" data-nome-milho="Secador 1 · Milho" data-sorgo="52 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 57.0%"><span class="forecast-cap">114</span><i class="forecast-seg forecast-seg--sorgo" style="height: 45.6%"></i><i class="forecast-seg forecast-seg--milho" style="height: 54.4%"></i></div></div>
-                                    <div class="hora-col is-futuro"><div class="forecast-bar forecast-bar--hora is-projecao" style="height: 67.5%"><span class="forecast-cap">~135</span></div></div>
-                                    <div class="hora-col is-futuro"><div class="forecast-bar forecast-bar--hora is-projecao" style="height: 67.5%"><span class="forecast-cap">~135</span></div></div>
-                                    <div class="hora-col is-futuro"><div class="forecast-bar forecast-bar--hora is-projecao" style="height: 54.0%"><span class="forecast-cap">~108</span></div></div>
+                                    <div class="hora-col" tabindex="0" data-dia="07h" data-recebido="128 t" data-nome-recebido="Secado" data-milho="72 t" data-nome-milho="Secador 1 · Milho" data-sorgo="56 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 80.0%"><span class="forecast-cap">128</span><i class="forecast-seg forecast-seg--sec2" style="height: 43.8%"></i><i class="forecast-seg forecast-seg--sec1" style="height: 56.3%"></i></div></div>
+                                    <div class="hora-col" tabindex="0" data-dia="08h" data-recebido="135 t" data-nome-recebido="Secado" data-milho="79 t" data-nome-milho="Secador 1 · Milho" data-sorgo="56 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 84.4%"><span class="forecast-cap">135</span><i class="forecast-seg forecast-seg--sec2" style="height: 41.5%"></i><i class="forecast-seg forecast-seg--sec1" style="height: 58.5%"></i></div></div>
+                                    <div class="hora-col" tabindex="0" data-dia="09h" data-recebido="132 t" data-nome-recebido="Secado" data-milho="77 t" data-nome-milho="Secador 1 · Milho" data-sorgo="55 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 82.5%"><span class="forecast-cap">132</span><i class="forecast-seg forecast-seg--sec2" style="height: 41.7%"></i><i class="forecast-seg forecast-seg--sec1" style="height: 58.3%"></i></div></div>
+                                    <div class="hora-col" tabindex="0" data-dia="10h · melhor hora" data-recebido="137 t" data-nome-recebido="Secado" data-milho="79 t" data-nome-milho="Secador 1 · Milho" data-sorgo="58 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 85.6%"><span class="forecast-cap">137</span><i class="forecast-seg forecast-seg--sec2" style="height: 42.3%"></i><i class="forecast-seg forecast-seg--sec1" style="height: 57.7%"></i></div></div>
+                                    <div class="hora-col" tabindex="0" data-dia="11h" data-recebido="127 t" data-nome-recebido="Secado" data-milho="75 t" data-nome-milho="Secador 1 · Milho" data-sorgo="52 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 79.4%"><span class="forecast-cap">127</span><i class="forecast-seg forecast-seg--sec2" style="height: 40.9%"></i><i class="forecast-seg forecast-seg--sec1" style="height: 59.1%"></i></div></div>
+                                    <div class="hora-col is-abaixo" tabindex="0" data-dia="12h · S2 recarga 34 min" data-recebido="96 t" data-nome-recebido="Secado" data-milho="74 t" data-nome-milho="Secador 1 · Milho" data-sorgo="22 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 60.0%"><span class="forecast-cap">96</span><i class="forecast-seg forecast-seg--sec2" style="height: 22.9%"></i><i class="forecast-seg forecast-seg--sec1" style="height: 77.1%"></i></div></div>
+                                    <div class="hora-col" tabindex="0" data-dia="13h" data-recebido="133 t" data-nome-recebido="Secado" data-milho="77 t" data-nome-milho="Secador 1 · Milho" data-sorgo="56 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 83.1%"><span class="forecast-cap">133</span><i class="forecast-seg forecast-seg--sec2" style="height: 42.1%"></i><i class="forecast-seg forecast-seg--sec1" style="height: 57.9%"></i></div></div>
+                                    <div class="hora-col is-parcial" tabindex="0" data-dia="14h · parcial · 50 min" data-recebido="112 t" data-nome-recebido="Secado" data-milho="64 t" data-nome-milho="Secador 1 · Milho" data-sorgo="48 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack is-parcial" style="height: 70.0%"><span class="forecast-cap">112</span><i class="forecast-seg forecast-seg--sec2" style="height: 42.9%"></i><i class="forecast-seg forecast-seg--sec1" style="height: 57.1%"></i></div></div>
+                                    <div class="hora-col is-futuro" tabindex="0" data-dia="15h · projeção" data-recebido="134 t" data-nome-recebido="Projetado" data-milho="78 t" data-nome-milho="Secador 1 · Milho" data-sorgo="56 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack is-projecao" style="height: 83.8%"><span class="forecast-cap">~134</span><i class="forecast-seg forecast-seg--sec2" style="height: 41.8%"></i><i class="forecast-seg forecast-seg--sec1" style="height: 58.2%"></i></div></div>
+                                    <div class="hora-col is-futuro" tabindex="0" data-dia="16h · projeção" data-recebido="124 t" data-nome-recebido="Projetado" data-milho="74 t" data-nome-milho="Secador 1 · Milho" data-sorgo="50 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack is-projecao" style="height: 77.5%"><span class="forecast-cap">~124</span><i class="forecast-seg forecast-seg--sec2" style="height: 40.3%"></i><i class="forecast-seg forecast-seg--sec1" style="height: 59.7%"></i></div></div>
                                 </div>
-                                <!-- meta horaria: 1.300 t / 10h de turno -->
-                                <div class="forecast-meta-line" style="bottom: 65%" aria-hidden="true"><span>META 130 t/h</span></div>
+                                <!-- meta horaria: 1.200 t / 10h de turno -->
+                                <div class="forecast-meta-line" style="bottom: 75%" aria-hidden="true"><span>META<br>120 t/h</span></div>
                             </div>
                             <div class="forecast-xaxis">
-                                <span class="forecast-day">07h</span>
-                                <span class="forecast-day">08h</span>
-                                <span class="forecast-day">09h</span>
-                                <span class="forecast-day">10h</span>
-                                <span class="forecast-day">11h</span>
-                                <span class="forecast-day">12h<small>S2 recarga</small></span>
-                                <span class="forecast-day">13h</span>
-                                <span class="forecast-day is-agora">14h<small>parcial</small></span>
-                                <span class="forecast-day is-futuro">15h</span>
-                                <span class="forecast-day is-futuro">16h</span>
-                                <span class="forecast-day is-futuro">17h<small>S2 resfr.</small></span>
+                                <span class="forecast-day">07H</span>
+                                <span class="forecast-day">08H</span>
+                                <span class="forecast-day">09H</span>
+                                <span class="forecast-day">10H<small>melhor hora</small></span>
+                                <span class="forecast-day">11H</span>
+                                <span class="forecast-day">12H<small class="is-atencao">S2 recarga 34 min</small></span>
+                                <span class="forecast-day">13H</span>
+                                <span class="forecast-day is-agora">14H<small>parcial · 50 min</small></span>
+                                <span class="forecast-day is-futuro">15H<small>projeção</small></span>
+                                <span class="forecast-day is-futuro">16H<small>projeção</small></span>
                             </div>
-                            <span class="forecast-unit">t</span>
+                            <span class="forecast-unit">t/h</span>
                         </div>
                     </div>
 
                     <div class="content-section">
-                        <h3>PRODUTIVIDADE POR SECADOR · SECADO x META DO DIA</h3>
                         <div class="prod-secador-list">
-                            <div class="prod-secador">
+                            <div class="prod-secador prod-secador--sec1">
                                 <div class="prod-secador-head">
-                                    <span class="secador-nome"><i class="secador-dot is-operando"></i>SECADOR 1</span>
-                                    <span class="secador-tipo">Milho · Fluxo contínuo · nominal 80 t/h</span>
+                                    <span class="secador-nome"><i class="secador-dot prod-secador-dot"></i>SECADOR 1 <em class="prod-secador-cultura">Milho</em></span>
+                                    <span class="secador-tipo">Fluxo contínuo · nominal 80 t/h</span>
                                 </div>
-                                <div class="prod-secador-chips">
-                                    <div class="secador-chip">
-                                        <span class="secador-chip-label">SECADO HOJE</span>
-                                        <span class="secador-chip-value">640 t</span>
-                                        <span class="secador-chip-sub">meta 750 t</span>
-                                    </div>
-                                    <div class="secador-chip">
-                                        <span class="secador-chip-label">VAZÃO ATUAL</span>
-                                        <span class="secador-chip-value">78 t/h</span>
-                                        <span class="secador-chip-sub">98% nominal</span>
-                                    </div>
-                                    <div class="secador-chip is-atencao">
-                                        <span class="secador-chip-label">UMIDADE</span>
-                                        <span class="secador-chip-value">18,4% → 11,2%</span>
-                                        <span class="secador-chip-sub">alvo 13–14%</span>
-                                    </div>
-                                    <div class="secador-chip">
-                                        <span class="secador-chip-label">TEMP MASSA</span>
-                                        <span class="secador-chip-value">92°C</span>
-                                        <span class="secador-chip-sub">setada 92°C</span>
-                                    </div>
-                                    <div class="secador-chip">
-                                        <span class="secador-chip-label">CICLO</span>
-                                        <span class="secador-chip-value">2º de 2</span>
-                                        <span class="secador-chip-sub">fecha 17h</span>
-                                    </div>
+                                <div class="prod-secador-total">
+                                    <span class="prod-secador-volume">597 <small>t</small></span>
+                                    <span class="prod-secador-meta">meta do turno <b>700 t</b></span>
                                 </div>
-                                <div class="prod-secador-linha">
-                                    <span class="prod-linha-item"><b>PROJEÇÃO 17h</b>~885 t <em class="is-bom">+135 t sobre a meta</em></span>
-                                    <span class="prod-linha-item"><b>MELHOR HORA</b>88 t <em>10h</em></span>
-                                    <span class="prod-linha-item"><b>ÚLTIMA HORA</b>86 t <em>13h</em></span>
-                                    <span class="prod-linha-item"><b>PARADAS HOJE</b>0 <em>nenhuma</em></span>
+                                <div class="prod-secador-track"><span class="prod-secador-fill" style="width: 85%"></span></div>
+                                <span class="prod-secador-percent">85% da meta</span>
+                                <div class="prod-secador-grade">
+                                    <span class="prod-linha-item"><b>VAZÃO AGORA</b>78 t/h <em>98% do nominal</em></span>
+                                    <span class="prod-linha-item"><b>PROJEÇÃO 17H</b>762 t <em class="is-bom">+62 t vs meta</em></span>
+                                    <span class="prod-linha-item"><b>PARADAS</b>0 <em>nenhuma parada</em></span>
+                                    <span class="prod-linha-item"><b>MELHOR HORA</b>79 t <em>às 10h</em></span>
+                                    <span class="prod-linha-item"><b>ÚLTIMA HORA CHEIA</b>77 t <em>às 13h</em></span>
+                                    <span class="prod-linha-item"><b>DISPONIBILIDADE</b>100% <em>do turno decorrido</em></span>
                                 </div>
                             </div>
 
-                            <div class="prod-secador">
+                            <div class="prod-secador prod-secador--sec2">
                                 <div class="prod-secador-head">
-                                    <span class="secador-nome"><i class="secador-dot is-operando"></i>SECADOR 2</span>
-                                    <span class="secador-tipo">Sorgo · Intermitente · nominal 60 t/h</span>
+                                    <span class="secador-nome"><i class="secador-dot prod-secador-dot"></i>SECADOR 2 <em class="prod-secador-cultura">Sorgo</em></span>
+                                    <span class="secador-tipo">Intermitente · nominal 60 t/h</span>
                                 </div>
-                                <div class="prod-secador-chips">
-                                    <div class="secador-chip">
-                                        <span class="secador-chip-label">SECADO HOJE</span>
-                                        <span class="secador-chip-value">480 t</span>
-                                        <span class="secador-chip-sub">meta 550 t</span>
-                                    </div>
-                                    <div class="secador-chip">
-                                        <span class="secador-chip-label">VAZÃO ATUAL</span>
-                                        <span class="secador-chip-value">57 t/h</span>
-                                        <span class="secador-chip-sub">95% nominal</span>
-                                    </div>
-                                    <div class="secador-chip">
-                                        <span class="secador-chip-label">UMIDADE</span>
-                                        <span class="secador-chip-value">18,8% → 12,9%</span>
-                                        <span class="secador-chip-sub">alvo 13–14%</span>
-                                    </div>
-                                    <div class="secador-chip">
-                                        <span class="secador-chip-label">TEMP MASSA</span>
-                                        <span class="secador-chip-value">83°C</span>
-                                        <span class="secador-chip-sub">setada 85°C</span>
-                                    </div>
-                                    <div class="secador-chip">
-                                        <span class="secador-chip-label">CICLO</span>
-                                        <span class="secador-chip-value">2º de 2</span>
-                                        <span class="secador-chip-sub">resfr. 16h</span>
-                                    </div>
+                                <div class="prod-secador-total">
+                                    <span class="prod-secador-volume">403 <small>t</small></span>
+                                    <span class="prod-secador-meta">meta do turno <b>500 t</b></span>
                                 </div>
-                                <div class="prod-secador-linha">
-                                    <span class="prod-linha-item"><b>PROJEÇÃO 17h</b>~635 t <em class="is-bom">+85 t sobre a meta</em></span>
-                                    <span class="prod-linha-item"><b>MELHOR HORA</b>74 t <em>10h</em></span>
-                                    <span class="prod-linha-item"><b>ÚLTIMA HORA</b>72 t <em>13h</em></span>
-                                    <span class="prod-linha-item"><b>PARADAS HOJE</b>1 <em>recarga 12h · 34 min</em></span>
+                                <div class="prod-secador-track"><span class="prod-secador-fill" style="width: 81%"></span></div>
+                                <span class="prod-secador-percent">81% da meta</span>
+                                <div class="prod-secador-grade">
+                                    <span class="prod-linha-item"><b>VAZÃO AGORA</b>56 t/h <em>93% do nominal</em></span>
+                                    <span class="prod-linha-item"><b>PROJEÇÃO 17H</b>518 t <em class="is-bom">+18 t vs meta</em></span>
+                                    <span class="prod-linha-item"><b>PARADAS</b>1 · 34 min <em>recarga às 12h</em></span>
+                                    <span class="prod-linha-item"><b>MELHOR HORA</b>58 t <em>às 10h</em></span>
+                                    <span class="prod-linha-item"><b>ÚLTIMA HORA CHEIA</b>56 t <em>às 13h</em></span>
+                                    <span class="prod-linha-item"><b>DISPONIBILIDADE</b>93% <em>do turno decorrido</em></span>
                                 </div>
                             </div>
                         </div>
@@ -2362,6 +2468,6 @@
         </main>
     </div>
 
-    <script src="script.js?v=20260911b"></script>
+    <script src="script.js?v=20260914"></script>
 </body>
 </html>

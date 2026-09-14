@@ -4388,96 +4388,25 @@ body.theme-light .secador-fase--resfr {
 }
 
 /* ============================================
-   PRODUTIVIDADE POR SECADOR
-   Barra por equipamento: o preenchido é o secado hoje,
-   a calha inteira é a meta do secador. A leitura vale
-   pelo confronto entre os dois secadores, por isso as
-   linhas dividem a altura da seção em partes iguais.
+   PRODUTIVIDADE DA SECAGEM: LEITURA CONTRA A META
+   A tela responde se o turno bate a meta as 17h. Os KPIs
+   carregam a bandeira (dentro/fora), o grafico por hora empilha
+   por secador com a linha de meta e projeta as horas que faltam,
+   e cada secador mostra o secado grande contra a meta do turno.
+   Aqui a cor identifica o SECADOR (S1 azul, S2 laranja), nao a
+   cultura: a pergunta da tela e "qual secador esta atrasando".
    ============================================ */
 .split-grid--prod {
+    --sec1: #3b82f6;
+    --sec2: #e26a22;
     grid-template-columns: 1.5fr 1fr;
 }
 
-.prod-secador-list {
-    flex: 1 1 auto;
-    min-height: 0;
-    display: grid;
-    grid-auto-rows: minmax(0, 1fr);
-    gap: 0.875rem;
+body.theme-light .split-grid--prod {
+    --sec1: #2a78d6;
+    --sec2: #c8561a;
 }
 
-.prod-secador {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.5rem;
-    min-height: 0;
-    padding: 0.875rem 1.125rem;
-    border: 1px solid var(--card-border);
-    border-radius: 12px;
-    background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
-}
-
-.prod-secador-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-}
-
-.prod-secador-track {
-    position: relative;
-    width: 100%;
-    height: 1.125rem;
-    border-radius: 999px;
-    background: var(--row-bg);
-    border: 1px solid var(--row-line);
-    overflow: hidden;
-}
-
-.prod-secador-fill {
-    height: 100%;
-    border-radius: 999px;
-    background: linear-gradient(90deg, var(--accent) 0%, var(--accent-strong) 100%);
-}
-
-.prod-secador-chips {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 0.375rem;
-    min-height: 0;
-}
-
-.prod-secador-foot {
-    display: flex;
-    align-items: baseline;
-    justify-content: flex-end;
-    gap: 0.75rem;
-}
-
-.prod-secador-volume {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-}
-
-.prod-secador-percent {
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-}
-
-/* ============================================
-   PRODUTIVIDADE DA SECAGEM: LEITURA CONTRA A META
-   A tela responde se o turno bate a meta as 17h. Por isso os
-   KPIs carregam a bandeira (dentro/fora), o grafico por hora
-   empilha por secador com a linha de meta e projeta as horas
-   que faltam, e cada chip mostra a referencia logo abaixo.
-   ============================================ */
 .kpi-flag--ok {
     background: rgba(46, 204, 113, 0.16);
     border: 1px solid rgba(46, 204, 113, 0.4);
@@ -4502,17 +4431,55 @@ body.theme-light .kpi-flag--atencao {
     color: #a35f00;
 }
 
+/* barra fina do KPI: quanto da meta do turno ja foi secado */
+.kpi-meta-bar {
+    width: 100%;
+    height: 0.375rem;
+    margin: 0.125rem 0;
+    border-radius: 999px;
+    background: var(--row-bg);
+    border: 1px solid var(--row-line);
+    overflow: hidden;
+}
+
+.kpi-meta-bar i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--warn);
+}
+
+.kpi-card.ok .kpi-meta-bar i {
+    background: var(--ok);
+}
+
+/* nota curta ao lado do valor (96% do nominal) e seta da umidade */
+.kpi-value-nota {
+    font-size: 0.36em;
+    font-weight: 600;
+    color: var(--faint);
+    letter-spacing: 0;
+    white-space: nowrap;
+}
+
+.kpi-value-seta {
+    font-weight: 400;
+    color: var(--faint);
+    padding: 0 0.125em;
+}
+
 /* legenda encostada no titulo da secao, sem a folga de baixo */
 .chart-legend--inline {
     margin-bottom: 0;
     gap: 0.875rem;
 }
 
-.legend-dot--meta-key {
-    width: 0.875rem;
-    height: 0;
-    border-radius: 0;
-    border-top: 2px dashed var(--viz-prog);
+.legend-dot--sec1 {
+    background: var(--sec1);
+}
+
+.legend-dot--sec2 {
+    background: var(--sec2);
 }
 
 .legend-dot--proj-key {
@@ -4524,14 +4491,54 @@ body.theme-light .kpi-flag--atencao {
     outline-offset: -1px;
 }
 
-/* turno inteiro no eixo: 8 horas fechadas + 3 projetadas */
+/* turno inteiro no eixo: 8 horas fechadas + 2 projetadas. A calha da
+   direita guarda o rotulo da meta, fora das barras */
 .forecast-chart--turno {
-    --chart-cols: 11;
+    --chart-cols: 10;
+    --meta-gutter: 3rem;
+}
+
+.forecast-chart--turno .forecast-cols,
+.forecast-chart--turno .forecast-xaxis {
+    margin-right: var(--meta-gutter);
+}
+
+.forecast-chart--turno .forecast-meta-line {
+    right: var(--meta-gutter);
+}
+
+.forecast-chart--turno .forecast-meta-line span {
+    left: 100%;
+    right: auto;
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+    margin-left: 0.5rem;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: none;
+    line-height: 1.25;
+    white-space: normal;
+    width: calc(var(--meta-gutter) - 0.5rem);
+}
+
+/* nota da hora (melhor hora, recarga) numa linha so */
+.forecast-chart--turno .forecast-day small {
+    white-space: nowrap;
 }
 
 .forecast-chart--turno .forecast-bar--hora {
     width: 3rem;
     max-width: 60%;
+}
+
+.forecast-seg--sec1 {
+    background: var(--sec1);
+}
+
+.forecast-seg--sec2 {
+    background: var(--sec2);
 }
 
 /* a pilha por secador nao leva a cor unica da barra: cada fatia
@@ -4560,9 +4567,9 @@ body.theme-light .kpi-flag--atencao {
     background: rgba(255, 255, 255, 0.35);
 }
 
-/* separador fino entre os dois secadores */
+/* 2px de superficie separando os dois secadores */
 .forecast-chart--turno .forecast-bar--hora.is-stack .forecast-seg + .forecast-seg {
-    box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.35);
+    box-shadow: inset 0 2px 0 var(--card-bg-bottom);
 }
 
 .forecast-chart--turno .forecast-bar--hora.is-stack > .forecast-seg:first-of-type {
@@ -4578,21 +4585,27 @@ body.theme-light .forecast-chart--turno .forecast-bar--hora.is-stack {
     box-shadow: 0 4px 12px rgba(20, 40, 70, 0.18);
 }
 
-/* horas que faltam: contorno tracejado com um veu leve por dentro */
-.forecast-bar--hora.is-projecao {
-    background: repeating-linear-gradient(-45deg, rgba(120, 160, 210, 0.1) 0 4px, transparent 4px 9px);
+/* hora em andamento: mesma cor cheia, contorno tracejado avisando que ainda cresce */
+.forecast-chart--turno .forecast-bar--hora.is-parcial {
     outline: 1px dashed var(--muted);
-    outline-offset: -1px;
-    border-radius: 6px 6px 2px 2px;
+    outline-offset: 3px;
 }
 
-.forecast-bar--hora.is-projecao .forecast-cap {
+/* horas que faltam: as fatias continuam por secador, mas apagadas
+   e com contorno tracejado, para nao confundir com o realizado */
+.forecast-chart--turno .forecast-bar--hora.is-projecao {
+    outline: 1px dashed var(--muted);
+    outline-offset: 3px;
+    box-shadow: none;
+}
+
+.forecast-chart--turno .forecast-bar--hora.is-projecao .forecast-seg {
+    opacity: 0.45;
+}
+
+.forecast-chart--turno .forecast-bar--hora.is-projecao .forecast-cap {
     color: var(--muted);
     font-weight: 600;
-}
-
-.hora-col.is-futuro {
-    opacity: 0.85;
 }
 
 .forecast-day.is-futuro {
@@ -4600,7 +4613,8 @@ body.theme-light .forecast-chart--turno .forecast-bar--hora.is-stack {
 }
 
 /* hora abaixo da meta: o rotulo denuncia, sem trocar a cor da barra */
-.hora-col.is-abaixo .forecast-cap {
+.hora-col.is-abaixo .forecast-cap,
+.forecast-day small.is-atencao {
     color: var(--warn);
 }
 
@@ -4630,47 +4644,122 @@ body.theme-light .forecast-chart--turno .forecast-bar--hora.is-stack {
     white-space: nowrap;
 }
 
-/* rotulo dentro da calha: secado / meta do secador */
-.prod-secador-track {
-    height: 1.25rem;
+/* ---- cartao por secador: secado grande contra a meta do turno ---- */
+.prod-secador-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-auto-rows: minmax(0, 1fr);
+    gap: 0.875rem;
 }
 
-.prod-secador-track-label {
-    position: absolute;
-    top: 50%;
-    right: 0.625rem;
-    transform: translateY(-50%);
-    font-size: 0.58rem;
+.prod-secador {
+    --sec: var(--muted);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.375rem;
+    min-height: 0;
+    padding: 0.875rem 1.125rem;
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
+}
+
+.prod-secador--sec1 {
+    --sec: var(--sec1);
+}
+
+.prod-secador--sec2 {
+    --sec: var(--sec2);
+}
+
+.prod-secador-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.375rem;
+}
+
+/* o ponto e a cultura levam a cor do secador; o nome fica em texto */
+.prod-secador-dot {
+    background: var(--sec);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--sec) 22%, transparent);
+}
+
+.prod-secador-cultura {
+    margin-left: 0.25rem;
+    font-style: normal;
+    font-size: 0.62rem;
     font-weight: 700;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.1em;
+    color: var(--sec);
+}
+
+.prod-secador-total {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.prod-secador-volume {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.1;
     color: var(--text);
     font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 
-body.theme-light .prod-secador-track-label {
-    text-shadow: none;
-    padding: 0.0625rem 0.4375rem;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.9);
-}
-
-/* referencia do chip (meta, nominal, alvo) logo abaixo do valor */
-.secador-chip-sub {
-    font-size: 0.52rem;
+.prod-secador-volume small {
+    font-size: 0.55em;
     font-weight: 600;
-    letter-spacing: 0.04em;
-    line-height: 1.2;
-    color: rgba(255, 255, 255, 0.72);
+    color: var(--muted);
 }
 
-/* rodape do secador: projecao, melhor/ultima hora e paradas */
-.prod-secador-linha {
+.prod-secador-meta {
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.prod-secador-meta b {
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.prod-secador-track {
+    width: 100%;
+    height: 0.4375rem;
+    border-radius: 999px;
+    background: var(--row-bg);
+    border: 1px solid var(--row-line);
+    overflow: hidden;
+}
+
+.prod-secador-fill {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--sec);
+}
+
+.prod-secador-percent {
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+/* grade 3x2: vazao, projecao, paradas / melhor hora, ultima hora cheia, disponibilidade */
+.prod-secador-grade {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0.5rem;
-    padding-top: 0.5rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem 0.75rem;
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
     border-top: 1px solid var(--row-line);
 }
 
@@ -4678,7 +4767,7 @@ body.theme-light .prod-secador-track-label {
     display: flex;
     flex-direction: column;
     gap: 0.125rem;
-    font-size: 0.8rem;
+    font-size: 0.95rem;
     font-weight: 700;
     color: var(--text);
     font-variant-numeric: tabular-nums;
@@ -4710,19 +4799,6 @@ body.theme-light .prod-linha-item em.is-bom {
 /* cabecalho da secao pode quebrar a legenda para baixo sem esmagar o titulo */
 .split-grid--prod .section-head {
     flex-wrap: wrap;
-}
-
-/* chip fora da referencia (umidade abaixo do alvo) */
-.secador-chip.is-atencao {
-    background: linear-gradient(135deg, #b8700a 0%, #d98b12 100%);
-}
-
-.split-grid--prod .prod-secador-chips {
-    gap: 0.5rem;
-}
-
-.split-grid--prod .secador-chip {
-    padding: 0.375rem 0.5625rem;
 }
 
 /* ============================================
@@ -6835,8 +6911,7 @@ body.edit-mode .fluxo-etapa-pill {
     .forecast-summary--quad,
     .moega-grid,
     .weather-days,
-    .prod-secador-chips,
-    .prod-secador-linha,
+    .prod-secador-grade,
     .silo-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 0.625rem;
@@ -6886,6 +6961,11 @@ body.edit-mode .fluxo-etapa-pill {
         width: 2rem;
     }
 
+    /* colunas estreitas: a nota da hora volta a quebrar linha */
+    .forecast-chart--turno .forecast-day small {
+        white-space: normal;
+    }
+
     .silo-visual,
     .silo-groups .silo-visual {
         height: 6rem;
@@ -6921,5 +7001,1009 @@ body.edit-mode .fluxo-etapa-pill {
     .viz-tooltip,
     .motivo-tip {
         max-width: 90vw;
+    }
+}
+
+/* ============================================
+   VISÃO GERAL (tela 00)
+   Um card por área, na ordem do fluxo do grão. O card inteiro é um
+   botão que abre a tela da área; o semáforo reaproveita .ok/.alert
+   do .kpi-card e as pílulas .kpi-flag.
+   ============================================ */
+.menu-item--geral {
+    gap: 0.5rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    border-bottom: 1px solid var(--sidebar-border);
+}
+
+.menu-item--geral::before {
+    content: "00 ·";
+    color: var(--faint);
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.menu-item--geral.active::before {
+    color: var(--accent);
+}
+
+.geral-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 1fr;
+    gap: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+/* a grade divide a altura que sobra da tela; os cards crescem juntos */
+.screen > .geral-grid {
+    flex: 1 1 auto;
+}
+
+.geral-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    min-height: 10.5rem;
+    padding: 1rem 1.125rem;
+    background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.geral-card:hover,
+.geral-card:focus-visible {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-soft);
+    outline: none;
+}
+
+.geral-card:hover .geral-card-link,
+.geral-card:focus-visible .geral-card-link {
+    color: var(--accent);
+}
+
+.geral-card.ok {
+    border-color: rgba(46, 204, 113, 0.4);
+    background: linear-gradient(180deg, rgba(46, 204, 113, 0.14) 0%, rgba(46, 204, 113, 0.04) 100%);
+}
+
+.geral-card.atencao {
+    border-color: rgba(243, 156, 18, 0.42);
+    background: linear-gradient(180deg, rgba(243, 156, 18, 0.14) 0%, rgba(243, 156, 18, 0.04) 100%);
+}
+
+.geral-card.alert {
+    border-color: rgba(231, 76, 60, 0.4);
+    background: linear-gradient(180deg, rgba(231, 76, 60, 0.14) 0%, rgba(231, 76, 60, 0.04) 100%);
+}
+
+.geral-card-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.geral-card-num {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--faint);
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+}
+
+.geral-card-name {
+    flex: 1 1 auto;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+.geral-card .kpi-flag {
+    flex-shrink: 0;
+}
+
+.kpi-flag--info {
+    background: var(--accent-soft);
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    color: var(--accent);
+}
+
+.geral-kpis {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, auto));
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+    flex: 0 0 auto;
+}
+
+.geral-kpi {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+}
+
+.geral-kpi-label {
+    font-size: 0.58rem;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.geral-kpi-value {
+    font-size: 1.55rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.geral-kpi-value small {
+    font-size: 0.6em;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.geral-kpi--ruim .geral-kpi-value {
+    color: var(--danger);
+}
+
+.geral-kpi-ref {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--faint);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* linhas de detalhe: rótulo à esquerda, valor e referência à direita */
+.geral-rows {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.3125rem;
+    width: 100%;
+    flex: 1 1 auto;
+    padding-top: 0.625rem;
+    border-top: 1px solid var(--row-line);
+}
+
+.geral-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    width: 100%;
+    font-size: 0.72rem;
+    line-height: 1.25;
+}
+
+.geral-row-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    color: var(--muted);
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.geral-row-label--solo {
+    flex: none;
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.125rem;
+}
+
+.geral-row-value {
+    flex-shrink: 0;
+    color: var(--text);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.geral-row-ref {
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 45%;
+    color: var(--faint);
+    font-size: 0.62rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: right;
+}
+
+.geral-row--ruim .geral-row-value {
+    color: var(--danger);
+}
+
+.geral-row--atencao .geral-row-value {
+    color: var(--warn);
+}
+
+.geral-row--ok .geral-row-value {
+    color: var(--ok);
+}
+
+/* barra de progresso fina logo abaixo da linha a que pertence */
+.geral-bar {
+    width: 100%;
+    height: 0.3125rem;
+    margin-top: -0.125rem;
+    border-radius: 999px;
+    background: var(--row-bg);
+    border: 1px solid var(--row-line);
+    overflow: hidden;
+}
+
+.geral-bar-fill {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--accent-strong), var(--accent));
+}
+
+.geral-row--ruim + .geral-bar .geral-bar-fill {
+    background: var(--danger);
+}
+
+.geral-row--atencao + .geral-bar .geral-bar-fill {
+    background: var(--warn);
+}
+
+.geral-rows--barras {
+    gap: 0.25rem;
+}
+
+/* faixa de mini-barras verticais (moegas) ou de valores (dias) */
+.geral-strip {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 0.375rem;
+    width: 100%;
+    flex: 1 1 auto;
+    min-height: 3.25rem;
+}
+
+.geral-strip-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.geral-strip-name {
+    order: 3;
+    font-size: 0.58rem;
+    font-weight: 700;
+    color: var(--faint);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.geral-strip-bar {
+    order: 2;
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    max-width: 1.75rem;
+    flex: 1 1 auto;
+    min-height: 1.75rem;
+    border-radius: 4px;
+    background: var(--row-bg);
+    border: 1px solid var(--row-line);
+    overflow: hidden;
+}
+
+.geral-strip-bar > span {
+    display: block;
+    width: 100%;
+    background: linear-gradient(180deg, var(--accent), var(--accent-strong));
+}
+
+.geral-strip-item--alto .geral-strip-bar > span {
+    background: var(--warn);
+}
+
+.geral-strip-val {
+    order: 1;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.geral-strip-item--alto .geral-strip-val {
+    color: var(--warn);
+}
+
+.geral-strip--dias {
+    min-height: 0;
+    flex: none;
+    padding: 0.375rem 0;
+    border-radius: 8px;
+    background: var(--row-bg);
+    border: 1px solid var(--row-line);
+}
+
+.geral-strip--dias .geral-strip-item {
+    justify-content: center;
+}
+
+.geral-strip--dias .geral-strip-val {
+    font-size: 0.95rem;
+}
+
+.geral-alert-time {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+}
+
+/* em ponta o card da aeracao acompanha a tela 08 */
+.geral-card.ponta-on .geral-row--ok .geral-row-value {
+    color: var(--warn);
+}
+
+.geral-card-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    width: 100%;
+    padding-top: 0.625rem;
+    border-top: 1px solid var(--row-line);
+    font-size: 0.7rem;
+    color: var(--muted);
+}
+
+.geral-card-foot > span:first-child {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.geral-card-link {
+    flex-shrink: 0;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 0.62rem;
+    color: var(--faint);
+    transition: color 0.2s ease;
+}
+
+/* faixa de alertas: mesmos itens da pagina ALERTAS, cada um leva a area */
+.geral-alerts {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+    padding: 0.75rem 1rem;
+    background: var(--section-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+}
+
+.geral-alerts-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-right: 0.5rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.geral-alerts-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.375rem;
+    height: 1.375rem;
+    padding: 0 0.375rem;
+    border-radius: 999px;
+    background: var(--danger);
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 800;
+}
+
+.geral-alert {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4375rem 0.75rem;
+    background: var(--row-bg);
+    border: 1px solid var(--row-line);
+    border-radius: 999px;
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.72rem;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.geral-alert:hover,
+.geral-alert:focus-visible {
+    border-color: var(--accent);
+    background: var(--hover);
+    outline: none;
+}
+
+.geral-alert-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+}
+
+.geral-alert--critico .geral-alert-dot {
+    background: var(--danger);
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+}
+
+.geral-alert--aviso .geral-alert-dot {
+    background: var(--warn);
+    box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.2);
+}
+
+.geral-alert--info .geral-alert-dot {
+    background: var(--accent);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.geral-alert-area {
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.6rem;
+}
+
+.geral-alert-text {
+    font-weight: 600;
+}
+
+/* tema claro: mesmas cores das pilulas .kpi-flag no claro */
+body.theme-light .geral-card.ok {
+    border-color: rgba(24, 128, 70, 0.35);
+    background: linear-gradient(180deg, rgba(24, 128, 70, 0.1) 0%, rgba(24, 128, 70, 0.03) 100%);
+}
+
+body.theme-light .geral-card.atencao {
+    border-color: rgba(184, 108, 0, 0.35);
+    background: linear-gradient(180deg, rgba(184, 108, 0, 0.1) 0%, rgba(184, 108, 0, 0.03) 100%);
+}
+
+body.theme-light .geral-card.alert {
+    border-color: rgba(179, 38, 30, 0.35);
+    background: linear-gradient(180deg, rgba(179, 38, 30, 0.1) 0%, rgba(179, 38, 30, 0.03) 100%);
+}
+
+body.theme-light .kpi-flag--info {
+    background: rgba(37, 99, 235, 0.1);
+    border-color: rgba(37, 99, 235, 0.35);
+    color: #1d4ed8;
+}
+
+@media screen and (max-width: 1024px) {
+    .geral-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .geral-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .geral-card {
+        min-height: 0;
+        padding: 14px 16px;
+    }
+
+    .geral-kpi-value {
+        font-size: 20px;
+    }
+
+    .geral-alerts {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .geral-alert {
+        border-radius: 10px;
+    }
+}
+
+/* ============================================
+   RECEPCAO — KPIs com quebra por cultura,
+   espera por etapa e visao mensal
+   (mesma linguagem dos cards internos da tela antiga)
+   ============================================ */
+/* valor + pill/referencia na mesma linha */
+.kpi-value-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+}
+
+.kpi-value-unit {
+    font-size: 0.55em;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+/* quebra Milho x Sorgo no pe do card, no molde do kpi-breakdown */
+.kpi-sub {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0;
+    margin-top: 0.25rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--row-line);
+    align-self: stretch;
+}
+
+.kpi-sub-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4375rem;
+    padding: 0 0.875rem;
+    border-left: 2px solid var(--card-border);
+    font-size: 0.78rem;
+    color: var(--text);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+}
+
+.kpi-sub-item:first-child {
+    padding-left: 0;
+    border-left: none;
+}
+
+.kpi-sub-item b {
+    font-size: 0.58rem;
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+}
+
+/* titulo + subtitulo de secao */
+.section-head--top {
+    align-items: flex-start;
+}
+
+.section-head-text h3 {
+    margin-bottom: 0.25rem;
+}
+
+.section-sub {
+    font-size: 0.62rem;
+    color: var(--faint);
+    margin: 0 0 0.875rem;
+}
+
+.section-head--top .section-sub {
+    margin-bottom: 0;
+}
+
+/* ---- Tempo de espera por etapa ---- */
+.legend-sq {
+    width: 0.5625rem;
+    height: 0.5625rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.chart-legend--etapas {
+    margin-bottom: 0;
+}
+
+/* cinco degraus do azul de destaque, do mais claro (fila) ao mais escuro (P2) */
+.etapa-fill--fila {
+    background: linear-gradient(180deg, #bcd3f6 0%, #a3c2f0 100%);
+    color: #0b1a2c;
+}
+
+.etapa-fill--p1 {
+    background: linear-gradient(180deg, #8fb7f1 0%, #75a5ea 100%);
+    color: #0b1a2c;
+}
+
+.etapa-fill--classif {
+    background: linear-gradient(180deg, #5a9bec 0%, #3f87e0 100%);
+    color: #fff;
+}
+
+.etapa-fill--moega {
+    background: linear-gradient(180deg, var(--accent) 0%, var(--accent-strong) 100%);
+    color: #fff;
+}
+
+.etapa-fill--p2 {
+    background: linear-gradient(180deg, #2158b5 0%, #1a4894 100%);
+    color: #fff;
+}
+
+/* o grafico mora num card interno, como os blocos da tela antiga */
+.etapa-chart {
+    position: relative;
+    padding: 1.625rem 0.875rem 0.5rem;
+    background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+}
+
+.etapa-row {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.etapa-row--axis {
+    margin-bottom: 0;
+    margin-top: 0.75rem;
+}
+
+.etapa-cultura-nome {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4375rem;
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+}
+
+.etapa-cultura-total {
+    display: block;
+    font-size: 0.6rem;
+    color: var(--muted);
+    margin-top: 0.125rem;
+    padding-left: 1rem;
+}
+
+.etapa-cultura-total b {
+    color: var(--text);
+    font-size: 0.9rem;
+    letter-spacing: -0.015em;
+    font-variant-numeric: tabular-nums;
+}
+
+/* trilho igual ao stack-track: borda, gap de 2px, grade de fundo a cada 10 min */
+.etapa-track {
+    display: flex;
+    gap: 2px;
+    height: 2.125rem;
+    min-width: 0;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--row-line);
+    background-color: var(--row-bg);
+    background-image: linear-gradient(to right, var(--row-line) 1px, transparent 1px);
+    background-size: 20% 100%;
+}
+
+/* largura de cada etapa e proporcional a --min sobre a escala --etapa-max */
+.etapa-seg {
+    flex: 0 0 calc(var(--min) / var(--etapa-max) * 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 0 0.375rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.etapa-seg b {
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    opacity: 0.85;
+}
+
+.etapa-seg span {
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.etapa-seg.is-maior {
+    box-shadow: inset 0 0 0 2px var(--danger);
+}
+
+.etapa-axis {
+    position: relative;
+    height: 1.125rem;
+    font-size: 0.62rem;
+    color: var(--faint);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+/* cada rotulo fica exatamente sobre o seu minuto (--t) da escala */
+.etapa-axis span {
+    position: absolute;
+    top: 0.125rem;
+    left: calc(var(--t) / var(--etapa-max) * 100%);
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+.etapa-axis span:first-child {
+    transform: none;
+}
+
+.etapa-axis span:last-child {
+    transform: translateX(-100%);
+}
+
+/* linha vertical da meta: comeca no rotulo (acima das barras) e desce ate o eixo.
+   O deslocamento soma o padding do card e a coluna da cultura (6.5rem + gap 0.75rem). */
+.etapa-meta {
+    position: absolute;
+    top: 0.5rem;
+    bottom: 1.5rem;
+    left: calc(0.875rem + 7.25rem + (100% - 0.875rem * 2 - 7.25rem) * var(--etapa-meta) / var(--etapa-max));
+    border-left: 1px dashed var(--danger);
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+.etapa-meta-label {
+    position: absolute;
+    top: -1.1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--danger);
+}
+
+/* ---- Visao mensal por cultura ---- */
+.mensal-grid {
+    display: grid;
+    grid-template-columns: 6.5rem repeat(3, minmax(0, 1fr));
+    gap: 0.625rem 0.75rem;
+    align-items: stretch;
+}
+
+.mensal-head {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 0.875rem 0.125rem;
+    align-self: end;
+}
+
+.mensal-cultura {
+    display: inline-flex;
+    align-items: center;
+    align-self: center;
+    gap: 0.4375rem;
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+}
+
+/* cada celula e um card interno, como os KPIs pequenos da tela antiga */
+.mensal-cell {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.375rem;
+    min-width: 0;
+    padding: 0.75rem 0.875rem;
+    background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    transition: all 0.25s ease;
+}
+
+.mensal-cell:hover {
+    border-color: var(--accent);
+}
+
+/* so aparece no mobile, quando os cabecalhos das colunas somem */
+.mensal-cell-label {
+    display: none;
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--faint);
+}
+
+.mensal-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+}
+
+/* trilho no molde do stack-track, com grade a cada 25% */
+.mensal-track {
+    position: relative;
+    flex: 1 1 auto;
+    height: 0.875rem;
+    border-radius: 5px;
+    border: 1px solid var(--row-line);
+    background-color: var(--row-bg);
+    background-image: linear-gradient(to right, var(--row-line) 1px, transparent 1px);
+    background-size: 25% 100%;
+    overflow: visible;
+}
+
+.mensal-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 4px;
+}
+
+.mensal-fill.is-ok {
+    background: linear-gradient(180deg, #34d97a 0%, #27ae60 100%);
+}
+
+.mensal-fill.is-warn {
+    background: linear-gradient(180deg, #f5a623 0%, #d9880f 100%);
+}
+
+/* marca do ritmo esperado no dia de hoje */
+.mensal-ritmo {
+    position: absolute;
+    top: -0.25rem;
+    width: 2px;
+    height: calc(100% + 0.5rem);
+    background: #fff;
+    border-radius: 1px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
+/* projecao: trilho tracejado e preenchimento pontilhado na cor da cultura */
+.mensal-track--proj {
+    background: transparent;
+    border: 1px dashed var(--card-border);
+}
+
+.mensal-fill--proj {
+    background: repeating-linear-gradient(90deg, var(--cor) 0 4px, transparent 4px 7px);
+    opacity: 0.8;
+}
+
+.mensal-pct {
+    flex-shrink: 0;
+    min-width: 4.25rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+}
+
+.mensal-pct.is-ok {
+    color: var(--ok);
+}
+
+.mensal-pct.is-warn {
+    color: var(--warn);
+}
+
+.mensal-note {
+    font-size: 0.6rem;
+    color: var(--muted);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.mensal-note.is-vazio {
+    color: var(--faint);
+    font-weight: 500;
+}
+
+body.theme-light .mensal-ritmo {
+    background: #1c2733;
+    box-shadow: none;
+}
+
+@media screen and (max-width: 768px) {
+    .kpi-grid--tres {
+        grid-template-columns: 1fr;
+    }
+
+    .section-head--top {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .etapa-row {
+        grid-template-columns: 1fr;
+        gap: 0.375rem;
+    }
+
+    .etapa-cultura {
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+    }
+
+    .etapa-cultura-total {
+        padding-left: 0;
+    }
+
+    .etapa-row--axis .etapa-cultura {
+        display: none;
+    }
+
+    .etapa-seg span {
+        font-size: 0.55rem;
+    }
+
+    .etapa-meta {
+        display: none;
+    }
+
+    .mensal-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .mensal-head {
+        display: none;
+    }
+
+    .mensal-cultura {
+        margin-top: 0.75rem;
+    }
+
+    .mensal-head + .mensal-cultura {
+        margin-top: 0;
+    }
+
+    .mensal-cell-label {
+        display: block;
     }
 }

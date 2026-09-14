@@ -51,6 +51,19 @@ menuItems.forEach((item) => {
     });
 });
 
+// Visao geral: cards e alertas levam a tela da area. Delegado no
+// documento porque o editor pode remontar o palco inteiro; reaproveita
+// o clique do item do menu para manter grupo, gaveta e escala em dia.
+document.addEventListener('click', (ev) => {
+    const alvo = ev.target.closest('[data-goto]');
+    if (!alvo || isEditing()) return;
+    const item = document.querySelector('.menu-item[data-screen="' + alvo.getAttribute('data-goto') + '"]');
+    if (!item) return;
+    item.click();
+    const grupo = item.closest('.menu-group');
+    if (grupo) openOnlyGroup(grupo);
+});
+
 // ============================================
 // MENU EM GRUPOS
 // Cada área abre dois destinos: a tela de dados e a tela da câmera.
@@ -478,8 +491,8 @@ const EDITABLE_SELECTORS = [
     '.nota-texto',
     '.linha-eixo span',
     '.prod-secador-volume',
+    '.prod-secador-meta',
     '.prod-secador-percent',
-    '.secador-chip-sub',
     '.prod-linha-item',
     '.forecast-meta-line span'
 ];
