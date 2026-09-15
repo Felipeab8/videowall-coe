@@ -459,8 +459,14 @@ const EDITABLE_SELECTORS = [
     '.forecast-unit',
     '.kpi-flag',
     '.kpi-meta-ref',
-    '.moega-stat-label',
-    '.moega-stat-value',
+    '.moega-tipo',
+    '.moega-cultura',
+    '.moega-nivel-pct',
+    '.moega-dado-label',
+    '.moega-dado-sub',
+    '.moega-dado-value',
+    '.moega-alert-txt',
+    '.moega-alert-acao',
     '.silo-group-name',
     '.silo-group-total',
     '.camera-name',
@@ -479,6 +485,19 @@ const EDITABLE_SELECTORS = [
     '.secador-tipo',
     '.secador-chip-label',
     '.secador-chip-value',
+    '.secador-chip-sub',
+    '.secador-cultura',
+    '.secador-estado-label',
+    '.secador-estado-pill',
+    '.fornalha-nome',
+    '.fornalha-valor',
+    '.fornalha-delta',
+    '.fornalha-ref',
+    '.fornalha-dado-label',
+    '.fornalha-dado-valor',
+    '.secador-ar span',
+    '.secador-setada-tag',
+    '.secador-agora-label',
     '.serie-tag',
     '.secador-horas span',
     '.rank-nome',
@@ -576,6 +595,7 @@ const DRAG_CONFIG = [
     { selector: '.kpi-card', group: 'kpi' },
     { selector: '.kpi-card-small', group: 'kpi-small' },
     { selector: '.secador', group: 'secador' },
+    { selector: '.secador-fornalha', group: 'fornalha' },
     { selector: '.secador-chip', group: 'secador-dado' },
     { selector: '.silo-group', group: 'silo-cultura' },
     { selector: '.silo-item', group: 'silo' },
@@ -584,6 +604,7 @@ const DRAG_CONFIG = [
     { selector: '.weather-city', group: 'previsao-cidade' },
     { selector: '.hour-item', group: 'hora' },
     { selector: '.alert-item', group: 'alerta' },
+    { selector: '.moega-alert', group: 'alerta' },
     { selector: '.summary-card', group: 'resumo' },
     { selector: '.forecast-stat', group: 'resumo-previsao' },
     { selector: '.status-item', group: 'status' },
@@ -894,6 +915,7 @@ const RESIZE_CONFIG = [
     { selector: '.rank-item', mode: 'size' },
     { selector: '.prod-secador', mode: 'size' },
     { selector: '.secador-chip', mode: 'size' },
+    { selector: '.secador-fornalha', mode: 'size' },
     { selector: '.silo-group', mode: 'size' },
     { selector: '.stack-row', mode: 'size' },
     { selector: '.donut-item', mode: 'size' }
@@ -3482,6 +3504,54 @@ document.addEventListener('click', (e) => {
     if (!alvo || isEditing()) return;
     e.preventDefault();
     escolherCulturaHistorico(alvo);
+});
+
+// ============================================
+// MOEGAS · FILTROS
+// Período é por moega: cada cartão guarda a escolha em data-moega-periodo
+// e o CSS troca o bloco "Saiu" e as trocas de cultura que entram no
+// período. Cultura é da tela (data-moega-cultura na section) e apaga as
+// moegas que não batem. Delegado no documento porque o editor remonta o palco.
+// ============================================
+function escolherPeriodoMoega(alvo) {
+    const cartao = alvo.closest('.moega-item');
+    const periodo = alvo.dataset.moegaPeriodo;
+    if (!cartao || !periodo) return;
+    cartao.dataset.moegaPeriodo = periodo;
+    cartao.querySelectorAll('.moega-periodo-btn').forEach((btn) => {
+        const ativo = btn.dataset.moegaPeriodo === periodo;
+        btn.classList.toggle('is-active', ativo);
+        btn.setAttribute('aria-pressed', String(ativo));
+    });
+    scheduleFit();
+}
+
+function escolherCulturaMoegas(alvo) {
+    const tela = alvo.closest('.screen--moegas');
+    const cultura = alvo.dataset.moegaCultura;
+    if (!tela || !cultura) return;
+    tela.dataset.moegaCultura = cultura;
+    tela.querySelectorAll('.moega-filtro-btn[data-moega-cultura]').forEach((btn) => {
+        const ativo = btn.dataset.moegaCultura === cultura;
+        btn.classList.toggle('is-active', ativo);
+        btn.setAttribute('aria-pressed', String(ativo));
+    });
+    scheduleFit();
+}
+
+document.addEventListener('click', (e) => {
+    if (!(e.target instanceof Element) || isEditing()) return;
+    const periodo = e.target.closest('.moega-periodo-btn');
+    if (periodo) {
+        e.preventDefault();
+        escolherPeriodoMoega(periodo);
+        return;
+    }
+    const cultura = e.target.closest('.moega-filtro-btn[data-moega-cultura]');
+    if (cultura) {
+        e.preventDefault();
+        escolherCulturaMoegas(cultura);
+    }
 });
 
 // ============================================

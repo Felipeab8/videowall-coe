@@ -2273,6 +2273,10 @@ body.edit-mode .forecast-bar.is-empty {
     .split-grid {
         grid-template-columns: 1fr;
     }
+
+    .moega-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
 }
 
 @media screen and (max-width: 1024px) {
@@ -2851,11 +2855,177 @@ body.edit-mode .header-controls .btn-alertas.active {
 }
 
 /* ============================================
-   MOEGAS: OCUPAÇÃO x LIMITE (um grão por moega)
+   MOEGAS: CARTÃO POR MOEGA (nível, saída, cultura e filtros)
    ============================================ */
+.moegas-painel {
+    min-height: 0;
+}
+
+.moegas-painel > .section-head {
+    flex: 0 0 auto;
+}
+
+/* filtros no cabeçalho: período da saída e cultura */
+.moegas-filtros {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.375rem 1.25rem;
+}
+
+.moega-filtro {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    flex-wrap: wrap;
+}
+
+.moega-filtro-rotulo {
+    font-size: 0.56rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-right: 0.125rem;
+}
+
+/* período por moega: pills dentro do cartão, escolha em data-moega-periodo no .moega-item */
+.moega-periodo {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.1875rem;
+}
+
+.moega-periodo-btn {
+    padding: 0.25rem 0.125rem;
+    border-radius: 6px;
+    border: 1px solid var(--card-border);
+    background: var(--row-bg);
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.52rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.moega-periodo-btn:hover {
+    color: var(--text);
+    border-color: var(--accent);
+}
+
+.moega-periodo-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.moega-periodo-btn.is-active {
+    color: var(--text);
+    background: var(--accent-soft);
+    border-color: var(--accent);
+}
+
+/* só o bloco "Saiu" do período escolhido aparece */
+.moega-dado--saida[data-periodo] {
+    display: none;
+}
+
+.moega-item[data-moega-periodo="turno"] .moega-dado--saida[data-periodo="turno"],
+.moega-item[data-moega-periodo="hoje"] .moega-dado--saida[data-periodo="hoje"],
+.moega-item[data-moega-periodo="7d"] .moega-dado--saida[data-periodo="7d"],
+.moega-item[data-moega-periodo="30d"] .moega-dado--saida[data-periodo="30d"] {
+    display: grid;
+}
+
+/* histórico de culturas: cada troca entra nos períodos que a alcançam */
+.moega-hist {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.4375rem 0 0;
+    border-top: 1px solid var(--card-border);
+    /* altura de rótulo + 3 trocas: os tanques ficam alinhados entre os cartões */
+    min-height: 4.375rem;
+}
+
+.moega-hist-item {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.66rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.moega-hist-data {
+    color: var(--faint);
+    white-space: nowrap;
+}
+
+.moega-hist-troca {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.moega-hist-troca .legend-dot {
+    width: 0.4375rem;
+    height: 0.4375rem;
+}
+
+.moega-item[data-moega-periodo="turno"] .moega-hist-item[data-desde="turno"],
+.moega-item[data-moega-periodo="hoje"] .moega-hist-item[data-desde="turno"],
+.moega-item[data-moega-periodo="hoje"] .moega-hist-item[data-desde="hoje"],
+.moega-item[data-moega-periodo="7d"] .moega-hist-item[data-desde="turno"],
+.moega-item[data-moega-periodo="7d"] .moega-hist-item[data-desde="hoje"],
+.moega-item[data-moega-periodo="7d"] .moega-hist-item[data-desde="7d"],
+.moega-item[data-moega-periodo="30d"] .moega-hist-item {
+    display: flex;
+}
+
+.moega-hist-vazio {
+    display: none;
+    font-size: 0.62rem;
+    color: var(--faint);
+    font-style: italic;
+}
+
+.moega-item[data-moega-periodo="turno"] .moega-hist-vazio[data-vazio-em~="turno"],
+.moega-item[data-moega-periodo="hoje"] .moega-hist-vazio[data-vazio-em~="hoje"],
+.moega-item[data-moega-periodo="7d"] .moega-hist-vazio[data-vazio-em~="7d"],
+.moega-item[data-moega-periodo="30d"] .moega-hist-vazio[data-vazio-em~="30d"] {
+    display: block;
+}
+
+/* cultura escolhida: as outras moegas apagam (a grade não reflui) */
+.screen--moegas[data-moega-cultura="milho"] .moega-item:not([data-cultura="milho"]),
+.screen--moegas[data-moega-cultura="sorgo"] .moega-item:not([data-cultura="sorgo"]),
+.screen--moegas[data-moega-cultura="trigo"] .moega-item:not([data-cultura="trigo"]),
+.screen--moegas[data-moega-cultura="soja"] .moega-item:not([data-cultura="soja"]),
+.screen--moegas[data-moega-cultura="vazia"] .moega-item:not([data-cultura="vazia"]) {
+    opacity: 0.28;
+    filter: saturate(0.4);
+}
+
+.moega-item {
+    transition: opacity 0.25s ease, filter 0.25s ease;
+}
+
+.legend-dot--vazia {
+    background: transparent;
+    border: 1.5px dashed var(--faint);
+}
+
 .moega-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     grid-auto-rows: minmax(0, 1fr);
     gap: 0.875rem;
     flex: 1 1 auto;
@@ -2863,22 +3033,33 @@ body.edit-mode .header-controls .btn-alertas.active {
 }
 
 .moega-item {
+    --grao: var(--muted);
     background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
     border: 1px solid var(--card-border);
     border-radius: 12px;
-    padding: 0.875rem 1.125rem;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-areas:
-        'nome nome'
-        'pct  tons'
-        'barra barra';
-    grid-template-rows: auto auto 1fr;
-    align-content: start;
-    row-gap: 0.5rem;
-    column-gap: 0.75rem;
+    padding: 0.875rem 1rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
     min-height: 0;
+    min-width: 0;
     overflow: hidden;
+}
+
+.moega-item--milho {
+    --grao: var(--grao-milho);
+}
+
+.moega-item--sorgo {
+    --grao: var(--grao-sorgo);
+}
+
+.moega-item--trigo {
+    --grao: var(--grao-trigo);
+}
+
+.moega-item--soja {
+    --grao: var(--grao-soja);
 }
 
 .moega-item--alerta {
@@ -2886,70 +3067,320 @@ body.edit-mode .header-controls .btn-alertas.active {
     background: linear-gradient(180deg, rgba(231, 76, 60, 0.12) 0%, rgba(231, 76, 60, 0.03) 100%);
 }
 
+.moega-head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    flex: 0 0 auto;
+}
+
 .moega-name {
-    grid-area: nome;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.66rem;
-    font-weight: 700;
-    letter-spacing: 1px;
+    font-size: 0.92rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+.moega-tipo {
+    font-size: 0.56rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--muted);
 }
 
-/* tonelagem atual / limite — apoio, alinhada pela base com o percentual */
+/* cultura atual + umidade da carga */
+.moega-cultura {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4375rem;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text);
+    flex: 0 0 auto;
+}
+
+.moega-cultura b {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.moega-item--vazia .moega-cultura {
+    color: var(--muted);
+}
+
+/* tanque: o nível preenche de baixo para cima na cor do grão */
+.moega-tank {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 4.5rem;
+    border-radius: 8px;
+    background: var(--section-bg);
+    border: 1px solid var(--card-border);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.moega-tank-max {
+    position: absolute;
+    top: 0.3125rem;
+    right: 0.4375rem;
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--faint);
+    z-index: 2;
+}
+
+/* linha tracejada do máximo logo abaixo do rótulo */
+.moega-tank::before {
+    content: '';
+    position: absolute;
+    left: 0.4375rem;
+    right: 0.4375rem;
+    top: 1.125rem;
+    border-top: 1px dashed var(--faint);
+    opacity: 0.6;
+    z-index: 2;
+}
+
+/* 100% encosta na linha do máximo (que fica a 1.125rem do topo) */
+.moega-tank-fill {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc((100% - 1.125rem) * var(--nivel, 0) / 100);
+    background: var(--grao);
+    transition: height 0.6s ease;
+}
+
+.moega-tank-num {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.125rem;
+    text-align: center;
+    color: #fff;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+}
+
+.moega-nivel-pct {
+    font-size: 2.1rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+}
+
 .moega-tons {
-    grid-area: tons;
-    align-self: baseline;
-    justify-self: end;
-    font-size: 0.92rem;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    opacity: 0.92;
+}
+
+/* moega vazia: número apagado sobre o fundo */
+.moega-item--vazia .moega-tank-num {
+    color: var(--faint);
+    text-shadow: none;
+}
+
+/* tema claro: o tanque continua escuro para o número branco ler sobre o vazio */
+body.theme-light .moega-tank {
+    background: #2c3644;
+    border-color: #3a4656;
+}
+
+body.theme-light .moega-tank-max,
+body.theme-light .moega-tank::before {
+    color: #97a6b8;
+    border-color: #97a6b8;
+}
+
+body.theme-light .moega-item--vazia .moega-tank-num {
+    color: #97a6b8;
+}
+
+/* dados de apoio: saída, última cultura e filtros */
+.moega-dados {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.moega-dado {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+        'label label'
+        'sub   value';
+    column-gap: 0.5rem;
+    row-gap: 0.125rem;
+    padding: 0.4375rem 0;
+    border-top: 1px solid var(--card-border);
+    align-items: baseline;
+}
+
+.moega-dado-label {
+    grid-area: label;
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.moega-dado-sub {
+    grid-area: sub;
+    font-size: 0.62rem;
+    color: var(--faint);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.moega-dado-value {
+    grid-area: value;
+    font-size: 0.8rem;
     font-weight: 700;
     color: var(--text);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
+    text-align: right;
 }
 
-.moega-tons small {
-    font-size: 0.72rem;
-    font-weight: 600;
+/* volume que saiu é o número de destaque do rodapé */
+.moega-dado--saida .moega-dado-value {
+    font-size: 1.15rem;
+    letter-spacing: -0.01em;
+}
+
+.moega-dado-value--ok,
+.moega-dado-value--warn {
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.moega-dado-value--ok {
+    color: var(--ok);
+}
+
+.moega-dado-value--warn {
+    color: var(--warn);
+}
+
+/* ============================================
+   MOEGAS: ALERTAS DE SENSORES (só críticos)
+   ============================================ */
+.moegas-alertas > .section-head {
+    align-items: center;
+}
+
+.moegas-alertas-titulo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1875rem;
+}
+
+.moegas-alertas-sub {
+    font-size: 0.66rem;
     color: var(--muted);
 }
 
-/* percentual de ocupação é o número herói do cartão */
-.moega-item .progress-label {
-    grid-area: pct;
-    align-self: baseline;
-    margin-bottom: 0;
-    font-size: 2.05rem;
+.moegas-alertas-badge {
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--danger);
+    background: rgba(231, 76, 60, 0.14);
+    border: 1px solid rgba(231, 76, 60, 0.45);
+    border-radius: 999px;
+    padding: 0.3125rem 0.75rem;
+    white-space: nowrap;
+}
+
+.moega-alert-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.moega-alert {
+    display: grid;
+    grid-template-columns: auto auto auto minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.5625rem 0.875rem;
+    background: var(--section-bg);
+    border: 1px solid var(--panel-border);
+    border-left: 3px solid var(--danger);
+    border-radius: 10px;
+}
+
+.moega-alert-icon {
+    width: 1rem;
+    height: 1rem;
+    color: var(--danger);
+}
+
+.moega-alert-sev {
+    font-size: 0.56rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--danger);
+    background: rgba(231, 76, 60, 0.14);
+    border-radius: 999px;
+    padding: 0.1875rem 0.5rem;
+}
+
+.moega-alert-moega {
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.moega-alert-txt {
+    font-size: 0.78rem;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.moega-alert-txt b {
+    color: var(--text);
     font-weight: 700;
-    line-height: 1;
+}
+
+.moega-alert-hora {
+    font-size: 0.74rem;
+    font-weight: 700;
     color: var(--text);
     font-variant-numeric: tabular-nums;
-    letter-spacing: -0.02em;
 }
 
-/* o sinal de % acompanha o número, menor e discreto */
-.moega-item .pct-sign {
-    font-size: 0.46em;
+.moega-alert-acao {
+    font-size: 0.7rem;
     font-weight: 700;
-    color: var(--muted);
-    letter-spacing: 0;
-    margin-left: 0.1875rem;
+    color: var(--danger);
+    white-space: nowrap;
 }
 
-.moega-item .progress-bar {
-    grid-area: barra;
-    align-self: end;
-    height: 1.5rem;
-    margin-bottom: 0;
-}
-
-.moega-item .progress {
-    border-radius: 999px;
-}
-
-/* preenchimento na cor do grão da moega */
+/* preenchimento na cor do grão (barras de progresso genéricas) */
 .progress--milho {
     background: var(--grao-milho);
 }
@@ -3321,57 +3752,6 @@ body.theme-light .kpi-flag--alerta {
 
 .legend-dot--pulmao {
     background: var(--accent);
-}
-
-/* ============================================
-   MOEGAS: cargas, umidade e impureza no cartao
-   ============================================ */
-.moega-item {
-    grid-template-areas:
-        'nome nome'
-        'pct  tons'
-        'stats stats'
-        'barra barra';
-    grid-template-rows: auto auto auto 1fr;
-}
-
-.moega-item .progress-label {
-    font-size: 1.7rem;
-}
-
-.moega-item .progress-bar {
-    height: 1.125rem;
-}
-
-.moega-stats {
-    grid-area: stats;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem 0.875rem;
-    padding-top: 0.4375rem;
-    border-top: 1px solid var(--card-border);
-}
-
-.moega-stat {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    min-width: 0;
-}
-
-.moega-stat-label {
-    font-size: 0.5rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-}
-
-.moega-stat-value {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
 }
 
 /* ============================================
@@ -4078,8 +4458,75 @@ body.theme-light .kpi-flag--alerta {
     flex: 0 0 auto;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 0.75rem;
+}
+
+/* cultura como pilula na cor do grao (mesmos tokens das telas de silo) */
+.secador-cultura {
+    --cor: var(--grao-milho);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 999px;
+    border: 1px solid var(--cor);
+    background: color-mix(in srgb, var(--cor) 16%, transparent);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cor);
+    white-space: nowrap;
+}
+
+.secador-cultura::before {
+    content: "";
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: var(--cor);
+}
+
+.secador-cultura--milho { --cor: var(--grao-milho); }
+.secador-cultura--sorgo { --cor: var(--grao-sorgo); }
+.secador-cultura--trigo { --cor: var(--grao-trigo); }
+.secador-cultura--soja { --cor: var(--grao-soja); }
+
+/* "o secador esta X": a frase em cinza e a fase em pilula, no canto direito */
+.secador-estado {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+}
+
+.secador-estado-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.secador-estado-pill {
+    padding: 0.2rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+    box-shadow: var(--shadow-soft);
+}
+
+.secador-estado-pill.is-carregando {
+    background: linear-gradient(135deg, #8ea3ba 0%, #6d8199 100%);
+}
+
+.secador-estado-pill.is-descarregando {
+    background: linear-gradient(135deg, #8b5cf6 0%, #6d3fd6 100%);
 }
 
 .secador-nome {
@@ -4124,8 +4571,201 @@ body.theme-light .kpi-flag--alerta {
     flex: 1 1 auto;
     min-height: 0;
     display: grid;
-    grid-template-columns: 7.5rem minmax(0, 1fr);
-    gap: 1.125rem;
+    grid-template-columns: 8.25rem auto 8.5rem minmax(0, 1fr);
+    gap: 0.75rem;
+}
+
+/* ---- fornalha: quem gera o ar quente, lida antes do secador ---- */
+.secador-fornalha {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.375rem;
+    min-height: 0;
+    padding: 0.625rem 0.75rem;
+    border-radius: 10px;
+    border: 1px solid rgba(231, 76, 60, 0.32);
+    background: linear-gradient(180deg, rgba(231, 76, 60, 0.12) 0%, rgba(231, 76, 60, 0.04) 100%);
+}
+
+.fornalha-nome {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+.fornalha-temp {
+    display: flex;
+    align-items: baseline;
+    gap: 0.375rem;
+}
+
+.fornalha-valor {
+    font-size: 1.9rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.fornalha-valor small {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    color: var(--muted);
+}
+
+.fornalha-delta {
+    font-size: 0.66rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.fornalha-delta.is-ok { color: var(--ok); }
+.fornalha-delta.is-atencao { color: var(--warn); }
+.fornalha-delta.is-alerta { color: var(--danger); }
+
+.fornalha-ref {
+    font-size: 0.55rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+}
+
+.fornalha-ref b {
+    color: var(--text);
+}
+
+/* faixa de operacao 120-180: a barra mostra onde a temperatura esta
+   dentro do intervalo e o traco branco marca a setada */
+.fornalha-faixa {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.125rem 0;
+}
+
+.fornalha-faixa-min,
+.fornalha-faixa-max {
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+}
+
+.fornalha-faixa-max {
+    text-align: right;
+}
+
+.fornalha-track {
+    grid-column: 1 / -1;
+    position: relative;
+    height: 0.4rem;
+    border-radius: 999px;
+    background: var(--row-line);
+    overflow: visible;
+}
+
+.fornalha-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--warn) 0%, var(--danger) 100%);
+}
+
+.fornalha-setada {
+    position: absolute;
+    top: -0.2rem;
+    bottom: -0.2rem;
+    width: 2px;
+    margin-left: -1px;
+    border-radius: 1px;
+    background: var(--text);
+}
+
+/* os dois dados ficam lado a lado com rotulo em linha unica, para os
+   valores nascerem na mesma altura */
+.fornalha-dados {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 0.5rem;
+    padding-top: 0.375rem;
+    border-top: 1px solid var(--row-line);
+}
+
+.fornalha-dado {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 1px;
+    min-width: 0;
+}
+
+.fornalha-dado:last-child {
+    text-align: right;
+}
+
+.fornalha-dado-label {
+    font-size: 0.46rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--faint);
+    white-space: nowrap;
+}
+
+.fornalha-dado-valor {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.secador-fornalha .kpi-flag {
+    align-self: flex-start;
+}
+
+/* seta "ar quente" entre a fornalha e o secador */
+.secador-ar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    width: 2.25rem;
+}
+
+.secador-ar i {
+    display: block;
+    width: 1.25rem;
+    height: 2px;
+    background: var(--danger);
+    position: relative;
+}
+
+.secador-ar i::after {
+    content: "";
+    position: absolute;
+    right: -1px;
+    top: -3px;
+    border: 4px solid transparent;
+    border-left-color: var(--danger);
+    border-right: 0;
+}
+
+.secador-ar span {
+    font-size: 0.42rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--faint);
+    line-height: 1.2;
 }
 
 /* os dados do ciclo (três temperaturas, cultura e início), empilhados como no esboço */
@@ -4164,12 +4804,21 @@ body.theme-light .kpi-flag--alerta {
     font-variant-numeric: tabular-nums;
 }
 
-/* área do gráfico: a calha da direita guarda os rótulos de fim de linha */
+/* referencia do dado (setada, saida, entrada -> saida) em linha menor */
+.secador-chip-sub {
+    font-size: 0.5rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.72);
+    font-variant-numeric: tabular-nums;
+}
+
+/* área do gráfico: os rótulos de fim de linha ficam ao lado do marcador AGORA,
+   dentro do trecho do turno que ainda não aconteceu */
 .secador-chart {
     display: flex;
     flex-direction: column;
     min-height: 0;
-    padding-right: 4.75rem;
 }
 
 .secador-plot {
@@ -4219,6 +4868,82 @@ body.theme-light .kpi-flag--alerta {
 
 .secador-linha--umi {
     stroke: var(--viz-real);
+}
+
+/* setada da massa: tracejado fino atras das series, com o valor no canto esquerdo */
+.secador-setada-linha {
+    stroke: var(--muted);
+    stroke-width: 1;
+    stroke-dasharray: 4 3;
+    vector-effect: non-scaling-stroke;
+    opacity: 0.8;
+}
+
+.secador-setada-tag {
+    position: absolute;
+    left: 0.375rem;
+    transform: translateY(-100%);
+    margin-top: -2px;
+    font-size: 0.48rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+/* AGORA: o marcador vertical separa o que ja aconteceu do restante do turno,
+   que fica esmaecido */
+.secador-futuro {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(8, 18, 33, 0.45);
+    pointer-events: none;
+}
+
+.secador-agora {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    border-left: 1px solid rgba(233, 239, 247, 0.7);
+    pointer-events: none;
+}
+
+.secador-agora-label {
+    position: absolute;
+    top: 0.125rem;
+    left: 0.5rem;
+    display: block;
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.secador-agora-label b {
+    font-weight: 700;
+}
+
+.secador-agora-label small {
+    display: block;
+    font-size: 0.46rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: none;
+    color: var(--faint);
+}
+
+body.theme-light .secador-futuro {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+body.theme-light .secador-agora {
+    border-left-color: rgba(20, 30, 45, 0.6);
 }
 
 /* ============================================
@@ -4283,6 +5008,10 @@ body.theme-light .kpi-flag--alerta {
     background: rgba(59, 130, 246, 0.13);
 }
 
+.secador-fase--descarga {
+    background: rgba(139, 92, 246, 0.16);
+}
+
 body.theme-light .secador-fase--carga {
     background: rgba(60, 70, 80, 0.08);
 }
@@ -4297,6 +5026,10 @@ body.theme-light .secador-fase--secagem {
 
 body.theme-light .secador-fase--resfr {
     background: rgba(61, 111, 165, 0.14);
+}
+
+body.theme-light .secador-fase--descarga {
+    background: rgba(109, 63, 214, 0.16);
 }
 
 /* legenda das fases no cabecalho da secao */
@@ -4342,6 +5075,10 @@ body.theme-light .secador-fase--resfr {
 
 .fase-legenda-item--resfr::before {
     background: rgba(59, 130, 246, 0.45);
+}
+
+.fase-legenda-item--descarga::before {
+    background: rgba(139, 92, 246, 0.5);
 }
 
 /* rótulo na ponta da linha, alinhado com o último ponto */
@@ -6808,17 +7545,21 @@ body.edit-mode .fluxo-etapa-pill {
         white-space: normal;
     }
 
+    .secador-body {
+        grid-template-columns: 8.25rem auto minmax(0, 1fr);
+    }
+
     .secador-chips {
         grid-template-columns: repeat(3, minmax(0, 1fr));
         grid-auto-rows: auto;
     }
 
-    .secador-chip {
-        padding: 0.375rem 0.5rem;
+    .secador-chart {
+        grid-column: 1 / -1;
     }
 
-    .secador-chart {
-        padding-right: 3.5rem;
+    .secador-chip {
+        padding: 0.375rem 0.5rem;
     }
 
 
@@ -6981,6 +7722,10 @@ body.edit-mode .fluxo-etapa-pill {
 
     .secador-chart {
         min-height: 9rem;
+    }
+
+    .secador-ar {
+        display: none;
     }
 
     /* ---- Editor ---- */
@@ -8132,7 +8877,8 @@ body.theme-light .class-val--fora {
     flex-wrap: wrap;
 }
 
-.hist-seletor-btn {
+.hist-seletor-btn,
+.moega-filtro-btn {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
@@ -8150,24 +8896,28 @@ body.theme-light .class-val--fora {
     transition: all 0.2s ease;
 }
 
-.hist-seletor-btn .legend-dot {
+.hist-seletor-btn .legend-dot,
+.moega-filtro-btn .legend-dot {
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 50%;
     flex-shrink: 0;
 }
 
-.hist-seletor-btn:hover {
+.hist-seletor-btn:hover,
+.moega-filtro-btn:hover {
     color: var(--text);
     border-color: var(--accent);
 }
 
-.hist-seletor-btn:focus-visible {
+.hist-seletor-btn:focus-visible,
+.moega-filtro-btn:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
 }
 
-.hist-seletor-btn.is-active {
+.hist-seletor-btn.is-active,
+.moega-filtro-btn.is-active {
     color: var(--text);
     background: var(--accent-soft);
     border-color: var(--accent);

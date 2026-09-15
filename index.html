@@ -1180,7 +1180,7 @@
             </section>
 
             <!-- Screen 2: Moegas -->
-            <section class="screen" id="screen-2">
+            <section class="screen screen--moegas" id="screen-2" data-moega-cultura="todas">
                 <div class="screen-header">
                     <div class="screen-badge">04</div>
                     <div class="screen-title-section">
@@ -1189,111 +1189,415 @@
                     </div>
                 </div>
 
-                <div class="kpi-grid">
-                    <div class="kpi-card">
-                        <div class="kpi-label">CARGAS RECEBIDAS NAS MOEGAS</div>
-                        <div class="kpi-value">93 <span class="kpi-value-ref">hoje</span></div>
+                <div class="content-section moegas-painel">
+                    <div class="section-head">
+                        <h3>MOEGAS · NÍVEL, SAÍDA E CULTURA</h3>
+                        <!-- Filtro de cultura: apaga as moegas que nao batem (a grade nao reflui);
+                             escolha guardada em data-moega-cultura na section da tela. O periodo e
+                             por moega, dentro de cada cartao (data-moega-periodo no .moega-item). -->
+                        <div class="moegas-filtros">
+                            <div class="moega-filtro" role="group" aria-label="Cultura na moega">
+                                <span class="moega-filtro-rotulo">Cultura</span>
+                                <button type="button" class="moega-filtro-btn is-active" data-moega-cultura="todas" aria-pressed="true">Todas</button>
+                                <button type="button" class="moega-filtro-btn" data-moega-cultura="milho" aria-pressed="false"><i class="legend-dot legend-dot--milho"></i>Milho</button>
+                                <button type="button" class="moega-filtro-btn" data-moega-cultura="sorgo" aria-pressed="false"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</button>
+                                <button type="button" class="moega-filtro-btn" data-moega-cultura="vazia" aria-pressed="false"><i class="legend-dot legend-dot--vazia"></i>Vazias</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">TONELAGEM NAS MOEGAS</div>
-                        <div class="kpi-value">433,6 <span class="kpi-value-ref">/ 600 t</span></div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">UMIDADE MÉDIA</div>
-                        <div class="kpi-value">12,4%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">IMPUREZA MÉDIA</div>
-                        <div class="kpi-value">0,9%</div>
+                    <div class="moega-grid moega-grid--seis">
+                        <!-- Moega 1 -->
+                        <div class="moega-item moega-item--milho moega-item--alerta" data-cultura="milho" data-moega-periodo="hoje">
+                            <div class="moega-head">
+                                <span class="moega-name">MOEGA 1</span>
+                                <span class="moega-tipo">Graneleiro · Tombador</span>
+                            </div>
+                            <div class="moega-cultura"><i class="legend-dot legend-dot--milho"></i>Milho <b>20%</b></div>
+                            <div class="moega-tank" style="--nivel: 98">
+                                <span class="moega-tank-max">MÁX</span>
+                                <div class="moega-tank-fill"></div>
+                                <div class="moega-tank-num">
+                                    <span class="moega-nivel-pct">98%</span>
+                                    <span class="moega-tons">118 t / 120 t</span>
+                                </div>
+                            </div>
+                            <div class="moega-periodo" role="group" aria-label="Período da moega 1">
+                                <button type="button" class="moega-periodo-btn" data-moega-periodo="turno" aria-pressed="false">Turno</button>
+                                <button type="button" class="moega-periodo-btn is-active" data-moega-periodo="hoje" aria-pressed="true">Hoje</button>
+                                <button type="button" class="moega-periodo-btn" data-moega-periodo="7d" aria-pressed="false">7 dias</button>
+                                <button type="button" class="moega-periodo-btn" data-moega-periodo="30d" aria-pressed="false">30 dias</button>
+                            </div>
+                            <div class="moega-dados">
+                                <div class="moega-dado moega-dado--saida" data-periodo="turno">
+                                    <span class="moega-dado-label">Saiu no turno</span>
+                                    <span class="moega-dado-sub">→ Secador 1 · 2 transf.</span>
+                                    <span class="moega-dado-value">72 t</span>
+                                </div>
+                                <div class="moega-dado moega-dado--saida" data-periodo="hoje">
+                                    <span class="moega-dado-label">Saiu hoje</span>
+                                    <span class="moega-dado-sub">→ Secador 1 · 17h45</span>
+                                    <span class="moega-dado-value">96 t</span>
+                                </div>
+                                <div class="moega-dado moega-dado--saida" data-periodo="7d">
+                                    <span class="moega-dado-label">Saiu em 7 dias</span>
+                                    <span class="moega-dado-sub">média 91 t/dia</span>
+                                    <span class="moega-dado-value">640 t</span>
+                                </div>
+                                <div class="moega-dado moega-dado--saida" data-periodo="30d">
+                                    <span class="moega-dado-label">Saiu em 30 dias</span>
+                                    <span class="moega-dado-sub">média 80 t/dia</span>
+                                    <span class="moega-dado-value">2.410 t</span>
+                                </div>
+                                <div class="moega-hist">
+                                    <span class="moega-dado-label">Histórico de culturas</span>
+                                    <div class="moega-hist-item" data-desde="7d">
+                                        <span class="moega-hist-data">12/09 · 06h40</span>
+                                        <span class="moega-hist-troca"><i class="legend-dot legend-dot--sorgo"></i>Sorgo → <i class="legend-dot legend-dot--milho"></i>Milho</span>
+                                    </div>
+                                    <div class="moega-hist-item" data-desde="30d">
+                                        <span class="moega-hist-data">03/09 · 13h15</span>
+                                        <span class="moega-hist-troca"><i class="legend-dot legend-dot--trigo"></i>Trigo → <i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
+                                    </div>
+                                    <div class="moega-hist-item" data-desde="30d">
+                                        <span class="moega-hist-data">21/08 · 08h00</span>
+                                        <span class="moega-hist-troca"><i class="legend-dot legend-dot--milho"></i>Milho → <i class="legend-dot legend-dot--trigo"></i>Trigo</span>
+                                    </div>
+                                    <span class="moega-hist-vazio" data-vazio-em="turno hoje">Sem troca de cultura no período</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Moega 2 -->
+                        <div class="moega-item moega-item--milho moega-item--alerta" data-cultura="milho" data-moega-periodo="hoje">
+                            <div class="moega-head">
+                                <span class="moega-name">MOEGA 2</span>
+                                <span class="moega-tipo">Graneleiro · Tombador</span>
+                            </div>
+                            <div class="moega-cultura"><i class="legend-dot legend-dot--milho"></i>Milho <b>17%</b></div>
+                            <div class="moega-tank" style="--nivel: 64">
+                                <span class="moega-tank-max">MÁX</span>
+                                <div class="moega-tank-fill"></div>
+                                <div class="moega-tank-num">
+                                    <span class="moega-nivel-pct">64%</span>
+                                    <span class="moega-tons">77 t / 120 t</span>
+                                </div>
+                            </div>
+                            <div class="moega-periodo" role="group" aria-label="Período da moega 2">
+                                <button type="button" class="moega-periodo-btn" data-moega-periodo="turno" aria-pressed="false">Turno</button>
+                                <button type="button" class="moega-periodo-btn is-active" data-moega-periodo="hoje" aria-pressed="true">Hoje</button>
+                                <button type="button" class="moega-periodo-btn" data-moega-periodo="7d" aria-pressed="false">7 dias</button>
+                                <button type="button" class="moega-periodo-btn" data-moega-periodo="30d" aria-pressed="false">30 dias</button>
+                            </div>
+                            <div class="moega-dados">
+                                <div class="moega-dado moega-dado--saida" data-periodo="turno">
+                                    <span class="moega-dado-label">Saiu no turno</span>
+                                    <span class="moega-dado-sub">→ Secador 1 · 3 transf.</span>
+                                    <span class="moega-dado-value">104 t</span>
+                                </div>
+                                <div class="moega-dado moega-dado--saida" data-periodo="hoje">
+                                    <span class="moega-dado-label">Saiu hoje</span>
+                                    <span class="moega-dado-sub">→ Secador 1 · 17h40</span>
+                                    <span class="moega-dado-value">140 t</span>
+                                </div>
+                                <div class="moega-dado moega-dado--saida" data-periodo="7d">
+                                    <span class="moega-dado-label">Saiu em 7 dias</span>
+                                    <span class="moega-dado-sub">média 116 t/dia</span>
+                                    <span class="moega-dado-value">812 t</span>
+                                </div>
+                                <div class="moega-dado moega-dado--saida" data-periodo="30d">
+                                    <span class="moega-dado-label">Saiu em 30 dias</span>
+                                    <span class="moega-dado-sub">média 106 t/dia</span>
+                                    <span class="moega-dado-value">3.180 t</span>
+                                </div>
+                                <div class="moega-hist">
+                                    <span class="moega-dado-label">Histórico de culturas</span>
+                                    <div class="moega-hist-item" data-desde="7d">
+                                        <span class="moega-hist-data">11/09 · 14h20</span>
+                                        <span class="moega-hist-troca"><i class="legend-dot legend-dot--sorgo"></i>Sorgo → <i class="legend-dot legend-dot--milho"></i>Milho</span>
+                                    </div>
+                                    <div class="moega-hist-item" data-desde="30d">
+                                        <span class="moega-hist-data">30/08 · 07h30</span>
+                                        <span class="moega-hist-troca"><i class="legend-dot legend-dot--milho"></i>Milho → <i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
+                                    </div>
+                                    <span class="moega-hist-vazio" data-vazio-em="turno hoje">Sem troca de cultura no período</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Moega 3 -->
+                        <div class="moega-item moega-item--milho" data-cultura="milho" data-moega-periodo="hoje">
+                            <div class="moega-head">
+                                <span class="moega-name">MOEGA 3</span>
+                                <span class="moega-tipo">Basculante</span>
+                            </div>
+                            <div class="moega-cultura"><i class="legend-dot legend-dot--milho"></i>Milho <b>14%</b></div>
+                            <div class="moega-tank" style="--nivel: 72">
+                                <span class="moega-tank-max">MÁX</span>
+                                <div class="moega-tank-fill"></div>
+                                <div class="moega-tank-num">
+                                    <span class="moega-nivel-pct">72%</span>
+                                    <span class="moega-tons">58 t / 80 t</span>
+                                </div>
+                            </div>
+                            <div class="moega-periodo" role="group" aria-label="Período da moega 3">
+                                <button type="button" class="moega-periodo-btn" data-moega-periodo="turno" aria-pressed="false">Turno</button>
+                                <button type="button" class="moega-periodo-btn is-active" data-moega-periodo="hoje" aria-pressed="true">Hoje</button>
+                                <button type="button" class="moega-periodo-btn" data-moega-periodo="7d" aria-pressed="false">7 dias</button>
+                                <button type="button" class="moega-periodo-btn" data-moega-periodo="30d" aria-pressed="false">30 dias</button>
+                            </div>
+                            <div class="moega-dados">
+                                <div class="moega-dado moega-dado--saida" data-periodo="turno">
+                                    <span class="moega-dado-label">Saiu no turno</span>
+                                    <span class="moega-dado-sub">→ Silo 3 · direto · 4 transf.</span>
+                                    <span class="moega-dado-value">160 t</span>
+                                </div>
+                                <div class="moega-dado moega-dado--saida" data-periodo="hoje">
+                                    <span class="moega-dado-label">Saiu hoje</span>
+                                    <span class="moega-dado-sub">→ Silo 3 · direto · 18h02</span>
+                                    <span class="moega-dado-value">210 t</span>
+                                </div>
+                                <div class="moega-dado moega-dado--saida" data-periodo="7d">
+                                    <span class="moega-dado-label">Saiu em 7 dias</span>
+                                    <span class="moega-dado-sub">média 180 t/dia</span>
+                                    <span class="moega-dado-value">1.260 t</span>
+                                </div>
+                                <div class="moega-dado moega-dado--saida" data-periodo="30d">
+                                    <span class="moega-dado-label">Saiu em 30 dias</span>
+                                    <span class="moega-dado-sub">média 164 t/dia</span>
+                                    <span class="moega-dado-value">4.920 t</span>
+                                </div>
+                                <div class="moega-hist">
+                                    <span class="moega-dado-label">Histórico de culturas</span>
+                                    <div class="moega-hist-item" data-desde="7d">
+                                        <span class="moega-hist-data">08/09 · 07h15</span>
+                                        <span class="moega-hist-troca"><i class="legend-dot legend-dot--soja"></i>Soja → <i class="legend-dot legend-dot--milho"></i>Milho</span>
+                                    </div>
+                                    <div class="moega-hist-item" data-desde="30d">
+                                        <span class="moega-hist-data">27/08 · 16h00</span>
+                                        <span class="moega-hist-troca"><i class="legend-dot legend-dot--milho"></i>Milho → <i class="legend-dot legend-dot--soja"></i>Soja</span>
+                                    </div>
+                                    <div class="moega-hist-item" data-desde="30d">
+                                        <span class="moega-hist-data">19/08 · 09h10</span>
+                                        <span class="moega-hist-troca"><i class="legend-dot legend-dot--sorgo"></i>Sorgo → <i class="legend-dot legend-dot--milho"></i>Milho</span>
+                                    </div>
+                                    <span class="moega-hist-vazio" data-vazio-em="turno hoje">Sem troca de cultura no período</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Moega 4 -->
+                        <div class="moega-item moega-item--sorgo" data-cultura="sorgo" data-moega-periodo="hoje">
+                            <div class="moega-head">
+                                <span class="moega-name">MOEGA 4</span>
+                                <span class="moega-tipo">Basculante</span>
+                            </div>
+                            <div class="moega-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo <b>15%</b></div>
+                            <div class="moega-tank" style="--nivel: 45">
+                                <span class="moega-tank-max">MÁX</span>
+                                <div class="moega-tank-fill"></div>
+                                <div class="moega-tank-num">
+                                    <span class="moega-nivel-pct">45%</span>
+                                    <span class="moega-tons">36 t / 80 t</span>
+                                </div>
+                            </div>
+                            <div class="moega-periodo" role="group" aria-label="Período da moega 4">
+                                <button type="button" class="moega-periodo-btn" data-moega-periodo="turno" aria-pressed="false">Turno</button>
+                                <button type="button" class="moega-periodo-btn is-active" data-moega-periodo="hoje" aria-pressed="true">Hoje</button>
+                                <button type="button" class="moega-periodo-btn" data-moega-periodo="7d" aria-pressed="false">7 dias</button>
+                                <button type="button" class="moega-periodo-btn" data-moega-periodo="30d" aria-pressed="false">30 dias</button>
+                            </div>
+                            <div class="moega-dados">
+                                <div class="moega-dado moega-dado--saida" data-periodo="turno">
+                                    <span class="moega-dado-label">Saiu no turno</span>
+                                    <span class="moega-dado-sub">→ Secador 2 · 2 transf.</span>
+                                    <span class="moega-dado-value">70 t</span>
+                                </div>
+                                <div class="moega-dado moega-dado--saida" data-periodo="hoje">
+                                    <span class="moega-dado-label">Saiu hoje</span>
+                                    <span class="moega-dado-sub">→ Secador 2 · 17h35</span>
+                                    <span class="moega-dado-value">88 t</span>
+                                </div>
+                                <div class="moega-dado moega-dado--saida" data-periodo="7d">
+                                    <span class="moega-dado-label">Saiu em 7 dias</span>
+                                    <span class="moega-dado-sub">média 80 t/dia</span>
+                                    <span class="moega-dado-value">560 t</span>
+                                </div>
+                                <div class="moega-dado moega-dado--saida" data-periodo="30d">
+                                    <span class="moega-dado-label">Saiu em 30 dias</span>
+                                    <span class="moega-dado-sub">média 71 t/dia</span>
+                                    <span class="moega-dado-value">2.140 t</span>
+                                </div>
+                                <div class="moega-hist">
+                                    <span class="moega-dado-label">Histórico de culturas</span>
+                                    <div class="moega-hist-item" data-desde="7d">
+                                        <span class="moega-hist-data">13/09 · 06h10</span>
+                                        <span class="moega-hist-troca"><i class="legend-dot legend-dot--milho"></i>Milho → <i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
+                                    </div>
+                                    <div class="moega-hist-item" data-desde="30d">
+                                        <span class="moega-hist-data">05/09 · 12h40</span>
+                                        <span class="moega-hist-troca"><i class="legend-dot legend-dot--sorgo"></i>Sorgo → <i class="legend-dot legend-dot--milho"></i>Milho</span>
+                                    </div>
+                                    <span class="moega-hist-vazio" data-vazio-em="turno hoje">Sem troca de cultura no período</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Moega 5 -->
+                        <div class="moega-item moega-item--sorgo" data-cultura="sorgo" data-moega-periodo="hoje">
+                            <div class="moega-head">
+                                <span class="moega-name">MOEGA 5</span>
+                                <span class="moega-tipo">Basculante</span>
+                            </div>
+                            <div class="moega-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo <b>13%</b></div>
+                            <div class="moega-tank" style="--nivel: 88">
+                                <span class="moega-tank-max">MÁX</span>
+                                <div class="moega-tank-fill"></div>
+                                <div class="moega-tank-num">
+                                    <span class="moega-nivel-pct">88%</span>
+                                    <span class="moega-tons">70 t / 80 t</span>
+                                </div>
+                            </div>
+                            <div class="moega-periodo" role="group" aria-label="Período da moega 5">
+                                <button type="button" class="moega-periodo-btn" data-moega-periodo="turno" aria-pressed="false">Turno</button>
+                                <button type="button" class="moega-periodo-btn is-active" data-moega-periodo="hoje" aria-pressed="true">Hoje</button>
+                                <button type="button" class="moega-periodo-btn" data-moega-periodo="7d" aria-pressed="false">7 dias</button>
+                                <button type="button" class="moega-periodo-btn" data-moega-periodo="30d" aria-pressed="false">30 dias</button>
+                            </div>
+                            <div class="moega-dados">
+                                <div class="moega-dado moega-dado--saida" data-periodo="turno">
+                                    <span class="moega-dado-label">Saiu no turno</span>
+                                    <span class="moega-dado-sub">→ Silo 5 · direto · 1 transf.</span>
+                                    <span class="moega-dado-value">48 t</span>
+                                </div>
+                                <div class="moega-dado moega-dado--saida" data-periodo="hoje">
+                                    <span class="moega-dado-label">Saiu hoje</span>
+                                    <span class="moega-dado-sub">→ Silo 5 · direto · 16h10</span>
+                                    <span class="moega-dado-value">64 t</span>
+                                </div>
+                                <div class="moega-dado moega-dado--saida" data-periodo="7d">
+                                    <span class="moega-dado-label">Saiu em 7 dias</span>
+                                    <span class="moega-dado-sub">média 61 t/dia</span>
+                                    <span class="moega-dado-value">430 t</span>
+                                </div>
+                                <div class="moega-dado moega-dado--saida" data-periodo="30d">
+                                    <span class="moega-dado-label">Saiu em 30 dias</span>
+                                    <span class="moega-dado-sub">média 57 t/dia</span>
+                                    <span class="moega-dado-value">1.720 t</span>
+                                </div>
+                                <div class="moega-hist">
+                                    <span class="moega-dado-label">Histórico de culturas</span>
+                                    <div class="moega-hist-item" data-desde="7d">
+                                        <span class="moega-hist-data">12/09 · 13h50</span>
+                                        <span class="moega-hist-troca"><i class="legend-dot legend-dot--milho"></i>Milho → <i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
+                                    </div>
+                                    <div class="moega-hist-item" data-desde="30d">
+                                        <span class="moega-hist-data">01/09 · 08h20</span>
+                                        <span class="moega-hist-troca"><i class="legend-dot legend-dot--trigo"></i>Trigo → <i class="legend-dot legend-dot--milho"></i>Milho</span>
+                                    </div>
+                                    <div class="moega-hist-item" data-desde="30d">
+                                        <span class="moega-hist-data">22/08 · 15h30</span>
+                                        <span class="moega-hist-troca"><i class="legend-dot legend-dot--sorgo"></i>Sorgo → <i class="legend-dot legend-dot--trigo"></i>Trigo</span>
+                                    </div>
+                                    <span class="moega-hist-vazio" data-vazio-em="turno hoje">Sem troca de cultura no período</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Moega 6 -->
+                        <div class="moega-item moega-item--vazia" data-cultura="vazia" data-moega-periodo="hoje">
+                            <div class="moega-head">
+                                <span class="moega-name">MOEGA 6</span>
+                                <span class="moega-tipo">Basculante</span>
+                            </div>
+                            <div class="moega-cultura"><i class="legend-dot legend-dot--vazia"></i>Vazia</div>
+                            <div class="moega-tank" style="--nivel: 0">
+                                <span class="moega-tank-max">MÁX</span>
+                                <div class="moega-tank-fill"></div>
+                                <div class="moega-tank-num">
+                                    <span class="moega-nivel-pct">0%</span>
+                                    <span class="moega-tons">0 t / 80 t</span>
+                                </div>
+                            </div>
+                            <div class="moega-periodo" role="group" aria-label="Período da moega 6">
+                                <button type="button" class="moega-periodo-btn" data-moega-periodo="turno" aria-pressed="false">Turno</button>
+                                <button type="button" class="moega-periodo-btn is-active" data-moega-periodo="hoje" aria-pressed="true">Hoje</button>
+                                <button type="button" class="moega-periodo-btn" data-moega-periodo="7d" aria-pressed="false">7 dias</button>
+                                <button type="button" class="moega-periodo-btn" data-moega-periodo="30d" aria-pressed="false">30 dias</button>
+                            </div>
+                            <div class="moega-dados">
+                                <div class="moega-dado moega-dado--saida" data-periodo="turno">
+                                    <span class="moega-dado-label">Saiu no turno</span>
+                                    <span class="moega-dado-sub">→ Silo 2 · 1 transf.</span>
+                                    <span class="moega-dado-value">52 t</span>
+                                </div>
+                                <div class="moega-dado moega-dado--saida" data-periodo="hoje">
+                                    <span class="moega-dado-label">Saiu hoje</span>
+                                    <span class="moega-dado-sub">→ Silo 2 · 12h20</span>
+                                    <span class="moega-dado-value">52 t</span>
+                                </div>
+                                <div class="moega-dado moega-dado--saida" data-periodo="7d">
+                                    <span class="moega-dado-label">Saiu em 7 dias</span>
+                                    <span class="moega-dado-sub">média 54 t/dia</span>
+                                    <span class="moega-dado-value">380 t</span>
+                                </div>
+                                <div class="moega-dado moega-dado--saida" data-periodo="30d">
+                                    <span class="moega-dado-label">Saiu em 30 dias</span>
+                                    <span class="moega-dado-sub">média 52 t/dia</span>
+                                    <span class="moega-dado-value">1.560 t</span>
+                                </div>
+                                <div class="moega-hist">
+                                    <span class="moega-dado-label">Histórico de culturas</span>
+                                    <div class="moega-hist-item" data-desde="turno">
+                                        <span class="moega-hist-data">14/09 · 12h20</span>
+                                        <span class="moega-hist-troca"><i class="legend-dot legend-dot--milho"></i>Milho → <i class="legend-dot legend-dot--vazia"></i>Vazia</span>
+                                    </div>
+                                    <div class="moega-hist-item" data-desde="7d">
+                                        <span class="moega-hist-data">10/09 · 08h00</span>
+                                        <span class="moega-hist-troca"><i class="legend-dot legend-dot--sorgo"></i>Sorgo → <i class="legend-dot legend-dot--milho"></i>Milho</span>
+                                    </div>
+                                    <div class="moega-hist-item" data-desde="30d">
+                                        <span class="moega-hist-data">29/08 · 06h50</span>
+                                        <span class="moega-hist-troca"><i class="legend-dot legend-dot--milho"></i>Milho → <i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="content-section">
-                    <h3>OCUPAÇÃO DAS MOEGAS</h3>
-                    <div class="moega-grid">
-                        <div class="moega-item moega-item--alerta">
-                            <span class="moega-name"><i class="legend-dot legend-dot--milho"></i>Moega 1 · Milho</span>
-                            <span class="moega-tons">110,4 <small>/ 120 t</small></span>
-                            <div class="progress-label">92<span class="pct-sign">%</span></div>
-                            <div class="moega-stats">
-                                <span class="moega-stat"><span class="moega-stat-label">Cargas</span><span class="moega-stat-value">24</span></span>
-                                <span class="moega-stat"><span class="moega-stat-label">Umidade</span><span class="moega-stat-value">12,6%</span></span>
-                                <span class="moega-stat"><span class="moega-stat-label">Impureza</span><span class="moega-stat-value">0,9%</span></span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress progress--milho" style="width: 92%"></div>
-                            </div>
+                <div class="content-section content-section--auto moegas-alertas">
+                    <div class="section-head">
+                        <div class="moegas-alertas-titulo">
+                            <h3>ALERTAS DE SENSORES</h3>
+                            <span class="moegas-alertas-sub">Nível de capacidade, tombamento, sondas de umidade e transferência — somente críticos</span>
                         </div>
-                        <div class="moega-item">
-                            <span class="moega-name"><i class="legend-dot legend-dot--milho"></i>Moega 2 · Milho</span>
-                            <span class="moega-tons">68 <small>/ 100 t</small></span>
-                            <div class="progress-label">68<span class="pct-sign">%</span></div>
-                            <div class="moega-stats">
-                                <span class="moega-stat"><span class="moega-stat-label">Cargas</span><span class="moega-stat-value">15</span></span>
-                                <span class="moega-stat"><span class="moega-stat-label">Umidade</span><span class="moega-stat-value">12,4%</span></span>
-                                <span class="moega-stat"><span class="moega-stat-label">Impureza</span><span class="moega-stat-value">1,1%</span></span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress progress--milho" style="width: 68%"></div>
-                            </div>
+                        <span class="moegas-alertas-badge">2 CRÍTICOS</span>
+                    </div>
+                    <div class="moega-alert-list">
+                        <div class="moega-alert">
+                            <svg class="moega-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                            <span class="moega-alert-sev">Crítico</span>
+                            <span class="moega-alert-moega">MOEGA 2</span>
+                            <span class="moega-alert-txt"><b>Falha de tombamento</b> — plataforma não retornou à posição após o ciclo</span>
+                            <span class="moega-alert-hora">18h12</span>
+                            <span class="moega-alert-acao">descarga interrompida</span>
                         </div>
-                        <div class="moega-item">
-                            <span class="moega-name"><i class="legend-dot legend-dot--sorgo"></i>Moega 3 · Sorgo</span>
-                            <span class="moega-tons">102 <small>/ 120 t</small></span>
-                            <div class="progress-label">85<span class="pct-sign">%</span></div>
-                            <div class="moega-stats">
-                                <span class="moega-stat"><span class="moega-stat-label">Cargas</span><span class="moega-stat-value">21</span></span>
-                                <span class="moega-stat"><span class="moega-stat-label">Umidade</span><span class="moega-stat-value">12,1%</span></span>
-                                <span class="moega-stat"><span class="moega-stat-label">Impureza</span><span class="moega-stat-value">0,7%</span></span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress progress--sorgo" style="width: 85%"></div>
-                            </div>
-                        </div>
-                        <div class="moega-item">
-                            <span class="moega-name"><i class="legend-dot legend-dot--trigo"></i>Moega 4 · Trigo</span>
-                            <span class="moega-tons">60 <small>/ 80 t</small></span>
-                            <div class="progress-label">75<span class="pct-sign">%</span></div>
-                            <div class="moega-stats">
-                                <span class="moega-stat"><span class="moega-stat-label">Cargas</span><span class="moega-stat-value">13</span></span>
-                                <span class="moega-stat"><span class="moega-stat-label">Umidade</span><span class="moega-stat-value">11,9%</span></span>
-                                <span class="moega-stat"><span class="moega-stat-label">Impureza</span><span class="moega-stat-value">0,6%</span></span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress progress--trigo" style="width: 75%"></div>
-                            </div>
-                        </div>
-                        <div class="moega-item">
-                            <span class="moega-name"><i class="legend-dot legend-dot--sorgo"></i>Moega 5 · Sorgo</span>
-                            <span class="moega-tons">58 <small>/ 100 t</small></span>
-                            <div class="progress-label">58<span class="pct-sign">%</span></div>
-                            <div class="moega-stats">
-                                <span class="moega-stat"><span class="moega-stat-label">Cargas</span><span class="moega-stat-value">12</span></span>
-                                <span class="moega-stat"><span class="moega-stat-label">Umidade</span><span class="moega-stat-value">12,3%</span></span>
-                                <span class="moega-stat"><span class="moega-stat-label">Impureza</span><span class="moega-stat-value">0,8%</span></span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress progress--sorgo" style="width: 58%"></div>
-                            </div>
-                        </div>
-                        <div class="moega-item">
-                            <span class="moega-name"><i class="legend-dot legend-dot--soja"></i>Moega 6 · Soja</span>
-                            <span class="moega-tons">35,2 <small>/ 80 t</small></span>
-                            <div class="progress-label">44<span class="pct-sign">%</span></div>
-                            <div class="moega-stats">
-                                <span class="moega-stat"><span class="moega-stat-label">Cargas</span><span class="moega-stat-value">8</span></span>
-                                <span class="moega-stat"><span class="moega-stat-label">Umidade</span><span class="moega-stat-value">13,0%</span></span>
-                                <span class="moega-stat"><span class="moega-stat-label">Impureza</span><span class="moega-stat-value">1,2%</span></span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress progress--soja" style="width: 44%"></div>
-                            </div>
+                        <div class="moega-alert">
+                            <svg class="moega-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                            <span class="moega-alert-sev">Crítico</span>
+                            <span class="moega-alert-moega">MOEGA 1</span>
+                            <span class="moega-alert-txt"><b>Capacidade máxima</b> — sensor de nível em 98% (118 t / 120 t)</span>
+                            <span class="moega-alert-hora">18h09</span>
+                            <span class="moega-alert-acao">descargas bloqueadas</span>
                         </div>
                     </div>
                 </div>
             </section>
 
             <!-- Screen 3: Secagem -->
+            <!-- Cada linha e lida da esquerda para a direita como o processo: a fornalha
+                 gera o ar quente, o secador recebe massa/ar/umidade e o grafico conta o
+                 turno inteiro com o marcador AGORA separando o que ja aconteceu do que falta. -->
             <section class="screen" id="screen-3">
                 <div class="screen-header">
                     <div class="screen-badge">05</div>
@@ -1303,83 +1607,93 @@
                     </div>
                 </div>
 
-                <div class="kpi-grid">
-                    <div class="kpi-card">
-                        <div class="kpi-label">TEMP. FORNALHA</div>
-                        <div class="kpi-value">148°C</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">TEMP. SETADA</div>
-                        <div class="kpi-value">92°C</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">UMIDADE ENTRADA</div>
-                        <div class="kpi-value">18,4%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">UMIDADE SAÍDA</div>
-                        <div class="kpi-value">11,2%</div>
-                    </div>
-                </div>
-
                 <div class="content-section">
                     <div class="section-head">
                         <h3>SECADORES · FASES DO TURNO 07h–17h · TEMPERATURA x UMIDADE</h3>
                         <div class="fase-legenda">
                             <span class="fase-legenda-item fase-legenda-item--carga">Carga</span>
-                            <span class="fase-legenda-item fase-legenda-item--aquec">Aquecimento</span>
-                            <span class="fase-legenda-item fase-legenda-item--secagem">Secagem</span>
-                            <span class="fase-legenda-item fase-legenda-item--resfr">Resfriamento</span>
+                            <span class="fase-legenda-item fase-legenda-item--secagem">Secando</span>
+                            <span class="fase-legenda-item fase-legenda-item--descarga">Descarga</span>
                         </div>
                         <button class="btn-table-toggle" type="button" data-print title="Gerar print desta tela">PRINT</button>
                     </div>
 
-                    <!-- TIPO: os dois modos de secagem ainda dependem da definicao da reuniao da Suellen -->
                     <div class="secador-list">
                         <div class="secador">
                             <div class="secador-head">
                                 <span class="secador-nome"><i class="secador-dot is-operando"></i>SECADOR 1</span>
-                                <span class="secador-tipo">Fluxo contínuo · Operando · 2 ciclos no turno</span>
+                                <span class="secador-cultura secador-cultura--milho">Milho</span>
+                                <span class="secador-tipo">Fluxo contínuo · ciclo 2 de 2</span>
+                                <span class="secador-estado">
+                                    <span class="secador-estado-label">O secador está</span>
+                                    <b class="secador-estado-pill is-secando">Secando</b>
+                                </span>
                             </div>
                             <div class="secador-body">
-                                <div class="secador-chips">
-                                    <div class="secador-chip">
-                                        <span class="secador-chip-label">TEMP SECADOR</span>
-                                        <span class="secador-chip-value">110°C</span>
+                                <div class="secador-fornalha">
+                                    <span class="fornalha-nome">Fornalha 01</span>
+                                    <div class="fornalha-temp">
+                                        <b class="fornalha-valor">148<small>°C</small></b>
+                                        <span class="fornalha-delta is-ok">-2°</span>
                                     </div>
+                                    <span class="fornalha-ref">atual · setada <b>150°C</b></span>
+                                    <div class="fornalha-faixa" aria-hidden="true">
+                                        <span class="fornalha-faixa-min">120°</span>
+                                        <span class="fornalha-faixa-max">180°</span>
+                                        <div class="fornalha-track"><i class="fornalha-fill" style="width: 46.7%"></i><i class="fornalha-setada" style="left: 50%"></i></div>
+                                    </div>
+                                    <div class="fornalha-dados">
+                                        <div class="fornalha-dado"><span class="fornalha-dado-label">Acesa desde</span><span class="fornalha-dado-valor">06h40</span></div>
+                                        <div class="fornalha-dado"><span class="fornalha-dado-label">Cavaco</span><span class="fornalha-dado-valor">1,2 t/h</span></div>
+                                    </div>
+                                    <span class="kpi-flag kpi-flag--ok">Dentro da faixa</span>
+                                </div>
+                                <div class="secador-ar" aria-hidden="true"><i></i><span>Ar quente</span></div>
+                                <div class="secador-chips">
                                     <div class="secador-chip">
                                         <span class="secador-chip-label">TEMP MASSA</span>
                                         <span class="secador-chip-value">92°C</span>
+                                        <span class="secador-chip-sub">setada 92°C</span>
                                     </div>
                                     <div class="secador-chip">
-                                        <span class="secador-chip-label">TEMP SAÍDA</span>
-                                        <span class="secador-chip-value">48°C</span>
+                                        <span class="secador-chip-label">AR DO SECADOR</span>
+                                        <span class="secador-chip-value">110°C</span>
+                                        <span class="secador-chip-sub">saída 48°C</span>
                                     </div>
                                     <div class="secador-chip">
-                                        <span class="secador-chip-label">CULTURA</span>
-                                        <span class="secador-chip-value">Milho</span>
+                                        <span class="secador-chip-label">NA FASE HÁ</span>
+                                        <span class="secador-chip-value">1h45</span>
                                     </div>
                                     <div class="secador-chip">
-                                        <span class="secador-chip-label">FASE ATUAL</span>
-                                        <span class="secador-chip-value">Secagem</span>
+                                        <span class="secador-chip-label">PRÓXIMA</span>
+                                        <span class="secador-chip-value">Descarga ~15h20</span>
+                                    </div>
+                                    <div class="secador-chip">
+                                        <span class="secador-chip-label">UMIDADE DA MASSA</span>
+                                        <span class="secador-chip-value">18,4% → 11,2%</span>
+                                        <span class="secador-chip-sub">entrada → saída</span>
                                     </div>
                                 </div>
                                 <div class="secador-chart">
                                     <div class="secador-plot">
                                         <div class="secador-fases" aria-hidden="true">
-                                            <span class="secador-fase secador-fase--aquec" style="left: 0%; width: 10%"><b>AQUECIMENTO</b></span>
-                                            <span class="secador-fase secador-fase--secagem" style="left: 10%; width: 35%"><b>SECAGEM</b></span>
-                                            <span class="secador-fase is-curta secador-fase--resfr" style="left: 45%; width: 5%"><b>RESFR.</b></span>
-                                            <span class="secador-fase is-curta secador-fase--carga" style="left: 50%; width: 5%"><b>CARGA</b></span>
-                                            <span class="secador-fase secador-fase--secagem" style="left: 55%; width: 45%"><b>SECAGEM</b></span>
+                                            <span class="secador-fase secador-fase--carga" style="left: 0%; width: 6.7%"><b>CARGA</b></span>
+                                            <span class="secador-fase secador-fase--secagem" style="left: 6.7%; width: 43.3%"><b>SECANDO</b></span>
+                                            <span class="secador-fase secador-fase--descarga" style="left: 50%; width: 6.7%"><b>DESCARGA</b></span>
+                                            <span class="secador-fase secador-fase--carga" style="left: 56.7%; width: 5%"><b>CARGA</b></span>
+                                            <span class="secador-fase secador-fase--secagem" style="left: 61.7%; width: 16.6%"><b>SECANDO</b></span>
                                         </div>
                                         <div class="secador-grid" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-                                        <svg class="secador-svg" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label="Secador 1: turno das 07h às 17h em duas secagens de milho. Aquecimento até 08h, secagem até 11h30 com a massa em 92 graus e a umidade caindo de 18,4 para 11,2 por cento, resfriamento e carga entre 11h30 e 12h30, e a segunda secagem até 17h fechando em 11,1 por cento">
-                                            <polyline class="secador-linha secador-linha--temp" points="0,100 15,62 30,27 45,17 60,13 75,12 90,13 105,13 120,15 135,20 150,80 165,70 180,23 195,15 210,13 225,12 240,13 255,13 270,13 285,12 300,13"></polyline>
-                                            <polyline class="secador-linha secador-linha--umi" points="0,16 15,20 30,28 45,40 60,52 75,62 90,71 105,78 120,83 135,86 150,88 165,14 180,30 195,44 210,57 225,68 240,76 255,82 270,86 285,88 300,89"></polyline>
+                                        <svg class="secador-svg" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label="Secador 1: turno das 07h às 17h em duas secagens de milho. Carga até 07h40, secagem até 12h com a massa em 92 graus (setada 92) e a umidade caindo de 18,4 para 11,2 por cento, descarga e nova carga até 13h10, e a segunda secagem em curso às 14h50 com 92 graus e 11,2 por cento">
+                                            <line class="secador-setada-linha" x1="0" y1="13" x2="300" y2="13"></line>
+                                            <polyline class="secador-linha secador-linha--temp" points="0,96 8,70 16,42 22,22 30,14 45,13 60,12 75,13 90,13 105,13 120,14 135,14 150,15 160,16 170,42 178,30 186,18 195,14 210,13 225,13 235,13"></polyline>
+                                            <polyline class="secador-linha secador-linha--umi" points="0,95 8,60 16,28 22,14 30,12 40,14 50,22 60,32 75,46 90,58 105,68 120,76 135,82 150,86 160,87 170,88 178,60 186,22 195,14 205,20 215,40 225,62 235,88"></polyline>
                                         </svg>
-                                        <span class="serie-tag serie-tag--temp" style="top: 13%">TEMP<b>92°C</b></span>
-                                        <span class="serie-tag serie-tag--umi" style="top: 89%">UMI<b>11,1%</b></span>
+                                        <span class="secador-setada-tag" style="top: 13%">setada 92°C</span>
+                                        <div class="secador-futuro" aria-hidden="true" style="left: 78.3%"></div>
+                                        <div class="secador-agora" style="left: 78.3%"><span class="secador-agora-label">Agora <b>14h50</b><small>restante do turno</small></span></div>
+                                        <span class="serie-tag serie-tag--temp" style="left: 78.3%; top: 24%">TEMP<b>92°C</b></span>
+                                        <span class="serie-tag serie-tag--umi" style="left: 78.3%; top: 88%">UMI<b>11,2%</b></span>
                                     </div>
                                     <div class="secador-horas">
                                         <span>07h</span>
@@ -1401,50 +1715,79 @@
                         <div class="secador">
                             <div class="secador-head">
                                 <span class="secador-nome"><i class="secador-dot is-operando"></i>SECADOR 2</span>
-                                <span class="secador-tipo">Intermitente · Operando · 2 ciclos no turno</span>
+                                <span class="secador-cultura secador-cultura--sorgo">Sorgo</span>
+                                <span class="secador-tipo">Intermitente · ciclo 2 de 2</span>
+                                <span class="secador-estado">
+                                    <span class="secador-estado-label">O secador está</span>
+                                    <b class="secador-estado-pill is-descarregando">Descarregando</b>
+                                </span>
                             </div>
                             <div class="secador-body">
-                                <div class="secador-chips">
-                                    <div class="secador-chip">
-                                        <span class="secador-chip-label">TEMP SECADOR</span>
-                                        <span class="secador-chip-value">98°C</span>
+                                <div class="secador-fornalha">
+                                    <span class="fornalha-nome">Fornalha 02</span>
+                                    <div class="fornalha-temp">
+                                        <b class="fornalha-valor">138<small>°C</small></b>
+                                        <span class="fornalha-delta is-atencao">-7°</span>
                                     </div>
+                                    <span class="fornalha-ref">atual · setada <b>145°C</b></span>
+                                    <div class="fornalha-faixa" aria-hidden="true">
+                                        <span class="fornalha-faixa-min">120°</span>
+                                        <span class="fornalha-faixa-max">180°</span>
+                                        <div class="fornalha-track"><i class="fornalha-fill" style="width: 30%"></i><i class="fornalha-setada" style="left: 41.7%"></i></div>
+                                    </div>
+                                    <div class="fornalha-dados">
+                                        <div class="fornalha-dado"><span class="fornalha-dado-label">Acesa desde</span><span class="fornalha-dado-valor">06h25</span></div>
+                                        <div class="fornalha-dado"><span class="fornalha-dado-label">Cavaco</span><span class="fornalha-dado-valor">0,9 t/h</span></div>
+                                    </div>
+                                    <span class="kpi-flag kpi-flag--atencao">Abaixo da setada</span>
+                                </div>
+                                <div class="secador-ar" aria-hidden="true"><i></i><span>Ar quente</span></div>
+                                <div class="secador-chips">
                                     <div class="secador-chip">
                                         <span class="secador-chip-label">TEMP MASSA</span>
                                         <span class="secador-chip-value">83°C</span>
+                                        <span class="secador-chip-sub">setada 85°C</span>
                                     </div>
                                     <div class="secador-chip">
-                                        <span class="secador-chip-label">TEMP SAÍDA</span>
-                                        <span class="secador-chip-value">45°C</span>
+                                        <span class="secador-chip-label">AR DO SECADOR</span>
+                                        <span class="secador-chip-value">98°C</span>
+                                        <span class="secador-chip-sub">saída 45°C</span>
                                     </div>
                                     <div class="secador-chip">
-                                        <span class="secador-chip-label">CULTURA</span>
-                                        <span class="secador-chip-value">Sorgo</span>
+                                        <span class="secador-chip-label">NA FASE HÁ</span>
+                                        <span class="secador-chip-value">20 min</span>
                                     </div>
                                     <div class="secador-chip">
-                                        <span class="secador-chip-label">FASE ATUAL</span>
-                                        <span class="secador-chip-value">Resfriamento</span>
+                                        <span class="secador-chip-label">PRÓXIMA</span>
+                                        <span class="secador-chip-value">Carga ~15h10</span>
+                                    </div>
+                                    <div class="secador-chip">
+                                        <span class="secador-chip-label">UMIDADE DA MASSA</span>
+                                        <span class="secador-chip-value">18,8% → 12,9%</span>
+                                        <span class="secador-chip-sub">entrada → saída</span>
                                     </div>
                                 </div>
                                 <div class="secador-chart">
                                     <div class="secador-plot">
                                         <div class="secador-fases" aria-hidden="true">
-                                            <span class="secador-fase is-curta secador-fase--carga" style="left: 0%; width: 5%"><b>CARGA</b></span>
-                                            <span class="secador-fase is-curta secador-fase--aquec" style="left: 5%; width: 5%"><b>AQUEC.</b></span>
-                                            <span class="secador-fase secador-fase--secagem" style="left: 10%; width: 30%"><b>SECAGEM</b></span>
-                                            <span class="secador-fase is-curta secador-fase--resfr" style="left: 40%; width: 5%"><b>RESFR.</b></span>
-                                            <span class="secador-fase is-curta secador-fase--carga" style="left: 45%; width: 5%"><b>CARGA</b></span>
-                                            <span class="secador-fase is-curta secador-fase--aquec" style="left: 50%; width: 5%"><b>AQUEC.</b></span>
-                                            <span class="secador-fase secador-fase--secagem" style="left: 55%; width: 35%"><b>SECAGEM</b></span>
-                                            <span class="secador-fase secador-fase--resfr" style="left: 90%; width: 10%"><b>RESFRIAMENTO</b></span>
+                                            <span class="secador-fase secador-fase--carga" style="left: 0%; width: 5.8%"><b>CARGA</b></span>
+                                            <span class="secador-fase secador-fase--secagem" style="left: 5.8%; width: 43.4%"><b>SECANDO</b></span>
+                                            <span class="secador-fase secador-fase--descarga" style="left: 49.2%; width: 5.8%"><b>DESCARGA</b></span>
+                                            <span class="secador-fase secador-fase--carga" style="left: 55%; width: 5%"><b>CARGA</b></span>
+                                            <span class="secador-fase secador-fase--secagem" style="left: 60%; width: 15%"><b>SECANDO</b></span>
+                                            <span class="secador-fase is-curta secador-fase--descarga" style="left: 75%; width: 3.3%"><b>DESCARGA</b></span>
                                         </div>
                                         <div class="secador-grid" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-                                        <svg class="secador-svg" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label="Secador 2: turno das 07h às 17h em dois ciclos intermitentes de sorgo. Carga e aquecimento até 08h, secagem até 11h com a massa em 85 graus, resfriamento e nova carga até 12h30, segunda secagem até 16h e resfriamento final até 17h, com a umidade caindo de 18,8 para 12,9 por cento">
-                                            <polyline class="secador-linha secador-linha--temp" points="0,97 15,92 30,50 45,33 60,27 75,25 90,27 105,27 120,28 135,70 150,83 165,60 180,30 195,27 210,25 225,27 240,25 255,27 270,28 285,63 300,90"></polyline>
-                                            <polyline class="secador-linha secador-linha--umi" points="0,12 15,12 30,18 45,28 60,38 75,47 90,55 105,61 120,66 135,69 150,11 165,14 180,26 195,38 210,48 225,56 240,62 255,66 270,69 285,71 300,71"></polyline>
+                                        <svg class="secador-svg" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label="Secador 2: turno das 07h às 17h em dois ciclos intermitentes de sorgo. Carga até 07h35, secagem até 11h55 com a massa em 83 graus (setada 85), descarga e nova carga até 13h, segunda secagem até 14h30 e descarga em curso às 14h50, com a umidade caindo de 18,8 para 12,9 por cento">
+                                            <line class="secador-setada-linha" x1="0" y1="25" x2="300" y2="25"></line>
+                                            <polyline class="secador-linha secador-linha--temp" points="0,97 8,80 16,50 24,32 32,27 45,26 60,27 75,27 90,26 105,27 120,27 135,28 148,30 156,40 166,50 175,32 185,27 200,26 215,27 225,27 235,28"></polyline>
+                                            <polyline class="secador-linha secador-linha--umi" points="0,96 8,55 16,22 24,12 32,11 45,14 60,24 75,36 90,46 105,55 120,62 135,68 148,72 156,72 166,14 175,12 185,20 200,36 215,52 225,64 235,72"></polyline>
                                         </svg>
-                                        <span class="serie-tag serie-tag--temp" style="top: 90%">TEMP<b>46°C</b></span>
-                                        <span class="serie-tag serie-tag--umi" style="top: 71%">UMI<b>12,9%</b></span>
+                                        <span class="secador-setada-tag" style="top: 25%">setada 85°C</span>
+                                        <div class="secador-futuro" aria-hidden="true" style="left: 78.3%"></div>
+                                        <div class="secador-agora" style="left: 78.3%"><span class="secador-agora-label">Agora <b>14h50</b><small>restante do turno</small></span></div>
+                                        <span class="serie-tag serie-tag--temp" style="left: 78.3%; top: 28%">TEMP<b>83°C</b></span>
+                                        <span class="serie-tag serie-tag--umi" style="left: 78.3%; top: 72%">UMI<b>12,9%</b></span>
                                     </div>
                                     <div class="secador-horas">
                                         <span>07h</span>
