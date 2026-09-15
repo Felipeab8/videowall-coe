@@ -718,6 +718,17 @@ body.sidebar-collapsed .sidebar-reveal {
     letter-spacing: 0;
 }
 
+/* Contagem de caminhões em destaque, quase no peso do valor principal */
+.kpi-value-ref--destaque {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.1;
+    margin-left: 0.75rem;
+    padding-left: 1.375rem;
+    border-left: 1px solid var(--card-border);
+}
+
 .kpi-value-pct {
     display: inline-block;
     margin-left: 0.5rem;
@@ -3188,6 +3199,83 @@ body.edit-mode .header-controls .btn-alertas.active {
     opacity: 0.92;
 }
 
+/* capacidade nominal em m³, abaixo das toneladas */
+.moega-vol {
+    font-size: 0.56rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    opacity: 0.72;
+}
+
+/* entrada e saída: características fixas do fluxo (não mudam com o período) */
+.moega-fluxo {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.375rem;
+}
+
+.moega-fluxo-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+    padding: 0.375rem 0.5rem;
+    border-radius: 6px;
+    background: var(--row-bg);
+    border: 1px solid var(--card-border);
+}
+
+.moega-fluxo-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3125rem;
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.moega-fluxo-estado {
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 50%;
+    background: var(--ok, #35c46a);
+    flex-shrink: 0;
+}
+
+.moega-fluxo-item.is-parada .moega-fluxo-estado {
+    background: transparent;
+    border: 1.5px dashed var(--faint);
+}
+
+.moega-fluxo-item.is-parada .moega-fluxo-value {
+    color: var(--muted);
+}
+
+.moega-fluxo-sub {
+    font-size: 0.6rem;
+    line-height: 1.25;
+    color: var(--faint);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+}
+
+.moega-fluxo-value {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
 /* moega vazia: número apagado sobre o fundo */
 .moega-item--vazia .moega-tank-num {
     color: var(--faint);
@@ -3277,107 +3365,6 @@ body.theme-light .moega-item--vazia .moega-tank-num {
 
 .moega-dado-value--warn {
     color: var(--warn);
-}
-
-/* ============================================
-   MOEGAS: ALERTAS DE SENSORES (só críticos)
-   ============================================ */
-.moegas-alertas > .section-head {
-    align-items: center;
-}
-
-.moegas-alertas-titulo {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1875rem;
-}
-
-.moegas-alertas-sub {
-    font-size: 0.66rem;
-    color: var(--muted);
-}
-
-.moegas-alertas-badge {
-    font-size: 0.62rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--danger);
-    background: rgba(231, 76, 60, 0.14);
-    border: 1px solid rgba(231, 76, 60, 0.45);
-    border-radius: 999px;
-    padding: 0.3125rem 0.75rem;
-    white-space: nowrap;
-}
-
-.moega-alert-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.moega-alert {
-    display: grid;
-    grid-template-columns: auto auto auto minmax(0, 1fr) auto auto;
-    align-items: center;
-    gap: 0.875rem;
-    padding: 0.5625rem 0.875rem;
-    background: var(--section-bg);
-    border: 1px solid var(--panel-border);
-    border-left: 3px solid var(--danger);
-    border-radius: 10px;
-}
-
-.moega-alert-icon {
-    width: 1rem;
-    height: 1rem;
-    color: var(--danger);
-}
-
-.moega-alert-sev {
-    font-size: 0.56rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--danger);
-    background: rgba(231, 76, 60, 0.14);
-    border-radius: 999px;
-    padding: 0.1875rem 0.5rem;
-}
-
-.moega-alert-moega {
-    font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    color: var(--text);
-    white-space: nowrap;
-}
-
-.moega-alert-txt {
-    font-size: 0.78rem;
-    color: var(--muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.moega-alert-txt b {
-    color: var(--text);
-    font-weight: 700;
-}
-
-.moega-alert-hora {
-    font-size: 0.74rem;
-    font-weight: 700;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-}
-
-.moega-alert-acao {
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: var(--danger);
-    white-space: nowrap;
 }
 
 /* preenchimento na cor do grão (barras de progresso genéricas) */
@@ -4571,201 +4558,8 @@ body.theme-light .kpi-flag--alerta {
     flex: 1 1 auto;
     min-height: 0;
     display: grid;
-    grid-template-columns: 8.25rem auto 8.5rem minmax(0, 1fr);
+    grid-template-columns: 8.5rem minmax(0, 1fr);
     gap: 0.75rem;
-}
-
-/* ---- fornalha: quem gera o ar quente, lida antes do secador ---- */
-.secador-fornalha {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 0.375rem;
-    min-height: 0;
-    padding: 0.625rem 0.75rem;
-    border-radius: 10px;
-    border: 1px solid rgba(231, 76, 60, 0.32);
-    background: linear-gradient(180deg, rgba(231, 76, 60, 0.12) 0%, rgba(231, 76, 60, 0.04) 100%);
-}
-
-.fornalha-nome {
-    font-size: 0.58rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text);
-}
-
-.fornalha-temp {
-    display: flex;
-    align-items: baseline;
-    gap: 0.375rem;
-}
-
-.fornalha-valor {
-    font-size: 1.9rem;
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-}
-
-.fornalha-valor small {
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0;
-    color: var(--muted);
-}
-
-.fornalha-delta {
-    font-size: 0.66rem;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-}
-
-.fornalha-delta.is-ok { color: var(--ok); }
-.fornalha-delta.is-atencao { color: var(--warn); }
-.fornalha-delta.is-alerta { color: var(--danger); }
-
-.fornalha-ref {
-    font-size: 0.55rem;
-    letter-spacing: 0.04em;
-    color: var(--muted);
-}
-
-.fornalha-ref b {
-    color: var(--text);
-}
-
-/* faixa de operacao 120-180: a barra mostra onde a temperatura esta
-   dentro do intervalo e o traco branco marca a setada */
-.fornalha-faixa {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.125rem 0;
-}
-
-.fornalha-faixa-min,
-.fornalha-faixa-max {
-    font-size: 0.5rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    color: var(--faint);
-    font-variant-numeric: tabular-nums;
-}
-
-.fornalha-faixa-max {
-    text-align: right;
-}
-
-.fornalha-track {
-    grid-column: 1 / -1;
-    position: relative;
-    height: 0.4rem;
-    border-radius: 999px;
-    background: var(--row-line);
-    overflow: visible;
-}
-
-.fornalha-fill {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    border-radius: 999px;
-    background: linear-gradient(90deg, var(--warn) 0%, var(--danger) 100%);
-}
-
-.fornalha-setada {
-    position: absolute;
-    top: -0.2rem;
-    bottom: -0.2rem;
-    width: 2px;
-    margin-left: -1px;
-    border-radius: 1px;
-    background: var(--text);
-}
-
-/* os dois dados ficam lado a lado com rotulo em linha unica, para os
-   valores nascerem na mesma altura */
-.fornalha-dados {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 0.5rem;
-    padding-top: 0.375rem;
-    border-top: 1px solid var(--row-line);
-}
-
-.fornalha-dado {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    gap: 1px;
-    min-width: 0;
-}
-
-.fornalha-dado:last-child {
-    text-align: right;
-}
-
-.fornalha-dado-label {
-    font-size: 0.46rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--faint);
-    white-space: nowrap;
-}
-
-.fornalha-dado-valor {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-}
-
-.secador-fornalha .kpi-flag {
-    align-self: flex-start;
-}
-
-/* seta "ar quente" entre a fornalha e o secador */
-.secador-ar {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.25rem;
-    width: 2.25rem;
-}
-
-.secador-ar i {
-    display: block;
-    width: 1.25rem;
-    height: 2px;
-    background: var(--danger);
-    position: relative;
-}
-
-.secador-ar i::after {
-    content: "";
-    position: absolute;
-    right: -1px;
-    top: -3px;
-    border: 4px solid transparent;
-    border-left-color: var(--danger);
-    border-right: 0;
-}
-
-.secador-ar span {
-    font-size: 0.42rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    text-align: center;
-    color: var(--faint);
-    line-height: 1.2;
 }
 
 /* os dados do ciclo (três temperaturas, cultura e início), empilhados como no esboço */
@@ -4811,6 +4605,11 @@ body.theme-light .kpi-flag--alerta {
     letter-spacing: 0.04em;
     color: rgba(255, 255, 255, 0.72);
     font-variant-numeric: tabular-nums;
+}
+
+.secador-chip-sub b {
+    font-weight: 700;
+    color: #fff;
 }
 
 /* área do gráfico: os rótulos de fim de linha ficam ao lado do marcador AGORA,
@@ -4862,22 +4661,30 @@ body.theme-light .kpi-flag--alerta {
     vector-effect: non-scaling-stroke;
 }
 
+.secador-linha--fornalha {
+    stroke: var(--danger);
+}
+
 .secador-linha--temp {
-    stroke: var(--grao-trigo);
+    stroke: var(--warn);
 }
 
 .secador-linha--umi {
     stroke: var(--viz-real);
 }
 
-/* setada da massa: tracejado fino atras das series, com o valor no canto esquerdo */
+/* temperatura desejada (fornalha e secador): tracejado fino na cor da serie,
+   atras das linhas, com o valor no canto esquerdo */
 .secador-setada-linha {
     stroke: var(--muted);
     stroke-width: 1;
     stroke-dasharray: 4 3;
     vector-effect: non-scaling-stroke;
-    opacity: 0.8;
+    opacity: 0.7;
 }
+
+.secador-setada-linha--fornalha { stroke: var(--danger); }
+.secador-setada-linha--temp { stroke: var(--warn); }
 
 .secador-setada-tag {
     position: absolute;
@@ -4891,6 +4698,9 @@ body.theme-light .kpi-flag--alerta {
     white-space: nowrap;
     pointer-events: none;
 }
+
+.secador-setada-tag--fornalha { color: var(--danger); }
+.secador-setada-tag--temp { color: var(--warn); }
 
 /* AGORA: o marcador vertical separa o que ja aconteceu do restante do turno,
    que fica esmaecido */
@@ -5104,8 +4914,12 @@ body.theme-light .secador-fase--descarga {
     font-variant-numeric: tabular-nums;
 }
 
+.serie-tag--fornalha {
+    color: var(--danger);
+}
+
 .serie-tag--temp {
-    color: var(--grao-trigo);
+    color: var(--warn);
 }
 
 .serie-tag--umi {
@@ -5133,12 +4947,18 @@ body.theme-light .secador-fase--descarga {
    Aqui a cor identifica o SECADOR (S1 azul, S2 laranja), nao a
    cultura: a pergunta da tela e "qual secador esta atrasando".
    ============================================ */
+/* tokens na section inteira: os KPIs duplos do topo tambem usam a cor do secador */
+#screen-4,
 .split-grid--prod {
     --sec1: #3b82f6;
     --sec2: #e26a22;
+}
+
+.split-grid--prod {
     grid-template-columns: 1.5fr 1fr;
 }
 
+body.theme-light #screen-4,
 body.theme-light .split-grid--prod {
     --sec1: #2a78d6;
     --sec2: #c8561a;
@@ -5387,7 +5207,7 @@ body.theme-light .forecast-chart--turno .forecast-bar--hora.is-stack {
     min-height: 0;
     display: grid;
     grid-auto-rows: minmax(0, 1fr);
-    gap: 0.875rem;
+    gap: 0.625rem;
 }
 
 .prod-secador {
@@ -5395,9 +5215,10 @@ body.theme-light .forecast-chart--turno .forecast-bar--hora.is-stack {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0.375rem;
+    gap: 0.2rem;
     min-height: 0;
-    padding: 0.875rem 1.125rem;
+    overflow: hidden;
+    padding: 0.625rem 1rem;
     border: 1px solid var(--card-border);
     border-radius: 12px;
     background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
@@ -5416,7 +5237,7 @@ body.theme-light .forecast-chart--turno .forecast-bar--hora.is-stack {
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    margin-bottom: 0.375rem;
+    margin-bottom: 0.125rem;
 }
 
 /* o ponto e a cultura levam a cor do secador; o nome fica em texto */
@@ -5442,7 +5263,7 @@ body.theme-light .forecast-chart--turno .forecast-bar--hora.is-stack {
 }
 
 .prod-secador-volume {
-    font-size: 2rem;
+    font-size: 1.45rem;
     font-weight: 700;
     line-height: 1.1;
     color: var(--text);
@@ -5494,17 +5315,17 @@ body.theme-light .forecast-chart--turno .forecast-bar--hora.is-stack {
 .prod-secador-grade {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.75rem 0.75rem;
-    margin-top: 0.5rem;
-    padding-top: 0.75rem;
+    gap: 0.3rem 0.75rem;
+    margin-top: 0.125rem;
+    padding-top: 0.375rem;
     border-top: 1px solid var(--row-line);
 }
 
 .prod-linha-item {
     display: flex;
     flex-direction: column;
-    gap: 0.125rem;
-    font-size: 0.95rem;
+    gap: 0.0625rem;
+    font-size: 0.85rem;
     font-weight: 700;
     color: var(--text);
     font-variant-numeric: tabular-nums;
@@ -5531,6 +5352,191 @@ body.theme-light .forecast-chart--turno .forecast-bar--hora.is-stack {
 
 body.theme-light .prod-linha-item em.is-bom {
     color: #1e7a45;
+}
+
+/* periodo da tela (data-prod-periodo na section): so o bloco do periodo escolhido aparece.
+   Vale para a fileira de KPIs e para a lista de cartoes dos secadores; o grafico e sempre do turno. */
+#screen-4 .prod-periodo-bloco {
+    display: none;
+}
+
+#screen-4[data-prod-periodo="turno"] .prod-periodo-bloco[data-periodo="turno"],
+#screen-4[data-prod-periodo="hoje"] .prod-periodo-bloco[data-periodo="hoje"],
+#screen-4[data-prod-periodo="7d"] .prod-periodo-bloco[data-periodo="7d"],
+#screen-4[data-prod-periodo="30d"] .prod-periodo-bloco[data-periodo="30d"] {
+    display: grid;
+}
+
+/* KPI lido por secador (vazao, umidade): dois valores lado a lado, nunca a soma */
+.kpi-duplo {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.kpi-duplo-item {
+    --sec: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 0.25rem;
+    padding-left: 0.5rem;
+    border-left: 3px solid var(--sec);
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.kpi-duplo-item--sec1 {
+    --sec: var(--sec1);
+}
+
+.kpi-duplo-item--sec2 {
+    --sec: var(--sec2);
+}
+
+.kpi-duplo-item b {
+    flex-basis: 100%;
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--sec);
+}
+
+.kpi-duplo-item small {
+    font-size: 0.45em;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.kpi-duplo-item em {
+    flex-basis: 100%;
+    font-style: normal;
+    font-size: 0.55rem;
+    font-weight: 600;
+    color: var(--faint);
+}
+
+/* nome nunca quebra; o tipo/nominal e que cede espaco ao pill de estado */
+.prod-secador-head .secador-nome {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.prod-secador-head .secador-tipo {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* estado atual do secador no cartao (so no turno/hoje) */
+.prod-secador-estado {
+    flex-shrink: 0;
+    margin-left: auto;
+    font-size: 0.55rem;
+    padding: 0.15rem 0.6rem;
+}
+
+.prod-secador-estado.is-secando {
+    background: linear-gradient(135deg, var(--ok) 0%, #1e7a45 100%);
+}
+
+/* vazao contra o nominal e umidade contra o alvo, cada uma com a propria mini-barra */
+.prod-secador-linhas {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.125rem;
+}
+
+.prod-secador-linha {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas: "label valor" "track track" "ref ref";
+    align-items: baseline;
+    column-gap: 0.5rem;
+    row-gap: 0.2rem;
+}
+
+.prod-secador-linha-label {
+    grid-area: label;
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.prod-secador-linha-valor {
+    grid-area: valor;
+    justify-self: end;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.prod-secador-linha-valor small {
+    font-size: 0.6em;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.prod-secador-seta {
+    font-style: normal;
+    font-weight: 400;
+    color: var(--faint);
+}
+
+.prod-secador-linha-ref {
+    grid-area: ref;
+    font-size: 0.55rem;
+    font-weight: 600;
+    color: var(--faint);
+}
+
+.prod-secador-minitrack {
+    grid-area: track;
+    position: relative;
+    display: block;
+    height: 0.3125rem;
+    border-radius: 999px;
+    background: var(--row-bg);
+    border: 1px solid var(--row-line);
+    overflow: hidden;
+}
+
+.prod-secador-minitrack i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--sec);
+}
+
+/* umidade: a faixa do alvo (13-14%) e o terco do meio da barra de 12 a 15%; o marcador e a saida */
+.prod-secador-minitrack--umi {
+    background: linear-gradient(90deg,
+        var(--row-bg) 0 33.3%,
+        color-mix(in srgb, var(--ok) 35%, transparent) 33.3% 66.7%,
+        var(--row-bg) 66.7% 100%);
+}
+
+.prod-secador-minitrack--umi i {
+    position: absolute;
+    top: -1px;
+    bottom: -1px;
+    width: 3px;
+    height: auto;
+    margin-left: -1.5px;
+    border-radius: 1px;
+    background: var(--text);
+}
+
+.prod-linha-item em.is-atencao {
+    color: var(--warn);
 }
 
 /* cabecalho da secao pode quebrar a legenda para baixo sem esmagar o titulo */
@@ -6901,9 +6907,14 @@ body.theme-light .kpi-card--destaque .kpi-value {
     gap: 1.75rem;
 }
 
-/* fila / 1ª pesagem + classificacao / moega / 2ª pesagem + liberacao */
-.fluxo-etapas--quatro {
-    grid-template-columns: repeat(4, 1fr);
+/* fila / 1ª pesagem / classificacao / descarga / 2ª pesagem / liberacao */
+.fluxo-etapas--seis {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1.5rem;
+}
+
+.fluxo-etapas--seis .fluxo-etapa:not(:last-child)::after {
+    right: calc(-1.5rem + 0.4rem);
 }
 
 .fluxo-etapa {
@@ -6985,6 +6996,36 @@ body.theme-light .kpi-card--destaque .kpi-value {
     font-variant-numeric: tabular-nums;
 }
 
+/* so o tempo medio do periodo escolhido na tela (data-fluxo-periodo na section) */
+.fluxo-etapa-sub b {
+    display: none;
+    font-weight: 700;
+    color: var(--text);
+}
+
+#screen-fluxo[data-fluxo-periodo="turno"] .fluxo-etapa-sub b[data-periodo="turno"],
+#screen-fluxo[data-fluxo-periodo="hoje"] .fluxo-etapa-sub b[data-periodo="hoje"],
+#screen-fluxo[data-fluxo-periodo="7d"] .fluxo-etapa-sub b[data-periodo="7d"],
+#screen-fluxo[data-fluxo-periodo="30d"] .fluxo-etapa-sub b[data-periodo="30d"] {
+    display: inline;
+}
+
+.fluxo-periodo-atual {
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--muted);
+}
+
+/* filtro de periodo no cabecalho da tela */
+.fluxo-periodo {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin-left: auto;
+    flex-wrap: wrap;
+}
+
 .fluxo-etapa-estado {
     margin-top: 0.25rem;
     align-self: flex-start;
@@ -7019,12 +7060,14 @@ body.theme-light .fluxo-etapa--alerta .fluxo-etapa-estado {
 
 /* em tela estreita as etapas empilham e a seta vira para baixo */
 @media screen and (max-width: 1024px) {
-    .fluxo-etapas {
+    .fluxo-etapas,
+    .fluxo-etapas--seis {
         grid-template-columns: 1fr;
         gap: 1.5rem;
     }
 
-    .fluxo-etapa:not(:last-child)::after {
+    .fluxo-etapa:not(:last-child)::after,
+    .fluxo-etapas--seis .fluxo-etapa:not(:last-child)::after {
         top: auto;
         right: auto;
         left: 50%;
@@ -7546,11 +7589,11 @@ body.edit-mode .fluxo-etapa-pill {
     }
 
     .secador-body {
-        grid-template-columns: 8.25rem auto minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .secador-chips {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         grid-auto-rows: auto;
     }
 
@@ -7724,10 +7767,6 @@ body.edit-mode .fluxo-etapa-pill {
         min-height: 9rem;
     }
 
-    .secador-ar {
-        display: none;
-    }
-
     /* ---- Editor ---- */
     .editor-bar {
         zoom: 1;
@@ -7873,6 +7912,21 @@ body.edit-mode .fluxo-etapa-pill {
     flex: 0 0 auto;
 }
 
+/* quatro KPIs no topo (classificacao: analisadas + 3 indicadores) */
+.geral-kpis--four {
+    grid-template-columns: minmax(0, 1.25fr) repeat(3, minmax(0, auto));
+    gap: 0.625rem;
+}
+
+.geral-kpis--four .geral-kpi-value {
+    font-size: 1.35rem;
+}
+
+.geral-kpi--lead {
+    padding-right: 0.625rem;
+    border-right: 1px solid var(--row-line);
+}
+
 .geral-kpi {
     display: flex;
     flex-direction: column;
@@ -7950,6 +8004,16 @@ body.edit-mode .fluxo-etapa-pill {
     text-overflow: ellipsis;
 }
 
+.geral-row-label .legend-dot {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-right: 0.3rem;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+}
+
 .geral-row-label--solo {
     flex: none;
     font-size: 0.6rem;
@@ -7989,6 +8053,305 @@ body.edit-mode .fluxo-etapa-pill {
 
 .geral-row--ok .geral-row-value {
     color: var(--ok);
+}
+
+/* mini-tabela por cultura (classificacao): cargas, volume e indicadores */
+.geral-tabela {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.2rem;
+    width: 100%;
+    flex: 1 1 auto;
+    padding-top: 0.625rem;
+    border-top: 1px solid var(--row-line);
+}
+
+.geral-tabela-row {
+    display: grid;
+    grid-template-columns: 1.4fr 0.8fr 1fr 0.9fr 0.8fr 0.8fr;
+    gap: 0.375rem;
+    align-items: baseline;
+    font-size: 0.68rem;
+    line-height: 1.25;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+}
+
+.geral-tabela-row > span {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: right;
+}
+
+.geral-tabela-row > span:first-child {
+    text-align: left;
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.geral-tabela-row > span:first-child .legend-dot {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-right: 0.3rem;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+}
+
+.geral-tabela-row--head > span {
+    color: var(--faint);
+    font-size: 0.56rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.geral-tabela-row--total {
+    padding-bottom: 0.25rem;
+    margin-bottom: 0.1rem;
+    border-bottom: 1px solid var(--row-line);
+}
+
+.geral-tabela-row--total > span:first-child {
+    color: var(--text);
+    font-weight: 700;
+}
+
+.geral-tabela-row > span.is-atencao {
+    color: var(--warn);
+}
+
+.geral-tabela-row > span.is-ruim {
+    color: var(--danger);
+}
+
+.geral-tabela-row > span.is-ok {
+    color: var(--ok);
+}
+
+/* expedicao: cargas, volume e reprovas por cultura */
+.geral-tabela--expedicao .geral-tabela-row {
+    grid-template-columns: 1.4fr 0.8fr 1fr 0.9fr;
+}
+
+/* secagem: uma linha por secador (cultura, volume, produtividade, status) */
+.geral-tabela--secadores {
+    flex: 0 0 auto;
+    justify-content: flex-start;
+}
+
+.geral-tabela--secadores .geral-tabela-row {
+    grid-template-columns: 1.1fr 0.9fr 0.8fr 0.9fr 1.6fr;
+}
+
+.geral-tabela--secadores .geral-tabela-row > span:nth-child(2) {
+    text-align: left;
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.geral-tabela--secadores .geral-tabela-row > span:nth-child(2) .legend-dot {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-right: 0.3rem;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+}
+
+/* silos: um ladrilho por silo (S1..S8) com produto, temperatura e ocupacao */
+.geral-rows--silos {
+    flex: 0 0 auto;
+    gap: 0.2rem;
+    padding-top: 0.45rem;
+}
+
+.geral-silos {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.3rem;
+    width: 100%;
+}
+
+.geral-silo {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+        "name temp"
+        "prod pct"
+        "bar  bar";
+    align-items: baseline;
+    column-gap: 0.3rem;
+    row-gap: 0.06rem;
+    padding: 0.18rem 0.4rem 0.24rem;
+    border-radius: 8px;
+    background: var(--row-bg);
+    border: 1px solid var(--row-line);
+    min-width: 0;
+}
+
+.geral-silo-name {
+    grid-area: name;
+    font-size: 0.66rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.geral-silo-name .legend-dot {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-right: 0.25rem;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+}
+
+.geral-silo-prod {
+    grid-area: prod;
+    font-size: 0.58rem;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.geral-silo-temp {
+    grid-area: temp;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.geral-silo-pct {
+    grid-area: pct;
+    font-size: 0.58rem;
+    font-weight: 700;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+.geral-silo-bar {
+    grid-area: bar;
+    display: block;
+    height: 0.25rem;
+    border-radius: 999px;
+    background: var(--card-bg-bottom);
+    border: 1px solid var(--row-line);
+    overflow: hidden;
+}
+
+.geral-silo-bar > span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--accent-strong), var(--accent));
+}
+
+.geral-silo--alto .geral-silo-pct,
+.geral-silo--quente .geral-silo-temp {
+    color: var(--warn);
+}
+
+.geral-silo--alto .geral-silo-bar > span {
+    background: var(--warn);
+}
+
+.geral-silo--quente {
+    border-color: color-mix(in srgb, var(--warn) 45%, transparent);
+}
+
+/* silos: estoque por cultura em uma faixa unica de 4 colunas */
+.geral-culturas {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.375rem;
+    width: 100%;
+    flex: 0 0 auto;
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--row-line);
+}
+
+.geral-cultura {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    min-width: 0;
+}
+
+.geral-cultura-nome {
+    flex: 0 1 auto;
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.geral-cultura-nome .legend-dot {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-right: 0.25rem;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+}
+
+.geral-cultura-val {
+    flex: none;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.geral-cultura-pct {
+    flex: none;
+    margin-left: auto;
+    font-size: 0.58rem;
+    font-weight: 700;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+}
+
+.geral-cultura-bar {
+    display: none;
+    height: 0.25rem;
+    border-radius: 999px;
+    background: var(--row-bg);
+    border: 1px solid var(--row-line);
+    overflow: hidden;
+}
+
+.geral-cultura-bar > span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--accent-strong), var(--accent));
+}
+
+.geral-cultura.is-atencao .geral-cultura-val,
+.geral-cultura.is-atencao .geral-cultura-pct {
+    color: var(--warn);
+}
+
+.geral-cultura.is-atencao .geral-cultura-bar > span {
+    background: var(--warn);
 }
 
 /* barra de progresso fina logo abaixo da linha a que pertence */
@@ -8084,6 +8447,25 @@ body.edit-mode .fluxo-etapa-pill {
 
 .geral-strip-item--alto .geral-strip-val {
     color: var(--warn);
+}
+
+/* umidade da moega, abaixo da sigla (M1..M6); --alta = perto do limite */
+.geral-strip-umid {
+    order: 4;
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--muted, var(--faint));
+    font-variant-numeric: tabular-nums;
+    padding: 0.05rem 0.3rem;
+    border-radius: 999px;
+    background: var(--row-bg);
+    border: 1px solid var(--row-line);
+    white-space: nowrap;
+}
+
+.geral-strip-umid--alta {
+    color: var(--warn);
+    border-color: color-mix(in srgb, var(--warn) 45%, transparent);
 }
 
 .geral-strip--dias {
@@ -8424,6 +8806,17 @@ body.theme-light .kpi-flag--info {
 .etapa-row--axis {
     margin-bottom: 0;
     margin-top: 0.75rem;
+}
+
+/* Linha GERAL: média das culturas ativas, separada por um filete */
+.etapa-row--geral {
+    margin-top: 0.25rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed var(--card-border);
+}
+
+.legend-dot--geral {
+    background: var(--muted);
 }
 
 .etapa-cultura-nome {
@@ -8769,6 +9162,30 @@ body.theme-light .mensal-ritmo {
     flex: 0 0 auto;
 }
 
+/* ---- Classificacao · filtro de cultura ---- */
+.class-filtro {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    flex-wrap: wrap;
+}
+
+.class-filtro-rotulo {
+    font-size: 0.56rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-right: 0.125rem;
+}
+
+.class-detalhe[data-class-cultura="milho"] .class-table tbody tr:not([data-cultura="milho"]),
+.class-detalhe[data-class-cultura="sorgo"] .class-table tbody tr:not([data-cultura="sorgo"]),
+.class-detalhe[data-class-cultura="trigo"] .class-table tbody tr:not([data-cultura="trigo"]),
+.class-detalhe[data-class-cultura="soja"] .class-table tbody tr:not([data-cultura="soja"]) {
+    display: none;
+}
+
 .class-table .legend-dot {
     display: inline-block;
     width: 0.5rem;
@@ -8878,7 +9295,9 @@ body.theme-light .class-val--fora {
 }
 
 .hist-seletor-btn,
-.moega-filtro-btn {
+.class-filtro-btn,
+.moega-filtro-btn,
+.fluxo-periodo-btn {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
@@ -8897,6 +9316,7 @@ body.theme-light .class-val--fora {
 }
 
 .hist-seletor-btn .legend-dot,
+.class-filtro-btn .legend-dot,
 .moega-filtro-btn .legend-dot {
     width: 0.5rem;
     height: 0.5rem;
@@ -8905,19 +9325,25 @@ body.theme-light .class-val--fora {
 }
 
 .hist-seletor-btn:hover,
-.moega-filtro-btn:hover {
+.class-filtro-btn:hover,
+.moega-filtro-btn:hover,
+.fluxo-periodo-btn:hover {
     color: var(--text);
     border-color: var(--accent);
 }
 
 .hist-seletor-btn:focus-visible,
-.moega-filtro-btn:focus-visible {
+.class-filtro-btn:focus-visible,
+.moega-filtro-btn:focus-visible,
+.fluxo-periodo-btn:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
 }
 
 .hist-seletor-btn.is-active,
-.moega-filtro-btn.is-active {
+.class-filtro-btn.is-active,
+.moega-filtro-btn.is-active,
+.fluxo-periodo-btn.is-active {
     color: var(--text);
     background: var(--accent-soft);
     border-color: var(--accent);

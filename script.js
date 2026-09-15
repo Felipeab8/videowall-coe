@@ -465,8 +465,6 @@ const EDITABLE_SELECTORS = [
     '.moega-dado-label',
     '.moega-dado-sub',
     '.moega-dado-value',
-    '.moega-alert-txt',
-    '.moega-alert-acao',
     '.silo-group-name',
     '.silo-group-total',
     '.camera-name',
@@ -489,13 +487,6 @@ const EDITABLE_SELECTORS = [
     '.secador-cultura',
     '.secador-estado-label',
     '.secador-estado-pill',
-    '.fornalha-nome',
-    '.fornalha-valor',
-    '.fornalha-delta',
-    '.fornalha-ref',
-    '.fornalha-dado-label',
-    '.fornalha-dado-valor',
-    '.secador-ar span',
     '.secador-setada-tag',
     '.secador-agora-label',
     '.serie-tag',
@@ -595,7 +586,6 @@ const DRAG_CONFIG = [
     { selector: '.kpi-card', group: 'kpi' },
     { selector: '.kpi-card-small', group: 'kpi-small' },
     { selector: '.secador', group: 'secador' },
-    { selector: '.secador-fornalha', group: 'fornalha' },
     { selector: '.secador-chip', group: 'secador-dado' },
     { selector: '.silo-group', group: 'silo-cultura' },
     { selector: '.silo-item', group: 'silo' },
@@ -604,7 +594,6 @@ const DRAG_CONFIG = [
     { selector: '.weather-city', group: 'previsao-cidade' },
     { selector: '.hour-item', group: 'hora' },
     { selector: '.alert-item', group: 'alerta' },
-    { selector: '.moega-alert', group: 'alerta' },
     { selector: '.summary-card', group: 'resumo' },
     { selector: '.forecast-stat', group: 'resumo-previsao' },
     { selector: '.status-item', group: 'status' },
@@ -915,7 +904,6 @@ const RESIZE_CONFIG = [
     { selector: '.rank-item', mode: 'size' },
     { selector: '.prod-secador', mode: 'size' },
     { selector: '.secador-chip', mode: 'size' },
-    { selector: '.secador-fornalha', mode: 'size' },
     { selector: '.silo-group', mode: 'size' },
     { selector: '.stack-row', mode: 'size' },
     { selector: '.donut-item', mode: 'size' }
@@ -3507,6 +3495,31 @@ document.addEventListener('click', (e) => {
 });
 
 // ============================================
+// CLASSIFICACAO · FILTRO DE CULTURA DA TABELA
+// A section guarda a escolha em data-class-cultura e o CSS esconde as
+// linhas cujo data-cultura nao bate. Delegado no documento.
+// ============================================
+function escolherCulturaClassificacao(alvo) {
+    const secao = alvo.closest('.class-detalhe');
+    const cultura = alvo.dataset.classCultura;
+    if (!secao || !cultura) return;
+    secao.dataset.classCultura = cultura;
+    secao.querySelectorAll('.class-filtro-btn').forEach((btn) => {
+        const ativo = btn.dataset.classCultura === cultura;
+        btn.classList.toggle('is-active', ativo);
+        btn.setAttribute('aria-pressed', String(ativo));
+    });
+    scheduleFit();
+}
+
+document.addEventListener('click', (e) => {
+    const alvo = e.target instanceof Element ? e.target.closest('.class-filtro-btn') : null;
+    if (!alvo || isEditing()) return;
+    e.preventDefault();
+    escolherCulturaClassificacao(alvo);
+});
+
+// ============================================
 // MOEGAS · FILTROS
 // Período é por moega: cada cartão guarda a escolha em data-moega-periodo
 // e o CSS troca o bloco "Saiu" e as trocas de cultura que entram no
@@ -3539,8 +3552,61 @@ function escolherCulturaMoegas(alvo) {
     scheduleFit();
 }
 
+// ============================================
+// FLUXO · PERIODO DOS TEMPOS MEDIOS
+// A section guarda a escolha em data-fluxo-periodo e o CSS mostra so o
+// tempo medio correspondente em cada etapa. Delegado no documento.
+// ============================================
+const NOME_PERIODO_FLUXO = { turno: 'turno', hoje: 'hoje', '7d': '7 dias', '30d': '30 dias' };
+
+function escolherPeriodoFluxo(alvo) {
+    const tela = alvo.closest('#screen-fluxo');
+    const periodo = alvo.dataset.fluxoPeriodo;
+    if (!tela || !periodo) return;
+    tela.dataset.fluxoPeriodo = periodo;
+    tela.querySelectorAll('.fluxo-periodo-btn').forEach((btn) => {
+        const ativo = btn.dataset.fluxoPeriodo === periodo;
+        btn.classList.toggle('is-active', ativo);
+        btn.setAttribute('aria-pressed', String(ativo));
+    });
+    tela.querySelectorAll('[data-fluxo-periodo-nome]').forEach((el) => {
+        el.textContent = NOME_PERIODO_FLUXO[periodo] || periodo;
+    });
+    scheduleFit();
+}
+
+// ============================================
+// PRODUTIVIDADE · PERIODO DOS KPIs E CARTOES
+// Mesmo mecanismo do fluxo: data-prod-periodo na section, CSS mostra so
+// os blocos .prod-periodo-bloco do periodo. O grafico por hora nao muda.
+// ============================================
+function escolherPeriodoProd(alvo) {
+    const tela = alvo.closest('#screen-4');
+    const periodo = alvo.dataset.prodPeriodo;
+    if (!tela || !periodo) return;
+    tela.dataset.prodPeriodo = periodo;
+    tela.querySelectorAll('[data-prod-periodo]').forEach((btn) => {
+        const ativo = btn.dataset.prodPeriodo === periodo;
+        btn.classList.toggle('is-active', ativo);
+        btn.setAttribute('aria-pressed', String(ativo));
+    });
+    scheduleFit();
+}
+
 document.addEventListener('click', (e) => {
     if (!(e.target instanceof Element) || isEditing()) return;
+    const periodoProd = e.target.closest('button[data-prod-periodo]');
+    if (periodoProd) {
+        e.preventDefault();
+        escolherPeriodoProd(periodoProd);
+        return;
+    }
+    const periodoFluxo = e.target.closest('.fluxo-periodo-btn');
+    if (periodoFluxo) {
+        e.preventDefault();
+        escolherPeriodoFluxo(periodoFluxo);
+        return;
+    }
     const periodo = e.target.closest('.moega-periodo-btn');
     if (periodo) {
         e.preventDefault();
