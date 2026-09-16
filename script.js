@@ -159,7 +159,7 @@ function fitTargets() {
     if (!active) return [];
     // .table-scroll--livre rola por dentro em vez de encolher a tela inteira
     // (lista longa de caminhoes): fica fora da conta.
-    return [active, ...active.querySelectorAll('.content-section:not(.content-section--livre), .table-scroll:not(.table-scroll--livre), .alerts-list')];
+    return [active, ...active.querySelectorAll('.content-section:not(.content-section--livre), .table-scroll:not(.table-scroll--livre), .alerts-list, .geral-grid')];
 }
 
 function fitOverflow(targets) {

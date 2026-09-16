@@ -203,9 +203,10 @@
         <main class="content">
             <!-- Screen 0: Recepção -->
             <!-- Visão geral: um card por área, na ordem do fluxo do grão.
-                 Cada card resume os indicadores da tela correspondente (3 em
-                 destaque + linhas de detalhe com referência) e leva até
-                 ela (data-goto usa a mesma chave do menu lateral). -->
+                 Cada card tem um destaque visual (anel, barras, tanques) que
+                 resume a tela correspondente e leva até ela (data-goto usa a
+                 mesma chave do menu lateral). Os componentes gv-* são só CSS:
+                 --p é a fração preenchida (0–1), --c a cor da série. -->
             <section class="screen active" id="screen-geral">
                 <div class="screen-header">
                     <div class="screen-badge">00</div>
@@ -216,241 +217,283 @@
                 </div>
 
                 <div class="geral-grid">
+                    <!-- 01 Recepção: a espera é o problema, então ela é o destaque -->
                     <button class="geral-card alert" type="button" data-goto="0" title="Abrir tela da recepção">
                         <div class="geral-card-head">
                             <span class="geral-card-num">01</span>
                             <span class="geral-card-name">Recepção</span>
                             <span class="kpi-flag kpi-flag--alerta">Alerta</span>
                         </div>
-                        <div class="geral-kpis">
-                            <div class="geral-kpi"><span class="geral-kpi-label">Fila</span><span class="geral-kpi-value">12 <small>cam.</small></span><span class="geral-kpi-ref">milho 8 · sorgo 4</span></div>
-                            <div class="geral-kpi geral-kpi--ruim"><span class="geral-kpi-label">Espera</span><span class="geral-kpi-value">38 <small>min</small></span><span class="geral-kpi-ref">milho 42 · sorgo 30</span></div>
-                            <div class="geral-kpi geral-kpi--ruim"><span class="geral-kpi-label">Ritmo</span><span class="geral-kpi-value">82 <small>t/h</small></span><span class="geral-kpi-ref">última hora</span></div>
+                        <div class="gv-hero">
+                            <div class="gv-big gv-big--ruim">
+                                <span class="gv-big-value">38<small>min</small></span>
+                                <span class="gv-big-label">Espera média</span>
+                                <span class="gv-big-ref">em alta desde 14:35</span>
+                            </div>
+                            <div class="gv-side">
+                                <div class="gv-kpi"><span class="gv-kpi-value">12<small>cam.</small></span><span class="gv-kpi-label">na fila</span></div>
+                                <div class="gv-kpi gv-kpi--ruim"><span class="gv-kpi-value">82<small>t/h</small></span><span class="gv-kpi-label">ritmo · última hora</span></div>
+                            </div>
                         </div>
-                        <div class="geral-rows">
-                            <div class="geral-row"><span class="geral-row-label"><i class="legend-dot legend-dot--milho"></i>Milho · volume</span><span class="geral-row-value">860 t</span><span class="geral-row-ref">34 cam.</span></div>
-                            <div class="geral-row geral-row--ruim"><span class="geral-row-label"><i class="legend-dot legend-dot--milho"></i>Milho · tempo</span><span class="geral-row-value">42 min</span><span class="geral-row-ref">fila 9 · moega 18</span></div>
-                            <div class="geral-row"><span class="geral-row-label"><i class="legend-dot legend-dot--sorgo"></i>Sorgo · volume</span><span class="geral-row-value">380 t</span><span class="geral-row-ref">14 cam.</span></div>
-                            <div class="geral-row geral-row--atencao"><span class="geral-row-label"><i class="legend-dot legend-dot--sorgo"></i>Sorgo · tempo</span><span class="geral-row-value">30 min</span><span class="geral-row-ref">fila 6 · moega 13</span></div>
+                        <div class="gv-block">
+                            <div class="gv-stack" role="img" aria-label="Fila: milho 8 caminhões, sorgo 4">
+                                <span class="gv-stack-seg" style="--p: 0.667; --c: var(--grao-milho)"><b>8</b></span>
+                                <span class="gv-stack-seg" style="--p: 0.333; --c: var(--grao-sorgo)"><b>4</b></span>
+                            </div>
+                            <div class="gv-stack-legend"><span><i class="legend-dot legend-dot--milho"></i>Milho</span><span><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><span class="gv-stack-legend-cap">caminhões na fila</span></div>
                         </div>
-                        <div class="geral-card-foot"><span>Espera em alta desde 14:35</span><span class="geral-card-link">Ver tela →</span></div>
+                        <div class="gv-list">
+                            <div class="gv-bar gv-bar--ruim" style="--p: 0.7">
+                                <span class="gv-bar-label"><i class="legend-dot legend-dot--milho"></i>Milho</span>
+                                <span class="gv-bar-track"><span class="gv-bar-fill"></span></span>
+                                <span class="gv-bar-value">42 min</span>
+                                <span class="gv-bar-ref">fila 9 · moega 18</span>
+                                <span class="gv-bar-sub">860 t · 34 cam.</span>
+                            </div>
+                            <div class="gv-bar gv-bar--atencao" style="--p: 0.5">
+                                <span class="gv-bar-label"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
+                                <span class="gv-bar-track"><span class="gv-bar-fill"></span></span>
+                                <span class="gv-bar-value">30 min</span>
+                                <span class="gv-bar-ref">fila 6 · moega 13</span>
+                                <span class="gv-bar-sub">380 t · 14 cam.</span>
+                            </div>
+                        </div>
+                        <div class="geral-card-foot"><span>Tempo de espera por cultura</span><span class="geral-card-link">Ver tela →</span></div>
                     </button>
 
+                    <!-- 02 Classificação: três medidores contra o limite + mapa por cultura -->
                     <button class="geral-card ok" type="button" data-goto="1" title="Abrir tela da classificação">
                         <div class="geral-card-head">
                             <span class="geral-card-num">02</span>
                             <span class="geral-card-name">Classificação</span>
                             <span class="kpi-flag kpi-flag--ok">OK</span>
                         </div>
-                        <div class="geral-kpis geral-kpis--four">
-                            <div class="geral-kpi geral-kpi--lead"><span class="geral-kpi-label">Analisadas</span><span class="geral-kpi-value">100 <small>cargas</small></span><span class="geral-kpi-ref">2.540 t hoje</span></div>
-                            <div class="geral-kpi"><span class="geral-kpi-label">Umidade</span><span class="geral-kpi-value">12,3<small>%</small></span><span class="geral-kpi-ref">limite 14%</span></div>
-                            <div class="geral-kpi"><span class="geral-kpi-label">Impureza</span><span class="geral-kpi-value">0,8<small>%</small></span><span class="geral-kpi-ref">limite 1%</span></div>
-                            <div class="geral-kpi"><span class="geral-kpi-label">Avariados</span><span class="geral-kpi-value">3,2<small>%</small></span><span class="geral-kpi-ref">limite 6%</span></div>
+                        <div class="gv-hero">
+                            <div class="gv-big">
+                                <span class="gv-big-value">100<small>cargas</small></span>
+                                <span class="gv-big-label">Analisadas hoje</span>
+                                <span class="gv-big-ref">2.540 t</span>
+                            </div>
+                            <div class="gv-meters">
+                                <div class="gv-meter" style="--p: 0.879"><span class="gv-meter-label">Umidade</span><span class="gv-meter-track"><span class="gv-meter-fill"></span></span><span class="gv-meter-value">12,3%</span><span class="gv-meter-lim">lim. 14%</span></div>
+                                <div class="gv-meter" style="--p: 0.8"><span class="gv-meter-label">Impureza</span><span class="gv-meter-track"><span class="gv-meter-fill"></span></span><span class="gv-meter-value">0,8%</span><span class="gv-meter-lim">lim. 1%</span></div>
+                                <div class="gv-meter" style="--p: 0.533"><span class="gv-meter-label">Avariados</span><span class="gv-meter-track"><span class="gv-meter-fill"></span></span><span class="gv-meter-value">3,2%</span><span class="gv-meter-lim">lim. 6%</span></div>
+                            </div>
                         </div>
-                        <div class="geral-tabela" role="table" aria-label="Cargas analisadas por cultura">
-                            <div class="geral-tabela-row geral-tabela-row--head" role="row"><span>Cultura</span><span>Cargas</span><span>Volume</span><span>Umid.</span><span>Imp.</span><span>Avar.</span></div>
-                            <div class="geral-tabela-row geral-tabela-row--total" role="row"><span>Total</span><span>100</span><span>2.540 t</span><span>12,3%</span><span>0,8%</span><span>3,2%</span></div>
-                            <div class="geral-tabela-row" role="row"><span><i class="legend-dot legend-dot--milho"></i>Milho</span><span>42</span><span>1.090 t</span><span>12,6%</span><span>0,8%</span><span class="is-atencao">4,0%</span></div>
-                            <div class="geral-tabela-row" role="row"><span><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><span>26</span><span>640 t</span><span>12,0%</span><span>0,7%</span><span>2,6%</span></div>
-                            <div class="geral-tabela-row" role="row"><span><i class="legend-dot legend-dot--trigo"></i>Trigo</span><span>18</span><span>450 t</span><span>11,9%</span><span>0,6%</span><span>2,1%</span></div>
-                            <div class="geral-tabela-row" role="row"><span><i class="legend-dot legend-dot--soja"></i>Soja</span><span>14</span><span>360 t</span><span class="is-atencao">12,8%</span><span class="is-atencao">0,9%</span><span>3,4%</span></div>
+                        <div class="gv-block">
+                            <div class="gv-stack" role="img" aria-label="Cargas por cultura: milho 42, sorgo 26, trigo 18, soja 14">
+                                <span class="gv-stack-seg" style="--p: 0.42; --c: var(--grao-milho)"><b>42</b></span>
+                                <span class="gv-stack-seg" style="--p: 0.26; --c: var(--grao-sorgo)"><b>26</b></span>
+                                <span class="gv-stack-seg" style="--p: 0.18; --c: var(--grao-trigo)"><b>18</b></span>
+                                <span class="gv-stack-seg" style="--p: 0.14; --c: var(--grao-soja)"><b>14</b></span>
+                            </div>
+                        </div>
+                        <div class="gv-heat" role="table" aria-label="Qualidade por cultura">
+                            <div class="gv-heat-row gv-heat-row--head" role="row"><span></span><span>Volume</span><span>Umid.</span><span>Imp.</span><span>Avar.</span></div>
+                            <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--milho"></i>Milho</span><span>1.090 t</span><span class="gv-cell" style="--p: 0.9">12,6%</span><span class="gv-cell" style="--p: 0.8">0,8%</span><span class="gv-cell is-atencao" style="--p: 0.67">4,0%</span></div>
+                            <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><span>640 t</span><span class="gv-cell" style="--p: 0.857">12,0%</span><span class="gv-cell" style="--p: 0.7">0,7%</span><span class="gv-cell" style="--p: 0.433">2,6%</span></div>
+                            <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--trigo"></i>Trigo</span><span>450 t</span><span class="gv-cell" style="--p: 0.85">11,9%</span><span class="gv-cell" style="--p: 0.6">0,6%</span><span class="gv-cell" style="--p: 0.35">2,1%</span></div>
+                            <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--soja"></i>Soja</span><span>360 t</span><span class="gv-cell is-atencao" style="--p: 0.914">12,8%</span><span class="gv-cell is-atencao" style="--p: 0.9">0,9%</span><span class="gv-cell" style="--p: 0.567">3,4%</span></div>
                         </div>
                         <div class="geral-card-foot"><span>Todas as culturas dentro dos limites</span><span class="geral-card-link">Ver tela →</span></div>
                     </button>
 
+                    <!-- 03 Moegas: anel de ocupação + colunas por moega -->
                     <button class="geral-card ok" type="button" data-goto="2" title="Abrir tela das moegas">
                         <div class="geral-card-head">
                             <span class="geral-card-num">03</span>
                             <span class="geral-card-name">Moegas</span>
                             <span class="kpi-flag kpi-flag--ok">OK</span>
                         </div>
-                        <div class="geral-kpis">
-                            <div class="geral-kpi"><span class="geral-kpi-label">Ocupação</span><span class="geral-kpi-value">72<small>%</small></span><span class="geral-kpi-ref">433,6 / 600 t</span></div>
-                            <div class="geral-kpi"><span class="geral-kpi-label">Cargas hoje</span><span class="geral-kpi-value">93</span><span class="geral-kpi-ref">6 moegas</span></div>
-                            <div class="geral-kpi"><span class="geral-kpi-label">Umidade</span><span class="geral-kpi-value">12,4<small>%</small></span><span class="geral-kpi-ref">impureza 0,9%</span></div>
-                        </div>
-                        <div class="geral-rows">
-                            <div class="geral-row-label geral-row-label--solo">Ocupação e umidade por moega</div>
-                            <div class="geral-strip">
-                                <div class="geral-strip-item geral-strip-item--alto"><span class="geral-strip-name">M1</span><span class="geral-strip-bar"><span style="height: 92%"></span></span><span class="geral-strip-val">92%</span><span class="geral-strip-umid" title="Umidade">12,1%</span></div>
-                                <div class="geral-strip-item"><span class="geral-strip-name">M2</span><span class="geral-strip-bar"><span style="height: 68%"></span></span><span class="geral-strip-val">68%</span><span class="geral-strip-umid" title="Umidade">11,8%</span></div>
-                                <div class="geral-strip-item geral-strip-item--alto"><span class="geral-strip-name">M3</span><span class="geral-strip-bar"><span style="height: 85%"></span></span><span class="geral-strip-val">85%</span><span class="geral-strip-umid" title="Umidade">12,6%</span></div>
-                                <div class="geral-strip-item"><span class="geral-strip-name">M4</span><span class="geral-strip-bar"><span style="height: 75%"></span></span><span class="geral-strip-val">75%</span><span class="geral-strip-umid" title="Umidade">12,9%</span></div>
-                                <div class="geral-strip-item"><span class="geral-strip-name">M5</span><span class="geral-strip-bar"><span style="height: 58%"></span></span><span class="geral-strip-val">58%</span><span class="geral-strip-umid" title="Umidade">12,2%</span></div>
-                                <div class="geral-strip-item"><span class="geral-strip-name">M6</span><span class="geral-strip-bar"><span style="height: 44%"></span></span><span class="geral-strip-val">44%</span><span class="geral-strip-umid geral-strip-umid--alta" title="Umidade">13,0%</span></div>
+                        <div class="gv-hero">
+                            <div class="gv-ring" style="--p: 0.72" role="img" aria-label="Ocupação 72%">
+                                <span class="gv-ring-value">72<small>%</small></span>
+                                <span class="gv-ring-label">ocupação</span>
                             </div>
+                            <div class="gv-side">
+                                <div class="gv-kpi"><span class="gv-kpi-value">433,6<small>/ 600 t</small></span><span class="gv-kpi-label">em 6 moegas</span></div>
+                                <div class="gv-kpi"><span class="gv-kpi-value">93</span><span class="gv-kpi-label">cargas hoje</span></div>
+                                <div class="gv-kpi"><span class="gv-kpi-value">12,4<small>%</small></span><span class="gv-kpi-label">umidade · impureza 0,9%</span></div>
+                            </div>
+                        </div>
+                        <div class="gv-cols" role="img" aria-label="Ocupação e umidade por moega">
+                            <div class="gv-col gv-col--alto" style="--p: 0.92"><span class="gv-col-value">92%</span><span class="gv-col-track"><span class="gv-col-fill"></span></span><span class="gv-col-name">M1</span><span class="gv-col-sub">12,1%</span></div>
+                            <div class="gv-col" style="--p: 0.68"><span class="gv-col-value">68%</span><span class="gv-col-track"><span class="gv-col-fill"></span></span><span class="gv-col-name">M2</span><span class="gv-col-sub">11,8%</span></div>
+                            <div class="gv-col gv-col--alto" style="--p: 0.85"><span class="gv-col-value">85%</span><span class="gv-col-track"><span class="gv-col-fill"></span></span><span class="gv-col-name">M3</span><span class="gv-col-sub">12,6%</span></div>
+                            <div class="gv-col" style="--p: 0.75"><span class="gv-col-value">75%</span><span class="gv-col-track"><span class="gv-col-fill"></span></span><span class="gv-col-name">M4</span><span class="gv-col-sub">12,9%</span></div>
+                            <div class="gv-col" style="--p: 0.58"><span class="gv-col-value">58%</span><span class="gv-col-track"><span class="gv-col-fill"></span></span><span class="gv-col-name">M5</span><span class="gv-col-sub">12,2%</span></div>
+                            <div class="gv-col" style="--p: 0.44"><span class="gv-col-value">44%</span><span class="gv-col-track"><span class="gv-col-fill"></span></span><span class="gv-col-name">M6</span><span class="gv-col-sub is-atencao">13,0%</span></div>
                         </div>
                         <div class="geral-card-foot"><span>M1 em 92% · M6 umidade 13%</span><span class="geral-card-link">Ver tela →</span></div>
                     </button>
 
+                    <!-- 04 Secagem: produção do dia contra ontem e projeção, mais os dois secadores -->
                     <button class="geral-card atencao" type="button" data-goto="3" title="Abrir tela da secagem">
                         <div class="geral-card-head">
                             <span class="geral-card-num">04</span>
                             <span class="geral-card-name">Secagem</span>
                             <span class="kpi-flag kpi-flag--atencao">Atenção</span>
                         </div>
-                        <div class="geral-kpis">
-                            <div class="geral-kpi"><span class="geral-kpi-label">Secado hoje</span><span class="geral-kpi-value">1.120 <small>t</small></span><span class="geral-kpi-ref">até 14:35</span></div>
-                            <div class="geral-kpi"><span class="geral-kpi-label">Vazão</span><span class="geral-kpi-value">135 <small>t/h</small></span><span class="geral-kpi-ref">96% do nominal</span></div>
-                            <div class="geral-kpi geral-kpi--ruim"><span class="geral-kpi-label">Fornalha</span><span class="geral-kpi-value">148<small>°C</small></span><span class="geral-kpi-ref">desejada 150°C</span></div>
+                        <div class="gv-hero">
+                            <div class="gv-big">
+                                <span class="gv-big-value">1.120<small>t</small></span>
+                                <span class="gv-big-label">Secado hoje</span>
+                                <span class="gv-big-ref">até 14:35</span>
+                            </div>
+                            <div class="gv-meters gv-meters--stack">
+                                <div class="gv-meter" style="--p: 0.96"><span class="gv-meter-label">Vazão</span><span class="gv-meter-track"><span class="gv-meter-fill"></span></span><span class="gv-meter-value">135 t/h</span><span class="gv-meter-lim">96% do nominal</span></div>
+                                <div class="gv-meter gv-meter--ruim" style="--p: 0.987"><span class="gv-meter-label">Fornalha</span><span class="gv-meter-track"><span class="gv-meter-fill"></span></span><span class="gv-meter-value">148°C</span><span class="gv-meter-lim">desejada 150°C</span></div>
+                            </div>
                         </div>
-                        <div class="geral-tabela geral-tabela--secadores" role="table" aria-label="Situação por secador">
-                            <div class="geral-tabela-row geral-tabela-row--head" role="row"><span>Secador</span><span>Cultura</span><span>Hoje</span><span>Produtiv.</span><span>Status</span></div>
-                            <div class="geral-tabela-row" role="row"><span><i class="legend-dot legend-dot--sec1"></i>Secador 1</span><span><i class="legend-dot legend-dot--milho"></i>Milho</span><span>660 t</span><span>78 t/h</span><span class="is-atencao">Secando · fornalha alta</span></div>
-                            <div class="geral-tabela-row" role="row"><span><i class="legend-dot legend-dot--sec2"></i>Secador 2</span><span><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><span>460 t</span><span>56 t/h</span><span class="is-ok">Descarregando</span></div>
+                        <div class="gv-progress" style="--p: 0.737; --m1: 0.691; --m2: 0.908" role="img" aria-label="Hoje 1.120 t; ontem no mesmo horário 1.050 t; projeção 17h 1.520 t">
+                            <span class="gv-progress-track"><span class="gv-progress-fill"></span><span class="gv-progress-mark gv-progress-mark--1"></span><span class="gv-progress-mark gv-progress-mark--2"></span></span>
+                            <span class="gv-progress-legend"><span>ontem no horário <b>1.050 t</b></span><span>projeção 17h <b class="is-ok">1.520 t</b></span><span>ontem <b>1.380 t</b></span></span>
                         </div>
-                        <div class="geral-rows">
-                            <div class="geral-row"><span class="geral-row-label">Secado ontem</span><span class="geral-row-value">1.380 t</span><span class="geral-row-ref">1.050 t no mesmo horário</span></div>
-                            <div class="geral-row geral-row--ok"><span class="geral-row-label">Projeção 17h</span><span class="geral-row-value">1.520 t</span><span class="geral-row-ref">no ritmo atual</span></div>
-                            <div class="geral-row"><span class="geral-row-label">Umidade entrada → saída</span><span class="geral-row-value">18,4% → 13,4%</span><span class="geral-row-ref">−5,0 pts</span></div>
+                        <div class="gv-list">
+                            <div class="gv-bar" style="--p: 0.589; --c: var(--grao-milho)">
+                                <span class="gv-bar-label"><i class="legend-dot legend-dot--sec1"></i>Secador 1</span>
+                                <span class="gv-bar-track"><span class="gv-bar-fill"></span></span>
+                                <span class="gv-bar-value">660 t</span>
+                                <span class="gv-bar-ref">78 t/h</span>
+                                <span class="gv-bar-sub"><i class="legend-dot legend-dot--milho"></i>Milho · <em class="is-atencao">secando, fornalha alta</em></span>
+                            </div>
+                            <div class="gv-bar" style="--p: 0.411; --c: var(--grao-sorgo)">
+                                <span class="gv-bar-label"><i class="legend-dot legend-dot--sec2"></i>Secador 2</span>
+                                <span class="gv-bar-track"><span class="gv-bar-fill"></span></span>
+                                <span class="gv-bar-value">460 t</span>
+                                <span class="gv-bar-ref">56 t/h</span>
+                                <span class="gv-bar-sub"><i class="legend-dot legend-dot--sorgo"></i>Sorgo · <em class="is-ok">descarregando</em></span>
+                            </div>
                         </div>
-                        <div class="geral-card-foot"><span>Temperatura do secador elevada</span><span class="geral-card-link">Ver tela →</span></div>
+                        <div class="geral-card-foot"><span>Umidade 18,4% → 13,4% <em>(−5,0 pts)</em></span><span class="geral-card-link">Ver tela →</span></div>
                     </button>
 
+                    <!-- 05 Silos: anel do total + um tanque por silo -->
                     <button class="geral-card ok" type="button" data-goto="5" title="Abrir tela dos silos">
                         <div class="geral-card-head">
                             <span class="geral-card-num">05</span>
                             <span class="geral-card-name">Silos</span>
                             <span class="kpi-flag kpi-flag--ok">OK</span>
                         </div>
-                        <div class="geral-kpis">
-                            <div class="geral-kpi"><span class="geral-kpi-label">Estocado</span><span class="geral-kpi-value">21.770 <small>t</small></span><span class="geral-kpi-ref">de 32.900 t</span></div>
-                            <div class="geral-kpi"><span class="geral-kpi-label">Ocupação</span><span class="geral-kpi-value">66<small>%</small></span><span class="geral-kpi-ref">8 silos + 2 pulmão</span></div>
-                            <div class="geral-kpi"><span class="geral-kpi-label">Temp. máx.</span><span class="geral-kpi-value">24<small>°C</small></span><span class="geral-kpi-ref">Silo 5</span></div>
-                        </div>
-                        <div class="geral-rows geral-rows--silos">
-                            <div class="geral-row-label geral-row-label--solo">Produto e temperatura por silo</div>
-                            <div class="geral-silos" role="list" aria-label="Silos: produto, temperatura e ocupação">
-                                <div class="geral-silo" title="Silo 1 · Milho · 22°C · 78%">
-                                    <span class="geral-silo-name"><i class="legend-dot legend-dot--milho"></i>S1</span>
-                                    <span class="geral-silo-prod">Milho</span>
-                                    <span class="geral-silo-temp">22°C</span>
-                                    <span class="geral-silo-bar"><span style="width: 78%"></span></span>
-                                    <span class="geral-silo-pct">78%</span>
-                                </div>
-                                <div class="geral-silo geral-silo--alto" title="Silo 2 · Milho · 21°C · 92%">
-                                    <span class="geral-silo-name"><i class="legend-dot legend-dot--milho"></i>S2</span>
-                                    <span class="geral-silo-prod">Milho</span>
-                                    <span class="geral-silo-temp">21°C</span>
-                                    <span class="geral-silo-bar"><span style="width: 92%"></span></span>
-                                    <span class="geral-silo-pct">92%</span>
-                                </div>
-                                <div class="geral-silo" title="Silo 3 · Sorgo · 23°C · 45%">
-                                    <span class="geral-silo-name"><i class="legend-dot legend-dot--sorgo"></i>S3</span>
-                                    <span class="geral-silo-prod">Sorgo</span>
-                                    <span class="geral-silo-temp">23°C</span>
-                                    <span class="geral-silo-bar"><span style="width: 45%"></span></span>
-                                    <span class="geral-silo-pct">45%</span>
-                                </div>
-                                <div class="geral-silo" title="Silo 4 · Trigo · 22°C · 68%">
-                                    <span class="geral-silo-name"><i class="legend-dot legend-dot--trigo"></i>S4</span>
-                                    <span class="geral-silo-prod">Trigo</span>
-                                    <span class="geral-silo-temp">22°C</span>
-                                    <span class="geral-silo-bar"><span style="width: 68%"></span></span>
-                                    <span class="geral-silo-pct">68%</span>
-                                </div>
-                                <div class="geral-silo geral-silo--quente" title="Silo 5 · Milho · 24°C · 84%">
-                                    <span class="geral-silo-name"><i class="legend-dot legend-dot--milho"></i>S5</span>
-                                    <span class="geral-silo-prod">Milho</span>
-                                    <span class="geral-silo-temp">24°C</span>
-                                    <span class="geral-silo-bar"><span style="width: 84%"></span></span>
-                                    <span class="geral-silo-pct">84%</span>
-                                </div>
-                                <div class="geral-silo" title="Silo 6 · Sorgo · 20°C · 57%">
-                                    <span class="geral-silo-name"><i class="legend-dot legend-dot--sorgo"></i>S6</span>
-                                    <span class="geral-silo-prod">Sorgo</span>
-                                    <span class="geral-silo-temp">20°C</span>
-                                    <span class="geral-silo-bar"><span style="width: 57%"></span></span>
-                                    <span class="geral-silo-pct">57%</span>
-                                </div>
-                                <div class="geral-silo" title="Silo 7 · Trigo · 23°C · 71%">
-                                    <span class="geral-silo-name"><i class="legend-dot legend-dot--trigo"></i>S7</span>
-                                    <span class="geral-silo-prod">Trigo</span>
-                                    <span class="geral-silo-temp">23°C</span>
-                                    <span class="geral-silo-bar"><span style="width: 71%"></span></span>
-                                    <span class="geral-silo-pct">71%</span>
-                                </div>
-                                <div class="geral-silo" title="Silo 8 · Soja · 21°C · 36%">
-                                    <span class="geral-silo-name"><i class="legend-dot legend-dot--soja"></i>S8</span>
-                                    <span class="geral-silo-prod">Soja</span>
-                                    <span class="geral-silo-temp">21°C</span>
-                                    <span class="geral-silo-bar"><span style="width: 36%"></span></span>
-                                    <span class="geral-silo-pct">36%</span>
-                                </div>
+                        <div class="gv-hero">
+                            <div class="gv-ring" style="--p: 0.66" role="img" aria-label="Ocupação 66%">
+                                <span class="gv-ring-value">66<small>%</small></span>
+                                <span class="gv-ring-label">ocupação</span>
+                            </div>
+                            <div class="gv-side">
+                                <div class="gv-kpi"><span class="gv-kpi-value">21.770<small>t</small></span><span class="gv-kpi-label">de 32.900 t · 8 silos + 2 pulmão</span></div>
+                                <div class="gv-kpi"><span class="gv-kpi-value">24<small>°C</small></span><span class="gv-kpi-label">temp. máxima · Silo 5</span></div>
                             </div>
                         </div>
-                        <div class="geral-culturas" role="list" aria-label="Estoque por cultura">
-                            <div class="geral-cultura is-atencao"><span class="geral-cultura-nome"><i class="legend-dot legend-dot--milho"></i>Milho</span><span class="geral-cultura-val">10.160 t</span><span class="geral-cultura-bar"><span style="width: 85%"></span></span><span class="geral-cultura-pct">85%</span></div>
-                            <div class="geral-cultura"><span class="geral-cultura-nome"><i class="legend-dot legend-dot--trigo"></i>Trigo</span><span class="geral-cultura-val">5.560 t</span><span class="geral-cultura-bar"><span style="width: 70%"></span></span><span class="geral-cultura-pct">70%</span></div>
-                            <div class="geral-cultura"><span class="geral-cultura-nome"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><span class="geral-cultura-val">4.080 t</span><span class="geral-cultura-bar"><span style="width: 51%"></span></span><span class="geral-cultura-pct">51%</span></div>
-                            <div class="geral-cultura"><span class="geral-cultura-nome"><i class="legend-dot legend-dot--soja"></i>Soja</span><span class="geral-cultura-val">1.440 t</span><span class="geral-cultura-bar"><span style="width: 36%"></span></span><span class="geral-cultura-pct">36%</span></div>
+                        <div class="gv-tanks" role="list" aria-label="Silos: produto, ocupação e temperatura">
+                            <div class="gv-tank" style="--p: 0.78; --c: var(--grao-milho)" role="listitem" title="Silo 1 · Milho · 78% · 22°C"><span class="gv-tank-body"><span class="gv-tank-fill"></span><b>78%</b></span><span class="gv-tank-name">S1</span><span class="gv-tank-temp">22°</span></div>
+                            <div class="gv-tank gv-tank--alto" style="--p: 0.92; --c: var(--grao-milho)" role="listitem" title="Silo 2 · Milho · 92% · 21°C"><span class="gv-tank-body"><span class="gv-tank-fill"></span><b>92%</b></span><span class="gv-tank-name">S2</span><span class="gv-tank-temp">21°</span></div>
+                            <div class="gv-tank" style="--p: 0.45; --c: var(--grao-sorgo)" role="listitem" title="Silo 3 · Sorgo · 45% · 23°C"><span class="gv-tank-body"><span class="gv-tank-fill"></span><b>45%</b></span><span class="gv-tank-name">S3</span><span class="gv-tank-temp">23°</span></div>
+                            <div class="gv-tank" style="--p: 0.68; --c: var(--grao-trigo)" role="listitem" title="Silo 4 · Trigo · 68% · 22°C"><span class="gv-tank-body"><span class="gv-tank-fill"></span><b>68%</b></span><span class="gv-tank-name">S4</span><span class="gv-tank-temp">22°</span></div>
+                            <div class="gv-tank gv-tank--quente" style="--p: 0.84; --c: var(--grao-milho)" role="listitem" title="Silo 5 · Milho · 84% · 24°C"><span class="gv-tank-body"><span class="gv-tank-fill"></span><b>84%</b></span><span class="gv-tank-name">S5</span><span class="gv-tank-temp">24°</span></div>
+                            <div class="gv-tank" style="--p: 0.57; --c: var(--grao-sorgo)" role="listitem" title="Silo 6 · Sorgo · 57% · 20°C"><span class="gv-tank-body"><span class="gv-tank-fill"></span><b>57%</b></span><span class="gv-tank-name">S6</span><span class="gv-tank-temp">20°</span></div>
+                            <div class="gv-tank" style="--p: 0.71; --c: var(--grao-trigo)" role="listitem" title="Silo 7 · Trigo · 71% · 23°C"><span class="gv-tank-body"><span class="gv-tank-fill"></span><b>71%</b></span><span class="gv-tank-name">S7</span><span class="gv-tank-temp">23°</span></div>
+                            <div class="gv-tank" style="--p: 0.36; --c: var(--grao-soja)" role="listitem" title="Silo 8 · Soja · 36% · 21°C"><span class="gv-tank-body"><span class="gv-tank-fill"></span><b>36%</b></span><span class="gv-tank-name">S8</span><span class="gv-tank-temp">21°</span></div>
+                        </div>
+                        <div class="gv-chips" role="list" aria-label="Estoque por cultura">
+                            <span class="gv-chip is-atencao" style="--p: 0.85; --c: var(--grao-milho)" role="listitem"><i class="legend-dot legend-dot--milho"></i>Milho <b>10.160 t</b> <em>85%</em></span>
+                            <span class="gv-chip" style="--p: 0.7; --c: var(--grao-trigo)" role="listitem"><i class="legend-dot legend-dot--trigo"></i>Trigo <b>5.560 t</b> <em>70%</em></span>
+                            <span class="gv-chip" style="--p: 0.51; --c: var(--grao-sorgo)" role="listitem"><i class="legend-dot legend-dot--sorgo"></i>Sorgo <b>4.080 t</b> <em>51%</em></span>
+                            <span class="gv-chip" style="--p: 0.36; --c: var(--grao-soja)" role="listitem"><i class="legend-dot legend-dot--soja"></i>Soja <b>1.440 t</b> <em>36%</em></span>
                         </div>
                         <div class="geral-card-foot"><span>Silo 2 em 92% · pulmões 530 t</span><span class="geral-card-link">Ver tela →</span></div>
                     </button>
 
+                    <!-- 06 Aeração: ventiladores + tarifa em destaque, medidores embaixo -->
                     <button class="geral-card ok" type="button" data-goto="6" title="Abrir tela da aeração" data-ponta-status>
                         <div class="geral-card-head">
                             <span class="geral-card-num">06</span>
                             <span class="geral-card-name">Aeração</span>
                             <span class="kpi-flag kpi-flag--ok">OK</span>
                         </div>
-                        <div class="geral-kpis">
-                            <div class="geral-kpi"><span class="geral-kpi-label">Ventiladores</span><span class="geral-kpi-value">2 <small>/ 2 on</small></span><span class="geral-kpi-ref">zonas A–D</span></div>
-                            <div class="geral-kpi"><span class="geral-kpi-label">Consumo</span><span class="geral-kpi-value">45 <small>kW</small></span><span class="geral-kpi-ref">30 kW na ponta</span></div>
-                            <div class="geral-kpi"><span class="geral-kpi-label">Fluxo ar</span><span class="geral-kpi-value">8,2 <small>m³/s</small></span><span class="geral-kpi-ref">nominal 8,5</span></div>
+                        <div class="gv-hero">
+                            <div class="gv-big">
+                                <span class="gv-big-value"><span class="gv-fans" aria-hidden="true"><i class="gv-fan is-on"></i><i class="gv-fan is-on"></i></span>2<small>/ 2 on</small></span>
+                                <span class="gv-big-label">Ventiladores</span>
+                                <span class="gv-big-ref">zonas A–D</span>
+                            </div>
+                            <div class="gv-tarifa">
+                                <span class="gv-tarifa-badge" data-ponta-tarifa>FORA DE PONTA</span>
+                                <span class="gv-tarifa-sub"><span data-ponta-contagem-label>Entra em ponta em</span> <b data-ponta-contagem>--:--</b></span>
+                                <span class="gv-tarifa-ref">ponta 18h–21h · seg–sex</span>
+                            </div>
                         </div>
-                        <div class="geral-rows">
-                            <div class="geral-row geral-row--ok"><span class="geral-row-label">Tarifa agora</span><span class="geral-row-value" data-ponta-tarifa>FORA DE PONTA</span><span class="geral-row-ref">ponta 18h–21h</span></div>
-                            <div class="geral-row"><span class="geral-row-label" data-ponta-contagem-label>Entra em ponta em</span><span class="geral-row-value" data-ponta-contagem>--:--</span><span class="geral-row-ref">seg–sex</span></div>
-                            <div class="geral-row"><span class="geral-row-label">Temp. média do grão</span><span class="geral-row-value">22°C</span><span class="geral-row-ref">20°C a 24°C</span></div>
+                        <div class="gv-meters gv-meters--wide">
+                            <div class="gv-meter" style="--p: 0.75"><span class="gv-meter-label">Consumo</span><span class="gv-meter-track"><span class="gv-meter-fill"></span><span class="gv-meter-mark" style="--m: 0.5"></span></span><span class="gv-meter-value">45 kW</span><span class="gv-meter-lim">30 kW na ponta</span></div>
+                            <div class="gv-meter" style="--p: 0.965"><span class="gv-meter-label">Fluxo de ar</span><span class="gv-meter-track"><span class="gv-meter-fill"></span></span><span class="gv-meter-value">8,2 m³/s</span><span class="gv-meter-lim">nominal 8,5</span></div>
+                            <div class="gv-meter gv-meter--range" style="--p: 0.5"><span class="gv-meter-label">Temp. do grão</span><span class="gv-meter-track"><span class="gv-meter-dot"></span></span><span class="gv-meter-value">22°C</span><span class="gv-meter-lim">média · 20°C a 24°C</span></div>
                         </div>
                         <div class="geral-card-foot"><span>Ventiladores liberados</span><span class="geral-card-link">Ver tela →</span></div>
                     </button>
 
+                    <!-- 07 Expedição: cargas do dia por cultura, dosagem em anel -->
                     <button class="geral-card ok" type="button" data-goto="7" title="Abrir tela da expedição">
                         <div class="geral-card-head">
                             <span class="geral-card-num">07</span>
                             <span class="geral-card-name">Expedição</span>
                             <span class="kpi-flag kpi-flag--ok">OK</span>
                         </div>
-                        <div class="geral-kpis">
-                            <div class="geral-kpi"><span class="geral-kpi-label">Expedidas</span><span class="geral-kpi-value">28</span><span class="geral-kpi-ref">1.120 t</span></div>
-                            <div class="geral-kpi"><span class="geral-kpi-label">Aguardando</span><span class="geral-kpi-value">6</span><span class="geral-kpi-ref">18 min médio</span></div>
-                            <div class="geral-kpi"><span class="geral-kpi-label">Dosagem</span><span class="geral-kpi-value">99,2<small>%</small></span><span class="geral-kpi-ref">28 cargas</span></div>
+                        <div class="gv-hero">
+                            <div class="gv-big">
+                                <span class="gv-big-value">28<small>cargas</small></span>
+                                <span class="gv-big-label">Expedidas hoje</span>
+                                <span class="gv-big-ref">1.120 t</span>
+                            </div>
+                            <div class="gv-side">
+                                <div class="gv-kpi"><span class="gv-kpi-value">6</span><span class="gv-kpi-label">aguardando · 18 min médio</span></div>
+                                <div class="gv-ring gv-ring--mini" style="--p: 0.992" role="img" aria-label="Dosagem 99,2%"><span class="gv-ring-value">99,2<small>%</small></span><span class="gv-ring-label">dosagem</span></div>
+                            </div>
                         </div>
-                        <div class="geral-tabela geral-tabela--expedicao" role="table" aria-label="Cargas expedidas por cultura">
-                            <div class="geral-tabela-row geral-tabela-row--head" role="row"><span>Cultura</span><span>Cargas</span><span>Volume</span><span>Reprov.</span></div>
-                            <div class="geral-tabela-row geral-tabela-row--total" role="row"><span>Total</span><span>28</span><span>1.120 t</span><span class="is-atencao">2 · 7%</span></div>
-                            <div class="geral-tabela-row" role="row"><span><i class="legend-dot legend-dot--milho"></i>Milho</span><span>12</span><span>480 t</span><span class="is-atencao">1</span></div>
-                            <div class="geral-tabela-row" role="row"><span><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><span>7</span><span>280 t</span><span class="is-atencao">1</span></div>
-                            <div class="geral-tabela-row" role="row"><span><i class="legend-dot legend-dot--trigo"></i>Trigo</span><span>5</span><span>200 t</span><span>0</span></div>
-                            <div class="geral-tabela-row" role="row"><span><i class="legend-dot legend-dot--soja"></i>Soja</span><span>4</span><span>160 t</span><span>0</span></div>
+                        <div class="gv-block">
+                            <div class="gv-stack" role="img" aria-label="Cargas expedidas: milho 12, sorgo 7, trigo 5, soja 4">
+                                <span class="gv-stack-seg" style="--p: 0.4286; --c: var(--grao-milho)"><b>12</b></span>
+                                <span class="gv-stack-seg" style="--p: 0.25; --c: var(--grao-sorgo)"><b>7</b></span>
+                                <span class="gv-stack-seg" style="--p: 0.1786; --c: var(--grao-trigo)"><b>5</b></span>
+                                <span class="gv-stack-seg" style="--p: 0.1429; --c: var(--grao-soja)"><b>4</b></span>
+                            </div>
                         </div>
-                        <div class="geral-card-foot"><span>2 reprovadas (milho, sorgo) · dosagem imp. 1,4% · umid. 0,8%</span><span class="geral-card-link">Ver tela →</span></div>
+                        <div class="gv-heat gv-heat--exp" role="table" aria-label="Cargas expedidas por cultura">
+                            <div class="gv-heat-row gv-heat-row--head" role="row"><span></span><span>Cargas</span><span>Volume</span><span>Reprov.</span></div>
+                            <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--milho"></i>Milho</span><span>12</span><span>480 t</span><span class="gv-pill is-atencao">1</span></div>
+                            <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><span>7</span><span>280 t</span><span class="gv-pill is-atencao">1</span></div>
+                            <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--trigo"></i>Trigo</span><span>5</span><span>200 t</span><span class="gv-pill">0</span></div>
+                            <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--soja"></i>Soja</span><span>4</span><span>160 t</span><span class="gv-pill">0</span></div>
+                        </div>
+                        <div class="geral-card-foot"><span>2 reprovadas (7%) · dosagem imp. 1,4% · umid. 0,8%</span><span class="geral-card-link">Ver tela →</span></div>
                     </button>
 
+                    <!-- 08 Central: tempo em Avaré e nos cooperados -->
                     <button class="geral-card" type="button" data-goto="8" title="Abrir tela da central">
                         <div class="geral-card-head">
                             <span class="geral-card-num">08</span>
                             <span class="geral-card-name">Central</span>
                             <span class="kpi-flag kpi-flag--info">Tempo</span>
                         </div>
-                        <div class="geral-kpis">
-                            <div class="geral-kpi"><span class="geral-kpi-label">Avaré</span><span class="geral-kpi-value">27<small>°</small></span><span class="geral-kpi-ref">parc. nublado</span></div>
-                            <div class="geral-kpi"><span class="geral-kpi-label">Chuva</span><span class="geral-kpi-value">20<small>%</small></span><span class="geral-kpi-ref">sem alerta</span></div>
-                            <div class="geral-kpi"><span class="geral-kpi-label">Vento</span><span class="geral-kpi-value">12 <small>km/h</small></span><span class="geral-kpi-ref">leste</span></div>
-                        </div>
-                        <div class="geral-rows">
-                            <div class="geral-row-label geral-row-label--solo">Próximos dias · Avaré</div>
-                            <div class="geral-strip geral-strip--dias">
-                                <div class="geral-strip-item"><span class="geral-strip-name">Qua</span><span class="geral-strip-val">29°</span></div>
-                                <div class="geral-strip-item"><span class="geral-strip-name">Qui</span><span class="geral-strip-val">28°</span></div>
-                                <div class="geral-strip-item"><span class="geral-strip-name">Sex</span><span class="geral-strip-val">24°</span></div>
-                                <div class="geral-strip-item"><span class="geral-strip-name">Sáb</span><span class="geral-strip-val">26°</span></div>
+                        <div class="gv-hero gv-hero--tempo">
+                            <svg class="gv-weather-icon" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>
+                            <div class="gv-big">
+                                <span class="gv-big-value">27<small>°</small></span>
+                                <span class="gv-big-label">Avaré agora</span>
+                                <span class="gv-big-ref">parcialmente nublado</span>
                             </div>
-                            <div class="geral-row"><span class="geral-row-label">Cooperados</span><span class="geral-row-value">25° a 30°</span><span class="geral-row-ref">Itaí e Manduri 30°</span></div>
+                            <div class="gv-side">
+                                <div class="gv-kpi"><span class="gv-kpi-value">20<small>%</small></span><span class="gv-kpi-label">chuva · sem alerta</span></div>
+                                <div class="gv-kpi"><span class="gv-kpi-value">12<small>km/h</small></span><span class="gv-kpi-label">vento leste</span></div>
+                            </div>
                         </div>
+                        <div class="gv-days" role="img" aria-label="Próximos dias em Avaré: quarta 29°, quinta 28°, sexta 24°, sábado 26°">
+                            <div class="gv-day" style="--p: 0.9"><span class="gv-day-temp">29°</span><span class="gv-day-track"><span class="gv-day-fill"></span></span><span class="gv-day-name">Qua</span></div>
+                            <div class="gv-day" style="--p: 0.8"><span class="gv-day-temp">28°</span><span class="gv-day-track"><span class="gv-day-fill"></span></span><span class="gv-day-name">Qui</span></div>
+                            <div class="gv-day" style="--p: 0.4"><span class="gv-day-temp">24°</span><span class="gv-day-track"><span class="gv-day-fill"></span></span><span class="gv-day-name">Sex</span></div>
+                            <div class="gv-day" style="--p: 0.6"><span class="gv-day-temp">26°</span><span class="gv-day-track"><span class="gv-day-fill"></span></span><span class="gv-day-name">Sáb</span></div>
+                        </div>
+                        <div class="gv-caption">próximos dias · Avaré</div>
+                        <div class="gv-coop"><span class="gv-coop-label">Cooperados</span><span class="gv-coop-value">25° a 30°</span><span class="gv-coop-ref">Itaí e Manduri 30°</span></div>
                         <div class="geral-card-foot"><span>6 localidades monitoradas</span><span class="geral-card-link">Ver tela →</span></div>
                     </button>
                 </div>

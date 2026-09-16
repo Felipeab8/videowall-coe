@@ -7817,14 +7817,18 @@ body.edit-mode .fluxo-etapa-pill {
 .geral-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: 1fr;
+    /* as linhas dividem a altura, mas nunca ficam menores que o conteudo */
+    grid-auto-rows: minmax(min-content, 1fr);
     gap: 0.875rem;
     margin-bottom: 1rem;
 }
 
-/* a grade divide a altura que sobra da tela; os cards crescem juntos */
+/* a grade divide a altura que sobra da tela; os cards crescem juntos.
+   Sem overflow escondido: se nao couber, o fitToScreen (script.js) mede
+   o estouro e reduz a escala ate caber, sem rolagem e sem sobreposicao. */
 .screen > .geral-grid {
     flex: 1 1 auto;
+    min-height: 0;
 }
 
 .geral-card {
@@ -7903,50 +7907,97 @@ body.edit-mode .fluxo-etapa-pill {
     color: var(--accent);
 }
 
-.geral-kpis {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, auto));
-    justify-content: space-between;
-    gap: 0.75rem;
+
+/* ------------------------------------------------
+   Componentes visuais da visao geral (gv-*)
+   Todos so CSS: --p e a fracao preenchida (0-1) e
+   --c a cor da serie (cai no azul da interface).
+   ------------------------------------------------ */
+.geral-card {
+    gap: 0.6rem;
+    min-height: 0;
+    padding: 0.8rem 1rem 0.7rem;
+    overflow: hidden;
+}
+
+.geral-card > * {
     width: 100%;
-    flex: 0 0 auto;
+    /* blocos internos mantem a altura natural: nada encolhe por cima do vizinho */
+    flex-shrink: 0;
 }
 
-/* quatro KPIs no topo (classificacao: analisadas + 3 indicadores) */
-.geral-kpis--four {
-    grid-template-columns: minmax(0, 1.25fr) repeat(3, minmax(0, auto));
-    gap: 0.625rem;
+/* topo do card: numero grande a esquerda, apoio a direita */
+.gv-hero {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--row-line);
 }
 
-.geral-kpis--four .geral-kpi-value {
-    font-size: 1.35rem;
-}
-
-.geral-kpi--lead {
-    padding-right: 0.625rem;
-    border-right: 1px solid var(--row-line);
-}
-
-.geral-kpi {
+.gv-big {
     display: flex;
     flex-direction: column;
-    gap: 0.125rem;
+    flex: 0 0 auto;
     min-width: 0;
 }
 
-.geral-kpi-label {
-    font-size: 0.58rem;
-    font-weight: 700;
-    color: var(--muted);
-    letter-spacing: 1px;
-    text-transform: uppercase;
+.gv-big-value {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    font-size: 2.1rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
-.geral-kpi-value {
-    font-size: 1.55rem;
+.gv-big-value small {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--muted);
+}
+
+.gv-big--ruim .gv-big-value {
+    color: var(--danger);
+}
+
+.gv-big-label {
+    margin-top: 0.3rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.gv-big-ref {
+    font-size: 0.66rem;
+    color: var(--faint);
+    white-space: nowrap;
+}
+
+.gv-side {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.45rem;
+    min-width: 0;
+    padding-left: 1rem;
+    border-left: 1px solid var(--row-line);
+}
+
+.gv-kpi {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.gv-kpi-value {
+    font-size: 1.15rem;
     font-weight: 700;
     line-height: 1.1;
     color: var(--text);
@@ -7954,547 +8005,866 @@ body.edit-mode .fluxo-etapa-pill {
     white-space: nowrap;
 }
 
-.geral-kpi-value small {
+.gv-kpi-value small {
+    margin-left: 0.2rem;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.gv-kpi--ruim .gv-kpi-value {
+    color: var(--danger);
+}
+
+.gv-kpi-label {
+    font-size: 0.66rem;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* anel de percentual */
+.gv-ring {
+    position: relative;
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 4.3rem;
+    height: 4.3rem;
+    text-align: center;
+}
+
+.gv-ring::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(var(--c, var(--accent)) calc(var(--p) * 360deg), var(--row-line) 0);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 0.5rem), #000 calc(100% - 0.5rem + 1px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 0.5rem), #000 calc(100% - 0.5rem + 1px));
+}
+
+.gv-ring-value {
+    font-size: 1.35rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.gv-ring-value small {
     font-size: 0.6em;
     font-weight: 600;
     color: var(--muted);
 }
 
-.geral-kpi--ruim .geral-kpi-value {
-    color: var(--danger);
-}
-
-.geral-kpi-ref {
-    font-size: 0.6rem;
-    font-weight: 600;
-    color: var(--faint);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* linhas de detalhe: rótulo à esquerda, valor e referência à direita */
-.geral-rows {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.3125rem;
-    width: 100%;
-    flex: 1 1 auto;
-    padding-top: 0.625rem;
-    border-top: 1px solid var(--row-line);
-}
-
-.geral-row {
-    display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
-    width: 100%;
-    font-size: 0.72rem;
-    line-height: 1.25;
-}
-
-.geral-row-label {
-    flex: 1 1 auto;
-    min-width: 0;
-    color: var(--muted);
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.geral-row-label .legend-dot {
-    display: inline-block;
-    width: 0.5rem;
-    height: 0.5rem;
-    margin-right: 0.3rem;
-    vertical-align: middle;
-    position: relative;
-    top: -1px;
-}
-
-.geral-row-label--solo {
-    flex: none;
-    font-size: 0.6rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 0.125rem;
-}
-
-.geral-row-value {
-    flex-shrink: 0;
-    color: var(--text);
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-}
-
-.geral-row-ref {
-    flex: 0 1 auto;
-    min-width: 0;
-    max-width: 45%;
-    color: var(--faint);
-    font-size: 0.62rem;
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: right;
-}
-
-.geral-row--ruim .geral-row-value {
-    color: var(--danger);
-}
-
-.geral-row--atencao .geral-row-value {
-    color: var(--warn);
-}
-
-.geral-row--ok .geral-row-value {
-    color: var(--ok);
-}
-
-/* mini-tabela por cultura (classificacao): cargas, volume e indicadores */
-.geral-tabela {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.2rem;
-    width: 100%;
-    flex: 1 1 auto;
-    padding-top: 0.625rem;
-    border-top: 1px solid var(--row-line);
-}
-
-.geral-tabela-row {
-    display: grid;
-    grid-template-columns: 1.4fr 0.8fr 1fr 0.9fr 0.8fr 0.8fr;
-    gap: 0.375rem;
-    align-items: baseline;
-    font-size: 0.68rem;
-    line-height: 1.25;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    color: var(--text);
-}
-
-.geral-tabela-row > span {
-    min-width: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: right;
-}
-
-.geral-tabela-row > span:first-child {
-    text-align: left;
-    color: var(--muted);
-    font-weight: 600;
-}
-
-.geral-tabela-row > span:first-child .legend-dot {
-    display: inline-block;
-    width: 0.5rem;
-    height: 0.5rem;
-    margin-right: 0.3rem;
-    vertical-align: middle;
-    position: relative;
-    top: -1px;
-}
-
-.geral-tabela-row--head > span {
-    color: var(--faint);
+.gv-ring-label {
+    margin-top: 0.15rem;
     font-size: 0.56rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-}
-
-.geral-tabela-row--total {
-    padding-bottom: 0.25rem;
-    margin-bottom: 0.1rem;
-    border-bottom: 1px solid var(--row-line);
-}
-
-.geral-tabela-row--total > span:first-child {
-    color: var(--text);
-    font-weight: 700;
-}
-
-.geral-tabela-row > span.is-atencao {
-    color: var(--warn);
-}
-
-.geral-tabela-row > span.is-ruim {
-    color: var(--danger);
-}
-
-.geral-tabela-row > span.is-ok {
-    color: var(--ok);
-}
-
-/* expedicao: cargas, volume e reprovas por cultura */
-.geral-tabela--expedicao .geral-tabela-row {
-    grid-template-columns: 1.4fr 0.8fr 1fr 0.9fr;
-}
-
-/* secagem: uma linha por secador (cultura, volume, produtividade, status) */
-.geral-tabela--secadores {
-    flex: 0 0 auto;
-    justify-content: flex-start;
-}
-
-.geral-tabela--secadores .geral-tabela-row {
-    grid-template-columns: 1.1fr 0.9fr 0.8fr 0.9fr 1.6fr;
-}
-
-.geral-tabela--secadores .geral-tabela-row > span:nth-child(2) {
-    text-align: left;
     color: var(--muted);
-    font-weight: 600;
 }
 
-.geral-tabela--secadores .geral-tabela-row > span:nth-child(2) .legend-dot {
-    display: inline-block;
-    width: 0.5rem;
-    height: 0.5rem;
-    margin-right: 0.3rem;
-    vertical-align: middle;
-    position: relative;
-    top: -1px;
+.gv-ring--mini {
+    width: 3.4rem;
+    height: 3.4rem;
+    --c: var(--ok);
 }
 
-/* silos: um ladrilho por silo (S1..S8) com produto, temperatura e ocupacao */
-.geral-rows--silos {
-    flex: 0 0 auto;
-    gap: 0.2rem;
-    padding-top: 0.45rem;
+.gv-ring--mini::before {
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 0.36rem), #000 calc(100% - 0.36rem + 1px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 0.36rem), #000 calc(100% - 0.36rem + 1px));
 }
 
-.geral-silos {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0.3rem;
-    width: 100%;
-}
-
-.geral-silo {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-areas:
-        "name temp"
-        "prod pct"
-        "bar  bar";
-    align-items: baseline;
-    column-gap: 0.3rem;
-    row-gap: 0.06rem;
-    padding: 0.18rem 0.4rem 0.24rem;
-    border-radius: 8px;
-    background: var(--row-bg);
-    border: 1px solid var(--row-line);
-    min-width: 0;
-}
-
-.geral-silo-name {
-    grid-area: name;
-    font-size: 0.66rem;
-    font-weight: 700;
-    color: var(--text);
-    letter-spacing: 0.04em;
-    white-space: nowrap;
-}
-
-.geral-silo-name .legend-dot {
-    display: inline-block;
-    width: 0.5rem;
-    height: 0.5rem;
-    margin-right: 0.25rem;
-    vertical-align: middle;
-    position: relative;
-    top: -1px;
-}
-
-.geral-silo-prod {
-    grid-area: prod;
-    font-size: 0.58rem;
-    font-weight: 600;
-    color: var(--muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.geral-silo-temp {
-    grid-area: temp;
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-}
-
-.geral-silo-pct {
-    grid-area: pct;
-    font-size: 0.58rem;
-    font-weight: 700;
-    color: var(--faint);
-    font-variant-numeric: tabular-nums;
-    text-align: right;
-}
-
-.geral-silo-bar {
-    grid-area: bar;
-    display: block;
-    height: 0.25rem;
-    border-radius: 999px;
-    background: var(--card-bg-bottom);
-    border: 1px solid var(--row-line);
-    overflow: hidden;
-}
-
-.geral-silo-bar > span {
-    display: block;
-    height: 100%;
-    border-radius: inherit;
-    background: linear-gradient(90deg, var(--accent-strong), var(--accent));
-}
-
-.geral-silo--alto .geral-silo-pct,
-.geral-silo--quente .geral-silo-temp {
-    color: var(--warn);
-}
-
-.geral-silo--alto .geral-silo-bar > span {
-    background: var(--warn);
-}
-
-.geral-silo--quente {
-    border-color: color-mix(in srgb, var(--warn) 45%, transparent);
-}
-
-/* silos: estoque por cultura em uma faixa unica de 4 colunas */
-.geral-culturas {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0.375rem;
-    width: 100%;
-    flex: 0 0 auto;
-    padding-top: 0.4rem;
-    border-top: 1px solid var(--row-line);
-}
-
-.geral-cultura {
-    display: flex;
-    align-items: baseline;
-    gap: 0.3rem;
-    min-width: 0;
-}
-
-.geral-cultura-nome {
-    flex: 0 1 auto;
-    font-size: 0.6rem;
-    font-weight: 600;
-    color: var(--muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.geral-cultura-nome .legend-dot {
-    display: inline-block;
-    width: 0.5rem;
-    height: 0.5rem;
-    margin-right: 0.25rem;
-    vertical-align: middle;
-    position: relative;
-    top: -1px;
-}
-
-.geral-cultura-val {
-    flex: none;
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-}
-
-.geral-cultura-pct {
-    flex: none;
-    margin-left: auto;
-    font-size: 0.58rem;
-    font-weight: 700;
-    color: var(--faint);
-    font-variant-numeric: tabular-nums;
-}
-
-.geral-cultura-bar {
-    display: none;
-    height: 0.25rem;
-    border-radius: 999px;
-    background: var(--row-bg);
-    border: 1px solid var(--row-line);
-    overflow: hidden;
-}
-
-.geral-cultura-bar > span {
-    display: block;
-    height: 100%;
-    border-radius: inherit;
-    background: linear-gradient(90deg, var(--accent-strong), var(--accent));
-}
-
-.geral-cultura.is-atencao .geral-cultura-val,
-.geral-cultura.is-atencao .geral-cultura-pct {
-    color: var(--warn);
-}
-
-.geral-cultura.is-atencao .geral-cultura-bar > span {
-    background: var(--warn);
-}
-
-/* barra de progresso fina logo abaixo da linha a que pertence */
-.geral-bar {
-    width: 100%;
-    height: 0.3125rem;
-    margin-top: -0.125rem;
-    border-radius: 999px;
-    background: var(--row-bg);
-    border: 1px solid var(--row-line);
-    overflow: hidden;
-}
-
-.geral-bar-fill {
-    display: block;
-    height: 100%;
-    border-radius: inherit;
-    background: linear-gradient(90deg, var(--accent-strong), var(--accent));
-}
-
-.geral-row--ruim + .geral-bar .geral-bar-fill {
-    background: var(--danger);
-}
-
-.geral-row--atencao + .geral-bar .geral-bar-fill {
-    background: var(--warn);
-}
-
-.geral-rows--barras {
-    gap: 0.25rem;
-}
-
-/* faixa de mini-barras verticais (moegas) ou de valores (dias) */
-.geral-strip {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: 1fr;
-    gap: 0.375rem;
-    width: 100%;
-    flex: 1 1 auto;
-    min-height: 3.25rem;
-}
-
-.geral-strip-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 0.2rem;
-    min-width: 0;
-}
-
-.geral-strip-name {
-    order: 3;
-    font-size: 0.58rem;
-    font-weight: 700;
-    color: var(--faint);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-}
-
-.geral-strip-bar {
-    order: 2;
-    display: flex;
-    align-items: flex-end;
-    width: 100%;
-    max-width: 1.75rem;
-    flex: 1 1 auto;
-    min-height: 1.75rem;
-    border-radius: 4px;
-    background: var(--row-bg);
-    border: 1px solid var(--row-line);
-    overflow: hidden;
-}
-
-.geral-strip-bar > span {
-    display: block;
-    width: 100%;
-    background: linear-gradient(180deg, var(--accent), var(--accent-strong));
-}
-
-.geral-strip-item--alto .geral-strip-bar > span {
-    background: var(--warn);
-}
-
-.geral-strip-val {
-    order: 1;
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-}
-
-.geral-strip-item--alto .geral-strip-val {
-    color: var(--warn);
-}
-
-/* umidade da moega, abaixo da sigla (M1..M6); --alta = perto do limite */
-.geral-strip-umid {
-    order: 4;
-    font-size: 0.62rem;
-    font-weight: 600;
-    color: var(--muted, var(--faint));
-    font-variant-numeric: tabular-nums;
-    padding: 0.05rem 0.3rem;
-    border-radius: 999px;
-    background: var(--row-bg);
-    border: 1px solid var(--row-line);
-    white-space: nowrap;
-}
-
-.geral-strip-umid--alta {
-    color: var(--warn);
-    border-color: color-mix(in srgb, var(--warn) 45%, transparent);
-}
-
-.geral-strip--dias {
-    min-height: 0;
-    flex: none;
-    padding: 0.375rem 0;
-    border-radius: 8px;
-    background: var(--row-bg);
-    border: 1px solid var(--row-line);
-}
-
-.geral-strip--dias .geral-strip-item {
-    justify-content: center;
-}
-
-.geral-strip--dias .geral-strip-val {
+.gv-ring--mini .gv-ring-value {
     font-size: 0.95rem;
 }
 
-.geral-alert-time {
-    font-size: 0.6rem;
+.gv-side .gv-ring--mini {
+    align-self: flex-start;
+}
+
+/* medidores: valor contra um limite ou nominal */
+.gv-meters {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0;
+    padding-left: 1rem;
+    border-left: 1px solid var(--row-line);
+}
+
+/* variante com o limite embaixo da barra: para heros com so dois medidores */
+.gv-meters--stack .gv-meter {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+        'label value'
+        'track track'
+        'lim   lim';
+    row-gap: 0.15rem;
+}
+
+.gv-meters--stack .gv-meter-lim {
+    text-align: left;
+}
+
+.gv-meters--wide {
+    padding-left: 0;
+    border-left: 0;
+    gap: 0.5rem;
+}
+
+.gv-meter {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr) auto;
+    grid-template-areas:
+        'label lim   value'
+        'track track track';
+    column-gap: 0.4rem;
+    row-gap: 0.2rem;
+    align-items: baseline;
+}
+
+.gv-meter-label {
+    grid-area: label;
+    font-size: 0.66rem;
     font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.gv-meter-track {
+    grid-area: track;
+    position: relative;
+    align-self: center;
+    height: 0.4rem;
+    border-radius: 999px;
+    background: var(--row-line);
+    overflow: visible;
+}
+
+.gv-meter-fill {
+    display: block;
+    width: calc(var(--p) * 100%);
+    height: 100%;
+    border-radius: inherit;
+    background: var(--c, var(--accent));
+}
+
+.gv-meter-mark {
+    position: absolute;
+    top: -0.2rem;
+    bottom: -0.2rem;
+    left: calc(var(--m) * 100%);
+    width: 2px;
+    background: var(--text);
+    opacity: 0.6;
+}
+
+.gv-meter--range .gv-meter-track {
+    background: linear-gradient(90deg, var(--row-line), rgba(46, 204, 113, 0.35) 30%, rgba(46, 204, 113, 0.35) 70%, var(--row-line));
+}
+
+.gv-meter-dot {
+    position: absolute;
+    top: 50%;
+    left: calc(var(--p) * 100%);
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 0 2px var(--card-bg-bottom);
+    transform: translate(-50%, -50%);
+}
+
+.gv-meter-value {
+    grid-area: value;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.gv-meter--ruim .gv-meter-value,
+.gv-meter--ruim .gv-meter-fill {
+    color: var(--danger);
+    background: var(--danger);
+}
+
+.gv-meter--ruim .gv-meter-value {
+    background: none;
+}
+
+.gv-meter-lim {
+    grid-area: lim;
+    min-width: 0;
+    font-size: 0.58rem;
+    color: var(--faint);
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* barra empilhada por cultura (uma linha, segmentos proporcionais) */
+.gv-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.gv-stack {
+    display: flex;
+    gap: 2px;
+    height: 1.35rem;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.gv-stack-seg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: var(--p) 1 0;
+    min-width: 0;
+    background: var(--c, var(--accent));
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.gv-stack-legend {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.64rem;
+    color: var(--muted);
+}
+
+.gv-stack-legend > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.gv-stack-legend .legend-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+}
+
+.gv-stack-legend-cap {
+    margin-left: auto;
+    color: var(--faint);
+}
+
+/* lista de barras horizontais com rotulo, valor e linha de apoio */
+.gv-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.gv-bar {
+    display: grid;
+    grid-template-columns: 5.2rem minmax(0, 1fr) auto;
+    grid-template-areas:
+        'label track value'
+        'sub   ref   ref';
+    column-gap: 0.5rem;
+    row-gap: 0.1rem;
+    align-items: center;
+}
+
+.gv-bar-label {
+    grid-area: label;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.gv-bar-label .legend-dot,
+.gv-bar-sub .legend-dot,
+.gv-heat-row .legend-dot,
+.gv-chip .legend-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.gv-bar-track {
+    grid-area: track;
+    height: 0.55rem;
+    border-radius: 999px;
+    background: var(--row-line);
+    overflow: hidden;
+}
+
+.gv-bar-fill {
+    display: block;
+    width: calc(var(--p) * 100%);
+    height: 100%;
+    border-radius: inherit;
+    background: var(--c, var(--accent));
+}
+
+.gv-bar--ruim {
+    --c: var(--danger);
+}
+
+.gv-bar--atencao {
+    --c: var(--warn);
+}
+
+.gv-bar-value {
+    grid-area: value;
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.gv-bar--ruim .gv-bar-value {
+    color: var(--danger);
+}
+
+.gv-bar--atencao .gv-bar-value {
+    color: var(--warn);
+}
+
+.gv-bar-ref {
+    grid-area: ref;
+    font-size: 0.6rem;
+    color: var(--faint);
+    text-align: right;
+    white-space: nowrap;
+}
+
+.gv-bar-sub {
+    grid-area: sub;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.6rem;
+    color: var(--faint);
+    white-space: nowrap;
+}
+
+.gv-bar-sub em {
+    font-style: normal;
+    font-weight: 600;
+}
+
+/* mapa de calor compacto: cada celula tem um preenchimento proporcional */
+.gv-heat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.gv-heat-row {
+    display: grid;
+    grid-template-columns: 4.2rem 3.4rem repeat(3, minmax(0, 1fr));
+    column-gap: 0.35rem;
+    align-items: center;
+    font-size: 0.7rem;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.gv-heat--exp .gv-heat-row {
+    grid-template-columns: 4.2rem minmax(0, 1fr) minmax(0, 1fr) 2.4rem;
+}
+
+.gv-heat-row > span {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.gv-heat-row > span:first-child {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-weight: 600;
+    text-align: left;
+}
+
+.gv-heat-row > span:nth-child(2) {
+    color: var(--muted);
+}
+
+.gv-heat-row--head > span {
+    font-size: 0.58rem;
+    font-weight: 600;
+    color: var(--faint);
+}
+
+.gv-cell {
+    padding: 0.12rem 0.35rem;
+    border-radius: 4px;
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.22) calc(var(--p) * 100%), transparent 0);
+}
+
+.gv-cell.is-atencao {
+    color: var(--warn);
+    background: linear-gradient(90deg, rgba(243, 156, 18, 0.28) calc(var(--p) * 100%), transparent 0);
+}
+
+.gv-pill {
+    justify-self: end;
+    min-width: 1.5rem;
+    padding: 0.08rem 0.4rem;
+    border-radius: 999px;
+    background: var(--row-line);
+    color: var(--muted);
+    text-align: center;
+    font-weight: 700;
+}
+
+.gv-pill.is-atencao {
+    background: rgba(243, 156, 18, 0.22);
+    color: var(--warn);
+}
+
+/* colunas verticais (moegas) */
+.gv-cols {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.5rem;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.gv-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    min-height: 0;
+}
+
+.gv-col-value {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.gv-col--alto .gv-col-value {
+    color: var(--warn);
+}
+
+.gv-col-track {
+    display: flex;
+    align-items: flex-end;
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 2.2rem;
+    border-radius: 5px;
+    background: var(--row-line);
+    overflow: hidden;
+}
+
+.gv-col-fill {
+    display: block;
+    width: 100%;
+    height: calc(var(--p) * 100%);
+    border-radius: inherit;
+    background: var(--c, var(--accent));
+}
+
+.gv-col--alto .gv-col-fill {
+    background: var(--warn);
+}
+
+.gv-col-name {
+    font-size: 0.66rem;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.gv-col-sub {
+    font-size: 0.6rem;
     color: var(--faint);
     font-variant-numeric: tabular-nums;
 }
 
-/* em ponta o card da aeracao acompanha a tela 08 */
-.geral-card.ponta-on .geral-row--ok .geral-row-value {
+.gv-col-sub.is-atencao {
     color: var(--warn);
+    font-weight: 700;
+}
+
+.gv-caption {
+    font-size: 0.6rem;
+    color: var(--faint);
+    text-align: center;
+}
+
+/* progresso do dia com marcas de referencia (secagem) */
+.gv-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.gv-progress-track {
+    position: relative;
+    display: block;
+    height: 0.7rem;
+    border-radius: 999px;
+    background: var(--row-line);
+}
+
+.gv-progress-fill {
+    display: block;
+    width: calc(var(--p) * 100%);
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--accent-strong), var(--accent));
+}
+
+.gv-progress-mark {
+    position: absolute;
+    top: -0.2rem;
+    bottom: -0.2rem;
+    width: 2px;
+    background: var(--text);
+    opacity: 0.55;
+}
+
+.gv-progress-mark--1 {
+    left: calc(var(--m1) * 100%);
+}
+
+.gv-progress-mark--2 {
+    left: calc(var(--m2) * 100%);
+    background: var(--ok);
+    opacity: 0.9;
+}
+
+.gv-progress-legend {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.6rem;
+    color: var(--faint);
+    white-space: nowrap;
+}
+
+.gv-progress-legend b {
+    color: var(--muted);
+    font-weight: 700;
+}
+
+.gv-progress-legend b.is-ok {
+    color: var(--ok);
+}
+
+/* tanques (silos): preenchem de baixo pra cima na cor do produto */
+.gv-tanks {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 0.4rem;
+    flex: 1 1 auto;
+}
+
+.gv-tank {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+.gv-tank-body {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 2.6rem;
+    border: 1px solid var(--row-line);
+    border-radius: 4px 4px 6px 6px;
+    background: var(--row-bg);
+    overflow: hidden;
+}
+
+.gv-tank-fill {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc(var(--p) * 100%);
+    background: var(--c, var(--accent));
+    opacity: 0.85;
+}
+
+.gv-tank-body b {
+    position: relative;
+    font-size: 0.62rem;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+    font-variant-numeric: tabular-nums;
+}
+
+.gv-tank-name {
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.gv-tank-temp {
+    font-size: 0.58rem;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+}
+
+.gv-tank--alto .gv-tank-body {
+    border-color: var(--warn);
+}
+
+.gv-tank--alto .gv-tank-name {
+    color: var(--warn);
+}
+
+.gv-tank--quente .gv-tank-temp {
+    color: var(--warn);
+    font-weight: 700;
+}
+
+/* fichas por cultura com preenchimento proporcional ao fundo */
+.gv-chips {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.3rem;
+}
+
+.gv-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    min-width: 0;
+    padding: 0.2rem 0.45rem;
+    border-radius: 5px;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--c, var(--accent)) 22%, transparent) calc(var(--p) * 100%), var(--row-bg) 0);
+    font-size: 0.64rem;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.gv-chip b {
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.gv-chip em {
+    margin-left: auto;
+    font-style: normal;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.gv-chip.is-atencao em {
+    color: var(--warn);
+}
+
+/* ventiladores e tarifa (aeracao) */
+.gv-fans {
+    display: inline-flex;
+    gap: 0.25rem;
+    margin-right: 0.35rem;
+    align-self: center;
+}
+
+.gv-fan {
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    border: 2px solid var(--faint);
+}
+
+.gv-fan.is-on {
+    border-color: var(--ok);
+    background: radial-gradient(circle, var(--ok) 35%, transparent 40%);
+    box-shadow: 0 0 0.5rem rgba(46, 204, 113, 0.5);
+}
+
+.gv-tarifa {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    min-width: 0;
+    padding-left: 1rem;
+    border-left: 1px solid var(--row-line);
+}
+
+.gv-tarifa-badge {
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+    border: 1px solid rgba(46, 204, 113, 0.45);
+    background: rgba(46, 204, 113, 0.14);
+    color: var(--ok);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+}
+
+.gv-tarifa-sub {
+    font-size: 0.7rem;
+    color: var(--muted);
+}
+
+.gv-tarifa-sub b {
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.gv-tarifa-ref {
+    font-size: 0.6rem;
+    color: var(--faint);
+}
+
+/* em ponta o card da aeracao acompanha a tela 08 */
+.geral-card.ponta-on .gv-tarifa-badge {
+    border-color: rgba(243, 156, 18, 0.5);
+    background: rgba(243, 156, 18, 0.16);
+    color: var(--warn);
+}
+
+/* tempo (central) */
+.gv-hero--tempo {
+    gap: 0.75rem;
+}
+
+.gv-weather-icon {
+    flex: 0 0 auto;
+    width: 2.8rem;
+    height: 2.8rem;
+    color: var(--warn);
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.gv-days {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.6rem;
+    flex: 1 1 auto;
+}
+
+.gv-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.gv-day-temp {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.gv-day-track {
+    display: flex;
+    align-items: flex-end;
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 2rem;
+    border-radius: 5px;
+    background: var(--row-line);
+    overflow: hidden;
+}
+
+.gv-day-fill {
+    display: block;
+    width: 100%;
+    height: calc(var(--p) * 100%);
+    border-radius: inherit;
+    background: linear-gradient(180deg, var(--warn), rgba(243, 156, 18, 0.35));
+}
+
+.gv-day-name {
+    font-size: 0.66rem;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.gv-coop {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    color: var(--muted);
+}
+
+.gv-coop-value {
+    font-weight: 700;
+    color: var(--text);
+}
+
+.gv-coop-ref {
+    margin-left: auto;
+    font-size: 0.6rem;
+    color: var(--faint);
+}
+
+/* rodape: menor e sem caixa alta, o card e o botao inteiro */
+.geral-card-foot {
+    margin-top: auto;
+    font-size: 0.66rem;
+}
+
+.geral-card-foot em {
+    font-style: normal;
+    color: var(--faint);
+}
+
+.geral-card-foot .is-ok,
+.gv-bar-sub .is-ok {
+    color: var(--ok);
+}
+
+.gv-bar-sub .is-atencao {
+    color: var(--warn);
+}
+
+/* tema claro: fundos das celulas e dos tanques */
+body.theme-light .gv-tank-fill {
+    opacity: 0.9;
+}
+
+body.theme-light .gv-tank-body b {
+    color: var(--text);
+    text-shadow: 0 0 3px #fff, 0 0 3px #fff;
+}
+
+body.theme-light .gv-stack-seg {
+    color: #fff;
+}
+
+body.theme-light .gv-meter-dot {
+    box-shadow: 0 0 0 2px #fff;
 }
 
 .geral-card-foot {
@@ -8641,7 +9011,6 @@ body.theme-light .kpi-flag--info {
     border-color: rgba(37, 99, 235, 0.35);
     color: #1d4ed8;
 }
-
 @media screen and (max-width: 1024px) {
     .geral-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -8659,8 +9028,8 @@ body.theme-light .kpi-flag--info {
         padding: 14px 16px;
     }
 
-    .geral-kpi-value {
-        font-size: 20px;
+    .gv-big-value {
+        font-size: 28px;
     }
 
     .geral-alerts {
