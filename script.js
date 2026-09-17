@@ -481,14 +481,20 @@ const EDITABLE_SELECTORS = [
     '.weather-city-rain',
     '.secador-nome',
     '.secador-tipo',
-    '.secador-chip-label',
-    '.secador-chip-value',
-    '.secador-chip-sub',
+    '.secador-estado-info',
+    '.secador-ponto-nome',
+    '.secador-dado b',
+    '.secador-dado small',
+    '.secador-ponto-nota',
+    '.secador-agora-titulo',
     '.secador-cultura',
     '.secador-estado-label',
     '.secador-estado-pill',
     '.secador-setada-tag',
     '.secador-agora-label',
+    '.secador-leitura-nome',
+    '.secador-leitura-valor',
+    '.secador-leitura-ref',
     '.serie-tag',
     '.secador-horas span',
     '.rank-nome',
@@ -586,7 +592,8 @@ const DRAG_CONFIG = [
     { selector: '.kpi-card', group: 'kpi' },
     { selector: '.kpi-card-small', group: 'kpi-small' },
     { selector: '.secador', group: 'secador' },
-    { selector: '.secador-chip', group: 'secador-dado' },
+    { selector: '.secador-ponto', group: 'secador-dado' },
+    { selector: '.secador-leitura', group: 'secador-leitura' },
     { selector: '.silo-group', group: 'silo-cultura' },
     { selector: '.silo-item', group: 'silo' },
     { selector: '.moega-item', group: 'moega' },
@@ -903,7 +910,8 @@ const RESIZE_CONFIG = [
     { selector: '.status-row', mode: 'size' },
     { selector: '.rank-item', mode: 'size' },
     { selector: '.prod-secador', mode: 'size' },
-    { selector: '.secador-chip', mode: 'size' },
+    { selector: '.secador-ponto', mode: 'size' },
+    { selector: '.secador-leitura', mode: 'size' },
     { selector: '.silo-group', mode: 'size' },
     { selector: '.stack-row', mode: 'size' },
     { selector: '.donut-item', mode: 'size' }
@@ -3771,7 +3779,7 @@ function atualizarPonta() {
     });
     document.querySelectorAll('[data-ponta-msg]').forEach((el) => {
         el.textContent = dentro
-            ? 'Zonas A e C desligadas · 30 kW fora da ponta · retorno às 21:00'
+            ? 'Silos ligados em pausa · 30 kW evitados · retorno às 21:00'
             : 'Ventiladores liberados · ponta das 18h às 21h (seg–sex)';
     });
     document.querySelectorAll('[data-ponta-agora]').forEach((el) => {
@@ -3783,17 +3791,20 @@ setInterval(atualizarPonta, 1000);
 atualizarPonta();
 
 // ============================================
-// RELÓGIO DE AERAÇÃO POR CULTURA
+// SILOS & AERAÇÃO
 // ============================================
-// Cada cartão carrega o ciclo nos próprios atributos: a meta em horas, as
-// horas já ventiladas quando a tela subiu e o estado da zona. A contagem
-// anda a partir do carregamento — na planta o acumulado viria do CLP, aqui
-// ele avança sozinho para o mostrador não congelar no videowall.
-// Zonas marcadas com data-pausa-ponta param sozinhas das 18h às 21h,
-// acompanhando o corte de carga descrito na tabela ao lado.
-const RELOGIO_INICIO = Date.now();
+// Cada cartão de silo traz 24 leituras horárias de temperatura em
+// data-temps (a última é a atual) e o estado do ventilador em data-aer.
+// A curva é desenhada uma vez, quando o SVG ainda está vazio; a taxa em
+// °C/h sai das últimas 3 horas. O contador de "ligado há" anda a partir
+// do carregamento — na planta o acumulado viria do CLP, aqui ele avança
+// sozinho para o cartão não congelar no videowall. Silos com
+// data-pausa-ponta param sozinhos das 18h às 21h, acompanhando a faixa
+// de ponta no topo da tela.
+const SILOS_INICIO = Date.now();
+const TAXA_ALERTA = 0.3; // °C/h: acima disso o cartão inteiro avisa
 
-function formatarTempoRelogio(segundos) {
+function formatarDuracao(segundos) {
     const total = Math.max(0, Math.floor(segundos));
     const horas = String(Math.floor(total / 3600)).padStart(2, '0');
     const minutos = String(Math.floor((total % 3600) / 60)).padStart(2, '0');
@@ -3801,65 +3812,106 @@ function formatarTempoRelogio(segundos) {
     return `${horas}:${minutos}:${restoSeg}`;
 }
 
-// O que falta é leitura de relance: horas e minutos bastam, segundos só poluem.
-function formatarRestanteRelogio(segundos) {
-    const total = Math.max(0, Math.round(segundos));
-    const horas = Math.floor(total / 3600);
-    const minutos = Math.floor((total % 3600) / 60);
-    if (horas > 0) return `faltam ${horas}h${String(minutos).padStart(2, '0')}`;
-    return `faltam ${minutos}min`;
+function formatarTemperatura(valor) {
+    return `${Number(valor).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}°C`;
 }
 
-function atualizarRelogiosAeracao() {
+// Sparkline em viewBox 100x32: uma curva reta ganha meio grau de folga
+// para não virar uma linha colada no fundo.
+function desenharSparkline(svg, temps) {
+    if (!svg || temps.length < 2) return;
+    const W = 100;
+    const H = 32;
+    const PAD = 2.5;
+    let lo = Math.min(...temps);
+    let hi = Math.max(...temps);
+    if (hi - lo < 0.5) {
+        const meio = (hi + lo) / 2;
+        lo = meio - 0.25;
+        hi = meio + 0.25;
+    }
+    const pontos = temps.map((t, i) => {
+        const x = (i / (temps.length - 1)) * W;
+        const y = PAD + (1 - (t - lo) / (hi - lo)) * (H - PAD * 2);
+        return [x, y];
+    });
+    const linha = pontos
+        .map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(2)} ${y.toFixed(2)}`)
+        .join(' ');
+    const [ux, uy] = pontos[pontos.length - 1];
+    svg.innerHTML =
+        `<path class="sa-spark-area" d="${linha} L${W} ${H} L0 ${H} Z"></path>` +
+        `<path class="sa-spark-line" d="${linha}"></path>` +
+        `<circle class="sa-spark-ponto" cx="${ux.toFixed(2)}" cy="${uy.toFixed(2)}" r="2"></circle>`;
+}
+
+// Taxa das últimas 3 horas: leitura atual menos a de 3h atrás, por hora.
+function taxaTemperatura(temps) {
+    if (temps.length < 4) return 0;
+    return (temps[temps.length - 1] - temps[temps.length - 4]) / 3;
+}
+
+function tendenciaDe(taxa) {
+    if (taxa >= TAXA_ALERTA) return 'alerta';
+    if (taxa > 0.05) return 'sobe';
+    if (taxa < -0.05) return 'desce';
+    return 'estavel';
+}
+
+function formatarTaxa(taxa) {
+    const sinal = taxa > 0.05 ? '+' : taxa < -0.05 ? '−' : '';
+    const abs = Math.abs(taxa).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    return `${sinal}${abs} °C/h`;
+}
+
+function prepararSilo(card) {
+    const temps = numeros(card.dataset.temps);
+    if (temps.length < 2) return;
+    const svg = card.querySelector('[data-spark]');
+    if (svg && svg.childElementCount === 0) desenharSparkline(svg, temps);
+
+    const taxa = taxaTemperatura(temps);
+    const tendencia = tendenciaDe(taxa);
+    escreverTexto(card.querySelector('[data-temp-atual]'), formatarTemperatura(temps[temps.length - 1]));
+    const rate = card.querySelector('[data-temp-taxa]');
+    if (rate) {
+        escreverTexto(rate, formatarTaxa(taxa));
+        rate.dataset.tendencia = tendencia;
+        rate.title = tendencia === 'alerta'
+            ? 'Temperatura subindo rápido: conferir aeração e umidade'
+            : 'Variação média nas últimas 3 horas';
+    }
+    card.dataset.alerta = tendencia === 'alerta' ? '1' : '0';
+}
+
+function atualizarSilosAeracao() {
     const dentroPonta = emPonta(new Date());
-    const decorrido = (Date.now() - RELOGIO_INICIO) / 1000;
+    const decorrido = (Date.now() - SILOS_INICIO) / 1000;
 
-    document.querySelectorAll('[data-relogio]').forEach((card) => {
-        // o estado escrito no HTML é a fonte; o efetivo pode virar pausado
-        // pela ponta ou concluído quando a meta fecha
-        if (!card.dataset.estadoBase) card.dataset.estadoBase = card.dataset.estado || 'ativo';
-        const base = card.dataset.estadoBase;
-        const metaSeg = Math.max(1, paraNumero(card.dataset.metaH) * 3600);
-        const pausadoPorPonta = base === 'ativo' && card.dataset.pausaPonta === '1' && dentroPonta;
-        const correndo = base === 'ativo' && !pausadoPorPonta;
+    document.querySelectorAll('[data-silo]').forEach((card) => {
+        prepararSilo(card);
 
-        const acumulado = Math.min(
-            metaSeg,
-            paraNumero(card.dataset.acumuladoH) * 3600 + (correndo ? decorrido : 0)
-        );
-        const fracao = Math.max(0, Math.min(1, acumulado / metaSeg));
-        const concluido = acumulado >= metaSeg;
+        const ligado = card.dataset.aer === 'on';
+        const pausado = ligado && card.dataset.pausaPonta === '1' && dentroPonta;
 
-        let estado = base;
-        let rotulo = 'PARADO';
-        if (concluido) {
-            estado = 'concluido';
-            rotulo = 'CONCLUÍDO';
-        } else if (pausadoPorPonta) {
-            estado = 'pausado';
-            rotulo = 'PAUSADO · PONTA';
-        } else if (base === 'pausado') {
-            rotulo = 'PAUSADO';
-        } else if (base === 'ativo') {
-            rotulo = 'AERANDO';
+        let estado = 'off';
+        let selo = 'OFF';
+        let info = `desligou às ${card.dataset.aerFim || '--:--'} · rodou ${card.dataset.aerRodou || '--'}`;
+        if (pausado) {
+            estado = 'pausa';
+            selo = 'PAUSA';
+            info = `pausado na ponta · volta às ${String(PONTA_FIM).padStart(2, '0')}:00`;
+        } else if (ligado) {
+            estado = 'on';
+            selo = 'ON';
+            info = `ligado há ${formatarDuracao(paraNumero(card.dataset.aerDesdeMin) * 60 + decorrido)}`;
         }
 
-        card.dataset.estado = estado;
-        card.style.setProperty('--relogio-angulo', `${(fracao * 360).toFixed(2)}deg`);
-        if (card.dataset.motivo && !concluido) card.title = card.dataset.motivo;
-
-        escreverTexto(card.querySelector('[data-relogio-tempo]'), formatarTempoRelogio(acumulado));
-        escreverTexto(
-            card.querySelector('[data-relogio-meta]'),
-            `de ${fmtNum(paraNumero(card.dataset.metaH))}h`
-        );
-        escreverTexto(card.querySelector('[data-relogio-estado]'), rotulo);
-        escreverTexto(
-            card.querySelector('[data-relogio-restante]'),
-            concluido ? 'meta cumprida' : formatarRestanteRelogio(metaSeg - acumulado)
-        );
+        card.dataset.aerEstado = estado;
+        escreverTexto(card.querySelector('[data-aer-badge]'), selo);
+        escreverTexto(card.querySelector('[data-aer-info]'), info);
     });
 }
 
-setInterval(atualizarRelogiosAeracao, 1000);
-atualizarRelogiosAeracao();
+setInterval(atualizarSilosAeracao, 1000);
+atualizarSilosAeracao();

@@ -156,18 +156,16 @@
                         <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
                     <div class="submenu" id="submenu-5" hidden>
-                        <button class="menu-item" data-screen="5"><span class="menu-text">Tela dos silos</span></button>
-                        <button class="menu-item" data-screen="cam-5"><span class="menu-text">Câmera dos silos</span></button>
+                        <button class="menu-item" data-screen="5"><span class="menu-text">Silos e aeração</span></button>
                     </div>
                 </div>
                 <div class="menu-group" data-group="6">
                     <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-6">
-                        <span class="menu-text">Aeração</span>
+                        <span class="menu-text">Armazenamento</span>
                         <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
                     <div class="submenu" id="submenu-6" hidden>
-                        <button class="menu-item" data-screen="6"><span class="menu-text">Tela da aeração</span></button>
-                        <button class="menu-item" data-screen="cam-6"><span class="menu-text">Câmera da aeração</span></button>
+                        <button class="menu-item" data-screen="6"><span class="menu-text">Tela de armazenamento</span></button>
                     </div>
                 </div>
                 <div class="menu-group" data-group="7">
@@ -405,7 +403,7 @@
                     </button>
 
                     <!-- 06 Aeração: ventiladores + tarifa em destaque, medidores embaixo -->
-                    <button class="geral-card ok" type="button" data-goto="6" title="Abrir tela da aeração" data-ponta-status>
+                    <button class="geral-card ok" type="button" data-goto="5" title="Abrir tela de silos e aeração" data-ponta-status>
                         <div class="geral-card-head">
                             <span class="geral-card-num">06</span>
                             <span class="geral-card-name">Aeração</span>
@@ -515,7 +513,7 @@
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">5</span>s</div>
                     </div>
                 </div>
-                <div class="kpi-grid kpi-grid--tres">
+                <div class="kpi-grid kpi-grid--four">
                     <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Por que a fila está em 12 caminhões"
@@ -559,6 +557,32 @@
                         <div class="kpi-sub">
                             <span class="kpi-sub-item"><i class="legend-dot legend-dot--milho"></i><b>Milho</b> 860 t · 34 cam.</span>
                             <span class="kpi-sub-item"><i class="legend-dot legend-dot--sorgo"></i><b>Sorgo</b> 380 t · 14 cam.</span>
+                        </div>
+                    </div>
+                    <!-- Tempo em Avaré: chuva à vista muda a fila descoberta e a umidade
+                         do grão que chega, por isso mora ao lado dos KPIs da recepção.
+                         Dados fixos de exemplo; na planta viriam da estação/serviço de tempo. -->
+                    <div class="kpi-card kpi-card--meta kpi-card--motivo kpi-card--tempo" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Tempo em Avaré · próximas horas"
+                        data-motivo-resumo="27°C · umidade 58% · 35% de chance de chuva"
+                        data-motivo-lista="16h::28°C · 20%::parcialmente nublado::neutro|18h::25°C · 45%::pancadas isoladas::ruim|20h::22°C · 60%::chuva fraca::ruim|Vento::14 km/h NE::rajadas de 26 km/h::neutro"
+                        data-motivo-nota="Chuva acima de 40% a partir das 18h: atenção à fila a céu aberto e à umidade do grão na chegada.">
+                        <div class="kpi-label">TEMPO EM AVARÉ</div>
+                        <div class="kpi-value-row">
+                            <span class="tempo-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="8" cy="8" r="3.2"></circle>
+                                    <path d="M8 2.5v1.2M8 12.3v1.2M2.5 8h1.2M12.3 8h1.2M4.1 4.1l.9.9M11 11l.9.9M4.1 11.9l.9-.9M11 5l.9-.9"></path>
+                                    <path d="M10.5 19.5H8.2a3.2 3.2 0 0 1-.4-6.4 4.6 4.6 0 0 1 8.9-1.2 3.8 3.8 0 0 1 .6 7.6h-6.8z"></path>
+                                </svg>
+                            </span>
+                            <div class="kpi-value">27 <span class="kpi-value-unit">°C</span></div>
+                            <span class="kpi-value-ref tempo-desc">Parcialmente nublado</span>
+                        </div>
+                        <div class="kpi-sub">
+                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--umidade"></i><b>Umidade</b> 58%</span>
+                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--chuva"></i><b>Chuva</b> 35%</span>
                         </div>
                     </div>
                 </div>
@@ -1830,33 +1854,32 @@
                         <div class="secador">
                             <div class="secador-head">
                                 <span class="secador-nome"><i class="secador-dot is-operando"></i>SECADOR 1</span>
-                                <span class="secador-cultura secador-cultura--milho">Milho</span>
+                                <span class="secador-cultura secador-cultura--milho" title="Limite da massa para milho informado pela unidade">Milho <small class="secador-cultura-lim">máx. 100°C</small></span>
                                 <span class="secador-tipo">Fluxo contínuo · ciclo 2 de 2</span>
-                                <span class="secador-estado">
-                                    <span class="secador-estado-label">O secador está</span>
+                                <div class="secador-estado">
                                     <b class="secador-estado-pill is-secando">Secando</b>
-                                </span>
+                                    <span class="secador-estado-info">há <b>1h45</b></span>
+                                    <span class="secador-estado-info secador-estado-info--prox">próximo passo <b>descarga ~15h20</b></span>
+                                </div>
                             </div>
                             <div class="secador-body">
-                                <div class="secador-chips">
-                                    <div class="secador-chip">
-                                        <span class="secador-chip-label">TEMP MASSA</span>
-                                        <span class="secador-chip-value">28°C → 92°C</span>
-                                        <span class="secador-chip-sub">entrada → saída</span>
-                                        <span class="secador-chip-sub">limite milho <b>100°C</b></span>
+                                <!-- o grão como entra e como sai: temperatura e umidade lado a lado -->
+                                <div class="secador-fluxo">
+                                    <div class="secador-ponto secador-ponto--entra">
+                                        <span class="secador-ponto-nome">Entra no secador</span>
+                                        <div class="secador-ponto-dados">
+                                            <span class="secador-dado"><b>28°C</b><small>temperatura</small></span>
+                                            <span class="secador-dado"><b>18,4%</b><small>umidade</small></span>
+                                        </div>
                                     </div>
-                                    <div class="secador-chip">
-                                        <span class="secador-chip-label">NA FASE HÁ</span>
-                                        <span class="secador-chip-value">1h45</span>
-                                    </div>
-                                    <div class="secador-chip">
-                                        <span class="secador-chip-label">PRÓXIMA</span>
-                                        <span class="secador-chip-value">Descarga ~15h20</span>
-                                    </div>
-                                    <div class="secador-chip">
-                                        <span class="secador-chip-label">UMIDADE DA MASSA</span>
-                                        <span class="secador-chip-value">18,4% → 13,4%</span>
-                                        <span class="secador-chip-sub">entrada → saída</span>
+                                    <span class="secador-fluxo-seta" aria-hidden="true"></span>
+                                    <div class="secador-ponto secador-ponto--sai">
+                                        <span class="secador-ponto-nome">Sai do secador</span>
+                                        <div class="secador-ponto-dados">
+                                            <span class="secador-dado"><b>92°C</b><small>temperatura</small></span>
+                                            <span class="secador-dado"><b>13,4%</b><small>umidade</small></span>
+                                        </div>
+                                        <span class="secador-ponto-nota">caiu <b>5,0 pontos</b> de umidade</span>
                                     </div>
                                 </div>
                                 <div class="secador-chart">
@@ -1867,22 +1890,20 @@
                                             <span class="secador-fase secador-fase--descarga" style="left: 50%; width: 6.7%"><b>DESCARGA</b></span>
                                             <span class="secador-fase secador-fase--carga" style="left: 56.7%; width: 5%"><b>CARGA</b></span>
                                             <span class="secador-fase secador-fase--secagem" style="left: 61.7%; width: 16.6%"><b>SECANDO</b></span>
+                                            <span class="secador-fase secador-fase--descarga is-prevista" style="left: 83.3%; width: 5.8%"><b>DESCARGA</b></span>
+                                            <span class="secador-fase secador-fase--carga is-prevista" style="left: 89.1%; width: 5%"><b>CARGA</b></span>
+                                            <span class="secador-fase secador-fase--secagem is-prevista" style="left: 94.1%; width: 5.9%"><b>SECANDO</b></span>
                                         </div>
                                         <div class="secador-grid" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-                                        <svg class="secador-svg" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label="Secador 1: turno das 07h às 17h em duas secagens de milho. Fornalha em 148 graus (desejada 150) e secador em 110 graus (desejada 115). Carga até 07h40, secagem até 12h com a umidade caindo de 18,4 para 13,4 por cento, descarga e nova carga até 13h10, e a segunda secagem em curso às 14h50 com 13,4 por cento">
-                                            <line class="secador-setada-linha secador-setada-linha--fornalha" x1="0" y1="16.7" x2="300" y2="16.7"></line>
+                                        <svg class="secador-svg" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label="Secador 1: turno das 07h às 17h em duas secagens de milho. Fornalha em 148 graus e secador em 96 graus (desejada 98). Carga até 07h40, secagem até 12h com a umidade caindo de 18,4 para 13,4 por cento, descarga e nova carga até 13h10, e a segunda secagem em curso às 14h50 com 13,4 por cento">
                                             <line class="secador-setada-linha secador-setada-linha--temp" x1="0" y1="36.1" x2="300" y2="36.1"></line>
                                             <polyline class="secador-linha secador-linha--fornalha" points="0,26.7 5,23 10,20.9 15,18.7 20,17.2 25,16.7 30,17.4 35,16.1 40,16.6 45,17 50,17.2 55,16.4 60,16.7 65,17.7 70,17 75,17.5 80,16.8 85,17.6 90,17 95,17.1 100,17.7 105,17.9 110,16.4 115,16.4 120,17.8 125,17.3 130,16.4 135,17.7 140,17.4 145,17.1 150,16.9 155,18.9 160,20.2 165,19.8 170,21.4 175,22.3 180,22 185,22.5 190,21.3 195,19 200,18.7 205,18 210,18.1 215,16.5 220,17.9 225,17 230,17.8 235,18.2"></polyline>
                                             <polyline class="secador-linha secador-linha--temp" points="0,76.5 5,67.3 10,60.4 15,54.2 20,48.7 25,43.8 30,41.7 35,39.7 40,38.5 45,39.2 50,38.8 55,38.6 60,38.4 65,39.1 70,39.4 75,39.3 80,39.3 85,39.1 90,39.6 95,38.9 100,39.9 105,39 110,40 115,39.6 120,39.5 125,39.4 130,39.3 135,39.2 140,39.1 145,39.6 150,39 155,47.6 160,53 165,55.7 170,56.2 175,59.1 180,59.2 185,59.8 190,53.9 195,49.8 200,45.4 205,42.4 210,40.5 215,39.1 220,39.2 225,38.4 230,38.5 235,38.4"></polyline>
                                             <polyline class="secador-linha secador-linha--umi" points="0,95 8,60 16,28 22,14 30,12 40,14 50,22 60,32 75,46 90,58 105,68 120,76 135,82 150,86 160,87 170,88 178,60 186,22 195,14 205,20 215,40 225,62 235,88"></polyline>
                                         </svg>
-                                        <span class="secador-setada-tag secador-setada-tag--fornalha" style="top: 16.7%">fornalha desejada 150°C</span>
-                                        <span class="secador-setada-tag secador-setada-tag--temp" style="top: 36.1%">secador desejada 115°C</span>
+                                        <span class="secador-setada-tag secador-setada-tag--temp" style="top: 36.1%">temperatura desejada 98°C</span>
                                         <div class="secador-futuro" aria-hidden="true" style="left: 78.3%"></div>
-                                        <div class="secador-agora" style="left: 78.3%"><span class="secador-agora-label">Agora <b>14h50</b><small>restante do turno</small></span></div>
-                                        <span class="serie-tag serie-tag--fornalha" style="left: 78.3%; top: 17.8%">FORNALHA<b>148°C</b></span>
-                                        <span class="serie-tag serie-tag--temp" style="left: 78.3%; top: 38.9%">TEMP SECADOR<b>110°C</b></span>
-                                        <span class="serie-tag serie-tag--umi" style="left: 78.3%; top: 88%">UMI<b>13,4%</b></span>
+                                        <div class="secador-agora" style="left: 78.3%"><span class="secador-agora-label">Agora <b>14h50</b><small>previsto até 17h</small></span></div>
                                     </div>
                                     <div class="secador-horas">
                                         <span>07h</span>
@@ -1898,39 +1919,57 @@
                                         <span>17h</span>
                                     </div>
                                 </div>
+                                <!-- leituras de agora, cada uma na cor da linha do gráfico -->
+                                <div class="secador-agora-col">
+                                    <span class="secador-agora-titulo">Leitura das <b>14h50</b></span>
+                                    <div class="secador-leitura secador-leitura--fornalha">
+                                        <span class="secador-leitura-nome">Fornalha</span>
+                                        <b class="secador-leitura-valor">148°C</b>
+                                        <span class="secador-leitura-ref">calor gerado para o secador</span>
+                                    </div>
+                                    <div class="secador-leitura secador-leitura--temp">
+                                        <span class="secador-leitura-nome">Ar do secador</span>
+                                        <b class="secador-leitura-valor">96°C</b>
+                                        <span class="secador-leitura-ref">desejada 98°C · limite 100°C</span>
+                                    </div>
+                                    <div class="secador-leitura secador-leitura--umi">
+                                        <span class="secador-leitura-nome">Umidade na saída</span>
+                                        <b class="secador-leitura-valor">13,4%</b>
+                                        <span class="secador-leitura-ref">grão pronto abaixo de 14%</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <div class="secador">
                             <div class="secador-head">
                                 <span class="secador-nome"><i class="secador-dot is-operando"></i>SECADOR 2</span>
-                                <span class="secador-cultura secador-cultura--sorgo">Sorgo</span>
+                                <span class="secador-cultura secador-cultura--sorgo" title="Sorgo tolera ~10% menos calor que o milho (ração: 180°F vs 200°F, extensão EUA) — 90°C derivado do limite de 100°C do milho; confirmar com a unidade">Sorgo <small class="secador-cultura-lim">máx. 90°C</small></span>
                                 <span class="secador-tipo">Intermitente · ciclo 2 de 2</span>
-                                <span class="secador-estado">
-                                    <span class="secador-estado-label">O secador está</span>
+                                <div class="secador-estado">
                                     <b class="secador-estado-pill is-descarregando">Descarregando</b>
-                                </span>
+                                    <span class="secador-estado-info">há <b>20 min</b></span>
+                                    <span class="secador-estado-info secador-estado-info--prox">próximo passo <b>carga ~15h10</b></span>
+                                </div>
                             </div>
                             <div class="secador-body">
-                                <div class="secador-chips">
-                                    <div class="secador-chip">
-                                        <span class="secador-chip-label">TEMP MASSA</span>
-                                        <span class="secador-chip-value">27°C → 83°C</span>
-                                        <span class="secador-chip-sub">entrada → saída</span>
-                                        <span class="secador-chip-sub">limite sorgo <b>90°C</b></span>
+                                <!-- o grão como entra e como sai: temperatura e umidade lado a lado -->
+                                <div class="secador-fluxo">
+                                    <div class="secador-ponto secador-ponto--entra">
+                                        <span class="secador-ponto-nome">Entra no secador</span>
+                                        <div class="secador-ponto-dados">
+                                            <span class="secador-dado"><b>27°C</b><small>temperatura</small></span>
+                                            <span class="secador-dado"><b>18,8%</b><small>umidade</small></span>
+                                        </div>
                                     </div>
-                                    <div class="secador-chip">
-                                        <span class="secador-chip-label">NA FASE HÁ</span>
-                                        <span class="secador-chip-value">20 min</span>
-                                    </div>
-                                    <div class="secador-chip">
-                                        <span class="secador-chip-label">PRÓXIMA</span>
-                                        <span class="secador-chip-value">Carga ~15h10</span>
-                                    </div>
-                                    <div class="secador-chip">
-                                        <span class="secador-chip-label">UMIDADE DA MASSA</span>
-                                        <span class="secador-chip-value">18,8% → 13,6%</span>
-                                        <span class="secador-chip-sub">entrada → saída</span>
+                                    <span class="secador-fluxo-seta" aria-hidden="true"></span>
+                                    <div class="secador-ponto secador-ponto--sai">
+                                        <span class="secador-ponto-nome">Sai do secador</span>
+                                        <div class="secador-ponto-dados">
+                                            <span class="secador-dado"><b>83°C</b><small>temperatura</small></span>
+                                            <span class="secador-dado"><b>13,6%</b><small>umidade</small></span>
+                                        </div>
+                                        <span class="secador-ponto-nota">caiu <b>5,2 pontos</b> de umidade</span>
                                     </div>
                                 </div>
                                 <div class="secador-chart">
@@ -1942,22 +1981,20 @@
                                             <span class="secador-fase secador-fase--carga" style="left: 55%; width: 5%"><b>CARGA</b></span>
                                             <span class="secador-fase secador-fase--secagem" style="left: 60%; width: 15%"><b>SECANDO</b></span>
                                             <span class="secador-fase is-curta secador-fase--descarga" style="left: 75%; width: 3.3%"><b>DESCARGA</b></span>
+                                            <span class="secador-fase secador-fase--descarga is-prevista is-curta" style="left: 78.3%; width: 3.4%"><b>DESCARGA</b></span>
+                                            <span class="secador-fase secador-fase--carga is-prevista" style="left: 81.7%; width: 5%"><b>CARGA</b></span>
+                                            <span class="secador-fase secador-fase--secagem is-prevista" style="left: 86.7%; width: 13.3%"><b>SECANDO</b></span>
                                         </div>
                                         <div class="secador-grid" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-                                        <svg class="secador-svg" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label="Secador 2: turno das 07h às 17h em dois ciclos intermitentes de sorgo. Fornalha em 138 graus (desejada 145) e secador em 98 graus (desejada 105). Carga até 07h35, secagem até 11h55, descarga e nova carga até 13h, segunda secagem até 14h30 e descarga em curso às 14h50, com a umidade caindo de 18,8 para 13,6 por cento">
-                                            <line class="secador-setada-linha secador-setada-linha--fornalha" x1="0" y1="19.4" x2="300" y2="19.4"></line>
+                                        <svg class="secador-svg" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label="Secador 2: turno das 07h às 17h em dois ciclos intermitentes de sorgo. Fornalha em 138 graus e secador em 85 graus (desejada 88). Carga até 07h35, secagem até 11h55, descarga e nova carga até 13h, segunda secagem até 14h30 e descarga em curso às 14h50, com a umidade caindo de 18,8 para 13,6 por cento">
                                             <line class="secador-setada-linha secador-setada-linha--temp" x1="0" y1="41.7" x2="300" y2="41.7"></line>
                                             <polyline class="secador-linha secador-linha--fornalha" points="0,29 5,24.8 10,22.8 15,20.4 20,19.7 25,19.6 30,20.3 35,20.1 40,18.8 45,19.7 50,20.3 55,19.3 60,19.7 65,19.2 70,20.4 75,19.6 80,19.4 85,19.9 90,20.4 95,20.2 100,20.4 105,19.6 110,19.3 115,19.5 120,20 125,19.3 130,19.8 135,19.2 140,19.6 145,20.6 150,20.6 155,21.2 160,22.4 165,23.1 170,23.6 175,23.8 180,23.7 185,23 190,21.8 195,21.5 200,21.4 205,21 210,19.6 215,19.9 220,21.9 225,22.7 230,23.4 235,23.4"></polyline>
                                             <polyline class="secador-linha secador-linha--temp" points="0,77.5 5,69.6 10,62.2 15,56.7 20,52.5 25,47.6 30,45.8 35,44.5 40,43.5 45,43.7 50,43.1 55,43.1 60,44.3 65,43.5 70,43.6 75,44.5 80,44.2 85,44.4 90,44 95,43.5 100,44.8 105,44.8 110,44.9 115,44.4 120,44.9 125,45 130,43.8 135,43.9 140,44.6 145,44.1 150,48.6 155,55.3 160,58.8 165,59.8 170,61.1 175,62 180,62.4 185,57.2 190,52.8 195,48.5 200,45.2 205,44.5 210,42.1 215,42.9 220,43.9 225,44.9 230,44.8 235,45.4"></polyline>
                                             <polyline class="secador-linha secador-linha--umi" points="0,96 8,55 16,22 24,12 32,11 45,14 60,24 75,36 90,46 105,55 120,62 135,68 148,72 156,72 166,14 175,12 185,20 200,36 215,52 225,64 235,72"></polyline>
                                         </svg>
-                                        <span class="secador-setada-tag secador-setada-tag--fornalha" style="top: 19.4%">fornalha desejada 145°C</span>
-                                        <span class="secador-setada-tag secador-setada-tag--temp" style="top: 41.7%">secador desejada 105°C</span>
+                                        <span class="secador-setada-tag secador-setada-tag--temp" style="top: 41.7%">temperatura desejada 88°C</span>
                                         <div class="secador-futuro" aria-hidden="true" style="left: 78.3%"></div>
-                                        <div class="secador-agora" style="left: 78.3%"><span class="secador-agora-label">Agora <b>14h50</b><small>restante do turno</small></span></div>
-                                        <span class="serie-tag serie-tag--fornalha" style="left: 78.3%; top: 23.3%">FORNALHA<b>138°C</b></span>
-                                        <span class="serie-tag serie-tag--temp" style="left: 78.3%; top: 45.6%">TEMP SECADOR<b>98°C</b></span>
-                                        <span class="serie-tag serie-tag--umi" style="left: 78.3%; top: 72%">UMI<b>13,6%</b></span>
+                                        <div class="secador-agora" style="left: 78.3%"><span class="secador-agora-label">Agora <b>14h50</b><small>previsto até 17h</small></span></div>
                                     </div>
                                     <div class="secador-horas">
                                         <span>07h</span>
@@ -1971,6 +2008,25 @@
                                         <span>15h</span>
                                         <span>16h</span>
                                         <span>17h</span>
+                                    </div>
+                                </div>
+                                <!-- leituras de agora, cada uma na cor da linha do gráfico -->
+                                <div class="secador-agora-col">
+                                    <span class="secador-agora-titulo">Leitura das <b>14h50</b></span>
+                                    <div class="secador-leitura secador-leitura--fornalha">
+                                        <span class="secador-leitura-nome">Fornalha</span>
+                                        <b class="secador-leitura-valor">138°C</b>
+                                        <span class="secador-leitura-ref">calor gerado para o secador</span>
+                                    </div>
+                                    <div class="secador-leitura secador-leitura--temp">
+                                        <span class="secador-leitura-nome">Ar do secador</span>
+                                        <b class="secador-leitura-valor">85°C</b>
+                                        <span class="secador-leitura-ref">desejada 88°C · limite 90°C</span>
+                                    </div>
+                                    <div class="secador-leitura secador-leitura--umi">
+                                        <span class="secador-leitura-nome">Umidade na saída</span>
+                                        <b class="secador-leitura-valor">13,6%</b>
+                                        <span class="secador-leitura-ref">grão pronto abaixo de 14%</span>
                                     </div>
                                 </div>
                             </div>
@@ -2600,198 +2656,242 @@
                 </div>
             </section>
 
-            <!-- Screen 5: Silos -->
+            <!-- Screen 5: Silos & Aeração
+                 Uma tela só para o armazém: a faixa de ponta no topo, os 8 silos
+                 em linha (ocupação, curva de temperatura das últimas 24h, taxa
+                 em °C/h e estado da aeração) e, embaixo, capacidade x estoque
+                 por cultura ao lado dos dois silos pulmão. Cada cartão carrega
+                 os próprios dados em atributos: data-temps são 24 leituras
+                 horárias (a última é a atual); data-aer é o estado do
+                 ventilador e, quando ligado, data-aer-desde-min diz há quantos
+                 minutos ele está rodando no momento em que a tela subiu. -->
             <section class="screen" id="screen-5">
                 <div class="screen-header">
                     <div class="screen-badge">07</div>
                     <div class="screen-title-section">
-                        <h2>Capacidade de Silos</h2>
+                        <h2>Silos &amp; Aeração</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">8</span>s</div>
                     </div>
                 </div>
 
-                <div class="content-section">
-                    <h3>OCUPAÇÃO DOS SILOS POR CULTURA</h3>
-                    <div class="silo-groups">
-                        <div class="silo-group silo-group--3">
-                            <div class="silo-group-head">
-                                <span class="silo-group-name"><i class="legend-dot legend-dot--milho"></i>Milho</span>
-                                <span class="silo-group-total">10.160 t · 85%</span>
-                            </div>
-                            <div class="silo-grid">
-                                <div class="silo-item silo-item--milho">
-                                    <div class="silo-header">
-                                        <span class="silo-name">SILO 1</span>
-                                        <span class="silo-temp">22°C</span>
-                                    </div>
-                                    <div class="silo-visual">
-                                        <div class="silo-fill" style="height: 78%"></div>
-                                    </div>
-                                    <div class="silo-footer">
-                                        <span class="silo-volume">3.120 t</span>
-                                        <span class="silo-percent">78%</span>
-                                    </div>
-                                </div>
-                                <div class="silo-item silo-item--milho">
-                                    <div class="silo-header">
-                                        <span class="silo-name">SILO 2</span>
-                                        <span class="silo-temp">21°C</span>
-                                    </div>
-                                    <div class="silo-visual">
-                                        <div class="silo-fill" style="height: 92%"></div>
-                                    </div>
-                                    <div class="silo-footer">
-                                        <span class="silo-volume">3.680 t</span>
-                                        <span class="silo-percent">92%</span>
-                                    </div>
-                                </div>
-                                <div class="silo-item silo-item--milho">
-                                    <div class="silo-header">
-                                        <span class="silo-name">SILO 5</span>
-                                        <span class="silo-temp">24°C</span>
-                                    </div>
-                                    <div class="silo-visual">
-                                        <div class="silo-fill" style="height: 84%"></div>
-                                    </div>
-                                    <div class="silo-footer">
-                                        <span class="silo-volume">3.360 t</span>
-                                        <span class="silo-percent">84%</span>
-                                    </div>
-                                </div>
-                            </div>
+                <!-- Faixa de ponta: selo, contagem e régua de 24h, repintados a cada segundo -->
+                <div class="content-section ponta-strip" data-ponta-status>
+                    <div class="ponta-strip-main">
+                        <span class="ponta-strip-title">HORÁRIO DE PONTA · ENERGIA</span>
+                        <div class="ponta-status">
+                            <span class="ponta-badge" data-ponta-badge>FORA DE PONTA</span>
+                            <span class="ponta-msg" data-ponta-msg>Ventiladores liberados · ponta das 18h às 21h (seg–sex)</span>
                         </div>
-
-                        <div class="silo-group silo-group--2">
-                            <div class="silo-group-head">
-                                <span class="silo-group-name"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
-                                <span class="silo-group-total">4.080 t · 51%</span>
-                            </div>
-                            <div class="silo-grid">
-                                <div class="silo-item silo-item--sorgo">
-                                    <div class="silo-header">
-                                        <span class="silo-name">SILO 3</span>
-                                        <span class="silo-temp">23°C</span>
-                                    </div>
-                                    <div class="silo-visual">
-                                        <div class="silo-fill" style="height: 45%"></div>
-                                    </div>
-                                    <div class="silo-footer">
-                                        <span class="silo-volume">1.800 t</span>
-                                        <span class="silo-percent">45%</span>
-                                    </div>
-                                </div>
-                                <div class="silo-item silo-item--sorgo">
-                                    <div class="silo-header">
-                                        <span class="silo-name">SILO 6</span>
-                                        <span class="silo-temp">20°C</span>
-                                    </div>
-                                    <div class="silo-visual">
-                                        <div class="silo-fill" style="height: 57%"></div>
-                                    </div>
-                                    <div class="silo-footer">
-                                        <span class="silo-volume">2.280 t</span>
-                                        <span class="silo-percent">57%</span>
-                                    </div>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="ponta-strip-count">
+                        <span class="ponta-strip-label" data-ponta-contagem-label>ENTRA EM PONTA EM</span>
+                        <b class="ponta-strip-value" data-ponta-contagem>--:--</b>
+                    </div>
+                    <div class="ponta-timeline ponta-strip-timeline">
+                        <div class="ponta-track">
+                            <div class="ponta-band"></div>
+                            <div class="ponta-now" data-ponta-agora></div>
                         </div>
-
-                        <div class="silo-group silo-group--2">
-                            <div class="silo-group-head">
-                                <span class="silo-group-name"><i class="legend-dot legend-dot--trigo"></i>Trigo</span>
-                                <span class="silo-group-total">5.560 t · 70%</span>
-                            </div>
-                            <div class="silo-grid">
-                                <div class="silo-item silo-item--trigo">
-                                    <div class="silo-header">
-                                        <span class="silo-name">SILO 4</span>
-                                        <span class="silo-temp">22°C</span>
-                                    </div>
-                                    <div class="silo-visual">
-                                        <div class="silo-fill" style="height: 68%"></div>
-                                    </div>
-                                    <div class="silo-footer">
-                                        <span class="silo-volume">2.720 t</span>
-                                        <span class="silo-percent">68%</span>
-                                    </div>
-                                </div>
-                                <div class="silo-item silo-item--trigo">
-                                    <div class="silo-header">
-                                        <span class="silo-name">SILO 7</span>
-                                        <span class="silo-temp">23°C</span>
-                                    </div>
-                                    <div class="silo-visual">
-                                        <div class="silo-fill" style="height: 71%"></div>
-                                    </div>
-                                    <div class="silo-footer">
-                                        <span class="silo-volume">2.840 t</span>
-                                        <span class="silo-percent">71%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="silo-group silo-group--1">
-                            <div class="silo-group-head">
-                                <span class="silo-group-name"><i class="legend-dot legend-dot--soja"></i>Soja</span>
-                                <span class="silo-group-total">1.440 t · 36%</span>
-                            </div>
-                            <div class="silo-grid">
-                                <div class="silo-item silo-item--soja">
-                                    <div class="silo-header">
-                                        <span class="silo-name">SILO 8</span>
-                                        <span class="silo-temp">21°C</span>
-                                    </div>
-                                    <div class="silo-visual">
-                                        <div class="silo-fill" style="height: 36%"></div>
-                                    </div>
-                                    <div class="silo-footer">
-                                        <span class="silo-volume">1.440 t</span>
-                                        <span class="silo-percent">36%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- pulmao: transito entre moegas e secagem, fora da capacidade estatica -->
-                        <div class="silo-group silo-group--2 silo-group--pulmao">
-                            <div class="silo-group-head">
-                                <span class="silo-group-name"><i class="legend-dot legend-dot--pulmao"></i>Pulmão</span>
-                                <span class="silo-group-total">530 t · 53%</span>
-                            </div>
-                            <div class="silo-grid">
-                                <div class="silo-item silo-item--pulmao">
-                                    <div class="silo-header">
-                                        <span class="silo-name">PULMÃO 1</span>
-                                        <span class="silo-temp">23°C</span>
-                                    </div>
-                                    <div class="silo-visual">
-                                        <div class="silo-fill" style="height: 62%"></div>
-                                    </div>
-                                    <div class="silo-footer">
-                                        <span class="silo-volume">310 t</span>
-                                        <span class="silo-percent">62%</span>
-                                    </div>
-                                </div>
-                                <div class="silo-item silo-item--pulmao">
-                                    <div class="silo-header">
-                                        <span class="silo-name">PULMÃO 2</span>
-                                        <span class="silo-temp">22°C</span>
-                                    </div>
-                                    <div class="silo-visual">
-                                        <div class="silo-fill" style="height: 44%"></div>
-                                    </div>
-                                    <div class="silo-footer">
-                                        <span class="silo-volume">220 t</span>
-                                        <span class="silo-percent">44%</span>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="ponta-scale">
+                            <span>00h</span><span>06h</span><span>12h</span><span>18h</span><span>24h</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="split-grid split-grid--trio">
+                <div class="content-section sa-section">
+                    <div class="section-head">
+                        <h3>SILOS · OCUPAÇÃO, TEMPERATURA E AERAÇÃO</h3>
+                        <span class="stack-hint">Curva das últimas 24h · taxa em °C/h · silos ligados pausam sozinhos na ponta</span>
+                    </div>
+                    <div class="sa-grid sa-grid--8">
+                        <article class="sa-card sa-card--milho" data-silo data-aer="on" data-aer-desde-min="134" data-pausa-ponta="1"
+                            data-temps="23.6,23.6,23.5,23.5,23.4,23.4,23.3,23.3,23.3,23.2,23.2,23.1,23.1,23.0,23.0,22.9,22.9,22.8,22.8,22.8,23.0,22.8,22.6,22.4">
+                            <div class="sa-head">
+                                <span class="sa-name">SILO 1</span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho</span>
+                            </div>
+                            <div class="sa-body">
+                                <div class="silo-visual"><div class="silo-fill" style="height: 78%"></div></div>
+                                <div class="sa-stock"><b>78%</b><span>3.120 t</span></div>
+                            </div>
+                            <div class="sa-temp">
+                                <div class="sa-temp-head">
+                                    <span class="sa-temp-now" data-temp-atual>--</span>
+                                    <span class="sa-temp-rate" data-temp-taxa>--</span>
+                                </div>
+                                <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
+                            </div>
+                            <div class="sa-aer">
+                                <span class="sa-aer-badge" data-aer-badge>--</span>
+                                <span class="sa-aer-info" data-aer-info>--</span>
+                            </div>
+                        </article>
+
+                        <article class="sa-card sa-card--milho" data-silo data-aer="off" data-aer-fim="06:40" data-aer-rodou="5h10"
+                            data-temps="20.4,20.4,20.5,20.5,20.5,20.6,20.6,20.6,20.7,20.7,20.7,20.8,20.8,20.8,20.8,20.9,20.9,20.9,20.9,20.9,20.7,20.8,20.9,21.0">
+                            <div class="sa-head">
+                                <span class="sa-name">SILO 2</span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho</span>
+                            </div>
+                            <div class="sa-body">
+                                <div class="silo-visual"><div class="silo-fill" style="height: 92%"></div></div>
+                                <div class="sa-stock"><b>92%</b><span>3.680 t</span></div>
+                            </div>
+                            <div class="sa-temp">
+                                <div class="sa-temp-head">
+                                    <span class="sa-temp-now" data-temp-atual>--</span>
+                                    <span class="sa-temp-rate" data-temp-taxa>--</span>
+                                </div>
+                                <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
+                            </div>
+                            <div class="sa-aer">
+                                <span class="sa-aer-badge" data-aer-badge>--</span>
+                                <span class="sa-aer-info" data-aer-info>--</span>
+                            </div>
+                        </article>
+
+                        <article class="sa-card sa-card--sorgo" data-silo data-aer="on" data-aer-desde-min="48" data-pausa-ponta="1"
+                            data-temps="24.8,24.8,24.7,24.7,24.6,24.6,24.5,24.5,24.4,24.4,24.3,24.3,24.2,24.2,24.1,24.1,24.0,24.0,24.0,24.0,24.0,23.7,23.4,23.1">
+                            <div class="sa-head">
+                                <span class="sa-name">SILO 3</span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
+                            </div>
+                            <div class="sa-body">
+                                <div class="silo-visual"><div class="silo-fill" style="height: 45%"></div></div>
+                                <div class="sa-stock"><b>45%</b><span>1.800 t</span></div>
+                            </div>
+                            <div class="sa-temp">
+                                <div class="sa-temp-head">
+                                    <span class="sa-temp-now" data-temp-atual>--</span>
+                                    <span class="sa-temp-rate" data-temp-taxa>--</span>
+                                </div>
+                                <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
+                            </div>
+                            <div class="sa-aer">
+                                <span class="sa-aer-badge" data-aer-badge>--</span>
+                                <span class="sa-aer-info" data-aer-info>--</span>
+                            </div>
+                        </article>
+
+                        <article class="sa-card sa-card--trigo" data-silo data-aer="off" data-aer-fim="11:15" data-aer-rodou="3h40"
+                            data-temps="22.1,22.1,22.2,22.2,22.2,22.3,22.3,22.3,22.3,22.4,22.4,22.3,22.3,22.3,22.2,22.2,22.2,22.2,22.2,22.2,22.2,22.2,22.2,22.2">
+                            <div class="sa-head">
+                                <span class="sa-name">SILO 4</span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--trigo"></i>Trigo</span>
+                            </div>
+                            <div class="sa-body">
+                                <div class="silo-visual"><div class="silo-fill" style="height: 68%"></div></div>
+                                <div class="sa-stock"><b>68%</b><span>2.720 t</span></div>
+                            </div>
+                            <div class="sa-temp">
+                                <div class="sa-temp-head">
+                                    <span class="sa-temp-now" data-temp-atual>--</span>
+                                    <span class="sa-temp-rate" data-temp-taxa>--</span>
+                                </div>
+                                <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
+                            </div>
+                            <div class="sa-aer">
+                                <span class="sa-aer-badge" data-aer-badge>--</span>
+                                <span class="sa-aer-info" data-aer-info>--</span>
+                            </div>
+                        </article>
+
+                        <!-- Silo 5: esquentando mesmo com aeração ligada — o cartão fica em alerta -->
+                        <article class="sa-card sa-card--milho" data-silo data-aer="on" data-aer-desde-min="242" data-pausa-ponta="1"
+                            data-temps="21.8,21.9,22.0,22.1,22.2,22.3,22.4,22.5,22.6,22.7,22.8,22.9,23.0,23.1,23.1,23.2,23.2,23.3,23.3,23.3,23.1,23.5,23.9,24.3">
+                            <div class="sa-head">
+                                <span class="sa-name">SILO 5</span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho</span>
+                            </div>
+                            <div class="sa-body">
+                                <div class="silo-visual"><div class="silo-fill" style="height: 84%"></div></div>
+                                <div class="sa-stock"><b>84%</b><span>3.360 t</span></div>
+                            </div>
+                            <div class="sa-temp">
+                                <div class="sa-temp-head">
+                                    <span class="sa-temp-now" data-temp-atual>--</span>
+                                    <span class="sa-temp-rate" data-temp-taxa>--</span>
+                                </div>
+                                <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
+                            </div>
+                            <div class="sa-aer">
+                                <span class="sa-aer-badge" data-aer-badge>--</span>
+                                <span class="sa-aer-info" data-aer-info>--</span>
+                            </div>
+                        </article>
+
+                        <article class="sa-card sa-card--sorgo" data-silo data-aer="off" data-aer-fim="22:30 (ontem)" data-aer-rodou="6h00"
+                            data-temps="20.6,20.6,20.5,20.5,20.4,20.4,20.3,20.3,20.2,20.2,20.1,20.1,20.0,20.0,20.0,20.0,20.0,20.0,20.0,20.0,19.9,20.0,20.1,20.2">
+                            <div class="sa-head">
+                                <span class="sa-name">SILO 6</span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
+                            </div>
+                            <div class="sa-body">
+                                <div class="silo-visual"><div class="silo-fill" style="height: 57%"></div></div>
+                                <div class="sa-stock"><b>57%</b><span>2.280 t</span></div>
+                            </div>
+                            <div class="sa-temp">
+                                <div class="sa-temp-head">
+                                    <span class="sa-temp-now" data-temp-atual>--</span>
+                                    <span class="sa-temp-rate" data-temp-taxa>--</span>
+                                </div>
+                                <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
+                            </div>
+                            <div class="sa-aer">
+                                <span class="sa-aer-badge" data-aer-badge>--</span>
+                                <span class="sa-aer-info" data-aer-info>--</span>
+                            </div>
+                        </article>
+
+                        <article class="sa-card sa-card--trigo" data-silo data-aer="on" data-aer-desde-min="87" data-pausa-ponta="1"
+                            data-temps="23.5,23.5,23.5,23.5,23.4,23.4,23.4,23.4,23.4,23.3,23.3,23.3,23.3,23.3,23.3,23.3,23.3,23.3,23.3,23.3,23.3,23.2,23.1,23.0">
+                            <div class="sa-head">
+                                <span class="sa-name">SILO 7</span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--trigo"></i>Trigo</span>
+                            </div>
+                            <div class="sa-body">
+                                <div class="silo-visual"><div class="silo-fill" style="height: 71%"></div></div>
+                                <div class="sa-stock"><b>71%</b><span>2.840 t</span></div>
+                            </div>
+                            <div class="sa-temp">
+                                <div class="sa-temp-head">
+                                    <span class="sa-temp-now" data-temp-atual>--</span>
+                                    <span class="sa-temp-rate" data-temp-taxa>--</span>
+                                </div>
+                                <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
+                            </div>
+                            <div class="sa-aer">
+                                <span class="sa-aer-badge" data-aer-badge>--</span>
+                                <span class="sa-aer-info" data-aer-info>--</span>
+                            </div>
+                        </article>
+
+                        <article class="sa-card sa-card--soja" data-silo data-aer="off" data-aer-fim="09:05" data-aer-rodou="2h20"
+                            data-temps="20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.6,20.8,21.0,21.2">
+                            <div class="sa-head">
+                                <span class="sa-name">SILO 8</span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--soja"></i>Soja</span>
+                            </div>
+                            <div class="sa-body">
+                                <div class="silo-visual"><div class="silo-fill" style="height: 36%"></div></div>
+                                <div class="sa-stock"><b>36%</b><span>1.440 t</span></div>
+                            </div>
+                            <div class="sa-temp">
+                                <div class="sa-temp-head">
+                                    <span class="sa-temp-now" data-temp-atual>--</span>
+                                    <span class="sa-temp-rate" data-temp-taxa>--</span>
+                                </div>
+                                <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
+                            </div>
+                            <div class="sa-aer">
+                                <span class="sa-aer-badge" data-aer-badge>--</span>
+                                <span class="sa-aer-info" data-aer-info>--</span>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <div class="split-grid split-grid--silos">
                     <div class="content-section">
                         <h3>CAPACIDADE x ESTOQUE POR CULTURA · AVARÉ (EM TON.)</h3>
                         <div class="chart-legend">
@@ -2800,39 +2900,44 @@
                         </div>
                         <div class="stack-chart stack-chart--capacidade">
                             <div class="stack-row">
-                                <span class="stack-label">Milho<b class="stack-cap">12.000</b></span>
+                                <span class="stack-label">Milho</span>
                                 <div class="stack-track">
                                     <div class="stack-seg stack-seg--free" style="width: 15.3%"><span class="stack-value">1.840</span></div>
                                     <div class="stack-seg stack-seg--stock" style="width: 84.7%"><span class="stack-value">10.160</span></div>
                                 </div>
+                                <span class="stack-cap">12.000</span>
                             </div>
                             <div class="stack-row">
-                                <span class="stack-label">Sorgo<b class="stack-cap">8.000</b></span>
+                                <span class="stack-label">Sorgo</span>
                                 <div class="stack-track">
                                     <div class="stack-seg stack-seg--free" style="width: 49.0%"><span class="stack-value">3.920</span></div>
                                     <div class="stack-seg stack-seg--stock" style="width: 51.0%"><span class="stack-value">4.080</span></div>
                                 </div>
+                                <span class="stack-cap">8.000</span>
                             </div>
                             <div class="stack-row">
-                                <span class="stack-label">Trigo<b class="stack-cap">8.000</b></span>
+                                <span class="stack-label">Trigo</span>
                                 <div class="stack-track">
                                     <div class="stack-seg stack-seg--free" style="width: 30.5%"><span class="stack-value">2.440</span></div>
                                     <div class="stack-seg stack-seg--stock" style="width: 69.5%"><span class="stack-value">5.560</span></div>
                                 </div>
+                                <span class="stack-cap">8.000</span>
                             </div>
                             <div class="stack-row">
-                                <span class="stack-label">Soja<b class="stack-cap">4.000</b></span>
+                                <span class="stack-label">Soja</span>
                                 <div class="stack-track">
                                     <div class="stack-seg stack-seg--free" style="width: 64.0%"><span class="stack-value">2.560</span></div>
                                     <div class="stack-seg stack-seg--stock" style="width: 36.0%"><span class="stack-value">1.440</span></div>
                                 </div>
+                                <span class="stack-cap">4.000</span>
                             </div>
                             <div class="stack-row stack-row--total">
-                                <span class="stack-label">Total<b class="stack-cap">32.000</b></span>
+                                <span class="stack-label">Total</span>
                                 <div class="stack-track">
                                     <div class="stack-seg stack-seg--free" style="width: 33.6%"><span class="stack-value">10.760</span></div>
                                     <div class="stack-seg stack-seg--stock" style="width: 66.4%"><span class="stack-value">21.240</span></div>
                                 </div>
+                                <span class="stack-cap">32.000</span>
                             </div>
                             <div class="stack-axis">
                                 <span>0%</span>
@@ -2843,264 +2948,244 @@
                         <p class="stack-hint">Capacidade estática de 32.000 t distribuída nos 8 silos de Avaré. Os silos pulmão (500 t cada) são trânsito para a secagem e não entram neste estoque.</p>
                     </div>
 
-                    <div class="content-section">
-                        <h3>CAPACIDADE ESTÁTICA · AVARÉ</h3>
-                        <div class="system-status">
-                            <div class="status-row">
-                                <span class="status-label">Capacidade estática</span>
-                                <span class="status-value">32.000 t</span>
-                            </div>
-                            <div class="status-row">
-                                <span class="status-label">Silos monitorados</span>
-                                <span class="status-value">8 + 2 pulmão</span>
-                            </div>
-                            <div class="status-row">
-                                <span class="status-label">Ocupação média</span>
-                                <span class="status-value">66%</span>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- pulmao: transito entre moegas e secagem, fora da capacidade estatica -->
+                    <div class="content-section sa-section sa-section--pulmao">
+                        <h3>SILOS PULMÃO · TRÂNSITO PARA SECAGEM</h3>
+                        <div class="sa-grid sa-grid--2">
+                            <article class="sa-card sa-card--pulmao" data-silo data-aer="on" data-aer-desde-min="31" data-pausa-ponta="1"
+                                data-temps="24.4,24.4,24.3,24.3,24.2,24.2,24.1,24.1,24.0,24.0,23.9,23.9,23.8,23.8,23.7,23.7,23.7,23.6,23.6,23.6,23.6,23.4,23.2,23.0">
+                                <div class="sa-head">
+                                    <span class="sa-name">PULMÃO 1</span>
+                                    <span class="sa-cultura"><i class="legend-dot legend-dot--pulmao"></i>500 t</span>
+                                </div>
+                                <div class="sa-body">
+                                    <div class="silo-visual"><div class="silo-fill" style="height: 62%"></div></div>
+                                    <div class="sa-stock"><b>62%</b><span>310 t</span></div>
+                                </div>
+                                <div class="sa-temp">
+                                    <div class="sa-temp-head">
+                                        <span class="sa-temp-now" data-temp-atual>--</span>
+                                        <span class="sa-temp-rate" data-temp-taxa>--</span>
+                                    </div>
+                                    <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
+                                </div>
+                                <div class="sa-aer">
+                                    <span class="sa-aer-badge" data-aer-badge>--</span>
+                                    <span class="sa-aer-info" data-aer-info>--</span>
+                                </div>
+                            </article>
 
-                    <!-- Previsao do tempo: valores estaticos ate ligar a API meteorologica -->
-                    <div class="content-section weather-section">
-                        <h3>PREVISÃO DO TEMPO · AVARÉ</h3>
-                        <div class="weather-now">
-                            <svg class="weather-glyph weather-glyph--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>
-                            <div class="weather-now-main">
-                                <span class="weather-temp">27°</span>
-                                <span class="weather-desc">Parcialmente nublado</span>
-                            </div>
-                        </div>
-                        <div class="weather-facts">
-                            <span class="weather-fact"><span class="weather-fact-label">Chuva</span><span class="weather-fact-value">20%</span></span>
-                            <span class="weather-fact"><span class="weather-fact-label">Umidade</span><span class="weather-fact-value">62%</span></span>
-                            <span class="weather-fact"><span class="weather-fact-label">Vento</span><span class="weather-fact-value">12 km/h</span></span>
-                        </div>
-                        <div class="weather-days">
-                            <div class="weather-day">
-                                <span class="weather-day-name">QUA</span>
-                                <svg class="weather-glyph weather-glyph--sm weather-glyph--sol" aria-hidden="true"><use href="#ico-sol"></use></svg>
-                                <span class="weather-day-temp">29°<small>18°</small></span>
-                                <span class="weather-day-rain">10%</span>
-                            </div>
-                            <div class="weather-day">
-                                <span class="weather-day-name">QUI</span>
-                                <svg class="weather-glyph weather-glyph--sm weather-glyph--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>
-                                <span class="weather-day-temp">28°<small>19°</small></span>
-                                <span class="weather-day-rain">20%</span>
-                            </div>
-                            <div class="weather-day">
-                                <span class="weather-day-name">SEX</span>
-                                <svg class="weather-glyph weather-glyph--sm weather-glyph--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>
-                                <span class="weather-day-temp">24°<small>17°</small></span>
-                                <span class="weather-day-rain is-chuva">70%</span>
-                            </div>
-                            <div class="weather-day">
-                                <span class="weather-day-name">SÁB</span>
-                                <svg class="weather-glyph weather-glyph--sm weather-glyph--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg>
-                                <span class="weather-day-temp">26°<small>17°</small></span>
-                                <span class="weather-day-rain">40%</span>
-                            </div>
+                            <article class="sa-card sa-card--pulmao" data-silo data-aer="off" data-aer-fim="13:50" data-aer-rodou="1h15"
+                                data-temps="21.6,21.6,21.6,21.6,21.7,21.7,21.7,21.7,21.7,21.8,21.8,21.8,21.8,21.8,21.8,21.8,21.8,21.8,21.8,21.8,21.7,21.8,21.9,22.0">
+                                <div class="sa-head">
+                                    <span class="sa-name">PULMÃO 2</span>
+                                    <span class="sa-cultura"><i class="legend-dot legend-dot--pulmao"></i>500 t</span>
+                                </div>
+                                <div class="sa-body">
+                                    <div class="silo-visual"><div class="silo-fill" style="height: 44%"></div></div>
+                                    <div class="sa-stock"><b>44%</b><span>220 t</span></div>
+                                </div>
+                                <div class="sa-temp">
+                                    <div class="sa-temp-head">
+                                        <span class="sa-temp-now" data-temp-atual>--</span>
+                                        <span class="sa-temp-rate" data-temp-taxa>--</span>
+                                    </div>
+                                    <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
+                                </div>
+                                <div class="sa-aer">
+                                    <span class="sa-aer-badge" data-aer-badge>--</span>
+                                    <span class="sa-aer-info" data-aer-info>--</span>
+                                </div>
+                            </article>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Screen 6: Aeração -->
+            <!-- Screen 6: Armazenamento
+                 Mesma lógica da tela de silos, mas para os dois armazéns
+                 graneleiros: a faixa de ponta no topo, um cartão largo por
+                 armazém (ocupação, produtos em estoque por célula, curva de
+                 temperatura das últimas 24h e aeração) e, embaixo,
+                 capacidade x estoque por armazém ao lado da lista de lotes.
+                 Os cartões usam os mesmos atributos data-silo / data-temps /
+                 data-aer dos silos, então o script trata os dois iguais. -->
             <section class="screen" id="screen-6">
                 <div class="screen-header">
                     <div class="screen-badge">08</div>
                     <div class="screen-title-section">
-                        <h2>Sistema de Aeração</h2>
-                        <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">3</span>s</div>
+                        <h2>Armazenamento</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">6</span>s</div>
                     </div>
                 </div>
 
-                <div class="kpi-grid kpi-grid--six">
-                    <div class="kpi-card">
-                        <div class="kpi-label">VENTILADOR 1</div>
-                        <div class="kpi-value">✅ ON</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">VENTILADOR 2</div>
-                        <div class="kpi-value">✅ ON</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">FLUXO AR</div>
-                        <div class="kpi-value">8,2 m³/s</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">CONSUMO</div>
-                        <div class="kpi-value">45 kW</div>
-                    </div>
-                    <div class="kpi-card" data-ponta-card>
-                        <div class="kpi-label">TARIFA AGORA</div>
-                        <div class="kpi-value kpi-value--tarifa" data-ponta-tarifa>FORA DE PONTA</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label" data-ponta-contagem-label>ENTRA EM PONTA EM</div>
-                        <div class="kpi-value" data-ponta-contagem>--:--</div>
-                    </div>
-                </div>
-
-                <div class="split-grid">
-                    <div class="content-section">
-                        <h3>DISTRIBUIÇÃO DE AR</h3>
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>ZONA</th>
-                                    <th>STATUS</th>
-                                    <th>FLUXO</th>
-                                    <th>TEMPERATURA</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Zona A (Silos)</td>
-                                    <td>✅ Ativo</td>
-                                    <td>3.5 m³/s</td>
-                                    <td>19°C</td>
-                                </tr>
-                                <tr>
-                                    <td>Zona B (Secagem)</td>
-                                    <td>✅ Ativo</td>
-                                    <td>2.8 m³/s</td>
-                                    <td>22°C</td>
-                                </tr>
-                                <tr>
-                                    <td>Zona C (Recepção)</td>
-                                    <td>✅ Ativo</td>
-                                    <td>1.9 m³/s</td>
-                                    <td>18°C</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="content-section content-section--ponta">
-                        <h3>HORÁRIO DE PONTA · ENERGIA</h3>
-                        <div class="ponta-status" data-ponta-status>
+                <div class="content-section ponta-strip" data-ponta-status>
+                    <div class="ponta-strip-main">
+                        <span class="ponta-strip-title">HORÁRIO DE PONTA · ENERGIA</span>
+                        <div class="ponta-status">
                             <span class="ponta-badge" data-ponta-badge>FORA DE PONTA</span>
                             <span class="ponta-msg" data-ponta-msg>Ventiladores liberados · ponta das 18h às 21h (seg–sex)</span>
                         </div>
-                        <div class="ponta-timeline">
-                            <div class="ponta-track">
-                                <div class="ponta-band"></div>
-                                <div class="ponta-now" data-ponta-agora></div>
-                            </div>
-                            <div class="ponta-scale">
-                                <span>00h</span><span>06h</span><span>12h</span><span>18h</span><span>24h</span>
-                            </div>
+                    </div>
+                    <div class="ponta-strip-count">
+                        <span class="ponta-strip-label" data-ponta-contagem-label>ENTRA EM PONTA EM</span>
+                        <b class="ponta-strip-value" data-ponta-contagem>--:--</b>
+                    </div>
+                    <div class="ponta-timeline ponta-strip-timeline">
+                        <div class="ponta-track">
+                            <div class="ponta-band"></div>
+                            <div class="ponta-now" data-ponta-agora></div>
                         </div>
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>ZONA</th>
-                                    <th>AÇÃO NA PONTA</th>
-                                    <th>kW EVITADOS</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Zona A (Silos)</td>
-                                    <td>Desliga 18:00–21:00</td>
-                                    <td>19 kW</td>
-                                </tr>
-                                <tr>
-                                    <td>Zona B (Secagem)</td>
-                                    <td>Mantém (processo crítico)</td>
-                                    <td>0 kW</td>
-                                </tr>
-                                <tr>
-                                    <td>Zona C (Recepção)</td>
-                                    <td>Desliga 18:00–21:00</td>
-                                    <td>11 kW</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="ponta-scale">
+                            <span>00h</span><span>06h</span><span>12h</span><span>18h</span><span>24h</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Relógio de aeração por cultura: quanto tempo cada grão já
-                     ventilou no ciclo atual e quanto falta para a meta. O
-                     mostrador é um relógio de 12 marcas; o arco e o ponteiro
-                     andam com o progresso, e o número central corre em tempo
-                     real enquanto a zona está aerando. -->
-                <div class="content-section content-section--auto relogios-section">
+                <div class="content-section sa-section">
                     <div class="section-head">
-                        <h3>RELÓGIO DE AERAÇÃO POR CULTURA</h3>
-                        <span class="stack-hint">Tempo do ciclo atual · zonas pausam sozinhas no horário de ponta</span>
+                        <h3>ARMAZÉNS GRANELEIROS · OCUPAÇÃO, TEMPERATURA E AERAÇÃO</h3>
+                        <span class="stack-hint">Curva das últimas 24h · taxa em °C/h · aeração pausa sozinha na ponta</span>
                     </div>
-                    <div class="relogio-grid">
-                        <article class="relogio-card relogio-card--milho" data-relogio data-estado="ativo" data-pausa-ponta="1" data-meta-h="120" data-acumulado-h="86.4">
-                            <div class="relogio-dial">
-                                <div class="relogio-arco" data-relogio-arco></div>
-                                <div class="relogio-marcas"></div>
-                                <div class="relogio-ponteiro" data-relogio-ponteiro></div>
-                                <div class="relogio-centro">
-                                    <span class="relogio-tempo" data-relogio-tempo>--:--:--</span>
-                                    <span class="relogio-meta" data-relogio-meta>de --</span>
+                    <div class="sa-grid sa-grid--armazem">
+                        <article class="sa-card sa-card--armazem" data-silo data-aer="on" data-aer-desde-min="96" data-pausa-ponta="1"
+                            data-temps="22.9,22.9,22.8,22.8,22.7,22.7,22.7,22.6,22.6,22.5,22.5,22.5,22.4,22.4,22.3,22.3,22.3,22.2,22.2,22.2,22.3,22.2,22.1,22.0">
+                            <div class="sa-head">
+                                <span class="sa-name">ARMAZÉM 1</span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--pulmao"></i>Graneleiro · 20.000 t</span>
+                            </div>
+                            <div class="sa-body sa-body--armazem">
+                                <div class="silo-visual armazem-visual"><div class="silo-fill" style="height: 73%"></div></div>
+                                <div class="sa-stock"><b>73%</b><span>14.600 t</span></div>
+                                <div class="armazem-celulas">
+                                    <div class="armazem-celula" style="--c: var(--grao-milho)">
+                                        <span class="armazem-celula-head"><i class="legend-dot legend-dot--milho"></i>Milho <small>· células 1–3</small></span>
+                                        <span class="armazem-celula-track"><span class="armazem-celula-fill" style="width: 82%"></span></span>
+                                        <span class="armazem-celula-val">9.800 t <small>de 12.000</small></span>
+                                    </div>
+                                    <div class="armazem-celula" style="--c: var(--grao-soja)">
+                                        <span class="armazem-celula-head"><i class="legend-dot legend-dot--soja"></i>Soja <small>· células 4–5</small></span>
+                                        <span class="armazem-celula-track"><span class="armazem-celula-fill" style="width: 60%"></span></span>
+                                        <span class="armazem-celula-val">4.800 t <small>de 8.000</small></span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="relogio-info">
-                                <span class="relogio-nome"><svg class="grao-icon grao-icon--milho" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho</span>
-                                <span class="relogio-local">Zona A · Silos 1–4</span>
-                                <span class="relogio-estado" data-relogio-estado>AERANDO</span>
-                                <span class="relogio-restante" data-relogio-restante>—</span>
-                            </div>
-                        </article>
-                        <article class="relogio-card relogio-card--sorgo" data-relogio data-estado="ativo" data-meta-h="96" data-acumulado-h="41.2">
-                            <div class="relogio-dial">
-                                <div class="relogio-arco" data-relogio-arco></div>
-                                <div class="relogio-marcas"></div>
-                                <div class="relogio-ponteiro" data-relogio-ponteiro></div>
-                                <div class="relogio-centro">
-                                    <span class="relogio-tempo" data-relogio-tempo>--:--:--</span>
-                                    <span class="relogio-meta" data-relogio-meta>de --</span>
+                            <div class="sa-foot--armazem">
+                                <div class="sa-temp">
+                                    <div class="sa-temp-head">
+                                        <span class="sa-temp-now" data-temp-atual>--</span>
+                                        <span class="sa-temp-rate" data-temp-taxa>--</span>
+                                    </div>
+                                    <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
+                                </div>
+                                <div class="sa-aer">
+                                    <span class="sa-aer-badge" data-aer-badge>--</span>
+                                    <span class="sa-aer-info" data-aer-info>--</span>
                                 </div>
                             </div>
-                            <div class="relogio-info">
-                                <span class="relogio-nome"><svg class="grao-icon grao-icon--sorgo" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo</span>
-                                <span class="relogio-local">Zona B · Secagem</span>
-                                <span class="relogio-estado" data-relogio-estado>AERANDO</span>
-                                <span class="relogio-restante" data-relogio-restante>—</span>
-                            </div>
                         </article>
-                        <article class="relogio-card relogio-card--trigo" data-relogio data-estado="pausado" data-pausa-ponta="1" data-meta-h="72" data-acumulado-h="58.7" data-motivo="Umidade do ar em 84%">
-                            <div class="relogio-dial">
-                                <div class="relogio-arco" data-relogio-arco></div>
-                                <div class="relogio-marcas"></div>
-                                <div class="relogio-ponteiro" data-relogio-ponteiro></div>
-                                <div class="relogio-centro">
-                                    <span class="relogio-tempo" data-relogio-tempo>--:--:--</span>
-                                    <span class="relogio-meta" data-relogio-meta>de --</span>
+
+                        <!-- Armazém 2: ventilação desligada e temperatura subindo devagar -->
+                        <article class="sa-card sa-card--armazem" data-silo data-aer="off" data-aer-fim="09:20" data-aer-rodou="4h05"
+                            data-temps="20.8,20.8,20.8,20.9,20.9,20.9,21.0,21.0,21.0,21.1,21.1,21.1,21.2,21.2,21.2,21.3,21.3,21.3,21.3,21.4,21.2,21.3,21.4,21.5">
+                            <div class="sa-head">
+                                <span class="sa-name">ARMAZÉM 2</span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--pulmao"></i>Graneleiro · 15.000 t</span>
+                            </div>
+                            <div class="sa-body sa-body--armazem">
+                                <div class="silo-visual armazem-visual"><div class="silo-fill" style="height: 42%"></div></div>
+                                <div class="sa-stock"><b>42%</b><span>6.300 t</span></div>
+                                <div class="armazem-celulas">
+                                    <div class="armazem-celula" style="--c: var(--grao-sorgo)">
+                                        <span class="armazem-celula-head"><i class="legend-dot legend-dot--sorgo"></i>Sorgo <small>· células 1–2</small></span>
+                                        <span class="armazem-celula-track"><span class="armazem-celula-fill" style="width: 49%"></span></span>
+                                        <span class="armazem-celula-val">3.900 t <small>de 8.000</small></span>
+                                    </div>
+                                    <div class="armazem-celula" style="--c: var(--grao-trigo)">
+                                        <span class="armazem-celula-head"><i class="legend-dot legend-dot--trigo"></i>Trigo <small>· células 3–4</small></span>
+                                        <span class="armazem-celula-track"><span class="armazem-celula-fill" style="width: 34%"></span></span>
+                                        <span class="armazem-celula-val">2.400 t <small>de 7.000</small></span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="relogio-info">
-                                <span class="relogio-nome"><svg class="grao-icon grao-icon--trigo" aria-hidden="true"><use href="#ico-trigo"></use></svg>Trigo</span>
-                                <span class="relogio-local">Zona C · Silo 7</span>
-                                <span class="relogio-estado" data-relogio-estado>PAUSADO</span>
-                                <span class="relogio-restante" data-relogio-restante>—</span>
-                            </div>
-                        </article>
-                        <article class="relogio-card relogio-card--soja" data-relogio data-estado="concluido" data-meta-h="60" data-acumulado-h="60">
-                            <div class="relogio-dial">
-                                <div class="relogio-arco" data-relogio-arco></div>
-                                <div class="relogio-marcas"></div>
-                                <div class="relogio-ponteiro" data-relogio-ponteiro></div>
-                                <div class="relogio-centro">
-                                    <span class="relogio-tempo" data-relogio-tempo>--:--:--</span>
-                                    <span class="relogio-meta" data-relogio-meta>de --</span>
+                            <div class="sa-foot--armazem">
+                                <div class="sa-temp">
+                                    <div class="sa-temp-head">
+                                        <span class="sa-temp-now" data-temp-atual>--</span>
+                                        <span class="sa-temp-rate" data-temp-taxa>--</span>
+                                    </div>
+                                    <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
+                                </div>
+                                <div class="sa-aer">
+                                    <span class="sa-aer-badge" data-aer-badge>--</span>
+                                    <span class="sa-aer-info" data-aer-info>--</span>
                                 </div>
                             </div>
-                            <div class="relogio-info">
-                                <span class="relogio-nome"><svg class="grao-icon grao-icon--soja" aria-hidden="true"><use href="#ico-soja"></use></svg>Soja</span>
-                                <span class="relogio-local">Zona A · Silo 9</span>
-                                <span class="relogio-estado" data-relogio-estado>CONCLUÍDO</span>
-                                <span class="relogio-restante" data-relogio-restante>—</span>
-                            </div>
                         </article>
+                    </div>
+                </div>
+
+                <div class="split-grid split-grid--silos">
+                    <div class="content-section">
+                        <h3>CAPACIDADE x ESTOQUE POR ARMAZÉM · AVARÉ (EM TON.)</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item"><i class="legend-dot legend-dot--free"></i>Espaço Disponível</span>
+                            <span class="legend-item"><i class="legend-dot legend-dot--stock"></i>Produto em Estoque</span>
+                        </div>
+                        <div class="stack-chart stack-chart--capacidade stack-chart--armazem">
+                            <div class="stack-row">
+                                <span class="stack-label">Armazém 1</span>
+                                <div class="stack-track">
+                                    <div class="stack-seg stack-seg--free" style="width: 27.0%"><span class="stack-value">5.400</span></div>
+                                    <div class="stack-seg stack-seg--stock" style="width: 73.0%"><span class="stack-value">14.600</span></div>
+                                </div>
+                                <span class="stack-cap">20.000</span>
+                            </div>
+                            <div class="stack-row">
+                                <span class="stack-label">Armazém 2</span>
+                                <div class="stack-track">
+                                    <div class="stack-seg stack-seg--free" style="width: 58.0%"><span class="stack-value">8.700</span></div>
+                                    <div class="stack-seg stack-seg--stock" style="width: 42.0%"><span class="stack-value">6.300</span></div>
+                                </div>
+                                <span class="stack-cap">15.000</span>
+                            </div>
+                            <div class="stack-row stack-row--total">
+                                <span class="stack-label">Total</span>
+                                <div class="stack-track">
+                                    <div class="stack-seg stack-seg--free" style="width: 40.3%"><span class="stack-value">14.100</span></div>
+                                    <div class="stack-seg stack-seg--stock" style="width: 59.7%"><span class="stack-value">20.900</span></div>
+                                </div>
+                                <span class="stack-cap">35.000</span>
+                            </div>
+                            <div class="stack-axis">
+                                <span>0%</span>
+                                <span>50%</span>
+                                <span>100%</span>
+                            </div>
+                        </div>
+                        <p class="stack-hint">Capacidade estática de 35.000 t nos dois armazéns graneleiros. Somada aos 32.000 t dos silos, a unidade guarda até 67.000 t.</p>
+                    </div>
+
+                    <div class="content-section content-section--auto">
+                        <h3>LOTES ARMAZENADOS · UMIDADE E ENTRADA</h3>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ARMAZÉM</th>
+                                    <th>CÉLULA</th>
+                                    <th>PRODUTO</th>
+                                    <th>ESTOQUE (t)</th>
+                                    <th>UMIDADE</th>
+                                    <th>ENTRADA</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Armazém 1</td><td>1–3</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>9.800</td><td>13,2%</td><td>02/09</td></tr>
+                                <tr><td>Armazém 1</td><td>4–5</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>4.800</td><td>12,8%</td><td>09/09</td></tr>
+                                <tr><td>Armazém 2</td><td>1–2</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>3.900</td><td>13,0%</td><td>28/08</td></tr>
+                                <tr><td>Armazém 2</td><td>3–4</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>2.400</td><td class="class-val class-val--atencao">13,9%</td><td>12/09</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </section>
@@ -3115,106 +3200,214 @@
                     </div>
                 </div>
 
-                <div class="kpi-grid kpi-grid--six kpi-grid--eight">
-                    <div class="kpi-card">
-                        <div class="kpi-label">CARGAS EXPEDIDAS</div>
-                        <div class="kpi-value">28</div>
+                <!-- Volume, caminhoes e reprovas do dia. Cada cartao abre o "por que"
+                     ao clique (data-motivo), como na recepcao. -->
+                <div class="kpi-grid kpi-grid--tres">
+                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Volume carregado hoje por cultura"
+                        data-motivo-resumo="1.120 t · 28 caminhões · programado 1.400 t"
+                        data-motivo-lista="Milho::620 t::15 caminhões::neutro|Sorgo::260 t::7 caminhões::neutro|Trigo::140 t::3 caminhões::neutro|Soja::100 t::3 caminhões::neutro|Atingimento do programado::80%::meta 100%::ruim"
+                        data-motivo-nota="Ritmo atual de 96 t/h contra 110 t/h necessários para fechar o programado.">
+                        <div class="kpi-label">VOLUME CARREGADO HOJE</div>
+                        <div class="kpi-value-row">
+                            <div class="kpi-value">1.120 <span class="kpi-value-unit">t</span></div>
+                            <span class="kpi-value-ref">programado 1.400 t</span>
+                        </div>
+                        <div class="kpi-sub">
+                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--milho"></i><b>Milho</b> 620 t</span>
+                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--sorgo"></i><b>Sorgo</b> 260 t</span>
+                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--trigo"></i><b>Trigo</b> 140 t</span>
+                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--soja"></i><b>Soja</b> 100 t</span>
+                        </div>
                     </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">TONELAGEM TOTAL</div>
-                        <div class="kpi-value">1.120 t</div>
+                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Caminhões na expedição hoje"
+                        data-motivo-resumo="28 carregados · 3 em carregamento · 6 aguardando"
+                        data-motivo-lista="Carregados e liberados::24::liberados na 2ª pesagem::bom|Carregados e reprovados::4::voltam para o silo::ruim|Em carregamento::3::bicas 1, 2 e 4::neutro|Aguardando no pátio::6::espera média 22 min::neutro"
+                        data-motivo-nota="Tempo médio de carregamento hoje: 20 min por caminhão.">
+                        <div class="kpi-label">CAMINHÕES</div>
+                        <div class="kpi-value-row">
+                            <div class="kpi-value">28 <span class="kpi-value-unit">carregados</span></div>
+                            <span class="kpi-value-ref">3 em carregamento · 6 aguardando</span>
+                        </div>
+                        <div class="kpi-sub">
+                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--milho"></i><b>Milho</b> 15</span>
+                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--sorgo"></i><b>Sorgo</b> 7</span>
+                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--trigo"></i><b>Trigo</b> 3</span>
+                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--soja"></i><b>Soja</b> 3</span>
+                        </div>
                     </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">AGUARDANDO</div>
-                        <div class="kpi-value">6</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">TEMPO MÉDIO</div>
-                        <div class="kpi-value">18 min</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">PRECISÃO DOSAGEM</div>
-                        <div class="kpi-value">99,2%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">DOSAGEM IMPUREZA</div>
-                        <div class="kpi-value">1,4%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">DOSAGEM UMIDADE</div>
-                        <div class="kpi-value">0,8%</div>
-                    </div>
-                    <div class="kpi-card alert">
+                    <div class="kpi-card kpi-card--meta kpi-card--motivo alert" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Por que 4 cargas foram reprovadas"
+                        data-motivo-resumo="4 de 28 · 14% das cargas carregadas hoje"
+                        data-motivo-lista="Umidade acima de 14%::2 cargas::milho · silos 2 e 3::ruim|Impureza acima de 1%::1 carga::sorgo · silo 5::ruim|Avariados acima de 6%::1 carga::soja · silo 8::ruim"
+                        data-motivo-nota="As duas reprovas por umidade saíram do mesmo lote do silo 2.">
                         <div class="kpi-label">CARGAS REPROVADAS</div>
-                        <div class="kpi-value">2</div>
+                        <div class="kpi-value-row">
+                            <div class="kpi-value">4</div>
+                            <span class="kpi-flag kpi-flag--alerta">↑ 14% das cargas</span>
+                        </div>
+                        <div class="kpi-sub">
+                            <span class="kpi-sub-item"><b>Umidade</b> 2</span>
+                            <span class="kpi-sub-item"><b>Impureza</b> 1</span>
+                            <span class="kpi-sub-item"><b>Avariados</b> 1</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="split-grid">
+                <!-- Qualidade por cultura (media ponderada pelo volume) ao lado do
+                     volume por destino. Valores acima da faixa ganham cor. Altura
+                     natural: quem cede e a tabela de cargas, que rola por dentro. -->
+                <div class="split-grid split-grid--exp">
                     <div class="content-section">
-                        <h3>ÚLTIMAS CARGAS EXPEDIDAS</h3>
-                        <table class="data-table">
+                        <div class="section-head-text">
+                            <h3>QUALIDADE POR CULTURA · VOLUME CARREGADO</h3>
+                            <p class="section-sub">Média ponderada pelo volume das cargas de hoje · limites: umidade 14% · impureza 1% · avariados 6%</p>
+                        </div>
+                        <table class="data-table exp-qual-table">
                             <thead>
                                 <tr>
-                                    <th>CARGA</th>
-                                    <th>DESTINO</th>
-                                    <th>TONELAGEM</th>
-                                    <th>HORA SAÍDA</th>
+                                    <th>CULTURA</th>
+                                    <th>VOLUME</th>
+                                    <th>CAMINHÕES</th>
+                                    <th>UMIDADE</th>
+                                    <th>IMPUREZA</th>
+                                    <th>AVARIADOS</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>#2845</td>
-                                    <td>São Paulo</td>
-                                    <td>40 t</td>
-                                    <td>13:45</td>
-                                </tr>
-                                <tr>
-                                    <td>#2844</td>
-                                    <td>Campinas</td>
-                                    <td>38 t</td>
-                                    <td>13:20</td>
-                                </tr>
-                                <tr>
-                                    <td>#2843</td>
-                                    <td>Ribeirão Preto</td>
-                                    <td>42 t</td>
-                                    <td>13:00</td>
-                                </tr>
+                                <tr><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>620 t</td><td>15</td><td class="class-val class-val--atencao">13,1%</td><td>0,8%</td><td>3,4%</td></tr>
+                                <tr><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>260 t</td><td>7</td><td>12,4%</td><td class="class-val class-val--atencao">0,9%</td><td>2,9%</td></tr>
+                                <tr><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>140 t</td><td>3</td><td>12,0%</td><td>0,6%</td><td>2,1%</td></tr>
+                                <tr><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>100 t</td><td>3</td><td>12,7%</td><td>0,8%</td><td class="class-val class-val--atencao">3,6%</td></tr>
+                                <tr class="exp-qual-geral"><td><i class="legend-dot legend-dot--geral"></i>Geral</td><td>1.120 t</td><td>28</td><td>12,8%</td><td>0,8%</td><td>3,1%</td></tr>
                             </tbody>
                         </table>
                     </div>
 
                     <div class="content-section">
-                        <h3>CALIBRAÇÃO DOS DOSADORES</h3>
-                        <table class="data-table">
+                        <div class="section-head-text">
+                            <h3>VOLUME POR DESTINO</h3>
+                            <p class="section-sub">Toneladas e caminhões liberados hoje por destino</p>
+                        </div>
+                        <div class="exp-destinos" style="--exp-max: 420">
+                            <div class="exp-destino" style="--t: 420">
+                                <span class="exp-destino-nome">Porto de Santos</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><b>420 t</b> · 11 cam.</span>
+                            </div>
+                            <div class="exp-destino" style="--t: 280">
+                                <span class="exp-destino-nome">Porto de Paranaguá</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><b>280 t</b> · 7 cam.</span>
+                            </div>
+                            <div class="exp-destino" style="--t: 180">
+                                <span class="exp-destino-nome">Coop. Holambra</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><b>180 t</b> · 4 cam.</span>
+                            </div>
+                            <div class="exp-destino" style="--t: 120">
+                                <span class="exp-destino-nome">Frig. Aurora</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><b>120 t</b> · 3 cam.</span>
+                            </div>
+                            <div class="exp-destino" style="--t: 80">
+                                <span class="exp-destino-nome">Fáb. Ração Nutriave</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><b>80 t</b> · 2 cam.</span>
+                            </div>
+                            <div class="exp-destino" style="--t: 40">
+                                <span class="exp-destino-nome">Ind. Moinho Sul</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><b>40 t</b> · 1 cam.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detalhe por carga. Mesmo filtro de cultura da classificacao:
+                     a section guarda a escolha em data-class-cultura e o CSS esconde
+                     as linhas cujo data-cultura nao bate. -->
+                <div class="content-section content-section--livre class-detalhe class-detalhe--exp" data-class-cultura="todas">
+                    <div class="section-head section-head--top">
+                        <div class="section-head-text">
+                            <h3>CARGAS CARREGADAS HOJE · DETALHE</h3>
+                            <p class="section-sub">Motorista, silo de origem, destino e tempo de carregamento de cada carga · reprovadas mostram o motivo</p>
+                        </div>
+                        <div class="class-filtro" role="group" aria-label="Filtrar cargas por cultura">
+                            <span class="class-filtro-rotulo">Cultura</span>
+                            <button type="button" class="class-filtro-btn is-active" data-class-cultura="todas" aria-pressed="true">Todas</button>
+                            <button type="button" class="class-filtro-btn" data-class-cultura="milho" aria-pressed="false"><i class="legend-dot legend-dot--milho"></i>Milho</button>
+                            <button type="button" class="class-filtro-btn" data-class-cultura="sorgo" aria-pressed="false"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</button>
+                            <button type="button" class="class-filtro-btn" data-class-cultura="trigo" aria-pressed="false"><i class="legend-dot legend-dot--trigo"></i>Trigo</button>
+                            <button type="button" class="class-filtro-btn" data-class-cultura="soja" aria-pressed="false"><i class="legend-dot legend-dot--soja"></i>Soja</button>
+                        </div>
+                    </div>
+                    <div class="table-scroll table-scroll--livre">
+                        <table class="data-table class-table exp-table">
                             <thead>
                                 <tr>
-                                    <th>DOSADOR</th>
+                                    <th>TAG</th>
+                                    <th>MOTORISTA</th>
+                                    <th>PLACA</th>
+                                    <th>CULTURA</th>
+                                    <th>FONTE (SILO)</th>
+                                    <th>DESTINO</th>
+                                    <th>INÍCIO</th>
+                                    <th>FIM</th>
+                                    <th>TEMPO CARREG.</th>
                                     <th>STATUS</th>
-                                    <th>SETPOINT (kg)</th>
-                                    <th>REAL (kg)</th>
-                                    <th>VARIAÇÃO</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Dosador 1</td>
-                                    <td><span class="equip-estado is-operando">● Operando</span></td>
-                                    <td>500</td>
-                                    <td>501</td>
-                                    <td>+0,2%</td>
-                                </tr>
-                                <tr>
-                                    <td>Dosador 2</td>
-                                    <td><span class="equip-estado is-operando">● Operando</span></td>
-                                    <td>500</td>
-                                    <td>499</td>
-                                    <td>-0,2%</td>
-                                </tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD126174</span></td><td>Carlos Menezes</td><td>QXA2B71</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 3</td><td>Porto de Santos</td><td>13:52</td><td>14:10</td><td>18 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="sorgo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD0FED74</span></td><td>Ana Paula Ribeiro</td><td>NZV1545</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 5</td><td>Porto de Paranaguá</td><td>13:41</td><td>13:57</td><td>16 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FDE16474</span></td><td>João Batista</td><td>MZX3B39</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Coop. Holambra</td><td>13:30</td><td>13:55</td><td class="class-val class-val--atencao">25 min</td><td><span class="class-status class-status--fora">Reprovada · umidade 14,6%</span></td></tr>
+                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000050136FD4DCA74</span></td><td>Marcos Vieira</td><td>PZA4275</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Ind. Moinho Sul</td><td>13:18</td><td>13:35</td><td>17 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="soja" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD253074</span></td><td>Rafael Souza</td><td>BXE8A75</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Frig. Aurora</td><td>13:05</td><td>13:26</td><td>21 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD7A2C74</span></td><td>Luciana Prado</td><td>KLM4C22</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 3</td><td>Porto de Santos</td><td>12:48</td><td>13:04</td><td>16 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="sorgo" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD9B1E74</span></td><td>Pedro Almeida</td><td>HJK7D18</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 5</td><td>Fáb. Ração Nutriave</td><td>12:31</td><td>12:58</td><td class="class-val class-val--atencao">27 min</td><td><span class="class-status class-status--fora">Reprovada · impureza 1,3%</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD3C8874</span></td><td>Sérgio Tavares</td><td>RTY1E90</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 1</td><td>Porto de Santos</td><td>12:20</td><td>12:39</td><td>19 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="soja" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD61F074</span></td><td>Fernanda Lima</td><td>WER5F63</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Frig. Aurora</td><td>12:02</td><td>12:31</td><td class="class-val class-val--fora">29 min</td><td><span class="class-status class-status--fora">Reprovada · avariados 7,1%</span></td></tr>
+                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD84D274</span></td><td>Roberto Nunes</td><td>UIO9G47</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Porto de Paranaguá</td><td>11:50</td><td>12:06</td><td>16 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FDA31B74</span></td><td>Cláudio Ferreira</td><td>ASD3H55</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Coop. Holambra</td><td>11:36</td><td>11:59</td><td>23 min</td><td><span class="class-status class-status--fora">Reprovada · umidade 14,9%</span></td></tr>
                             </tbody>
                         </table>
                     </div>
+                </div>
+
+                <div class="content-section content-section--auto">
+                    <h3>CALIBRAÇÃO DOS DOSADORES</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>DOSADOR</th>
+                                <th>STATUS</th>
+                                <th>SETPOINT (kg)</th>
+                                <th>REAL (kg)</th>
+                                <th>VARIAÇÃO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Dosador 1</td>
+                                <td><span class="equip-estado is-operando">● Operando</span></td>
+                                <td>500</td>
+                                <td>501</td>
+                                <td>+0,2%</td>
+                            </tr>
+                            <tr>
+                                <td>Dosador 2</td>
+                                <td><span class="equip-estado is-operando">● Operando</span></td>
+                                <td>500</td>
+                                <td>499</td>
+                                <td>-0,2%</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
 
@@ -3503,58 +3696,13 @@
                 </div>
             </section>
 
-            <section class="screen screen--camera" id="screen-cam-5">
-                <div class="screen-header">
-                    <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
-                    <div class="screen-title-section">
-                        <h2>Câmera · Silos</h2>
-                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-07 · PÁTIO DE SILOS</div>
-                    </div>
-                </div>
-
-                <div class="camera-wall">
-                    <div class="camera-tile">
-                        <figure class="camera-frame" data-cam-src="">
-                            <div class="camera-placeholder">
-                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
-                                <span class="camera-name">CAM-07 · PÁTIO DE SILOS</span>
-                                <span class="camera-state">AGUARDANDO SINAL</span>
-                            </div>
-                        </figure>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Camera 6: Câmera · Aeração -->
-            <section class="screen screen--camera" id="screen-cam-6">
-                <div class="screen-header">
-                    <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
-                    <div class="screen-title-section">
-                        <h2>Câmera · Aeração</h2>
-                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-08 · CASA DE VENTILADORES</div>
-                    </div>
-                </div>
-
-                <div class="camera-wall">
-                    <div class="camera-tile">
-                        <figure class="camera-frame" data-cam-src="">
-                            <div class="camera-placeholder">
-                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
-                                <span class="camera-name">CAM-08 · CASA DE VENTILADORES</span>
-                                <span class="camera-state">AGUARDANDO SINAL</span>
-                            </div>
-                        </figure>
-                    </div>
-                </div>
-            </section>
-
             <!-- Camera 7: Câmera · Expedição -->
             <section class="screen screen--camera" id="screen-cam-7">
                 <div class="screen-header">
                     <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
                     <div class="screen-title-section">
                         <h2>Câmera · Expedição</h2>
-                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-09 · PLATAFORMA DE CARREGAMENTO</div>
+                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-09 · PLATAFORMA DE CARREGAMENTO · CAM-11 · BALANÇA DE SAÍDA</div>
                     </div>
                 </div>
 
@@ -3564,6 +3712,15 @@
                             <div class="camera-placeholder">
                                 <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
                                 <span class="camera-name">CAM-09 · PLATAFORMA DE CARREGAMENTO</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-11 · BALANÇA DE SAÍDA</span>
                                 <span class="camera-state">AGUARDANDO SINAL</span>
                             </div>
                         </figure>
