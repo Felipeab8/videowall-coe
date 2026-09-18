@@ -4208,6 +4208,30 @@ body.theme-light .kpi-flag--alerta {
     flex: 1 1 auto;
 }
 
+/* Área sem câmera: item solto no nível dos grupos, com a mesma
+   numeração e peso do .menu-parent. */
+.menu-item--solo {
+    gap: 0.5rem;
+    font-weight: 600;
+    counter-increment: screenNum;
+}
+
+.menu-item--solo::before {
+    content: counter(screenNum, decimal-leading-zero) " ·";
+    width: auto;
+    height: auto;
+    margin-right: 0;
+    background: none;
+    border-radius: 0;
+    color: var(--faint);
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.menu-item--solo.active::before {
+    color: var(--accent);
+}
+
 .menu-parent:hover {
     background: var(--hover);
     color: var(--text);
@@ -7030,6 +7054,43 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     background: var(--c);
 }
 
+/* Silo largo: o desenho ocupa o cartão inteiro e a ocupação (% e t) fica
+   escrita no meio dele. O armazém mantém o layout com as células ao lado. */
+.sa-card:not(.sa-card--armazem) .sa-body {
+    position: relative;
+}
+
+.sa-card:not(.sa-card--armazem) .silo-visual {
+    flex: 1 1 auto;
+    width: 100%;
+}
+
+.sa-card:not(.sa-card--armazem) .sa-stock {
+    position: absolute;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    padding: 0;
+    text-align: center;
+    pointer-events: none; /* não atrapalha o arraste da ocupação no modo edição */
+}
+
+.sa-card:not(.sa-card--armazem) .sa-stock b,
+.sa-card:not(.sa-card--armazem) .sa-stock span {
+    pointer-events: auto;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+}
+
+.sa-card:not(.sa-card--armazem) .sa-stock b {
+    font-size: 1.5rem;
+}
+
+.sa-card:not(.sa-card--armazem) .sa-stock span {
+    font-size: 0.72rem;
+    color: var(--text);
+}
+
 .sa-stock {
     display: flex;
     flex-direction: column;
@@ -7066,16 +7127,38 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 .sa-temp-head {
     display: flex;
     align-items: baseline;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 0.375rem;
 }
 
-.sa-temp-now {
-    font-size: 1.05rem;
+/* Pontas da curva: a primeira leitura (24h atrás) fica pendurada no
+   começo da linha e a atual no fim, cada uma na altura do próprio ponto
+   (--y-ini / --y-fim vêm do script, em % da altura do gráfico). */
+.sa-spark-wrap {
+    position: relative;
+    /* margem (e não padding) para o % de top dos rótulos bater com a altura do svg */
+    margin-top: 0.85rem;
+}
+
+.sa-temp-ponto {
+    position: absolute;
+    font-size: 0.68rem;
     font-weight: 800;
     color: var(--text);
-    font-variant-numeric: tabular-nums;
     white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    transform: translateY(calc(-100% - 0.15rem));
+}
+
+.sa-temp-ponto--ini {
+    left: 0;
+    top: var(--y-ini, 20%);
+}
+
+.sa-temp-ponto--fim {
+    right: 0;
+    top: var(--y-fim, 80%);
 }
 
 .sa-temp-rate {
@@ -7191,12 +7274,18 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     border-color: var(--accent);
 }
 
-.split-grid--silos {
-    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+/* Pulmões embaixo dos silos: a moldura tracejada abraça só os dois
+   cartões. A largura é a de 2 das 8 colunas da grade de cima (mais o
+   respiro e o padding da seção), para os cartões ficarem do tamanho dos
+   outros silos; a faixa tem a mesma altura da seção dos silos. */
+.screen > .sa-section--pulmao {
+    flex: 1.15 1 0;
+    align-self: flex-start;
+    width: calc(25% + 1.21875rem + 1.5px);
 }
 
 /* ============================================
-   ARMAZENAMENTO · ARMAZÉNS GRANELEIROS
+   ARMAZÉM · ARMAZÉNS GRANELEIROS
    Mesmo cartão sa-card dos silos, só que largo: dois por linha, tanque
    deitado (graneleiro é mais comprido que alto), barras por célula ao
    lado e, no rodapé, temperatura e aeração dividindo a mesma linha.
@@ -7337,8 +7426,8 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     padding-bottom: 0.125rem;
 }
 
-.sa-foot--armazem .sa-temp-now {
-    font-size: 1.25rem;
+.sa-foot--armazem .sa-temp-ponto {
+    font-size: 0.8rem;
 }
 
 .sa-foot--armazem .sa-spark {
@@ -9115,6 +9204,58 @@ body.edit-mode .fluxo-etapa-pill {
 }
 
 /* fichas por cultura com preenchimento proporcional ao fundo */
+/* Cartão 05 (armazenagem): capacidade x estoque por cultura em versão
+   compacta — mesmas classes do gráfico grande, só com barras mais baixas. */
+.gv-capacidade {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.gv-capacidade .chart-legend {
+    margin-bottom: 0;
+}
+
+.gv-capacidade .stack-chart {
+    gap: 0.3rem;
+    flex: 1 1 auto;
+    justify-content: center;
+}
+
+.gv-capacidade .stack-row--total {
+    margin-top: 0.2rem;
+    padding-top: 0.35rem;
+    border-top: 1px solid var(--row-line);
+}
+
+.gv-capacidade .stack-track {
+    height: 1.5rem;
+}
+
+.gv-capacidade .stack-label {
+    width: 2.75rem;
+    font-size: 0.66rem;
+}
+
+.gv-capacidade .stack-value {
+    font-size: 0.62rem;
+    padding: 0 0.25rem;
+}
+
+.gv-capacidade .stack-chart--capacidade .stack-cap {
+    flex-basis: 2.75rem;
+    font-size: 0.62rem;
+}
+
+.gv-capacidade .stack-chart--capacidade .stack-axis {
+    margin-left: 3.5rem;
+    margin-right: 3.5rem;
+    margin-top: 0;
+    font-size: 0.56rem;
+}
+
 .gv-chips {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -9170,6 +9311,247 @@ body.edit-mode .fluxo-etapa-pill {
     border-color: var(--ok);
     background: radial-gradient(circle, var(--ok) 35%, transparent 40%);
     box-shadow: 0 0 0.5rem rgba(46, 204, 113, 0.5);
+}
+
+/* ---- Cartão 06 · Aeração por área ----
+   Para silos e armazém: linha do tempo de 24h com os trechos de aeração
+   ativa (cinza), os riscos do horário de ponta (18h e 21h) e o marcador de
+   agora; embaixo, temperatura e umidade relativa das últimas 24h. */
+.gv-aer {
+    gap: 0.45rem;
+}
+
+.gv-aer-legenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.gv-aer-legenda span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.gv-aer-legenda i {
+    display: inline-block;
+    width: 0.75rem;
+    height: 0.4rem;
+    border-radius: 2px;
+}
+
+.gv-aer-legenda-on {
+    background: var(--muted);
+    opacity: 0.8;
+}
+
+.gv-aer-legenda-ponta {
+    width: 0.75rem;
+    height: 0.4rem;
+    background: none;
+    border-left: 2px solid #f39c12;
+    border-right: 2px solid #f39c12;
+    border-radius: 0;
+}
+
+.gv-aer-legenda-temp,
+.gv-aer-legenda-ur {
+    height: 0;
+    border-top: 2px solid var(--grao-milho);
+    border-radius: 0;
+}
+
+.gv-aer-legenda-ur {
+    border-top-color: var(--accent);
+    border-top-style: dashed;
+}
+
+.gv-aer-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1 1 0;
+    min-height: 0;
+}
+
+.gv-aer-row + .gv-aer-row {
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--row-line);
+}
+
+.gv-aer-row-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.gv-aer-row-name {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.gv-aer-row-sub {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* linha do tempo de 24h */
+.gv-aer-track {
+    position: relative;
+    height: 0.95rem;
+    margin-bottom: 0.7rem; /* espaço para as horas embaixo */
+    background: var(--row-bg);
+    border: 1px solid var(--row-line);
+    border-radius: 4px;
+}
+
+.gv-aer-on {
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    background: var(--muted);
+    opacity: 0.8;
+    border-radius: 2px;
+}
+
+.gv-aer-ponta {
+    position: absolute;
+    top: -3px;
+    bottom: -3px;
+    left: 75%;
+    width: 12.5%;
+    border-left: 2px solid #f39c12;
+    border-right: 2px solid #f39c12;
+    pointer-events: none;
+}
+
+.gv-aer-now {
+    position: absolute;
+    top: -2px;
+    bottom: -2px;
+    left: 0;
+    width: 2px;
+    background: var(--text);
+    box-shadow: 0 0 4px var(--text);
+    transform: translateX(-1px);
+    pointer-events: none;
+}
+
+.gv-aer-h {
+    position: absolute;
+    top: 100%;
+    margin-top: 1px;
+    font-size: 0.52rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+    transform: translateX(-50%);
+}
+
+.gv-aer-h--0 { left: 0; transform: none; }
+.gv-aer-h--12 { left: 50%; }
+.gv-aer-h--18 { left: 75%; color: #f39c12; }
+.gv-aer-h--21 { left: 87.5%; color: #f39c12; }
+.gv-aer-h--24 { left: 100%; transform: translateX(-100%); }
+
+/* curvas de temperatura e umidade + valores atuais ao lado */
+.gv-aer-curvas {
+    display: flex;
+    align-items: stretch;
+    gap: 0.5rem;
+    flex: 1 1 auto;
+    min-height: 2rem;
+}
+
+.gv-aer-svg {
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
+    min-height: 2rem;
+    overflow: visible;
+}
+
+.gv-aer-linha {
+    fill: none;
+    stroke-width: 1.6;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.gv-aer-linha--temp {
+    stroke: var(--grao-milho);
+}
+
+.gv-aer-linha--ur {
+    stroke: var(--accent);
+    stroke-dasharray: 4 3;
+}
+
+.gv-aer-leg {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.2rem;
+}
+
+/* coluna da esquerda: leituras de 24h atrás, encostadas no começo da curva */
+.gv-aer-leg--ini .gv-aer-leg-item {
+    align-items: flex-end;
+    text-align: right;
+    padding-left: 0;
+    padding-right: 0.4rem;
+    border-left: 0;
+    border-right: 2px solid var(--grao-milho);
+}
+
+.gv-aer-leg--ini .gv-aer-leg-item--ur {
+    border-right-color: var(--accent);
+    border-right-style: dashed;
+}
+
+.gv-aer-leg-item {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.05;
+    font-size: 0.55rem;
+    font-weight: 600;
+    color: var(--muted);
+    padding-left: 0.4rem;
+    border-left: 2px solid var(--grao-milho);
+}
+
+.gv-aer-leg-item--ur {
+    border-left-color: var(--accent);
+    border-left-style: dashed;
+}
+
+.gv-aer-leg-item b {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+/* em ponta o selo do cabeçalho vira laranja */
+.geral-card.ponta-on .kpi-flag[data-ponta-tarifa] {
+    color: #f39c12;
+    border-color: rgba(243, 156, 18, 0.5);
+    background: rgba(243, 156, 18, 0.12);
 }
 
 .gv-tarifa {
@@ -10641,8 +11023,25 @@ body.theme-light .class-val--fora {
 /* ---- Detalhe por carga ---- */
 .exp-table td:nth-child(4),
 .exp-table td:nth-child(5),
-.exp-table td:nth-child(6) {
+.exp-table td:nth-child(6),
+.exp-table td:nth-child(7) {
     white-space: nowrap;
+}
+
+/* carga composta: mais de um silo de origem, com a parte de cada um embaixo */
+.exp-table td.exp-fonte-multi small {
+    display: block;
+    font-size: 0.75em;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    margin-top: 0.125rem;
+}
+
+/* volume por caminhao: unidade discreta ao lado do numero */
+.exp-table td:nth-child(7) small {
+    font-size: 0.8em;
+    color: var(--muted);
+    margin-left: 0.125rem;
 }
 
 /* qualidade x destino em altura natural; a tabela de cargas absorve a sobra */

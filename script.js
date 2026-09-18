@@ -3818,10 +3818,12 @@ function formatarTemperatura(valor) {
 
 // Sparkline em viewBox 100x32: uma curva reta ganha meio grau de folga
 // para não virar uma linha colada no fundo.
-function desenharSparkline(svg, temps) {
-    if (!svg || temps.length < 2) return;
-    const W = 100;
-    const H = 32;
+const SPARK_W = 100;
+const SPARK_H = 32;
+
+// Pontos [x, y] da curva no viewBox do sparkline; usados tanto para
+// desenhar quanto para pendurar os rótulos de início e fim sobre a linha.
+function pontosSparkline(temps) {
     const PAD = 2.5;
     let lo = Math.min(...temps);
     let hi = Math.max(...temps);
@@ -3830,11 +3832,18 @@ function desenharSparkline(svg, temps) {
         lo = meio - 0.25;
         hi = meio + 0.25;
     }
-    const pontos = temps.map((t, i) => {
-        const x = (i / (temps.length - 1)) * W;
-        const y = PAD + (1 - (t - lo) / (hi - lo)) * (H - PAD * 2);
+    return temps.map((t, i) => {
+        const x = (i / (temps.length - 1)) * SPARK_W;
+        const y = PAD + (1 - (t - lo) / (hi - lo)) * (SPARK_H - PAD * 2);
         return [x, y];
     });
+}
+
+function desenharSparkline(svg, temps) {
+    if (!svg || temps.length < 2) return;
+    const W = SPARK_W;
+    const H = SPARK_H;
+    const pontos = pontosSparkline(temps);
     const linha = pontos
         .map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(2)} ${y.toFixed(2)}`)
         .join(' ');
@@ -3872,7 +3881,15 @@ function prepararSilo(card) {
 
     const taxa = taxaTemperatura(temps);
     const tendencia = tendenciaDe(taxa);
+    escreverTexto(card.querySelector('[data-temp-inicio]'), formatarTemperatura(temps[0]));
     escreverTexto(card.querySelector('[data-temp-atual]'), formatarTemperatura(temps[temps.length - 1]));
+    // rótulos acompanham a altura da curva nas duas pontas
+    const wrap = card.querySelector('[data-spark-wrap]');
+    if (wrap) {
+        const pontos = pontosSparkline(temps);
+        wrap.style.setProperty('--y-ini', `${((pontos[0][1] / SPARK_H) * 100).toFixed(1)}%`);
+        wrap.style.setProperty('--y-fim', `${((pontos[pontos.length - 1][1] / SPARK_H) * 100).toFixed(1)}%`);
+    }
     const rate = card.querySelector('[data-temp-taxa]');
     if (rate) {
         escreverTexto(rate, formatarTaxa(taxa));
