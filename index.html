@@ -333,7 +333,7 @@
                         </div>
                         <div class="gv-progress" style="--p: 0.737; --m1: 0.691; --m2: 0.908" role="img" aria-label="Hoje 1.120 t; ontem no mesmo horário 1.050 t; projeção 17h 1.520 t">
                             <span class="gv-progress-track"><span class="gv-progress-fill"></span><span class="gv-progress-mark gv-progress-mark--1"></span><span class="gv-progress-mark gv-progress-mark--2"></span></span>
-                            <span class="gv-progress-legend"><span>ontem no horário <b>1.050 t</b></span><span>projeção 17h <b class="is-ok">1.520 t</b></span><span>ontem <b>1.380 t</b></span></span>
+                            <span class="gv-progress-legend"><span>ontem, mesma hora <b>1.050 t</b></span><span>projeção 17h <b class="is-ok">1.520 t</b></span><span>ontem <b>1.380 t</b></span></span>
                         </div>
                         <div class="gv-list">
                             <div class="gv-bar" style="--p: 0.589; --c: var(--grao-milho)">
@@ -446,7 +446,7 @@
                             </div>
                         </div>
                         <div class="gv-aer-row gv-aer-row--ar">
-                            <div class="gv-aer-row-head"><span class="gv-aer-row-name">Ar ambiente</span><span class="gv-aer-row-sub">temperatura e umidade relativa · últimas 24h</span></div>
+                            <div class="gv-aer-row-head"><span class="gv-aer-row-name">Ar ambiente</span><span class="gv-aer-row-sub">últimas 24h</span></div>
                             <div class="gv-aer-curvas">
                                 <div class="gv-aer-leg gv-aer-leg--ini" title="Leituras de 24h atrás">
                                     <span class="gv-aer-leg-item gv-aer-leg-item--temp"><b>22,0°C</b>temperatura</span>
@@ -3009,18 +3009,11 @@
                             data-temps="22.9,22.9,22.8,22.8,22.7,22.7,22.7,22.6,22.6,22.5,22.5,22.5,22.4,22.4,22.3,22.3,22.3,22.2,22.2,22.2,22.3,22.2,22.1,22.0">
                             <div class="sa-head">
                                 <span class="sa-name">ÁREA 1</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho · 20.000 t</span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho · 20.000 t<span class="sa-imp">imp. 0,7%</span></span>
                             </div>
                             <div class="sa-body sa-body--armazem">
                                 <div class="silo-visual armazem-visual"><div class="silo-fill" style="height: 73%"></div></div>
                                 <div class="sa-stock"><b>73%</b><span>14.600 t</span></div>
-                                <div class="armazem-celulas">
-                                    <div class="armazem-celula" style="--c: var(--grao-milho)">
-                                        <span class="armazem-celula-head"><i class="legend-dot legend-dot--milho"></i>Milho <small>· células 1–5</small></span>
-                                        <span class="armazem-celula-track"><span class="armazem-celula-fill" style="width: 73%"></span></span>
-                                        <span class="armazem-celula-val">14.600 t <small>de 20.000</small></span>
-                                    </div>
-                                </div>
                             </div>
                             <div class="sa-foot--armazem">
                                 <div class="sa-temp">
@@ -3045,18 +3038,11 @@
                             data-temps="20.8,20.8,20.8,20.9,20.9,20.9,21.0,21.0,21.0,21.1,21.1,21.1,21.2,21.2,21.2,21.3,21.3,21.3,21.3,21.4,21.2,21.3,21.4,21.5">
                             <div class="sa-head">
                                 <span class="sa-name">ÁREA 2</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo · 15.000 t</span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo · 15.000 t<span class="sa-imp sa-imp--alto" title="Acima do limite de 1%">imp. 1,1%</span></span>
                             </div>
                             <div class="sa-body sa-body--armazem">
                                 <div class="silo-visual armazem-visual"><div class="silo-fill" style="height: 42%"></div></div>
                                 <div class="sa-stock"><b>42%</b><span>6.300 t</span></div>
-                                <div class="armazem-celulas">
-                                    <div class="armazem-celula" style="--c: var(--grao-sorgo)">
-                                        <span class="armazem-celula-head"><i class="legend-dot legend-dot--sorgo"></i>Sorgo <small>· células 1–4</small></span>
-                                        <span class="armazem-celula-track"><span class="armazem-celula-fill" style="width: 42%"></span></span>
-                                        <span class="armazem-celula-val">6.300 t <small>de 15.000</small></span>
-                                    </div>
-                                </div>
                             </div>
                             <div class="sa-foot--armazem">
                                 <div class="sa-temp">
@@ -3348,86 +3334,85 @@
                             </div>
                         </div>
 
-                        <!-- Próximos 6 dias: faixa térmica numa escala comum (14–32°C). -->
+                        <!-- Próximos 6 dias em tabela: uma linha por dia, faixa térmica na escala 14–32 °C. -->
                         <div class="content-section pv-section pv-dias">
                             <div class="section-head">
                                 <h3>PRÓXIMOS 6 DIAS</h3>
-                                <span class="pv-legenda"><i class="pv-legenda-faixa"></i>mín – máx na escala 14–32 °C · vento → rajada</span>
+                                <span class="pv-legenda"><i class="pv-legenda-faixa"></i>mín – máx na escala 14–32 °C · vento → rajada em km/h</span>
                             </div>
-                            <div class="pv-dias-grid">
-                                <div class="pv-dia">
-                                    <div class="pv-dia-head"><b>Seg</b><span>21 set.</span></div>
-                                    <div class="pv-dia-main"><svg class="pv-icon pv-icon--md pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg><div class="pv-dia-temp"><b>26°</b><small>17°</small></div></div>
-                                    <span class="pv-dia-cond">Pancadas</span>
-                                    <span class="pv-faixa" style="--min: 17; --max: 26"><i></i></span>
-                                    <dl class="pv-dia-dados">
-                                        <div><dt>Chuva</dt><dd class="is-chuva">55% · 6 mm</dd></div>
-                                        <div><dt>Vento</dt><dd>14 → 30 km/h</dd></div>
-                                        <div><dt>UV</dt><dd>7 alto</dd></div>
-                                    </dl>
-                                    <span class="pv-tag pv-tag--atencao">Pátio úmido · fila coberta</span>
-                                </div>
-                                <div class="pv-dia">
-                                    <div class="pv-dia-head"><b>Ter</b><span>22 set.</span></div>
-                                    <div class="pv-dia-main"><svg class="pv-icon pv-icon--md pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><div class="pv-dia-temp"><b>27°</b><small>17°</small></div></div>
-                                    <span class="pv-dia-cond">Parc. nublado</span>
-                                    <span class="pv-faixa" style="--min: 17; --max: 27"><i></i></span>
-                                    <dl class="pv-dia-dados">
-                                        <div><dt>Chuva</dt><dd>30% · 1 mm</dd></div>
-                                        <div><dt>Vento</dt><dd>12 → 24 km/h</dd></div>
-                                        <div><dt>UV</dt><dd>8 alto</dd></div>
-                                    </dl>
-                                    <span class="pv-tag pv-tag--ok">Colheita liberada</span>
-                                </div>
-                                <div class="pv-dia">
-                                    <div class="pv-dia-head"><b>Qua</b><span>23 set.</span></div>
-                                    <div class="pv-dia-main"><svg class="pv-icon pv-icon--md pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg><div class="pv-dia-temp"><b>29°</b><small>18°</small></div></div>
-                                    <span class="pv-dia-cond">Ensolarado</span>
-                                    <span class="pv-faixa" style="--min: 18; --max: 29"><i></i></span>
-                                    <dl class="pv-dia-dados">
-                                        <div><dt>Chuva</dt><dd>10% · 0 mm</dd></div>
-                                        <div><dt>Vento</dt><dd>10 → 18 km/h</dd></div>
-                                        <div><dt>UV</dt><dd>9 muito alto</dd></div>
-                                    </dl>
-                                    <span class="pv-tag pv-tag--ok">Dia ideal para colheita</span>
-                                </div>
-                                <div class="pv-dia">
-                                    <div class="pv-dia-head"><b>Qui</b><span>24 set.</span></div>
-                                    <div class="pv-dia-main"><svg class="pv-icon pv-icon--md pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><div class="pv-dia-temp"><b>28°</b><small>19°</small></div></div>
-                                    <span class="pv-dia-cond">Parc. nublado</span>
-                                    <span class="pv-faixa" style="--min: 19; --max: 28"><i></i></span>
-                                    <dl class="pv-dia-dados">
-                                        <div><dt>Chuva</dt><dd>20% · 1 mm</dd></div>
-                                        <div><dt>Vento</dt><dd>14 → 24 km/h</dd></div>
-                                        <div><dt>UV</dt><dd>8 alto</dd></div>
-                                    </dl>
-                                    <span class="pv-tag pv-tag--ok">Colheita liberada</span>
-                                </div>
-                                <div class="pv-dia is-alerta">
-                                    <div class="pv-dia-head"><b>Sex</b><span>25 set.</span></div>
-                                    <div class="pv-dia-main"><svg class="pv-icon pv-icon--md pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg><div class="pv-dia-temp"><b>24°</b><small>17°</small></div></div>
-                                    <span class="pv-dia-cond">Chuva</span>
-                                    <span class="pv-faixa" style="--min: 17; --max: 24"><i></i></span>
-                                    <dl class="pv-dia-dados">
-                                        <div><dt>Chuva</dt><dd class="is-chuva">70% · 18 mm</dd></div>
-                                        <div><dt>Vento</dt><dd class="is-alerta">22 → 38 km/h</dd></div>
-                                        <div><dt>UV</dt><dd>5 moderado</dd></div>
-                                    </dl>
-                                    <span class="pv-tag pv-tag--alerta">Chuva forte · recepção lenta</span>
-                                </div>
-                                <div class="pv-dia">
-                                    <div class="pv-dia-head"><b>Sáb</b><span>26 set.</span></div>
-                                    <div class="pv-dia-main"><svg class="pv-icon pv-icon--md pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg><div class="pv-dia-temp"><b>26°</b><small>17°</small></div></div>
-                                    <span class="pv-dia-cond">Nublado</span>
-                                    <span class="pv-faixa" style="--min: 17; --max: 26"><i></i></span>
-                                    <dl class="pv-dia-dados">
-                                        <div><dt>Chuva</dt><dd>40% · 4 mm</dd></div>
-                                        <div><dt>Vento</dt><dd>16 → 28 km/h</dd></div>
-                                        <div><dt>UV</dt><dd>6 alto</dd></div>
-                                    </dl>
-                                    <span class="pv-tag pv-tag--atencao">Pátio úmido pela manhã</span>
-                                </div>
-                            </div>
+                            <table class="pv-tabela pv-tabela--dias">
+                                <thead>
+                                    <tr><th>Dia</th><th>Tempo</th><th>Máx / mín</th><th></th><th class="num">Chuva</th><th class="num">mm</th><th class="num">Vento</th><th class="num">UV</th><th>Leitura operacional</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Seg</b><small>21 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>Pancadas</td>
+                                        <td class="pv-tabela-temp"><b>26°</b><small>17°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 17; --max: 26"><i></i></span></td>
+                                        <td class="num is-chuva">55%</td>
+                                        <td class="num is-chuva">6</td>
+                                        <td class="num">14 → 30</td>
+                                        <td class="num">7 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--atencao">Fila coberta</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Ter</b><small>22 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>Parc. nublado</td>
+                                        <td class="pv-tabela-temp"><b>27°</b><small>17°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 17; --max: 27"><i></i></span></td>
+                                        <td class="num">30%</td>
+                                        <td class="num">1</td>
+                                        <td class="num">12 → 24</td>
+                                        <td class="num">8 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--ok">Colheita liberada</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Qua</b><small>23 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg>Ensolarado</td>
+                                        <td class="pv-tabela-temp"><b>29°</b><small>18°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 18; --max: 29"><i></i></span></td>
+                                        <td class="num">10%</td>
+                                        <td class="num">0</td>
+                                        <td class="num">10 → 18</td>
+                                        <td class="num">9 muito alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--ok">Colheita ideal</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Qui</b><small>24 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>Parc. nublado</td>
+                                        <td class="pv-tabela-temp"><b>28°</b><small>19°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 19; --max: 28"><i></i></span></td>
+                                        <td class="num">20%</td>
+                                        <td class="num">1</td>
+                                        <td class="num">14 → 24</td>
+                                        <td class="num">8 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--ok">Colheita liberada</span></td>
+                                    </tr>
+                                    <tr class="is-alerta">
+                                        <td class="pv-tabela-nome"><b>Sex</b><small>25 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>Chuva</td>
+                                        <td class="pv-tabela-temp"><b>24°</b><small>17°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 17; --max: 24"><i></i></span></td>
+                                        <td class="num is-chuva">70%</td>
+                                        <td class="num is-chuva">18</td>
+                                        <td class="num is-alerta">22 → 38</td>
+                                        <td class="num">5 moderado</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--alerta">Recepção lenta</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Sáb</b><small>26 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg>Nublado</td>
+                                        <td class="pv-tabela-temp"><b>26°</b><small>17°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 17; --max: 26"><i></i></span></td>
+                                        <td class="num">40%</td>
+                                        <td class="num">4</td>
+                                        <td class="num">16 → 28</td>
+                                        <td class="num">6 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--atencao">Pátio úmido</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
@@ -3453,29 +3438,22 @@
                             </table>
                         </div>
 
-                        <!-- O que a previsão muda na operação -->
-                        <div class="content-section pv-section pv-impacto">
+                        <!-- Chuva acumulada: o que já caiu e o que vem; base para colheita e umidade do grão -->
+                        <div class="content-section pv-section pv-acum">
                             <div class="section-head">
-                                <h3>IMPACTO NA OPERAÇÃO</h3>
+                                <h3>CHUVA ACUMULADA · AVARÉ</h3>
+                                <span class="pv-legenda">média histórica de setembro: 62 mm</span>
                             </div>
-                            <ul class="pv-avisos">
-                                <li class="pv-aviso pv-aviso--alerta">
-                                    <span class="pv-aviso-quando">Sexta</span>
-                                    <span class="pv-aviso-texto"><b>18 mm e rajadas de 38 km/h.</b> Recepção lenta: fila coberta, conferir umidade na chegada.</span>
-                                </li>
-                                <li class="pv-aviso pv-aviso--atencao">
-                                    <span class="pv-aviso-quando">Hoje 18h–22h</span>
-                                    <span class="pv-aviso-texto"><b>4 mm.</b> Caminhões descobertos na fila; pátio úmido na manhã de segunda.</span>
-                                </li>
-                                <li class="pv-aviso pv-aviso--atencao">
-                                    <span class="pv-aviso-quando">Itatinga</span>
-                                    <span class="pv-aviso-texto"><b>65% de chuva, 12 mm.</b> Colheita dos cooperados deve atrasar; menos recepção na terça.</span>
-                                </li>
-                                <li class="pv-aviso pv-aviso--ok">
-                                    <span class="pv-aviso-quando">Qua e qui</span>
-                                    <span class="pv-aviso-texto"><b>Sem chuva, UV alto.</b> Janela de colheita: esperar pico de recepção.</span>
-                                </li>
-                            </ul>
+                            <div class="pv-acum-grid">
+                                <div class="pv-acum-item"><b>0<small>mm</small></b><span>hoje até agora</span></div>
+                                <div class="pv-acum-item"><b>12<small>mm</small></b><span>últimos 7 dias</span></div>
+                                <div class="pv-acum-item"><b>48<small>mm</small></b><span>setembro · 77% da média</span></div>
+                                <div class="pv-acum-item pv-acum-item--prev"><b>30<small>mm</small></b><span>previstos · próximos 6 dias</span></div>
+                            </div>
+                            <div class="pv-acum-barra" role="img" aria-label="Setembro: 48 mm caídos, 30 mm previstos, média histórica 62 mm">
+                                <span class="pv-acum-caido" style="--p: 0.62"></span><span class="pv-acum-prev" style="--p: 0.38"></span><i class="pv-acum-media" style="--p: 0.795"></i>
+                            </div>
+                            <div class="pv-acum-leg"><span><i class="pv-acum-leg-caido"></i>caído</span><span><i class="pv-acum-leg-prev"></i>previsto</span><span><i class="pv-acum-leg-media"></i>média histórica</span></div>
                         </div>
                     </div>
                 </div>
