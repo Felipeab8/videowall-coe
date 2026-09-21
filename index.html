@@ -247,7 +247,6 @@
                                 <span class="gv-bar-sub">380 t · 14 cam.</span>
                             </div>
                         </div>
-                        <div class="geral-card-foot"><span>Tempo de espera por cultura</span><span class="geral-card-link">Ver tela →</span></div>
                     </button>
 
                     <!-- 02 Classificação: três medidores contra o limite + mapa por cultura -->
@@ -284,7 +283,6 @@
                             <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--trigo"></i>Trigo</span><span>450 t</span><span class="gv-cell" style="--p: 0.85">11,9%</span><span class="gv-cell" style="--p: 0.6">0,6%</span><span class="gv-cell" style="--p: 0.35">2,1%</span></div>
                             <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--soja"></i>Soja</span><span>360 t</span><span class="gv-cell is-atencao" style="--p: 0.914">12,8%</span><span class="gv-cell is-atencao" style="--p: 0.9">0,9%</span><span class="gv-cell" style="--p: 0.567">3,4%</span></div>
                         </div>
-                        <div class="geral-card-foot"><span>Todas as culturas dentro dos limites</span><span class="geral-card-link">Ver tela →</span></div>
                     </button>
 
                     <!-- 03 Moegas: anel de ocupação + colunas por moega -->
@@ -313,7 +311,6 @@
                             <div class="gv-col" style="--p: 0.58"><span class="gv-col-value">58%</span><span class="gv-col-track"><span class="gv-col-fill"></span></span><span class="gv-col-name">M5</span><span class="gv-col-sub">12,2%</span></div>
                             <div class="gv-col" style="--p: 0.44"><span class="gv-col-value">44%</span><span class="gv-col-track"><span class="gv-col-fill"></span></span><span class="gv-col-name">M6</span><span class="gv-col-sub is-atencao">13,0%</span></div>
                         </div>
-                        <div class="geral-card-foot"><span>M1 em 92% · M6 umidade 13%</span><span class="geral-card-link">Ver tela →</span></div>
                     </button>
 
                     <!-- 04 Secagem: produção do dia contra ontem e projeção, mais os dois secadores -->
@@ -354,7 +351,6 @@
                                 <span class="gv-bar-sub"><i class="legend-dot legend-dot--sorgo"></i>Sorgo · <em class="is-ok">descarregando</em></span>
                             </div>
                         </div>
-                        <div class="geral-card-foot"><span>Umidade 18,4% → 13,4% <em>(−5,0 pts)</em></span><span class="geral-card-link">Ver tela →</span></div>
                     </button>
 
                     <!-- 05 Armazenagem: capacidade x estoque por cultura (mesmo gráfico da tela de silos, compacto) -->
@@ -417,12 +413,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="geral-card-foot"><span>Capacidade estática 32.000 t · 8 silos</span><span class="geral-card-link">Ver tela →</span></div>
                     </button>
 
                     <!-- 06 Aeração: por área (silos e armazém), linha do tempo das últimas
                          24h com os períodos de aeração ativa e os riscos do horário de
-                         ponta, e embaixo as curvas de temperatura e umidade do grão. -->
+                         ponta, e embaixo uma única curva do ar ambiente (temperatura e
+                         umidade relativa), que vale para as duas áreas. -->
                     <button class="geral-card ok gv-aer" type="button" data-goto="5" title="Abrir tela de silos e aeração" data-ponta-status>
                         <div class="geral-card-head">
                             <span class="geral-card-num">06</span>
@@ -432,28 +428,14 @@
                         <div class="gv-aer-legenda" aria-hidden="true">
                             <span><i class="gv-aer-legenda-on"></i>aeração ativa</span>
                             <span><i class="gv-aer-legenda-ponta"></i>ponta 18h–21h</span>
-                            <span><i class="gv-aer-legenda-temp"></i>temperatura</span>
-                            <span><i class="gv-aer-legenda-ur"></i>umidade do grão</span>
+                            <span><i class="gv-aer-legenda-temp"></i>temperatura do ar</span>
+                            <span><i class="gv-aer-legenda-ur"></i>umidade relativa</span>
                         </div>
                         <div class="gv-aer-row">
                             <div class="gv-aer-row-head"><span class="gv-aer-row-name">Silos</span><span class="gv-aer-row-sub">13h30 ligado hoje · 2 de 2 zonas</span></div>
                             <div class="gv-aer-track" role="img" aria-label="Silos: aeração ativa nas últimas 24h e horário de ponta">
                                 <i class="gv-aer-on" style="left:8.3%;width:31.3%" title="02:00–09:30 · 7h30 ligado"></i><i class="gv-aer-on" style="left:56.3%;width:18.7%" title="13:30–18:00 · 4h30 ligado"></i><i class="gv-aer-on" style="left:87.5%;width:6.3%" title="21:00–22:30 · 1h30 ligado"></i><i class="gv-aer-ponta"></i><i class="gv-aer-now" data-ponta-agora></i>
                                 <span class="gv-aer-h gv-aer-h--0">00h</span><span class="gv-aer-h gv-aer-h--12">12h</span><span class="gv-aer-h gv-aer-h--18">18h</span><span class="gv-aer-h gv-aer-h--21">21h</span><span class="gv-aer-h gv-aer-h--24">24h</span>
-                            </div>
-                            <div class="gv-aer-curvas">
-                                <div class="gv-aer-leg gv-aer-leg--ini" title="Leituras de 24h atrás">
-                                    <span class="gv-aer-leg-item gv-aer-leg-item--temp"><b>23,4°C</b>temperatura</span>
-                                    <span class="gv-aer-leg-item gv-aer-leg-item--ur"><b>13,7%</b>umidade do grão</span>
-                                </div>
-                                <svg class="gv-aer-svg" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true">
-                                    <path class="gv-aer-linha gv-aer-linha--temp" d="M0.0 7.2 L4.3 8.1 L8.7 9.8 L13.0 12.4 L17.4 15.0 L21.7 17.6 L26.1 19.3 L30.4 21.1 L34.8 21.9 L39.1 21.9 L43.5 20.2 L47.8 16.7 L52.2 12.4 L56.5 8.9 L60.9 10.7 L65.2 13.3 L69.6 15.9 L73.9 17.6 L78.3 15.9 L82.6 13.3 L87.0 11.5 L91.3 14.1 L95.7 16.7 L100.0 18.5"></path>
-                                    <path class="gv-aer-linha gv-aer-linha--ur" d="M0.0 12.4 L4.3 12.4 L8.7 13.7 L13.0 13.7 L17.4 15.0 L21.7 15.0 L26.1 16.3 L30.4 16.3 L34.8 17.6 L39.1 17.6 L43.5 17.6 L47.8 17.6 L52.2 17.6 L56.5 17.6 L60.9 18.9 L65.2 18.9 L69.6 18.9 L73.9 20.2 L78.3 20.2 L82.6 20.2 L87.0 20.2 L91.3 20.2 L95.7 20.2 L100.0 20.2"></path>
-                                </svg>
-                                <div class="gv-aer-leg">
-                                    <span class="gv-aer-leg-item gv-aer-leg-item--temp"><b>22,1°C</b>temperatura</span>
-                                    <span class="gv-aer-leg-item gv-aer-leg-item--ur"><b>13,1%</b>umidade do grão</span>
-                                </div>
                             </div>
                         </div>
                         <div class="gv-aer-row">
@@ -462,30 +444,32 @@
                                 <i class="gv-aer-on" style="left:12.5%;width:20.8%" title="03:00–08:00 · 5h ligado"></i><i class="gv-aer-on" style="left:62.5%;width:12.5%" title="15:00–18:00 · 3h ligado"></i><i class="gv-aer-on" style="left:87.5%;width:8.3%" title="21:00–23:00 · 2h ligado"></i><i class="gv-aer-ponta"></i><i class="gv-aer-now" data-ponta-agora></i>
                                 <span class="gv-aer-h gv-aer-h--0">00h</span><span class="gv-aer-h gv-aer-h--12">12h</span><span class="gv-aer-h gv-aer-h--18">18h</span><span class="gv-aer-h gv-aer-h--21">21h</span><span class="gv-aer-h gv-aer-h--24">24h</span>
                             </div>
+                        </div>
+                        <div class="gv-aer-row gv-aer-row--ar">
+                            <div class="gv-aer-row-head"><span class="gv-aer-row-name">Ar ambiente</span><span class="gv-aer-row-sub">temperatura e umidade relativa · últimas 24h</span></div>
                             <div class="gv-aer-curvas">
                                 <div class="gv-aer-leg gv-aer-leg--ini" title="Leituras de 24h atrás">
-                                    <span class="gv-aer-leg-item gv-aer-leg-item--temp"><b>21,6°C</b>temperatura</span>
-                                    <span class="gv-aer-leg-item gv-aer-leg-item--ur"><b>13,5%</b>umidade do grão</span>
+                                    <span class="gv-aer-leg-item gv-aer-leg-item--temp"><b>22,0°C</b>temperatura</span>
+                                    <span class="gv-aer-leg-item gv-aer-leg-item--ur"><b>72%</b>umidade rel.</span>
                                 </div>
                                 <svg class="gv-aer-svg" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true">
-                                    <path class="gv-aer-linha gv-aer-linha--temp" d="M0.0 16.6 L4.3 17.6 L8.7 19.7 L13.0 21.8 L17.4 23.8 L21.7 24.9 L26.1 24.9 L30.4 23.8 L34.8 22.8 L39.1 20.7 L43.5 17.6 L47.8 13.4 L52.2 9.3 L56.5 6.2 L60.9 7.2 L65.2 9.3 L69.6 11.4 L73.9 12.4 L78.3 10.3 L82.6 7.2 L87.0 6.2 L91.3 8.2 L95.7 10.3 L100.0 12.4"></path>
-                                    <path class="gv-aer-linha gv-aer-linha--ur" d="M0.0 15.0 L4.3 15.0 L8.7 15.0 L13.0 16.3 L17.4 16.3 L21.7 16.3 L26.1 17.6 L30.4 17.6 L34.8 17.6 L39.1 17.6 L43.5 17.6 L47.8 17.6 L52.2 17.6 L56.5 17.6 L60.9 17.6 L65.2 18.9 L69.6 18.9 L73.9 18.9 L78.3 18.9 L82.6 18.9 L87.0 18.9 L91.3 18.9 L95.7 18.9 L100.0 18.9"></path>
+                                    <path class="gv-aer-linha gv-aer-linha--temp" d="M0.0 20.9 L4.3 22.1 L8.7 23.3 L13.0 24.7 L17.4 25.9 L21.7 26.6 L26.1 26.1 L30.4 24.2 L34.8 20.9 L39.1 17.1 L43.5 13.6 L47.8 10.3 L52.2 7.7 L56.5 5.8 L60.9 4.6 L65.2 4.4 L69.6 5.3 L73.9 7.0 L78.3 9.1 L82.6 11.0 L87.0 12.4 L91.3 11.7 L95.7 10.0 L100.0 9.1"></path>
+                                    <path class="gv-aer-linha gv-aer-linha--ur" d="M0.0 9.5 L4.3 8.4 L8.7 7.2 L13.0 5.5 L17.4 4.3 L21.7 3.7 L26.1 4.3 L30.4 6.0 L34.8 8.9 L39.1 11.8 L43.5 15.3 L47.8 18.2 L52.2 21.1 L56.5 23.4 L60.9 25.1 L65.2 25.7 L69.6 24.5 L73.9 22.8 L78.3 20.5 L82.6 18.2 L87.0 16.4 L91.3 17.0 L95.7 17.6 L100.0 17.6"></path>
                                 </svg>
                                 <div class="gv-aer-leg">
-                                    <span class="gv-aer-leg-item gv-aer-leg-item--temp"><b>22,0°C</b>temperatura</span>
-                                    <span class="gv-aer-leg-item gv-aer-leg-item--ur"><b>13,2%</b>umidade do grão</span>
+                                    <span class="gv-aer-leg-item gv-aer-leg-item--temp"><b>27,0°C</b>temperatura</span>
+                                    <span class="gv-aer-leg-item gv-aer-leg-item--ur"><b>58%</b>umidade rel.</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="geral-card-foot"><span><span data-ponta-contagem-label>Entra em ponta em</span> <b data-ponta-contagem>--:--</b></span><span class="geral-card-link">Ver tela →</span></div>
                     </button>
 
                     <!-- 07 Expedição: cargas do dia por cultura, dosagem em anel -->
-                    <button class="geral-card ok" type="button" data-goto="7" title="Abrir tela da expedição">
+                    <button class="geral-card atencao" type="button" data-goto="7" title="Abrir tela da expedição">
                         <div class="geral-card-head">
                             <span class="geral-card-num">07</span>
                             <span class="geral-card-name">Expedição</span>
-                            <span class="kpi-flag kpi-flag--ok">OK</span>
+                            <span class="kpi-flag kpi-flag--atencao">Atenção</span>
                         </div>
                         <div class="gv-hero">
                             <div class="gv-big">
@@ -495,6 +479,7 @@
                             </div>
                             <div class="gv-side">
                                 <div class="gv-kpi"><span class="gv-kpi-value">6</span><span class="gv-kpi-label">aguardando · 18 min médio</span></div>
+                                <div class="gv-kpi gv-kpi--ruim"><span class="gv-kpi-value">4</span><span class="gv-kpi-label">reprovadas · 14% das cargas</span></div>
                                 <div class="gv-ring gv-ring--mini" style="--p: 0.992" role="img" aria-label="Dosagem 99,2%"><span class="gv-ring-value">99,2<small>%</small></span><span class="gv-ring-label">dosagem</span></div>
                             </div>
                         </div>
@@ -508,12 +493,11 @@
                         </div>
                         <div class="gv-heat gv-heat--exp" role="table" aria-label="Cargas expedidas por cultura">
                             <div class="gv-heat-row gv-heat-row--head" role="row"><span></span><span>Cargas</span><span>Volume</span><span>Reprov.</span></div>
-                            <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--milho"></i>Milho</span><span>12</span><span>480 t</span><span class="gv-pill is-atencao">1</span></div>
+                            <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--milho"></i>Milho</span><span>12</span><span>480 t</span><span class="gv-pill is-atencao">2</span></div>
                             <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><span>7</span><span>280 t</span><span class="gv-pill is-atencao">1</span></div>
                             <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--trigo"></i>Trigo</span><span>5</span><span>200 t</span><span class="gv-pill">0</span></div>
-                            <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--soja"></i>Soja</span><span>4</span><span>160 t</span><span class="gv-pill">0</span></div>
+                            <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--soja"></i>Soja</span><span>4</span><span>160 t</span><span class="gv-pill is-atencao">1</span></div>
                         </div>
-                        <div class="geral-card-foot"><span>2 reprovadas (7%) · dosagem imp. 1,4% · umid. 0,8%</span><span class="geral-card-link">Ver tela →</span></div>
                     </button>
 
                     <!-- 08 Previsão do tempo: tempo em Avaré e nos cooperados -->
@@ -532,18 +516,17 @@
                             </div>
                             <div class="gv-side">
                                 <div class="gv-kpi"><span class="gv-kpi-value">20<small>%</small></span><span class="gv-kpi-label">chuva · sem alerta</span></div>
+                                <div class="gv-kpi"><span class="gv-kpi-value">58<small>%</small></span><span class="gv-kpi-label">umidade relativa</span></div>
                                 <div class="gv-kpi"><span class="gv-kpi-value">12<small>km/h</small></span><span class="gv-kpi-label">vento leste</span></div>
                             </div>
                         </div>
-                        <div class="gv-days" role="img" aria-label="Próximos dias em Avaré: quarta 29°, quinta 28°, sexta 24°, sábado 26°">
-                            <div class="gv-day" style="--p: 0.9"><span class="gv-day-temp">29°</span><span class="gv-day-track"><span class="gv-day-fill"></span></span><span class="gv-day-name">Qua</span></div>
-                            <div class="gv-day" style="--p: 0.8"><span class="gv-day-temp">28°</span><span class="gv-day-track"><span class="gv-day-fill"></span></span><span class="gv-day-name">Qui</span></div>
-                            <div class="gv-day" style="--p: 0.4"><span class="gv-day-temp">24°</span><span class="gv-day-track"><span class="gv-day-fill"></span></span><span class="gv-day-name">Sex</span></div>
-                            <div class="gv-day" style="--p: 0.6"><span class="gv-day-temp">26°</span><span class="gv-day-track"><span class="gv-day-fill"></span></span><span class="gv-day-name">Sáb</span></div>
+                        <div class="gv-days" role="img" aria-label="Próximos dias em Avaré: quarta ensolarado 29°/18° chuva 10% 0 mm UR 62%, quinta parcialmente nublado 28°/19° chuva 20% 1 mm UR 65%, sexta chuva 24°/17° chuva 70% 18 mm UR 88%, sábado nublado 26°/17° chuva 40% 4 mm UR 74%">
+                            <div class="gv-day"><span class="gv-day-name">Qua</span><span class="gv-day-date">23 set.</span><svg class="gv-day-icon gv-day-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg><span class="gv-day-rain"><b>10%</b>0 mm</span><span class="gv-day-temp"><b>29°</b><small>18°</small></span><span class="gv-day-sub"><b>62%</b> UR</span></div>
+                            <div class="gv-day"><span class="gv-day-name">Qui</span><span class="gv-day-date">24 set.</span><svg class="gv-day-icon gv-day-icon--sol" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="gv-day-rain"><b>20%</b>1 mm</span><span class="gv-day-temp"><b>28°</b><small>19°</small></span><span class="gv-day-sub"><b>65%</b> UR</span></div>
+                            <div class="gv-day"><span class="gv-day-name">Sex</span><span class="gv-day-date">25 set.</span><svg class="gv-day-icon gv-day-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg><span class="gv-day-rain gv-day-rain--alta"><b>70%</b>18 mm</span><span class="gv-day-temp"><b>24°</b><small>17°</small></span><span class="gv-day-sub"><b>88%</b> UR</span></div>
+                            <div class="gv-day"><span class="gv-day-name">Sáb</span><span class="gv-day-date">26 set.</span><svg class="gv-day-icon gv-day-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg><span class="gv-day-rain"><b>40%</b>4 mm</span><span class="gv-day-temp"><b>26°</b><small>17°</small></span><span class="gv-day-sub"><b>74%</b> UR</span></div>
                         </div>
                         <div class="gv-caption">próximos dias · Avaré</div>
-                        <div class="gv-coop"><span class="gv-coop-label">Cooperados</span><span class="gv-coop-value">25° a 30°</span><span class="gv-coop-ref">Itaí e Manduri 30°</span></div>
-                        <div class="geral-card-foot"><span>6 localidades monitoradas</span><span class="geral-card-link">Ver tela →</span></div>
                     </button>
                 </div>
 
@@ -616,9 +599,9 @@
                     <div class="kpi-card kpi-card--meta kpi-card--motivo kpi-card--tempo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Tempo em Avaré · próximas horas"
-                        data-motivo-resumo="27°C · umidade 58% · 35% de chance de chuva"
-                        data-motivo-lista="16h::28°C · 20%::parcialmente nublado::neutro|18h::25°C · 45%::pancadas isoladas::ruim|20h::22°C · 60%::chuva fraca::ruim|Vento::14 km/h NE::rajadas de 26 km/h::neutro"
-                        data-motivo-nota="Chuva acima de 40% a partir das 18h: atenção à fila a céu aberto e à umidade do grão na chegada.">
+                        data-motivo-resumo="27°C · umidade 58% · 35% de chance de chuva · 4 mm previstos"
+                        data-motivo-lista="16h::28°C · 20% · 0 mm::parcialmente nublado::neutro|18h::25°C · 45% · 1,5 mm::pancadas isoladas::ruim|20h::22°C · 60% · 2,5 mm::chuva fraca::ruim|Vento::14 km/h NE::rajadas de 26 km/h::neutro"
+                        data-motivo-nota="Chuva acima de 40% a partir das 18h (4 mm até 22h): atenção à fila a céu aberto e à umidade do grão na chegada.">
                         <div class="kpi-label">TEMPO EM AVARÉ</div>
                         <div class="kpi-value-row">
                             <span class="tempo-icon" aria-hidden="true">
@@ -633,7 +616,7 @@
                         </div>
                         <div class="kpi-sub">
                             <span class="kpi-sub-item"><i class="legend-dot legend-dot--umidade"></i><b>Umidade</b> 58%</span>
-                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--chuva"></i><b>Chuva</b> 35%</span>
+                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--chuva"></i><b>Chuva</b> 35% · 4 mm</span>
                         </div>
                     </div>
                 </div>
@@ -644,7 +627,6 @@
                     <div class="section-head section-head--top">
                         <div class="section-head-text">
                             <h3>TEMPO MÉDIO DE CICLO POR ETAPA</h3>
-                            <p class="section-sub">Decomposição por etapa · culturas ativas hoje · meta institucional 25 min</p>
                         </div>
                     </div>
 
@@ -703,7 +685,7 @@
                 <div class="content-section mensal-section">
                     <div class="section-head-text">
                         <h3>VOLUME DE RECEPÇÃO MENSAL POR CULTURA</h3>
-                        <p class="section-sub">Realizado vs. forecast — mês anterior fechado, andamento do mês atual e projeção do próximo</p>
+                        <p class="section-sub">Realizado vs. forecast</p>
                     </div>
 
                     <div class="mensal-grid">
@@ -1127,7 +1109,6 @@
                     <div class="section-head section-head--top">
                         <div class="section-head-text">
                             <h3>CARGAS CLASSIFICADAS HOJE · DETALHE</h3>
-                            <p class="section-sub">Umidade, impureza e avariados de cada carga classificada hoje · o deságio é o desconto aplicado</p>
                         </div>
                         <div class="class-filtro" role="group" aria-label="Filtrar cargas por cultura">
                             <span class="class-filtro-rotulo">Cultura</span>
@@ -1176,7 +1157,7 @@
                     <div class="section-head section-head--top">
                         <div class="section-head-text">
                             <h3>HISTÓRICO DE CLASSIFICAÇÃO POR CULTURA</h3>
-                            <p class="section-sub">Como cada indicador se comporta ao longo do tempo: ano passado, últimos 7 dias e acumulados de semana, mês e ano · tracejado = meta</p>
+                            <p class="section-sub">tracejado = meta</p>
                         </div>
                         <div class="hist-tools">
                             <div class="chart-legend chart-legend--inline hist-legend">
@@ -2361,7 +2342,7 @@
                         <div class="section-head section-head--top">
                             <div class="section-head-text">
                                 <h3>SECAGEM POR HORA · POR SECADOR · TURNO 07h–17h</h3>
-                                <p class="section-sub">Toneladas secas em cada hora do turno atual, por secador, contra a meta horária · não muda com o período</p>
+                                <p class="section-sub">vs. meta horária</p>
                             </div>
                             <div class="chart-legend chart-legend--inline">
                                 <span class="legend-item"><i class="legend-dot legend-dot--sec1"></i>Secador 1</span>
@@ -2728,14 +2709,14 @@
                 <div class="content-section sa-section">
                     <div class="section-head">
                         <h3>SILOS · OCUPAÇÃO, TEMPERATURA E AERAÇÃO</h3>
-                        <span class="stack-hint">Curva das últimas 24h · taxa em °C/h · silos ligados pausam sozinhos na ponta</span>
+                        <span class="stack-hint">últimas 24h · °C/h</span>
                     </div>
                     <div class="sa-grid sa-grid--8">
                         <article class="sa-card sa-card--milho" data-silo data-aer="on" data-aer-desde-min="134" data-pausa-ponta="1"
                             data-temps="23.6,23.6,23.5,23.5,23.4,23.4,23.3,23.3,23.3,23.2,23.2,23.1,23.1,23.0,23.0,22.9,22.9,22.8,22.8,22.8,23.0,22.8,22.6,22.4">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 1</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho</span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho<span class="sa-imp">imp. 0,8%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 78%"></div></div>
@@ -2761,7 +2742,7 @@
                             data-temps="20.4,20.4,20.5,20.5,20.5,20.6,20.6,20.6,20.7,20.7,20.7,20.8,20.8,20.8,20.8,20.9,20.9,20.9,20.9,20.9,20.7,20.8,20.9,21.0">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 2</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho</span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho<span class="sa-imp">imp. 0,6%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 92%"></div></div>
@@ -2787,7 +2768,7 @@
                             data-temps="24.8,24.8,24.7,24.7,24.6,24.6,24.5,24.5,24.4,24.4,24.3,24.3,24.2,24.2,24.1,24.1,24.0,24.0,24.0,24.0,24.0,23.7,23.4,23.1">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 3</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo<span class="sa-imp">imp. 0,9%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 45%"></div></div>
@@ -2813,7 +2794,7 @@
                             data-temps="22.1,22.1,22.2,22.2,22.2,22.3,22.3,22.3,22.3,22.4,22.4,22.3,22.3,22.3,22.2,22.2,22.2,22.2,22.2,22.2,22.2,22.2,22.2,22.2">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 4</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--trigo"></i>Trigo</span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--trigo"></i>Trigo<span class="sa-imp">imp. 0,5%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 68%"></div></div>
@@ -2840,7 +2821,7 @@
                             data-temps="21.8,21.9,22.0,22.1,22.2,22.3,22.4,22.5,22.6,22.7,22.8,22.9,23.0,23.1,23.1,23.2,23.2,23.3,23.3,23.3,23.1,23.5,23.9,24.3">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 5</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho</span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho<span class="sa-imp">imp. 0,7%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 84%"></div></div>
@@ -2866,7 +2847,7 @@
                             data-temps="20.6,20.6,20.5,20.5,20.4,20.4,20.3,20.3,20.2,20.2,20.1,20.1,20.0,20.0,20.0,20.0,20.0,20.0,20.0,20.0,19.9,20.0,20.1,20.2">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 6</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo<span class="sa-imp sa-imp--alto" title="Acima do limite de 1%">imp. 1,2%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 57%"></div></div>
@@ -2892,7 +2873,7 @@
                             data-temps="23.5,23.5,23.5,23.5,23.4,23.4,23.4,23.4,23.4,23.3,23.3,23.3,23.3,23.3,23.3,23.3,23.3,23.3,23.3,23.3,23.3,23.2,23.1,23.0">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 7</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--trigo"></i>Trigo</span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--trigo"></i>Trigo<span class="sa-imp">imp. 0,4%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 71%"></div></div>
@@ -2918,7 +2899,7 @@
                             data-temps="20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.6,20.8,21.0,21.2">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 8</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--soja"></i>Soja</span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--soja"></i>Soja<span class="sa-imp">imp. 0,9%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 36%"></div></div>
@@ -3021,7 +3002,7 @@
                 <div class="content-section sa-section">
                     <div class="section-head">
                         <h3>ARMAZÉNS GRANELEIROS · OCUPAÇÃO, TEMPERATURA E AERAÇÃO</h3>
-                        <span class="stack-hint">Curva das últimas 24h · taxa em °C/h · aeração pausa sozinha na ponta</span>
+                        <span class="stack-hint">últimas 24h · °C/h</span>
                     </div>
                     <div class="sa-grid sa-grid--armazem">
                         <article class="sa-card sa-card--armazem" data-silo data-aer="on" data-aer-desde-min="96" data-pausa-ponta="1"
@@ -3173,7 +3154,7 @@
                     <div class="content-section">
                         <div class="section-head-text">
                             <h3>QUALIDADE POR CULTURA · VOLUME CARREGADO</h3>
-                            <p class="section-sub">Média ponderada pelo volume das cargas de hoje · limites: umidade 14% · impureza 1% · avariados 6%</p>
+                            <p class="section-sub">limites: umidade 14% · impureza 1% · avariados 6%</p>
                         </div>
                         <table class="data-table exp-qual-table">
                             <thead>
@@ -3199,7 +3180,6 @@
                     <div class="content-section">
                         <div class="section-head-text">
                             <h3>VOLUME POR DESTINO</h3>
-                            <p class="section-sub">Toneladas e caminhões liberados hoje por destino</p>
                         </div>
                         <div class="exp-destinos" style="--exp-max: 420">
                             <div class="exp-destino" style="--t: 420">
@@ -3243,7 +3223,6 @@
                     <div class="section-head section-head--top">
                         <div class="section-head-text">
                             <h3>CARGAS CARREGADAS HOJE · DETALHE</h3>
-                            <p class="section-sub">Motorista, silo(s) de origem, destino, volume e tempo de carregamento de cada carga · cargas compostas mostram a parte de cada silo · reprovadas mostram o motivo</p>
                         </div>
                         <div class="class-filtro" role="group" aria-label="Filtrar cargas por cultura">
                             <span class="class-filtro-rotulo">Cultura</span>
@@ -3292,155 +3271,211 @@
             <!-- Screen 8: Previsão do tempo -->
             <section class="screen" id="screen-8">
                 <div class="screen-header">
-                    <div class="screen-badge">10</div>
+                    <div class="screen-badge">08</div>
                     <div class="screen-title-section">
                         <h2>Previsão do Tempo</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">2</span>s</div>
                     </div>
                 </div>
 
-                <!-- Previsao do tempo: valores estaticos ate ligar a API meteorologica -->
-                <div class="split-grid">
-                    <div class="content-section weather-section">
-                        <h3>PREVISÃO DO TEMPO · AVARÉ (UNIDADE)</h3>
-                        <div class="weather-now">
-                            <svg class="weather-glyph weather-glyph--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>
-                            <div class="weather-now-main">
-                                <span class="weather-temp">27°</span>
-                                <span class="weather-desc">Parcialmente nublado</span>
+                <!-- Previsão do tempo: valores estáticos até ligar a API meteorológica.
+                     Esquerda: agora, próximas 24h (meteograma) e 6 dias. Direita:
+                     cooperados e o que a previsão muda na operação. -->
+                <div class="pv-grid">
+                    <div class="pv-col">
+                        <!-- Agora em Avaré -->
+                        <div class="content-section pv-section pv-agora">
+                            <div class="pv-agora-main">
+                                <svg class="pv-icon pv-icon--xl pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>
+                                <div class="pv-agora-temp">
+                                    <span class="pv-temp">27<small>°C</small></span>
+                                    <span class="pv-cond">Parcialmente nublado</span>
+                                    <span class="pv-agora-ref">Avaré · sensação 29° · máx 29° · mín 18°</span>
+                                </div>
+                            </div>
+                            <div class="pv-facts">
+                                <span class="pv-fact"><b>58<small>%</small></b>umidade relativa</span>
+                                <span class="pv-fact"><b>20<small>%</small></b>chuva · 0 mm</span>
+                                <span class="pv-fact"><b>12<small>km/h</small></b>vento leste · raj. 26</span>
+                                <span class="pv-fact"><b>8</b>índice UV · alto</span>
+                                <span class="pv-fact"><b>06:22</b>nascer do sol</span>
+                                <span class="pv-fact"><b>18:04</b>pôr do sol</span>
                             </div>
                         </div>
-                        <div class="weather-facts">
-                            <span class="weather-fact"><span class="weather-fact-label">Chuva</span><span class="weather-fact-value">20%</span></span>
-                            <span class="weather-fact"><span class="weather-fact-label">Vento</span><span class="weather-fact-value">12 km/h</span></span>
+
+                        <!-- Próximas 24h: linha de temperatura sobre barras de chuva (mm). -->
+                        <div class="content-section pv-section pv-horas">
+                            <div class="section-head">
+                                <h3>PRÓXIMAS 24 HORAS</h3>
+                                <span class="pv-legenda"><i class="pv-legenda-temp"></i>temperatura<i class="pv-legenda-chuva"></i>chuva (mm)</span>
+                            </div>
+                                                        <div class="pv-meteo" role="img" aria-label="Próximas 24 horas: temperatura cai de 28° para 19° e chuva entre 18h e 22h, 4 mm">
+                                <div class="pv-meteo-row">
+                                    <div class="pv-meteo-cell"><span class="pv-meteo-h">14h</span><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg></div>
+                                    <div class="pv-meteo-cell"><span class="pv-meteo-h">16h</span><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg></div>
+                                    <div class="pv-meteo-cell"><span class="pv-meteo-h">18h</span><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg></div>
+                                    <div class="pv-meteo-cell"><span class="pv-meteo-h">20h</span><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg></div>
+                                    <div class="pv-meteo-cell"><span class="pv-meteo-h">22h</span><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg></div>
+                                    <div class="pv-meteo-cell"><span class="pv-meteo-h">00h</span><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg></div>
+                                    <div class="pv-meteo-cell"><span class="pv-meteo-h">02h</span><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg></div>
+                                    <div class="pv-meteo-cell"><span class="pv-meteo-h">04h</span><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg></div>
+                                </div>
+                                <div class="pv-meteo-chart">
+                                    <span class="pv-meteo-bar is-zero" style="--mm: 0"></span>
+                                    <span class="pv-meteo-bar is-zero" style="--mm: 0"></span>
+                                    <span class="pv-meteo-bar" style="--mm: 1.5"></span>
+                                    <span class="pv-meteo-bar" style="--mm: 2.5"></span>
+                                    <span class="pv-meteo-bar" style="--mm: 2"></span>
+                                    <span class="pv-meteo-bar" style="--mm: 1"></span>
+                                    <span class="pv-meteo-bar" style="--mm: 0.5"></span>
+                                    <span class="pv-meteo-bar is-zero" style="--mm: 0"></span>
+                                    <!-- linha de temperatura: x no centro de cada coluna, y na escala 18–30 °C -->
+                                    <svg class="pv-meteo-linha" viewBox="0 0 800 100" preserveAspectRatio="none" aria-hidden="true">
+                                        <path d="M50 23.3 L150 23.3 L250 43.3 L350 63.3 L450 70.0 L550 76.7 L650 83.3 L750 83.3"></path>
+                                        <circle cx="50" cy="23.3" r="3.2"></circle><circle cx="150" cy="23.3" r="3.2"></circle><circle cx="250" cy="43.3" r="3.2"></circle><circle cx="350" cy="63.3" r="3.2"></circle><circle cx="450" cy="70.0" r="3.2"></circle><circle cx="550" cy="76.7" r="3.2"></circle><circle cx="650" cy="83.3" r="3.2"></circle><circle cx="750" cy="83.3" r="3.2"></circle>
+                                    </svg>
+                                </div>
+                                <div class="pv-meteo-row">
+                                    <div class="pv-meteo-cell"><span class="pv-meteo-t">28°</span><span class="pv-meteo-p">10%</span><span class="pv-meteo-mm">0 mm</span></div>
+                                    <div class="pv-meteo-cell"><span class="pv-meteo-t">28°</span><span class="pv-meteo-p">20%</span><span class="pv-meteo-mm">0 mm</span></div>
+                                    <div class="pv-meteo-cell"><span class="pv-meteo-t">25°</span><span class="pv-meteo-p is-chuva">45%</span><span class="pv-meteo-mm">1,5 mm</span></div>
+                                    <div class="pv-meteo-cell"><span class="pv-meteo-t">22°</span><span class="pv-meteo-p is-chuva">60%</span><span class="pv-meteo-mm">2,5 mm</span></div>
+                                    <div class="pv-meteo-cell"><span class="pv-meteo-t">21°</span><span class="pv-meteo-p is-chuva">55%</span><span class="pv-meteo-mm">2 mm</span></div>
+                                    <div class="pv-meteo-cell"><span class="pv-meteo-t">20°</span><span class="pv-meteo-p">40%</span><span class="pv-meteo-mm">1 mm</span></div>
+                                    <div class="pv-meteo-cell"><span class="pv-meteo-t">19°</span><span class="pv-meteo-p">30%</span><span class="pv-meteo-mm">0,5 mm</span></div>
+                                    <div class="pv-meteo-cell"><span class="pv-meteo-t">19°</span><span class="pv-meteo-p">20%</span><span class="pv-meteo-mm">0 mm</span></div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="weather-days">
-                            <div class="weather-day">
-                                <span class="weather-day-name">QUA</span>
-                                <svg class="weather-glyph weather-glyph--md weather-glyph--sol" aria-hidden="true"><use href="#ico-sol"></use></svg>
-                                <span class="weather-day-cond">Ensolarado</span>
-                                <span class="weather-day-temp">29°<small>18°</small></span>
-                                <div class="weather-day-periods">
-                                    <span class="weather-day-period"><span class="weather-day-k">Manhã</span><span class="weather-day-v">21°</span></span>
-                                    <span class="weather-day-period"><span class="weather-day-k">Tarde</span><span class="weather-day-v">29°</span></span>
-                                    <span class="weather-day-period"><span class="weather-day-k">Noite</span><span class="weather-day-v">19°</span></span>
-                                </div>
-                                <div class="weather-day-details">
-                                    <span class="weather-day-row"><span class="weather-day-k">Chuva</span><span class="weather-day-v weather-day-rain">10%</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Volume</span><span class="weather-day-v">0 mm</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Vento</span><span class="weather-day-v">10 km/h</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Rajada</span><span class="weather-day-v">18 km/h</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Índice UV</span><span class="weather-day-v">9 alto</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Nascer do sol</span><span class="weather-day-v">06:22</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Pôr do sol</span><span class="weather-day-v">18:04</span></span>
-                                </div>
-                                <span class="weather-day-tag weather-day-tag--ok">Dia ideal para colheita</span>
+
+                        <!-- Próximos 6 dias: faixa térmica numa escala comum (14–32°C). -->
+                        <div class="content-section pv-section pv-dias">
+                            <div class="section-head">
+                                <h3>PRÓXIMOS 6 DIAS</h3>
+                                <span class="pv-legenda"><i class="pv-legenda-faixa"></i>mín – máx na escala 14–32 °C · vento → rajada</span>
                             </div>
-                            <div class="weather-day">
-                                <span class="weather-day-name">QUI</span>
-                                <svg class="weather-glyph weather-glyph--md weather-glyph--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>
-                                <span class="weather-day-cond">Parc. nublado</span>
-                                <span class="weather-day-temp">28°<small>19°</small></span>
-                                <div class="weather-day-periods">
-                                    <span class="weather-day-period"><span class="weather-day-k">Manhã</span><span class="weather-day-v">22°</span></span>
-                                    <span class="weather-day-period"><span class="weather-day-k">Tarde</span><span class="weather-day-v">28°</span></span>
-                                    <span class="weather-day-period"><span class="weather-day-k">Noite</span><span class="weather-day-v">20°</span></span>
+                            <div class="pv-dias-grid">
+                                <div class="pv-dia">
+                                    <div class="pv-dia-head"><b>Seg</b><span>21 set.</span></div>
+                                    <div class="pv-dia-main"><svg class="pv-icon pv-icon--md pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg><div class="pv-dia-temp"><b>26°</b><small>17°</small></div></div>
+                                    <span class="pv-dia-cond">Pancadas</span>
+                                    <span class="pv-faixa" style="--min: 17; --max: 26"><i></i></span>
+                                    <dl class="pv-dia-dados">
+                                        <div><dt>Chuva</dt><dd class="is-chuva">55% · 6 mm</dd></div>
+                                        <div><dt>Vento</dt><dd>14 → 30 km/h</dd></div>
+                                        <div><dt>UV</dt><dd>7 alto</dd></div>
+                                    </dl>
+                                    <span class="pv-tag pv-tag--atencao">Pátio úmido · fila coberta</span>
                                 </div>
-                                <div class="weather-day-details">
-                                    <span class="weather-day-row"><span class="weather-day-k">Chuva</span><span class="weather-day-v weather-day-rain">20%</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Volume</span><span class="weather-day-v">1 mm</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Vento</span><span class="weather-day-v">14 km/h</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Rajada</span><span class="weather-day-v">24 km/h</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Índice UV</span><span class="weather-day-v">8 alto</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Nascer do sol</span><span class="weather-day-v">06:22</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Pôr do sol</span><span class="weather-day-v">18:04</span></span>
+                                <div class="pv-dia">
+                                    <div class="pv-dia-head"><b>Ter</b><span>22 set.</span></div>
+                                    <div class="pv-dia-main"><svg class="pv-icon pv-icon--md pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><div class="pv-dia-temp"><b>27°</b><small>17°</small></div></div>
+                                    <span class="pv-dia-cond">Parc. nublado</span>
+                                    <span class="pv-faixa" style="--min: 17; --max: 27"><i></i></span>
+                                    <dl class="pv-dia-dados">
+                                        <div><dt>Chuva</dt><dd>30% · 1 mm</dd></div>
+                                        <div><dt>Vento</dt><dd>12 → 24 km/h</dd></div>
+                                        <div><dt>UV</dt><dd>8 alto</dd></div>
+                                    </dl>
+                                    <span class="pv-tag pv-tag--ok">Colheita liberada</span>
                                 </div>
-                                <span class="weather-day-tag weather-day-tag--ok">Colheita liberada</span>
-                            </div>
-                            <div class="weather-day">
-                                <span class="weather-day-name">SEX</span>
-                                <svg class="weather-glyph weather-glyph--md weather-glyph--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>
-                                <span class="weather-day-cond">Chuva</span>
-                                <span class="weather-day-temp">24°<small>17°</small></span>
-                                <div class="weather-day-periods">
-                                    <span class="weather-day-period"><span class="weather-day-k">Manhã</span><span class="weather-day-v">19°</span></span>
-                                    <span class="weather-day-period"><span class="weather-day-k">Tarde</span><span class="weather-day-v">24°</span></span>
-                                    <span class="weather-day-period"><span class="weather-day-k">Noite</span><span class="weather-day-v">18°</span></span>
+                                <div class="pv-dia">
+                                    <div class="pv-dia-head"><b>Qua</b><span>23 set.</span></div>
+                                    <div class="pv-dia-main"><svg class="pv-icon pv-icon--md pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg><div class="pv-dia-temp"><b>29°</b><small>18°</small></div></div>
+                                    <span class="pv-dia-cond">Ensolarado</span>
+                                    <span class="pv-faixa" style="--min: 18; --max: 29"><i></i></span>
+                                    <dl class="pv-dia-dados">
+                                        <div><dt>Chuva</dt><dd>10% · 0 mm</dd></div>
+                                        <div><dt>Vento</dt><dd>10 → 18 km/h</dd></div>
+                                        <div><dt>UV</dt><dd>9 muito alto</dd></div>
+                                    </dl>
+                                    <span class="pv-tag pv-tag--ok">Dia ideal para colheita</span>
                                 </div>
-                                <div class="weather-day-details">
-                                    <span class="weather-day-row"><span class="weather-day-k">Chuva</span><span class="weather-day-v weather-day-rain is-chuva">70%</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Volume</span><span class="weather-day-v">18 mm</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Vento</span><span class="weather-day-v">22 km/h</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Rajada</span><span class="weather-day-v">38 km/h</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Índice UV</span><span class="weather-day-v">5 moderado</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Nascer do sol</span><span class="weather-day-v">06:21</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Pôr do sol</span><span class="weather-day-v">18:05</span></span>
+                                <div class="pv-dia">
+                                    <div class="pv-dia-head"><b>Qui</b><span>24 set.</span></div>
+                                    <div class="pv-dia-main"><svg class="pv-icon pv-icon--md pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><div class="pv-dia-temp"><b>28°</b><small>19°</small></div></div>
+                                    <span class="pv-dia-cond">Parc. nublado</span>
+                                    <span class="pv-faixa" style="--min: 19; --max: 28"><i></i></span>
+                                    <dl class="pv-dia-dados">
+                                        <div><dt>Chuva</dt><dd>20% · 1 mm</dd></div>
+                                        <div><dt>Vento</dt><dd>14 → 24 km/h</dd></div>
+                                        <div><dt>UV</dt><dd>8 alto</dd></div>
+                                    </dl>
+                                    <span class="pv-tag pv-tag--ok">Colheita liberada</span>
                                 </div>
-                                <span class="weather-day-tag weather-day-tag--alerta">Chuva forte · recepção lenta</span>
-                            </div>
-                            <div class="weather-day">
-                                <span class="weather-day-name">SÁB</span>
-                                <svg class="weather-glyph weather-glyph--md weather-glyph--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg>
-                                <span class="weather-day-cond">Nublado</span>
-                                <span class="weather-day-temp">26°<small>17°</small></span>
-                                <div class="weather-day-periods">
-                                    <span class="weather-day-period"><span class="weather-day-k">Manhã</span><span class="weather-day-v">19°</span></span>
-                                    <span class="weather-day-period"><span class="weather-day-k">Tarde</span><span class="weather-day-v">26°</span></span>
-                                    <span class="weather-day-period"><span class="weather-day-k">Noite</span><span class="weather-day-v">18°</span></span>
+                                <div class="pv-dia is-alerta">
+                                    <div class="pv-dia-head"><b>Sex</b><span>25 set.</span></div>
+                                    <div class="pv-dia-main"><svg class="pv-icon pv-icon--md pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg><div class="pv-dia-temp"><b>24°</b><small>17°</small></div></div>
+                                    <span class="pv-dia-cond">Chuva</span>
+                                    <span class="pv-faixa" style="--min: 17; --max: 24"><i></i></span>
+                                    <dl class="pv-dia-dados">
+                                        <div><dt>Chuva</dt><dd class="is-chuva">70% · 18 mm</dd></div>
+                                        <div><dt>Vento</dt><dd class="is-alerta">22 → 38 km/h</dd></div>
+                                        <div><dt>UV</dt><dd>5 moderado</dd></div>
+                                    </dl>
+                                    <span class="pv-tag pv-tag--alerta">Chuva forte · recepção lenta</span>
                                 </div>
-                                <div class="weather-day-details">
-                                    <span class="weather-day-row"><span class="weather-day-k">Chuva</span><span class="weather-day-v weather-day-rain">40%</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Volume</span><span class="weather-day-v">4 mm</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Vento</span><span class="weather-day-v">16 km/h</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Rajada</span><span class="weather-day-v">28 km/h</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Índice UV</span><span class="weather-day-v">6 alto</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Nascer do sol</span><span class="weather-day-v">06:21</span></span>
-                                    <span class="weather-day-row"><span class="weather-day-k">Pôr do sol</span><span class="weather-day-v">18:05</span></span>
+                                <div class="pv-dia">
+                                    <div class="pv-dia-head"><b>Sáb</b><span>26 set.</span></div>
+                                    <div class="pv-dia-main"><svg class="pv-icon pv-icon--md pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg><div class="pv-dia-temp"><b>26°</b><small>17°</small></div></div>
+                                    <span class="pv-dia-cond">Nublado</span>
+                                    <span class="pv-faixa" style="--min: 17; --max: 26"><i></i></span>
+                                    <dl class="pv-dia-dados">
+                                        <div><dt>Chuva</dt><dd>40% · 4 mm</dd></div>
+                                        <div><dt>Vento</dt><dd>16 → 28 km/h</dd></div>
+                                        <div><dt>UV</dt><dd>6 alto</dd></div>
+                                    </dl>
+                                    <span class="pv-tag pv-tag--atencao">Pátio úmido pela manhã</span>
                                 </div>
-                                <span class="weather-day-tag weather-day-tag--atencao">Pátio úmido pela manhã</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="content-section weather-section">
-                        <h3>PREVISÃO NAS LOCALIDADES DOS COOPERADOS</h3>
-                        <div class="weather-cities">
-                            <div class="weather-city">
-                                <span class="weather-city-name">Itaí</span>
-                                <svg class="weather-glyph weather-glyph--sm weather-glyph--sol" aria-hidden="true"><use href="#ico-sol"></use></svg>
-                                <span class="weather-city-temp">30°<small>18°</small></span>
-                                <span class="weather-city-rain">10%</span>
+                    <div class="pv-col">
+                        <!-- Cooperados: tabela compacta; linha destacada com chuva ≥ 60% -->
+                        <div class="content-section pv-section pv-coop">
+                            <div class="section-head">
+                                <h3>COOPERADOS · AMANHÃ</h3>
+                                <span class="pv-legenda">6 localidades</span>
                             </div>
-                            <div class="weather-city">
-                                <span class="weather-city-name">Paranapanema</span>
-                                <svg class="weather-glyph weather-glyph--sm weather-glyph--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>
-                                <span class="weather-city-temp">28°<small>16°</small></span>
-                                <span class="weather-city-rain">25%</span>
+                            <table class="pv-tabela">
+                                <thead>
+                                    <tr><th>Localidade</th><th></th><th>Máx / mín</th><th class="num">Chuva</th><th class="num">mm</th><th class="num">Vento</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td class="pv-tabela-nome">Itaí</td><td><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg></td><td class="pv-tabela-temp"><b>30°</b><small>18°</small></td><td class="num">10%</td><td class="num">0</td><td class="num">10 km/h</td></tr>
+                                    <tr><td class="pv-tabela-nome">Paranapanema</td><td><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg></td><td class="pv-tabela-temp"><b>28°</b><small>16°</small></td><td class="num">25%</td><td class="num">1</td><td class="num">14 km/h</td></tr>
+                                    <tr><td class="pv-tabela-nome">Cerqueira César</td><td><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg></td><td class="pv-tabela-temp"><b>29°</b><small>18°</small></td><td class="num">20%</td><td class="num">0</td><td class="num">12 km/h</td></tr>
+                                    <tr><td class="pv-tabela-nome">Taquarituba</td><td><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg></td><td class="pv-tabela-temp"><b>27°</b><small>17°</small></td><td class="num">45%</td><td class="num">3</td><td class="num">16 km/h</td></tr>
+                                    <tr class="is-chuva"><td class="pv-tabela-nome">Itatinga</td><td><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg></td><td class="pv-tabela-temp"><b>25°</b><small>16°</small></td><td class="num">65%</td><td class="num">12</td><td class="num">20 km/h</td></tr>
+                                    <tr><td class="pv-tabela-nome">Manduri</td><td><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg></td><td class="pv-tabela-temp"><b>30°</b><small>19°</small></td><td class="num">15%</td><td class="num">0</td><td class="num">9 km/h</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- O que a previsão muda na operação -->
+                        <div class="content-section pv-section pv-impacto">
+                            <div class="section-head">
+                                <h3>IMPACTO NA OPERAÇÃO</h3>
                             </div>
-                            <div class="weather-city">
-                                <span class="weather-city-name">Cerqueira César</span>
-                                <svg class="weather-glyph weather-glyph--sm weather-glyph--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>
-                                <span class="weather-city-temp">29°<small>18°</small></span>
-                                <span class="weather-city-rain">20%</span>
-                            </div>
-                            <div class="weather-city">
-                                <span class="weather-city-name">Taquarituba</span>
-                                <svg class="weather-glyph weather-glyph--sm weather-glyph--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg>
-                                <span class="weather-city-temp">27°<small>17°</small></span>
-                                <span class="weather-city-rain">45%</span>
-                            </div>
-                            <div class="weather-city">
-                                <span class="weather-city-name">Itatinga</span>
-                                <svg class="weather-glyph weather-glyph--sm weather-glyph--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>
-                                <span class="weather-city-temp">25°<small>16°</small></span>
-                                <span class="weather-city-rain is-chuva">65%</span>
-                            </div>
-                            <div class="weather-city">
-                                <span class="weather-city-name">Manduri</span>
-                                <svg class="weather-glyph weather-glyph--sm weather-glyph--sol" aria-hidden="true"><use href="#ico-sol"></use></svg>
-                                <span class="weather-city-temp">30°<small>19°</small></span>
-                                <span class="weather-city-rain">15%</span>
-                            </div>
+                            <ul class="pv-avisos">
+                                <li class="pv-aviso pv-aviso--alerta">
+                                    <span class="pv-aviso-quando">Sexta</span>
+                                    <span class="pv-aviso-texto"><b>18 mm e rajadas de 38 km/h.</b> Recepção lenta: fila coberta, conferir umidade na chegada.</span>
+                                </li>
+                                <li class="pv-aviso pv-aviso--atencao">
+                                    <span class="pv-aviso-quando">Hoje 18h–22h</span>
+                                    <span class="pv-aviso-texto"><b>4 mm.</b> Caminhões descobertos na fila; pátio úmido na manhã de segunda.</span>
+                                </li>
+                                <li class="pv-aviso pv-aviso--atencao">
+                                    <span class="pv-aviso-quando">Itatinga</span>
+                                    <span class="pv-aviso-texto"><b>65% de chuva, 12 mm.</b> Colheita dos cooperados deve atrasar; menos recepção na terça.</span>
+                                </li>
+                                <li class="pv-aviso pv-aviso--ok">
+                                    <span class="pv-aviso-quando">Qua e qui</span>
+                                    <span class="pv-aviso-texto"><b>Sem chuva, UV alto.</b> Janela de colheita: esperar pico de recepção.</span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>

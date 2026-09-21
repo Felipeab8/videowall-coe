@@ -2478,7 +2478,6 @@ body.theme-light {
     background: var(--grao-soja);
 }
 
-
 /* Ícones dos grãos — sprite escondido, traço herdado do svg que faz o <use> */
 .grao-sprite {
     display: none;
@@ -3859,184 +3858,594 @@ body.theme-light .kpi-flag--alerta {
 }
 
 /* ============================================
-   PREVISAO DO TEMPO
+   PREVISAO DO TEMPO (tela 08)
    Numeros estaticos ate a API meteorologica ser ligada.
+   Cores: chuva = accent (azul), temperatura = ambar do sol.
    ============================================ */
-.weather-glyph {
-    width: 2.5rem;
-    height: 2.5rem;
+.pv-grid {
+    display: grid;
+    grid-template-columns: 1.65fr 1fr;
+    gap: 0.7rem;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.pv-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    min-width: 0;
+    min-height: 0;
+}
+
+.pv-section {
+    margin-bottom: 0;
+    overflow: hidden;
+    padding: 0.8rem 1rem;
+}
+
+.pv-section .section-head {
+    margin-bottom: 0.5rem;
+}
+
+.pv-section .section-head h3 {
+    margin-bottom: 0;
+    font-size: 0.82rem;
+}
+
+.pv-legenda {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.pv-legenda i {
+    display: inline-block;
+    width: 0.9rem;
+    height: 0;
+    border-top: 2px solid #e0a33c;
+    margin-left: 0.5rem;
+}
+
+.pv-legenda i:first-child {
+    margin-left: 0;
+}
+
+.pv-legenda-chuva {
+    height: 0.55rem !important;
+    border: 0 !important;
+    border-radius: 2px;
+    background: var(--accent);
+}
+
+.pv-legenda-faixa {
+    height: 0.4rem !important;
+    border: 0 !important;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #38bdf8, #e0a33c);
+}
+
+/* icones: mesmo traco dos glifos do resto do painel */
+.pv-icon {
     flex-shrink: 0;
     fill: none;
     stroke: currentColor;
     stroke-width: 1.6;
     stroke-linecap: round;
     stroke-linejoin: round;
-    color: var(--accent);
 }
 
-.weather-glyph--sm {
-    width: 1.25rem;
-    height: 1.25rem;
+.pv-icon--xl { width: 5.6rem; height: 5.6rem;
+    width: 4.1rem;
+    height: 4.1rem;
+}
+.pv-icon--md { width: 2.9rem; height: 2.9rem;
+    width: 2.1rem;
+    height: 2.1rem;
+}
+.pv-icon--sm { width: 1.75rem; height: 1.75rem;
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
-.weather-now {
+.pv-icon--sol,
+.pv-icon--solnuvem { color: #e0a33c; }
+.pv-icon--nuvem { color: var(--muted); }
+.pv-icon--chuva { color: var(--accent); }
+
+/* ---- agora ---- */
+.pv-agora {
     flex: 0 0 auto;
+    gap: 0.5rem;
+}
+
+.pv-agora-main {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.625rem;
+    gap: 1.125rem;
 }
 
-.weather-now-main {
+.pv-agora-temp {
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    gap: 0.15rem;
     min-width: 0;
 }
 
-.weather-temp {
-    font-size: 2rem;
-    font-weight: 700;
-    line-height: 1;
+.pv-temp {
+    font-size: 3.1rem;
+    font-weight: 800;
+    line-height: 0.95;
     letter-spacing: -0.02em;
     color: var(--text);
     font-variant-numeric: tabular-nums;
 }
 
-.weather-desc {
-    font-size: 0.62rem;
+.pv-temp small {
+    margin-left: 0.15rem;
+    font-size: 0.38em;
     font-weight: 600;
     color: var(--muted);
+    vertical-align: top;
+    line-height: 1.6;
 }
 
-.weather-facts {
-    flex: 0 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem 1rem;
-    padding-bottom: 0.625rem;
-    margin-bottom: 0.625rem;
-    border-bottom: 1px solid var(--row-line);
-}
-
-.weather-fact {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-}
-
-.weather-fact-label {
-    font-size: 0.55rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-}
-
-.weather-fact-value {
-    font-size: 0.85rem;
+.pv-cond {
+    font-size: 1.1rem;
     font-weight: 700;
     color: var(--text);
-    font-variant-numeric: tabular-nums;
 }
 
-.weather-days {
-    flex: 1 1 auto;
-    min-height: 0;
+.pv-agora-ref {
+    font-size: 0.82rem;
+    color: var(--muted);
+}
+
+.pv-facts {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    align-content: center;
-    gap: 0.5rem;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0;
+    padding-top: 0.45rem;
+    border-top: 1px solid var(--row-line);
 }
 
-.weather-day {
+.pv-fact {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.5rem 0.25rem;
-    border: 1px solid var(--row-line);
-    border-radius: 10px;
-    background: var(--row-bg);
-}
-
-.weather-day-name {
-    font-size: 0.55rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
+    gap: 0.1rem;
+    padding: 0 0.75rem;
+    border-left: 1px solid var(--row-line);
+    font-size: 0.76rem;
     color: var(--muted);
-}
-
-.weather-day-temp {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-}
-
-.weather-day-temp small,
-.weather-city-temp small {
-    margin-left: 0.25rem;
-    font-size: 0.78em;
-    font-weight: 600;
-    color: var(--muted);
-}
-
-.weather-day-rain,
-.weather-city-rain {
-    font-size: 0.6rem;
-    font-weight: 700;
-    color: var(--faint);
-    font-variant-numeric: tabular-nums;
-}
-
-.weather-day-rain.is-chuva,
-.weather-city-rain.is-chuva {
-    color: var(--accent);
-}
-
-.weather-cities {
-    flex: 1 1 auto;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 0.375rem;
-    overflow: auto;
-}
-
-.weather-city {
-    flex: 0 0 auto;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto auto auto;
-    align-items: center;
-    gap: 0.625rem;
-    padding: 0.4375rem 0.625rem;
-    border: 1px solid var(--row-line);
-    border-radius: 8px;
-    background: var(--row-bg);
-}
-
-.weather-city-name {
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: var(--text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.weather-city-temp {
-    font-size: 0.78rem;
+.pv-fact:first-child {
+    padding-left: 0;
+    border-left: 0;
+}
+
+.pv-fact b {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+}
+
+.pv-fact b small {
+    margin-left: 0.15rem;
+    font-size: 0.6em;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+/* ---- proximas 24h: meteograma ---- */
+.pv-horas {
+    flex: 0 0 auto;
+}
+
+.pv-meteo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.pv-meteo-row {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    column-gap: 0.25rem;
+}
+
+.pv-meteo-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.05rem;
+    min-width: 0;
+    text-align: center;
+}
+
+.pv-meteo-h {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+/* area do grafico: barras de chuva na base, linha de temperatura em SVG por cima */
+.pv-meteo-chart {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    column-gap: 0.25rem;
+    align-items: end;
+    height: 3.7rem;
+    margin: 0.25rem 0 0.15rem;
+    border-bottom: 1px solid var(--row-line);
+}
+
+.pv-meteo-bar {
+    justify-self: center;
+    width: 56%;
+    height: calc(var(--mm) / 3 * 100%);
+    min-height: 2px;
+    border-radius: 3px 3px 0 0;
+    background: var(--accent);
+    opacity: 0.8;
+}
+
+.pv-meteo-bar.is-zero {
+    background: var(--row-line);
+    opacity: 1;
+}
+
+.pv-meteo-linha {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.pv-meteo-linha path {
+    fill: none;
+    stroke: #e0a33c;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.pv-meteo-linha circle {
+    fill: var(--section-bg);
+    stroke: #e0a33c;
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+}
+
+.pv-meteo-t {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #e0a33c;
+    font-variant-numeric: tabular-nums;
+}
+
+.pv-meteo-p {
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.pv-meteo-p.is-chuva {
+    color: var(--accent);
+}
+
+.pv-meteo-mm {
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---- proximos dias ---- */
+.pv-dias {
+    flex: 1 1 auto;
+}
+
+.pv-dias-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.5rem;
+    flex: 1 1 auto;
+}
+
+.pv-dia {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.12rem;
+    padding: 0.4rem 0.45rem 0.4rem;
+    border-radius: 10px;
+    border: 1px solid var(--row-line);
+    background: var(--row-bg);
+    min-width: 0;
+    justify-content: space-between;
+}
+
+.pv-dia.is-alerta {
+    border-color: rgba(231, 76, 60, 0.4);
+    background: rgba(231, 76, 60, 0.06);
+}
+
+.pv-dia-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.35rem;
+    line-height: 1.15;
+    white-space: nowrap;
+}
+
+/* icone ao lado da temperatura para o cartao ficar baixo */
+.pv-dia-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.pv-dia-head b {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--text);
+}
+
+.pv-dia-head span {
+    font-size: 0.7rem;
+    color: var(--muted);
+}
+
+.pv-dia-cond {
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pv-dia-temp {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.pv-dia-temp b {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--text);
+}
+
+.pv-dia-temp small {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #38bdf8;
+}
+
+/* faixa termica: --min/--max em graus, escala fixa 14–32 */
+.pv-faixa {
+    position: relative;
+    width: 100%;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--row-line);
+    overflow: hidden;
+}
+
+.pv-faixa i {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc((var(--min) - 14) / 18 * 100%);
+    width: calc((var(--max) - var(--min)) / 18 * 100%);
+    border-radius: inherit;
+    background: linear-gradient(90deg, #38bdf8, #e0a33c);
+}
+
+.pv-dia-dados {
+    width: 100%;
+    margin: 0.1rem 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.pv-dia-dados div {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.4rem;
+    font-size: 0.74rem;
+    line-height: 1.3;
+}
+
+.pv-dia-dados dt {
+    color: var(--muted);
+}
+
+.pv-dia-dados dd {
+    margin: 0;
     font-weight: 700;
     color: var(--text);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
 }
 
-.weather-city-rain {
-    min-width: 2.25rem;
+.pv-dia-dados dd.is-chuva { color: var(--accent); }
+.pv-dia-dados dd.is-alerta { color: var(--danger); }
+
+.pv-tag {
+    margin-top: 0.2rem;
+    width: 100%;
+    padding: 0.25rem 0.4rem;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.pv-tag--ok {
+    color: var(--ok);
+    border-color: rgba(46, 204, 113, 0.35);
+    background: rgba(46, 204, 113, 0.1);
+}
+
+.pv-tag--atencao {
+    color: var(--warn);
+    border-color: rgba(243, 156, 18, 0.35);
+    background: rgba(243, 156, 18, 0.1);
+}
+
+.pv-tag--alerta {
+    color: var(--danger);
+    border-color: rgba(231, 76, 60, 0.35);
+    background: rgba(231, 76, 60, 0.12);
+}
+
+/* ---- cooperados ---- */
+.pv-coop {
+    flex: 0 0 auto;
+}
+
+.pv-tabela {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+
+
+}
+
+.pv-tabela th {
+    padding: 0 0.5rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    border-bottom: 1px solid var(--row-line);
+    white-space: nowrap;
+}
+
+.pv-tabela td {
+    padding: 0.38rem 0.5rem;
+    border-bottom: 1px solid var(--row-line);
+    color: var(--text);
+    vertical-align: middle;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.pv-tabela tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.pv-tabela .num {
     text-align: right;
+}
+
+.pv-tabela td .pv-icon {
+    display: block;
+}
+
+.pv-tabela-nome {
+    font-weight: 700;
+}
+
+.pv-tabela-temp b {
+    font-weight: 800;
+}
+
+.pv-tabela-temp small {
+    margin-left: 0.3rem;
+    font-size: 0.85em;
+    font-weight: 700;
+    color: #38bdf8;
+}
+
+.pv-tabela tr.is-chuva td {
+    background: rgba(59, 130, 246, 0.08);
+}
+
+.pv-tabela tr.is-chuva td.num {
+    color: var(--accent);
+    font-weight: 700;
+}
+
+/* ---- impacto na operacao ---- */
+.pv-impacto {
+    flex: 1 1 auto;
+}
+
+.pv-avisos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-height: 0;
+}
+
+/* os avisos dividem a altura que sobra no painel */
+.pv-aviso {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.2rem;
+    padding: 0.5rem 0.8rem 0.5rem 1rem;
+    border-radius: 8px;
+    background: var(--row-bg);
+    border-left: 3px solid var(--muted);
+
+}
+
+.pv-aviso--alerta { border-left-color: var(--danger); }
+.pv-aviso--atencao { border-left-color: var(--warn); }
+.pv-aviso--ok { border-left-color: var(--ok); }
+
+.pv-aviso-quando {
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.pv-aviso--alerta .pv-aviso-quando { color: var(--danger); }
+.pv-aviso--atencao .pv-aviso-quando { color: var(--warn); }
+.pv-aviso--ok .pv-aviso-quando { color: var(--ok); }
+
+.pv-aviso-texto {
+    font-size: 0.9rem;
+    line-height: 1.35;
+    color: var(--muted);
+}
+
+.pv-aviso-texto b {
+    color: var(--text);
 }
 
 /* ============================================
@@ -4122,44 +4531,9 @@ body.theme-light .kpi-flag--alerta {
 /* ============================================
    AJUSTES DE ACABAMENTO
    ============================================ */
-/* cor do icone acompanha a condicao do tempo */
-.weather-glyph--sol,
-.weather-glyph--solnuvem {
-    color: #e0a33c;
-}
-
-.weather-glyph--nuvem {
-    color: var(--muted);
-}
-
-.weather-glyph--chuva {
-    color: var(--accent);
-}
-
 /* pulmao usa o mesmo ponto redondo das culturas */
 .legend-dot--pulmao {
     border-radius: 50%;
-}
-
-/* previsao: os cartoes dos dias dividem toda a altura do painel; as linhas
-   das cidades tambem, em vez de sobrar vao no fim */
-.weather-days {
-    grid-auto-rows: minmax(0, 1fr);
-    align-content: stretch;
-}
-
-.weather-day {
-    justify-content: flex-start;
-    gap: 0.1875rem;
-}
-
-.weather-cities {
-    justify-content: stretch;
-}
-
-.weather-city {
-    flex: 1 1 0;
-    min-height: 2rem;
 }
 
 /* ============================================
@@ -4326,8 +4700,6 @@ body.theme-light .kpi-flag--alerta {
     gap: 0.5rem;
     min-height: 0;
 }
-
-
 
 /* em tela cheia a moldura ganha escala: glifo, nome e cantos maiores */
 .screen--camera .camera-glyph {
@@ -5740,125 +6112,6 @@ body.theme-light .prod-linha-item em.is-bom {
 }
 
 /* ============================================
-   CARTAO DE PREVISAO POR DIA (tela da central)
-   Cada cartao ocupa toda a altura do painel: cabecalho com condicao,
-   temperaturas por periodo, detalhes do dia e leitura operacional.
-   ============================================ */
-.weather-glyph--md {
-    width: 1.875rem;
-    height: 1.875rem;
-}
-
-.weather-day-cond {
-    font-size: 0.6rem;
-    font-weight: 600;
-    color: var(--muted);
-    text-align: center;
-    line-height: 1.2;
-}
-
-.weather-day-periods {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.25rem;
-    margin-top: 0.125rem;
-}
-
-.weather-day-period {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1px;
-    padding: 0.25rem 0.125rem;
-    border-radius: 7px;
-    background: rgba(255, 255, 255, 0.04);
-}
-
-.weather-day-details {
-    flex: 1 1 auto;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    gap: 0.125rem;
-    margin-top: 0.25rem;
-    padding-top: 0.375rem;
-    border-top: 1px solid var(--row-line);
-}
-
-.weather-day-row {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.375rem;
-    padding-bottom: 0.1875rem;
-    border-bottom: 1px dashed var(--row-line);
-}
-
-.weather-day-row:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
-.weather-day-k {
-    font-size: 0.52rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--muted);
-    white-space: nowrap;
-}
-
-.weather-day-v {
-    font-size: 0.63rem;
-    font-weight: 700;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-}
-
-.weather-day-v.weather-day-rain {
-    color: var(--text);
-}
-
-.weather-day-v.weather-day-rain.is-chuva {
-    color: var(--accent);
-}
-
-/* leitura operacional do dia: fecha o cartao no rodape */
-.weather-day-tag {
-    width: 100%;
-    margin-top: 0.375rem;
-    padding: 0.3125rem 0.375rem;
-    border-radius: 7px;
-    border: 1px solid transparent;
-    font-size: 0.53rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-align: center;
-    line-height: 1.25;
-}
-
-.weather-day-tag--ok {
-    color: var(--ok);
-    border-color: rgba(46, 204, 113, 0.35);
-    background: rgba(46, 204, 113, 0.12);
-}
-
-.weather-day-tag--atencao {
-    color: var(--warn);
-    border-color: rgba(243, 156, 18, 0.35);
-    background: rgba(243, 156, 18, 0.12);
-}
-
-.weather-day-tag--alerta {
-    color: var(--danger);
-    border-color: rgba(231, 76, 60, 0.35);
-    background: rgba(231, 76, 60, 0.12);
-}
-
-/* ============================================
    RECEPCAO · PREVISAO E RITMO (bloco unico, ocupa a sobra da tela)
    ============================================ */
 .content-section--ritmo {
@@ -7034,6 +7287,20 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     white-space: nowrap;
 }
 
+/* impureza do grão armazenado, ao lado da cultura; vermelha acima do limite de 1% */
+.sa-imp {
+    margin-left: 0.3rem;
+    padding-left: 0.3rem;
+    border-left: 1px solid var(--card-border);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.sa-imp--alto {
+    color: var(--danger);
+    font-weight: 800;
+}
+
 /* o tanque é o único bloco que estica: ocupa a altura que sobrar no cartão */
 .sa-body {
     display: flex;
@@ -8110,7 +8377,6 @@ body.edit-mode .fluxo-etapa-pill {
         gap: 0.5rem;
     }
 
-
     .section-head-tools {
         flex: 1 1 100%;
         max-width: 100%;
@@ -8126,7 +8392,6 @@ body.edit-mode .fluxo-etapa-pill {
     .forecast-xaxis {
         font-size: 0.5rem;
     }
-
 
     .secador {
         padding: 0.75rem 0.75rem;
@@ -8158,11 +8423,9 @@ body.edit-mode .fluxo-etapa-pill {
         flex-direction: row;
     }
 
-
     .kpi-value--tarifa {
         font-size: 0.95rem;
     }
-
 
     /* o cabecalho fixo nao pode cobrir o topo do painel ao rolar ate ele */
     .alerts-page {
@@ -8172,7 +8435,6 @@ body.edit-mode .fluxo-etapa-pill {
     .alerts-summary {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
-
 
     /* sem altura de tela para preencher, a moldura da camera segue o 16:9 */
     .camera-frame {
@@ -8249,8 +8511,8 @@ body.edit-mode .fluxo-etapa-pill {
     .forecast-summary,
     .forecast-summary--quad,
     .moega-grid,
-    .weather-days,
     .prod-secador-grade,
+    .pv-dias-grid,
     .silo-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 0.625rem;
@@ -8464,7 +8726,6 @@ body.edit-mode .fluxo-etapa-pill {
     border: 1px solid rgba(59, 130, 246, 0.4);
     color: var(--accent);
 }
-
 
 /* ------------------------------------------------
    Componentes visuais da visao geral (gv-*)
@@ -9374,9 +9635,14 @@ body.edit-mode .fluxo-etapa-pill {
 .gv-aer-row {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
-    flex: 1 1 0;
+    gap: 0.3rem;
+    flex: 0 0 auto;
     min-height: 0;
+}
+
+/* a curva do ar ambiente é uma só e fica com a altura que sobrar */
+.gv-aer-row--ar {
+    flex: 1 1 0;
 }
 
 .gv-aer-row + .gv-aer-row {
@@ -9411,8 +9677,8 @@ body.edit-mode .fluxo-etapa-pill {
 /* linha do tempo de 24h */
 .gv-aer-track {
     position: relative;
-    height: 0.95rem;
-    margin-bottom: 0.7rem; /* espaço para as horas embaixo */
+    height: 1.7rem;
+    margin-bottom: 0.75rem; /* espaço para as horas embaixo */
     background: var(--row-bg);
     border: 1px solid var(--row-line);
     border-radius: 4px;
@@ -9420,8 +9686,8 @@ body.edit-mode .fluxo-etapa-pill {
 
 .gv-aer-on {
     position: absolute;
-    top: 2px;
-    bottom: 2px;
+    top: 3px;
+    bottom: 3px;
     background: var(--muted);
     opacity: 0.8;
     border-radius: 2px;
@@ -9477,8 +9743,9 @@ body.edit-mode .fluxo-etapa-pill {
 }
 
 .gv-aer-svg {
-    flex: 1 1 auto;
+    flex: 1 1 0;
     width: 100%;
+    min-width: 0; /* deixa o SVG encolher para caber a legenda da direita */
     height: 100%;
     min-height: 2rem;
     overflow: visible;
@@ -9626,39 +9893,100 @@ body.edit-mode .fluxo-etapa-pill {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.2rem;
-}
-
-.gv-day-temp {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-}
-
-.gv-day-track {
-    display: flex;
-    align-items: flex-end;
-    flex: 1 1 auto;
-    width: 100%;
-    min-height: 2rem;
-    border-radius: 5px;
+    justify-content: center;
+    gap: 0.15rem;
+    padding: 0.35rem 0.2rem;
+    border-radius: 8px;
     background: var(--row-line);
-    overflow: hidden;
-}
-
-.gv-day-fill {
-    display: block;
-    width: 100%;
-    height: calc(var(--p) * 100%);
-    border-radius: inherit;
-    background: linear-gradient(180deg, var(--warn), rgba(243, 156, 18, 0.35));
+    min-width: 0;
 }
 
 .gv-day-name {
     font-size: 0.66rem;
     font-weight: 700;
+    color: var(--text);
+}
+
+.gv-day-date {
+    font-size: 0.58rem;
     color: var(--muted);
+    margin-top: -0.1rem;
+}
+
+/* ícone do tempo do dia, nas mesmas cores da tela 08 */
+.gv-day-icon {
+    width: 1.7rem;
+    height: 1.7rem;
+    margin: 0.1rem 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.gv-day-icon--sol { color: #e0a33c; }
+.gv-day-icon--nuvem { color: var(--muted); }
+.gv-day-icon--chuva { color: var(--accent); }
+
+/* chance de chuva e volume esperado */
+.gv-day-rain {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.58rem;
+    line-height: 1.2;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.gv-day-rain b {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #38bdf8;
+}
+
+.gv-day-rain--alta b {
+    color: var(--accent);
+}
+
+/* máxima em vermelho, mínima em azul */
+.gv-day-temp {
+    font-size: 0.8rem;
+    font-weight: 700;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.gv-day-temp b {
+    color: var(--danger);
+}
+
+.gv-day-temp small {
+    font-size: 0.85em;
+    font-weight: 700;
+    color: #38bdf8;
+}
+
+.gv-day-temp small::before {
+    content: " / ";
+    color: var(--muted);
+    font-weight: 400;
+}
+
+/* umidade relativa do dia */
+.gv-day-sub {
+    font-size: 0.6rem;
+    line-height: 1.2;
+    color: var(--muted);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.gv-day-sub b {
+    font-weight: 700;
+    color: var(--text);
 }
 
 .gv-coop {
