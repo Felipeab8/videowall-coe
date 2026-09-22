@@ -472,6 +472,10 @@ const EDITABLE_SELECTORS = [
     '.pv-temp',
     '.pv-cond',
     '.pv-agora-ref',
+    '.pv-local-txt b',
+    '.pv-local-txt small',
+    '.pv-agora-cidade b',
+    '.pv-agora-cidade small',
     '.pv-fact',
     '.pv-meteo-h',
     '.pv-meteo-t',
@@ -1467,7 +1471,9 @@ function setForecastValue(bar, clientY) {
     const cap = bar.querySelector('.forecast-cap');
     if (cap) cap.textContent = formatTon(tons);
 
-    const serie = bar.classList.contains('forecast-bar--prog') ? 'programado' : 'recebido';
+    // barras que representam uma serie propria (ex.: cada secador no grafico por hora)
+    // dizem qual linha do tooltip atualizar; as demais caem no total recebido
+    const serie = bar.dataset.serie || (bar.classList.contains('forecast-bar--prog') ? 'programado' : 'recebido');
     col.dataset[serie] = formatTon(tons) + ' t';
 }
 
@@ -3588,6 +3594,38 @@ function escolherPeriodoFluxo(alvo) {
 }
 
 // ============================================
+// EXPEDICAO · FILTRO GERAL (CULTURA + PERIODO)
+// As duas escolhas ficam na tela (data-exp-cultura / data-exp-periodo) e o
+// CSS faz o resto: esconde as linhas que nao batem nas duas tabelas e troca
+// os blocos .exp-periodo-bloco. A tabela de cargas so segue a cultura.
+// ============================================
+function escolherCulturaExp(alvo) {
+    const tela = alvo.closest('#screen-7');
+    const cultura = alvo.dataset.expCultura;
+    if (!tela || !cultura) return;
+    tela.dataset.expCultura = cultura;
+    tela.querySelectorAll('button[data-exp-cultura]').forEach((btn) => {
+        const ativo = btn.dataset.expCultura === cultura;
+        btn.classList.toggle('is-active', ativo);
+        btn.setAttribute('aria-pressed', String(ativo));
+    });
+    scheduleFit();
+}
+
+function escolherPeriodoExp(alvo) {
+    const tela = alvo.closest('#screen-7');
+    const periodo = alvo.dataset.expPeriodo;
+    if (!tela || !periodo) return;
+    tela.dataset.expPeriodo = periodo;
+    tela.querySelectorAll('button[data-exp-periodo]').forEach((btn) => {
+        const ativo = btn.dataset.expPeriodo === periodo;
+        btn.classList.toggle('is-active', ativo);
+        btn.setAttribute('aria-pressed', String(ativo));
+    });
+    scheduleFit();
+}
+
+// ============================================
 // PRODUTIVIDADE · PERIODO DOS KPIs E CARTOES
 // Mesmo mecanismo do fluxo: data-prod-periodo na section, CSS mostra so
 // os blocos .prod-periodo-bloco do periodo. O grafico por hora nao muda.
@@ -3607,6 +3645,18 @@ function escolherPeriodoProd(alvo) {
 
 document.addEventListener('click', (e) => {
     if (!(e.target instanceof Element) || isEditing()) return;
+    const culturaExp = e.target.closest('button[data-exp-cultura]');
+    if (culturaExp) {
+        e.preventDefault();
+        escolherCulturaExp(culturaExp);
+        return;
+    }
+    const periodoExp = e.target.closest('button[data-exp-periodo]');
+    if (periodoExp) {
+        e.preventDefault();
+        escolherPeriodoExp(periodoExp);
+        return;
+    }
     const periodoProd = e.target.closest('button[data-prod-periodo]');
     if (periodoProd) {
         e.preventDefault();
@@ -3793,6 +3843,54 @@ function atualizarPonta() {
 
 setInterval(atualizarPonta, 1000);
 atualizarPonta();
+
+// ============================================
+// SECAGEM · CONTAGEM ATE A PROXIMA LIMPEZA
+// Cada secador guarda a hora da proxima limpeza em data-limpeza (HH:MM).
+// Se a hora de hoje ja passou, vale a de amanha. O bloco mostra quanto
+// falta e entra em alerta na ultima hora.
+// ============================================
+function atualizarLimpezas() {
+    const agora = new Date();
+    document.querySelectorAll('[data-limpeza]').forEach((el) => {
+        const partes = String(el.dataset.limpeza || '').split(':');
+        const h = Number(partes[0]);
+        const m = Number(partes[1]);
+        if (!Number.isFinite(h) || !Number.isFinite(m)) return;
+
+        const alvo = new Date(agora);
+        alvo.setHours(h, m, 0, 0);
+        const amanha = alvo <= agora;
+        if (amanha) alvo.setDate(alvo.getDate() + 1);
+
+        const faltam = Math.max(0, Math.round((alvo - agora) / 60000));
+        const horas = Math.floor(faltam / 60);
+        const minutos = faltam % 60;
+
+        const tempo = el.querySelector('[data-limpeza-tempo]');
+        const ref = el.querySelector('[data-limpeza-ref]');
+        if (tempo) {
+            tempo.textContent = horas
+                ? horas + 'h' + String(minutos).padStart(2, '0')
+                : minutos + 'min';
+        }
+        if (ref) {
+            ref.textContent = (amanha ? 'amanhã' : 'hoje') + ' às ' + el.dataset.limpeza;
+        }
+
+        // o anel esvazia conforme a hora chega: cheio logo apos uma limpeza,
+        // vazio na hora da proxima
+        const intervalo = Number(el.dataset.limpezaIntervalo) || 720;
+        const relogio = el.querySelector('.secador-limpeza-relogio');
+        if (relogio) {
+            relogio.style.setProperty('--p', Math.max(0, Math.min(1, faltam / intervalo)).toFixed(3));
+        }
+        el.classList.toggle('is-perto', faltam <= 60);
+    });
+}
+
+setInterval(atualizarLimpezas, 15000);
+atualizarLimpezas();
 
 // ============================================
 // SILOS & AERAÇÃO

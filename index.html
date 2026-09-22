@@ -60,6 +60,10 @@
         <symbol id="ico-nuvem" viewBox="0 0 24 24">
             <path d="M7.4 18.6h9.4a3.9 3.9 0 0 0 .3-7.8 5.5 5.5 0 0 0-10.5-1 4 4 0 0 0 .8 8.8Z"></path>
         </symbol>
+        <symbol id="ico-local" viewBox="0 0 24 24">
+            <path d="M12 21.4s7-6.1 7-11.1a7 7 0 1 0-14 0c0 5 7 11.1 7 11.1Z"></path>
+            <circle cx="12" cy="10.2" r="2.6"></circle>
+        </symbol>
         <symbol id="ico-chuva" viewBox="0 0 24 24">
             <path d="M7.6 15.4h9a3.7 3.7 0 0 0 .3-7.4 5.2 5.2 0 0 0-10-1 3.8 3.8 0 0 0 .7 8.4Z"></path>
             <path d="M9.2 18.2 8.3 20.8M13.1 18.2l-.9 2.6M17 18.2l-.9 2.6"></path>
@@ -432,25 +436,27 @@
                             <span><i class="gv-aer-legenda-ur"></i>umidade relativa</span>
                         </div>
                         <div class="gv-aer-row">
-                            <div class="gv-aer-row-head"><span class="gv-aer-row-name">Silos</span><span class="gv-aer-row-sub">13h30 ligado hoje · 2 de 2 zonas</span></div>
+                            <div class="gv-aer-row-head"><span class="gv-aer-row-name">Silos</span></div>
                             <div class="gv-aer-track" role="img" aria-label="Silos: aeração ativa nas últimas 24h e horário de ponta">
-                                <i class="gv-aer-on" style="left:8.3%;width:31.3%" title="02:00–09:30 · 7h30 ligado"></i><i class="gv-aer-on" style="left:56.3%;width:18.7%" title="13:30–18:00 · 4h30 ligado"></i><i class="gv-aer-on" style="left:87.5%;width:6.3%" title="21:00–22:30 · 1h30 ligado"></i><i class="gv-aer-ponta"></i><i class="gv-aer-now" data-ponta-agora></i>
+                                <i class="gv-aer-on" style="left:8.3%;width:31.3%" title="02:00–09:30 · 7h30 ligado"></i><i class="gv-aer-on" style="left:56.3%;width:18.7%" title="13:30–18:00 · 4h30 ligado"></i><i class="gv-aer-on" style="left:87.5%;width:6.3%" title="21:00–22:30 · 1h30 ligado"></i><i class="gv-aer-ponta"></i>
                                 <span class="gv-aer-h gv-aer-h--0">00h</span><span class="gv-aer-h gv-aer-h--12">12h</span><span class="gv-aer-h gv-aer-h--18">18h</span><span class="gv-aer-h gv-aer-h--21">21h</span><span class="gv-aer-h gv-aer-h--24">24h</span>
                             </div>
                         </div>
                         <div class="gv-aer-row">
-                            <div class="gv-aer-row-head"><span class="gv-aer-row-name">Armazém</span><span class="gv-aer-row-sub">10h ligado hoje · Área 1 ligada</span></div>
+                            <div class="gv-aer-row-head"><span class="gv-aer-row-name">Armazém</span></div>
                             <div class="gv-aer-track" role="img" aria-label="Armazém: aeração ativa nas últimas 24h e horário de ponta">
-                                <i class="gv-aer-on" style="left:12.5%;width:20.8%" title="03:00–08:00 · 5h ligado"></i><i class="gv-aer-on" style="left:62.5%;width:12.5%" title="15:00–18:00 · 3h ligado"></i><i class="gv-aer-on" style="left:87.5%;width:8.3%" title="21:00–23:00 · 2h ligado"></i><i class="gv-aer-ponta"></i><i class="gv-aer-now" data-ponta-agora></i>
+                                <i class="gv-aer-on" style="left:12.5%;width:20.8%" title="03:00–08:00 · 5h ligado"></i><i class="gv-aer-on" style="left:62.5%;width:12.5%" title="15:00–18:00 · 3h ligado"></i><i class="gv-aer-on" style="left:87.5%;width:8.3%" title="21:00–23:00 · 2h ligado"></i><i class="gv-aer-ponta"></i>
                                 <span class="gv-aer-h gv-aer-h--0">00h</span><span class="gv-aer-h gv-aer-h--12">12h</span><span class="gv-aer-h gv-aer-h--18">18h</span><span class="gv-aer-h gv-aer-h--21">21h</span><span class="gv-aer-h gv-aer-h--24">24h</span>
                             </div>
                         </div>
                         <div class="gv-aer-row gv-aer-row--ar">
                             <div class="gv-aer-row-head"><span class="gv-aer-row-name">Ar ambiente</span><span class="gv-aer-row-sub">últimas 24h</span></div>
                             <div class="gv-aer-curvas">
+                                <!-- a ordem segue a altura de cada curva nesta ponta: há 24h a
+                                     umidade estava em cima e a temperatura embaixo -->
                                 <div class="gv-aer-leg gv-aer-leg--ini" title="Leituras de 24h atrás">
-                                    <span class="gv-aer-leg-item gv-aer-leg-item--temp"><b>22,0°C</b>temperatura</span>
                                     <span class="gv-aer-leg-item gv-aer-leg-item--ur"><b>72%</b>umidade rel.</span>
+                                    <span class="gv-aer-leg-item gv-aer-leg-item--temp"><b>22,0°C</b>temperatura</span>
                                 </div>
                                 <svg class="gv-aer-svg" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true">
                                     <path class="gv-aer-linha gv-aer-linha--temp" d="M0.0 20.9 L4.3 22.1 L8.7 23.3 L13.0 24.7 L17.4 25.9 L21.7 26.6 L26.1 26.1 L30.4 24.2 L34.8 20.9 L39.1 17.1 L43.5 13.6 L47.8 10.3 L52.2 7.7 L56.5 5.8 L60.9 4.6 L65.2 4.4 L69.6 5.3 L73.9 7.0 L78.3 9.1 L82.6 11.0 L87.0 12.4 L91.3 11.7 L95.7 10.0 L100.0 9.1"></path>
@@ -464,7 +470,7 @@
                         </div>
                     </button>
 
-                    <!-- 07 Expedição: cargas do dia por cultura, dosagem em anel -->
+                    <!-- 07 Expedição: cargas do dia por cultura, qualidade média contra os limites -->
                     <button class="geral-card atencao" type="button" data-goto="7" title="Abrir tela da expedição">
                         <div class="geral-card-head">
                             <span class="geral-card-num">07</span>
@@ -480,7 +486,14 @@
                             <div class="gv-side">
                                 <div class="gv-kpi"><span class="gv-kpi-value">6</span><span class="gv-kpi-label">aguardando · 18 min médio</span></div>
                                 <div class="gv-kpi gv-kpi--ruim"><span class="gv-kpi-value">4</span><span class="gv-kpi-label">reprovadas · 14% das cargas</span></div>
-                                <div class="gv-ring gv-ring--mini" style="--p: 0.992" role="img" aria-label="Dosagem 99,2%"><span class="gv-ring-value">99,2<small>%</small></span><span class="gv-ring-label">dosagem</span></div>
+                                <!-- a dosagem do dia em tres numeros, no lugar do anel de porcentagem:
+                                     a media das cargas em cada medida, contra o seu limite -->
+                                <div class="gv-qual" role="img" aria-label="Dosagem de hoje, média das cargas: umidade 12,8% de 14%, impureza 0,8% de 1%, avariados 3,1% de 6%">
+                                    <span class="gv-qual-titulo">Dosagem · média das cargas</span>
+                                    <span class="gv-qual-item"><b>12,8<small>%</small></b><em>umidade</em><i>lim. 14%</i></span>
+                                    <span class="gv-qual-item"><b>0,8<small>%</small></b><em>impureza</em><i>lim. 1%</i></span>
+                                    <span class="gv-qual-item"><b>3,1<small>%</small></b><em>avariados</em><i>lim. 6%</i></span>
+                                </div>
                             </div>
                         </div>
                         <div class="gv-block">
@@ -2015,21 +2028,23 @@
                                 </div>
                             </div>
                             <div class="secador-body">
-                                <!-- o grão como entra e como sai: temperatura e umidade lado a lado -->
+                                <!-- o grão como entra e como sai: temperatura da massa, temperatura do ar e umidade -->
                                 <div class="secador-fluxo">
                                     <div class="secador-ponto secador-ponto--entra">
                                         <span class="secador-ponto-nome">Entra no secador</span>
                                         <div class="secador-ponto-dados">
-                                            <span class="secador-dado"><b>28°C</b><small>temperatura</small></span>
-                                            <span class="secador-dado"><b>18,4%</b><small>umidade</small></span>
+                                            <span class="secador-dado"><small>temperatura da massa</small><b>28°C</b></span>
+                                            <span class="secador-dado"><small>temperatura do ar</small><b>96°C</b></span>
+                                            <span class="secador-dado"><small>umidade</small><b>18,4%</b></span>
                                         </div>
                                     </div>
                                     <span class="secador-fluxo-seta" aria-hidden="true"></span>
                                     <div class="secador-ponto secador-ponto--sai">
                                         <span class="secador-ponto-nome">Sai do secador</span>
                                         <div class="secador-ponto-dados">
-                                            <span class="secador-dado"><b>92°C</b><small>temperatura</small></span>
-                                            <span class="secador-dado"><b>13,4%</b><small>umidade</small></span>
+                                            <span class="secador-dado"><small>temperatura da massa</small><b>92°C</b></span>
+                                            <span class="secador-dado"><small>temperatura do ar</small><b>46°C</b></span>
+                                            <span class="secador-dado"><small>umidade</small><b>13,4%</b></span>
                                         </div>
                                         <span class="secador-ponto-nota">caiu <b>5,0 pontos</b> de umidade</span>
                                     </div>
@@ -2048,12 +2063,12 @@
                                         </div>
                                         <div class="secador-grid" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
                                         <svg class="secador-svg" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label="Secador 1: turno das 07h às 17h em duas secagens de milho. Fornalha em 148 graus e secador em 96 graus (desejada 98). Carga até 07h40, secagem até 12h com a umidade caindo de 18,4 para 13,4 por cento, descarga e nova carga até 13h10, e a segunda secagem em curso às 14h50 com 13,4 por cento">
-                                            <line class="secador-setada-linha secador-setada-linha--temp" x1="0" y1="36.1" x2="300" y2="36.1"></line>
+                                            <line class="secador-setada-linha secador-setada-linha--fornalha" x1="0" y1="36.1" x2="300" y2="36.1"></line>
                                             <polyline class="secador-linha secador-linha--fornalha" points="0,26.7 5,23 10,20.9 15,18.7 20,17.2 25,16.7 30,17.4 35,16.1 40,16.6 45,17 50,17.2 55,16.4 60,16.7 65,17.7 70,17 75,17.5 80,16.8 85,17.6 90,17 95,17.1 100,17.7 105,17.9 110,16.4 115,16.4 120,17.8 125,17.3 130,16.4 135,17.7 140,17.4 145,17.1 150,16.9 155,18.9 160,20.2 165,19.8 170,21.4 175,22.3 180,22 185,22.5 190,21.3 195,19 200,18.7 205,18 210,18.1 215,16.5 220,17.9 225,17 230,17.8 235,18.2"></polyline>
                                             <polyline class="secador-linha secador-linha--temp" points="0,76.5 5,67.3 10,60.4 15,54.2 20,48.7 25,43.8 30,41.7 35,39.7 40,38.5 45,39.2 50,38.8 55,38.6 60,38.4 65,39.1 70,39.4 75,39.3 80,39.3 85,39.1 90,39.6 95,38.9 100,39.9 105,39 110,40 115,39.6 120,39.5 125,39.4 130,39.3 135,39.2 140,39.1 145,39.6 150,39 155,47.6 160,53 165,55.7 170,56.2 175,59.1 180,59.2 185,59.8 190,53.9 195,49.8 200,45.4 205,42.4 210,40.5 215,39.1 220,39.2 225,38.4 230,38.5 235,38.4"></polyline>
                                             <polyline class="secador-linha secador-linha--umi" points="0,95 8,60 16,28 22,14 30,12 40,14 50,22 60,32 75,46 90,58 105,68 120,76 135,82 150,86 160,87 170,88 178,60 186,22 195,14 205,20 215,40 225,62 235,88"></polyline>
                                         </svg>
-                                        <span class="secador-setada-tag secador-setada-tag--temp" style="top: 36.1%">temperatura desejada 98°C</span>
+                                        <span class="secador-setada-tag secador-setada-tag--fornalha" style="top: 36.1%">temperatura desejada 98°C</span>
                                         <div class="secador-futuro" aria-hidden="true" style="left: 78.3%"></div>
                                         <div class="secador-agora" style="left: 78.3%"><span class="secador-agora-label">Agora <b>14h50</b><small>previsto até 17h</small></span></div>
                                     </div>
@@ -2084,10 +2099,20 @@
                                         <b class="secador-leitura-valor">96°C</b>
                                         <span class="secador-leitura-ref">desejada 98°C · limite 100°C</span>
                                     </div>
-                                    <div class="secador-leitura secador-leitura--umi">
-                                        <span class="secador-leitura-nome">Umidade na saída</span>
-                                        <b class="secador-leitura-valor">13,4%</b>
-                                        <span class="secador-leitura-ref">grão pronto abaixo de 14%</span>
+                                    <!-- alvo de saída calculado: umidade comercial da cultura menos a margem de segurança -->
+                                    <div class="secador-leitura secador-leitura--umi" title="Alvo de saída do milho: comercial 14,0% menos margem de segurança de 0,5 ponto = 13,5%. Saída de 13,4% está 0,1 ponto abaixo do alvo.">
+                                        <span class="secador-leitura-nome">Umidade saída x alvo</span>
+                                        <b class="secador-leitura-valor">13,4% <small class="secador-leitura-desvio is-bom">−0,1 pt</small></b>
+                                        <span class="secador-leitura-ref">alvo 13,5% = 14,0 − 0,5</span>
+                                    </div>
+                                    <!-- contagem para a proxima limpeza: a hora vem de data-limpeza
+                                         e o script diz quanto falta, em alerta na ultima hora -->
+                                    <div class="secador-limpeza" data-limpeza="17:00" data-limpeza-intervalo="720" title="Limpeza de finos e telas do Secador 1 a cada 12 h de operação · última às 05:00">
+                                        <span class="secador-limpeza-relogio" style="--p: 0"><b data-limpeza-tempo>--</b></span>
+                                        <span class="secador-limpeza-txt">
+                                            <span class="secador-limpeza-nome">Próxima limpeza</span>
+                                            <span class="secador-limpeza-ref" data-limpeza-ref>--</span>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -2105,21 +2130,23 @@
                                 </div>
                             </div>
                             <div class="secador-body">
-                                <!-- o grão como entra e como sai: temperatura e umidade lado a lado -->
+                                <!-- o grão como entra e como sai: temperatura da massa, temperatura do ar e umidade -->
                                 <div class="secador-fluxo">
                                     <div class="secador-ponto secador-ponto--entra">
                                         <span class="secador-ponto-nome">Entra no secador</span>
                                         <div class="secador-ponto-dados">
-                                            <span class="secador-dado"><b>27°C</b><small>temperatura</small></span>
-                                            <span class="secador-dado"><b>18,8%</b><small>umidade</small></span>
+                                            <span class="secador-dado"><small>temperatura da massa</small><b>27°C</b></span>
+                                            <span class="secador-dado"><small>temperatura do ar</small><b>85°C</b></span>
+                                            <span class="secador-dado"><small>umidade</small><b>18,8%</b></span>
                                         </div>
                                     </div>
                                     <span class="secador-fluxo-seta" aria-hidden="true"></span>
                                     <div class="secador-ponto secador-ponto--sai">
                                         <span class="secador-ponto-nome">Sai do secador</span>
                                         <div class="secador-ponto-dados">
-                                            <span class="secador-dado"><b>83°C</b><small>temperatura</small></span>
-                                            <span class="secador-dado"><b>13,6%</b><small>umidade</small></span>
+                                            <span class="secador-dado"><small>temperatura da massa</small><b>83°C</b></span>
+                                            <span class="secador-dado"><small>temperatura do ar</small><b>42°C</b></span>
+                                            <span class="secador-dado"><small>umidade</small><b>13,6%</b></span>
                                         </div>
                                         <span class="secador-ponto-nota">caiu <b>5,2 pontos</b> de umidade</span>
                                     </div>
@@ -2139,12 +2166,12 @@
                                         </div>
                                         <div class="secador-grid" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
                                         <svg class="secador-svg" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label="Secador 2: turno das 07h às 17h em dois ciclos intermitentes de sorgo. Fornalha em 138 graus e secador em 85 graus (desejada 88). Carga até 07h35, secagem até 11h55, descarga e nova carga até 13h, segunda secagem até 14h30 e descarga em curso às 14h50, com a umidade caindo de 18,8 para 13,6 por cento">
-                                            <line class="secador-setada-linha secador-setada-linha--temp" x1="0" y1="41.7" x2="300" y2="41.7"></line>
+                                            <line class="secador-setada-linha secador-setada-linha--fornalha" x1="0" y1="41.7" x2="300" y2="41.7"></line>
                                             <polyline class="secador-linha secador-linha--fornalha" points="0,29 5,24.8 10,22.8 15,20.4 20,19.7 25,19.6 30,20.3 35,20.1 40,18.8 45,19.7 50,20.3 55,19.3 60,19.7 65,19.2 70,20.4 75,19.6 80,19.4 85,19.9 90,20.4 95,20.2 100,20.4 105,19.6 110,19.3 115,19.5 120,20 125,19.3 130,19.8 135,19.2 140,19.6 145,20.6 150,20.6 155,21.2 160,22.4 165,23.1 170,23.6 175,23.8 180,23.7 185,23 190,21.8 195,21.5 200,21.4 205,21 210,19.6 215,19.9 220,21.9 225,22.7 230,23.4 235,23.4"></polyline>
                                             <polyline class="secador-linha secador-linha--temp" points="0,77.5 5,69.6 10,62.2 15,56.7 20,52.5 25,47.6 30,45.8 35,44.5 40,43.5 45,43.7 50,43.1 55,43.1 60,44.3 65,43.5 70,43.6 75,44.5 80,44.2 85,44.4 90,44 95,43.5 100,44.8 105,44.8 110,44.9 115,44.4 120,44.9 125,45 130,43.8 135,43.9 140,44.6 145,44.1 150,48.6 155,55.3 160,58.8 165,59.8 170,61.1 175,62 180,62.4 185,57.2 190,52.8 195,48.5 200,45.2 205,44.5 210,42.1 215,42.9 220,43.9 225,44.9 230,44.8 235,45.4"></polyline>
                                             <polyline class="secador-linha secador-linha--umi" points="0,96 8,55 16,22 24,12 32,11 45,14 60,24 75,36 90,46 105,55 120,62 135,68 148,72 156,72 166,14 175,12 185,20 200,36 215,52 225,64 235,72"></polyline>
                                         </svg>
-                                        <span class="secador-setada-tag secador-setada-tag--temp" style="top: 41.7%">temperatura desejada 88°C</span>
+                                        <span class="secador-setada-tag secador-setada-tag--fornalha" style="top: 41.7%">temperatura desejada 88°C</span>
                                         <div class="secador-futuro" aria-hidden="true" style="left: 78.3%"></div>
                                         <div class="secador-agora" style="left: 78.3%"><span class="secador-agora-label">Agora <b>14h50</b><small>previsto até 17h</small></span></div>
                                     </div>
@@ -2175,10 +2202,20 @@
                                         <b class="secador-leitura-valor">85°C</b>
                                         <span class="secador-leitura-ref">desejada 88°C · limite 90°C</span>
                                     </div>
-                                    <div class="secador-leitura secador-leitura--umi">
-                                        <span class="secador-leitura-nome">Umidade na saída</span>
-                                        <b class="secador-leitura-valor">13,6%</b>
-                                        <span class="secador-leitura-ref">grão pronto abaixo de 14%</span>
+                                    <!-- alvo de saída calculado: umidade comercial da cultura menos a margem de segurança -->
+                                    <div class="secador-leitura secador-leitura--umi" title="Alvo de saída do sorgo: comercial 13,0% menos margem de segurança de 0,5 ponto = 12,5%. Saída de 13,6% está 1,1 ponto acima do alvo.">
+                                        <span class="secador-leitura-nome">Umidade saída x alvo</span>
+                                        <b class="secador-leitura-valor">13,6% <small class="secador-leitura-desvio is-atencao">+1,1 pt</small></b>
+                                        <span class="secador-leitura-ref">alvo 12,5% = 13,0 − 0,5</span>
+                                    </div>
+                                    <!-- contagem para a proxima limpeza: a hora vem de data-limpeza
+                                         e o script diz quanto falta, em alerta na ultima hora -->
+                                    <div class="secador-limpeza" data-limpeza="22:00" data-limpeza-intervalo="720" title="Limpeza de finos e telas do Secador 2 a cada 12 h de operação · última às 10:00">
+                                        <span class="secador-limpeza-relogio" style="--p: 0"><b data-limpeza-tempo>--</b></span>
+                                        <span class="secador-limpeza-txt">
+                                            <span class="secador-limpeza-nome">Próxima limpeza</span>
+                                            <span class="secador-limpeza-ref" data-limpeza-ref>--</span>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -2462,7 +2499,7 @@
                         <div class="section-head section-head--top">
                             <div class="section-head-text">
                                 <h3>SECAGEM POR HORA · POR SECADOR · TURNO 07h–17h</h3>
-                                <p class="section-sub">vs. meta horária</p>
+                                <p class="section-sub">cada secador vs. sua meta horária</p>
                             </div>
                             <div class="chart-legend chart-legend--inline">
                                 <span class="legend-item"><i class="legend-dot legend-dot--sec1"></i>Secador 1</span>
@@ -2470,30 +2507,32 @@
                                 <span class="legend-item"><i class="legend-dot legend-dot--proj-key"></i>Projeção</span>
                             </div>
                         </div>
-                        <div class="forecast-chart forecast-chart--horas forecast-chart--turno" data-chart-max="160">
+                        <div class="forecast-chart forecast-chart--horas forecast-chart--turno" data-chart-max="100">
                             <div class="forecast-yaxis">
-                                <span>160</span>
-                                <span>120</span>
-                                <span>80</span>
-                                <span>40</span>
+                                <span>100</span>
+                                <span>75</span>
+                                <span>50</span>
+                                <span>25</span>
                                 <span>0</span>
                             </div>
                             <div class="forecast-plot">
                                 <div class="forecast-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
                                 <div class="forecast-cols">
-                                    <div class="hora-col" tabindex="0" data-dia="07h" data-recebido="128 t" data-nome-recebido="Secado" data-milho="72 t" data-nome-milho="Secador 1 · Milho" data-sorgo="56 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 80.0%"><span class="forecast-cap">128</span><i class="forecast-seg forecast-seg--sec2" style="height: 43.8%"></i><i class="forecast-seg forecast-seg--sec1" style="height: 56.3%"></i></div></div>
-                                    <div class="hora-col" tabindex="0" data-dia="08h" data-recebido="135 t" data-nome-recebido="Secado" data-milho="79 t" data-nome-milho="Secador 1 · Milho" data-sorgo="56 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 84.4%"><span class="forecast-cap">135</span><i class="forecast-seg forecast-seg--sec2" style="height: 41.5%"></i><i class="forecast-seg forecast-seg--sec1" style="height: 58.5%"></i></div></div>
-                                    <div class="hora-col" tabindex="0" data-dia="09h" data-recebido="132 t" data-nome-recebido="Secado" data-milho="77 t" data-nome-milho="Secador 1 · Milho" data-sorgo="55 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 82.5%"><span class="forecast-cap">132</span><i class="forecast-seg forecast-seg--sec2" style="height: 41.7%"></i><i class="forecast-seg forecast-seg--sec1" style="height: 58.3%"></i></div></div>
-                                    <div class="hora-col" tabindex="0" data-dia="10h · melhor hora" data-recebido="137 t" data-nome-recebido="Secado" data-milho="79 t" data-nome-milho="Secador 1 · Milho" data-sorgo="58 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 85.6%"><span class="forecast-cap">137</span><i class="forecast-seg forecast-seg--sec2" style="height: 42.3%"></i><i class="forecast-seg forecast-seg--sec1" style="height: 57.7%"></i></div></div>
-                                    <div class="hora-col" tabindex="0" data-dia="11h" data-recebido="127 t" data-nome-recebido="Secado" data-milho="75 t" data-nome-milho="Secador 1 · Milho" data-sorgo="52 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 79.4%"><span class="forecast-cap">127</span><i class="forecast-seg forecast-seg--sec2" style="height: 40.9%"></i><i class="forecast-seg forecast-seg--sec1" style="height: 59.1%"></i></div></div>
-                                    <div class="hora-col is-abaixo" tabindex="0" data-dia="12h · S2 recarga 34 min" data-recebido="96 t" data-nome-recebido="Secado" data-milho="74 t" data-nome-milho="Secador 1 · Milho" data-sorgo="22 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 60.0%"><span class="forecast-cap">96</span><i class="forecast-seg forecast-seg--sec2" style="height: 22.9%"></i><i class="forecast-seg forecast-seg--sec1" style="height: 77.1%"></i></div></div>
-                                    <div class="hora-col" tabindex="0" data-dia="13h" data-recebido="133 t" data-nome-recebido="Secado" data-milho="77 t" data-nome-milho="Secador 1 · Milho" data-sorgo="56 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" style="height: 83.1%"><span class="forecast-cap">133</span><i class="forecast-seg forecast-seg--sec2" style="height: 42.1%"></i><i class="forecast-seg forecast-seg--sec1" style="height: 57.9%"></i></div></div>
-                                    <div class="hora-col is-parcial" tabindex="0" data-dia="14h · parcial · 50 min" data-recebido="112 t" data-nome-recebido="Secado" data-milho="64 t" data-nome-milho="Secador 1 · Milho" data-sorgo="48 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack is-parcial" style="height: 70.0%"><span class="forecast-cap">112</span><i class="forecast-seg forecast-seg--sec2" style="height: 42.9%"></i><i class="forecast-seg forecast-seg--sec1" style="height: 57.1%"></i></div></div>
-                                    <div class="hora-col is-futuro" tabindex="0" data-dia="15h · projeção" data-recebido="134 t" data-nome-recebido="Projetado" data-milho="78 t" data-nome-milho="Secador 1 · Milho" data-sorgo="56 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack is-projecao" style="height: 83.8%"><span class="forecast-cap">~134</span><i class="forecast-seg forecast-seg--sec2" style="height: 41.8%"></i><i class="forecast-seg forecast-seg--sec1" style="height: 58.2%"></i></div></div>
-                                    <div class="hora-col is-futuro" tabindex="0" data-dia="16h · projeção" data-recebido="124 t" data-nome-recebido="Projetado" data-milho="74 t" data-nome-milho="Secador 1 · Milho" data-sorgo="50 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack is-projecao" style="height: 77.5%"><span class="forecast-cap">~124</span><i class="forecast-seg forecast-seg--sec2" style="height: 40.3%"></i><i class="forecast-seg forecast-seg--sec1" style="height: 59.7%"></i></div></div>
+                                    <!-- cada hora traz os dois secadores lado a lado, cada barra contra a meta do proprio secador -->
+                                    <div class="hora-col" tabindex="0" data-dia="07h" data-recebido="128 t" data-nome-recebido="Secado" data-milho="72 t" data-nome-milho="Secador 1 · Milho" data-sorgo="56 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" data-serie="milho" style="height: 72.0%"><span class="forecast-cap">72</span><i class="forecast-seg forecast-seg--sec1" style="height: 100%"></i></div><div class="forecast-bar forecast-bar--hora is-stack" data-serie="sorgo" style="height: 56.0%"><span class="forecast-cap">56</span><i class="forecast-seg forecast-seg--sec2" style="height: 100%"></i></div></div>
+                                    <div class="hora-col" tabindex="0" data-dia="08h" data-recebido="135 t" data-nome-recebido="Secado" data-milho="79 t" data-nome-milho="Secador 1 · Milho" data-sorgo="56 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" data-serie="milho" style="height: 79.0%"><span class="forecast-cap">79</span><i class="forecast-seg forecast-seg--sec1" style="height: 100%"></i></div><div class="forecast-bar forecast-bar--hora is-stack" data-serie="sorgo" style="height: 56.0%"><span class="forecast-cap">56</span><i class="forecast-seg forecast-seg--sec2" style="height: 100%"></i></div></div>
+                                    <div class="hora-col" tabindex="0" data-dia="09h" data-recebido="132 t" data-nome-recebido="Secado" data-milho="77 t" data-nome-milho="Secador 1 · Milho" data-sorgo="55 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" data-serie="milho" style="height: 77.0%"><span class="forecast-cap">77</span><i class="forecast-seg forecast-seg--sec1" style="height: 100%"></i></div><div class="forecast-bar forecast-bar--hora is-stack" data-serie="sorgo" style="height: 55.0%"><span class="forecast-cap">55</span><i class="forecast-seg forecast-seg--sec2" style="height: 100%"></i></div></div>
+                                    <div class="hora-col" tabindex="0" data-dia="10h · melhor hora" data-recebido="137 t" data-nome-recebido="Secado" data-milho="79 t" data-nome-milho="Secador 1 · Milho" data-sorgo="58 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" data-serie="milho" style="height: 79.0%"><span class="forecast-cap">79</span><i class="forecast-seg forecast-seg--sec1" style="height: 100%"></i></div><div class="forecast-bar forecast-bar--hora is-stack" data-serie="sorgo" style="height: 58.0%"><span class="forecast-cap">58</span><i class="forecast-seg forecast-seg--sec2" style="height: 100%"></i></div></div>
+                                    <div class="hora-col" tabindex="0" data-dia="11h" data-recebido="127 t" data-nome-recebido="Secado" data-milho="75 t" data-nome-milho="Secador 1 · Milho" data-sorgo="52 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" data-serie="milho" style="height: 75.0%"><span class="forecast-cap">75</span><i class="forecast-seg forecast-seg--sec1" style="height: 100%"></i></div><div class="forecast-bar forecast-bar--hora is-stack" data-serie="sorgo" style="height: 52.0%"><span class="forecast-cap">52</span><i class="forecast-seg forecast-seg--sec2" style="height: 100%"></i></div></div>
+                                    <div class="hora-col" tabindex="0" data-dia="12h · S2 recarga 34 min" data-recebido="96 t" data-nome-recebido="Secado" data-milho="74 t" data-nome-milho="Secador 1 · Milho" data-sorgo="22 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" data-serie="milho" style="height: 74.0%"><span class="forecast-cap">74</span><i class="forecast-seg forecast-seg--sec1" style="height: 100%"></i></div><div class="forecast-bar forecast-bar--hora is-stack is-abaixo" data-serie="sorgo" style="height: 22.0%"><span class="forecast-cap">22</span><i class="forecast-seg forecast-seg--sec2" style="height: 100%"></i></div></div>
+                                    <div class="hora-col" tabindex="0" data-dia="13h" data-recebido="133 t" data-nome-recebido="Secado" data-milho="77 t" data-nome-milho="Secador 1 · Milho" data-sorgo="56 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" data-serie="milho" style="height: 77.0%"><span class="forecast-cap">77</span><i class="forecast-seg forecast-seg--sec1" style="height: 100%"></i></div><div class="forecast-bar forecast-bar--hora is-stack" data-serie="sorgo" style="height: 56.0%"><span class="forecast-cap">56</span><i class="forecast-seg forecast-seg--sec2" style="height: 100%"></i></div></div>
+                                    <div class="hora-col is-parcial" tabindex="0" data-dia="14h · parcial · 50 min" data-recebido="112 t" data-nome-recebido="Secado" data-milho="64 t" data-nome-milho="Secador 1 · Milho" data-sorgo="48 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack is-parcial" data-serie="milho" style="height: 64.0%"><span class="forecast-cap">64</span><i class="forecast-seg forecast-seg--sec1" style="height: 100%"></i></div><div class="forecast-bar forecast-bar--hora is-stack is-parcial" data-serie="sorgo" style="height: 48.0%"><span class="forecast-cap">48</span><i class="forecast-seg forecast-seg--sec2" style="height: 100%"></i></div></div>
+                                    <div class="hora-col is-futuro" tabindex="0" data-dia="15h · projeção" data-recebido="134 t" data-nome-recebido="Projetado" data-milho="78 t" data-nome-milho="Secador 1 · Milho" data-sorgo="56 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack is-projecao" data-serie="milho" style="height: 78.0%"><span class="forecast-cap">~78</span><i class="forecast-seg forecast-seg--sec1" style="height: 100%"></i></div><div class="forecast-bar forecast-bar--hora is-stack is-projecao" data-serie="sorgo" style="height: 56.0%"><span class="forecast-cap">~56</span><i class="forecast-seg forecast-seg--sec2" style="height: 100%"></i></div></div>
+                                    <div class="hora-col is-futuro" tabindex="0" data-dia="16h · projeção" data-recebido="124 t" data-nome-recebido="Projetado" data-milho="74 t" data-nome-milho="Secador 1 · Milho" data-sorgo="50 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack is-projecao" data-serie="milho" style="height: 74.0%"><span class="forecast-cap">~74</span><i class="forecast-seg forecast-seg--sec1" style="height: 100%"></i></div><div class="forecast-bar forecast-bar--hora is-stack is-projecao" data-serie="sorgo" style="height: 50.0%"><span class="forecast-cap">~50</span><i class="forecast-seg forecast-seg--sec2" style="height: 100%"></i></div></div>
                                 </div>
-                                <!-- meta horaria: 1.200 t / 10h de turno -->
-                                <div class="forecast-meta-line" style="bottom: 75%" aria-hidden="true"><span>META<br>120 t/h</span></div>
+                                <!-- meta horaria de cada secador: 700 t e 500 t no turno de 10h -->
+                                <div class="forecast-meta-line forecast-meta-line--sec1" style="bottom: 70%" aria-hidden="true"><span>META S1<br>70 t/h</span></div>
+                                <div class="forecast-meta-line forecast-meta-line--sec2" style="bottom: 50%" aria-hidden="true"><span>META S2<br>50 t/h</span></div>
                             </div>
                             <div class="forecast-xaxis">
                                 <span class="forecast-day">07H</span>
@@ -2544,7 +2583,6 @@
                                     <span class="prod-linha-item"><b>PROJEÇÃO 17H</b>762 t <em class="is-bom">+62 t vs meta</em></span>
                                     <span class="prod-linha-item"><b>PARADAS</b>0 <em>nenhuma parada</em></span>
                                     <span class="prod-linha-item"><b>MELHOR HORA</b>79 t <em>às 10h</em></span>
-                                    <span class="prod-linha-item"><b>ÚLTIMA HORA CHEIA</b>77 t <em>às 13h</em></span>
                                     <span class="prod-linha-item"><b>DISPONIBILIDADE</b>100% <em>do turno decorrido</em></span>
                                 </div>
                             </div>
@@ -2580,7 +2618,6 @@
                                     <span class="prod-linha-item"><b>PROJEÇÃO 17H</b>518 t <em class="is-bom">+18 t vs meta</em></span>
                                     <span class="prod-linha-item"><b>PARADAS</b>1 · 34 min <em>recarga às 12h</em></span>
                                     <span class="prod-linha-item"><b>MELHOR HORA</b>58 t <em>às 10h</em></span>
-                                    <span class="prod-linha-item"><b>ÚLTIMA HORA CHEIA</b>56 t <em>às 13h</em></span>
                                     <span class="prod-linha-item"><b>DISPONIBILIDADE</b>93% <em>do turno decorrido</em></span>
                                 </div>
                             </div>
@@ -2617,7 +2654,6 @@
                                     <span class="prod-linha-item"><b>PROJEÇÃO 24H</b>1.380 t <em class="is-atencao">−20 t vs meta</em></span>
                                     <span class="prod-linha-item"><b>PARADAS</b>1 · 25 min <em>limpeza às 03h</em></span>
                                     <span class="prod-linha-item"><b>MELHOR HORA</b>79 t <em>às 10h</em></span>
-                                    <span class="prod-linha-item"><b>ÚLTIMA HORA CHEIA</b>77 t <em>às 13h</em></span>
                                     <span class="prod-linha-item"><b>DISPONIBILIDADE</b>97% <em>do dia decorrido</em></span>
                                 </div>
                             </div>
@@ -2653,7 +2689,6 @@
                                     <span class="prod-linha-item"><b>PROJEÇÃO 24H</b>970 t <em class="is-atencao">−30 t vs meta</em></span>
                                     <span class="prod-linha-item"><b>PARADAS</b>2 · 58 min <em>recarga 12h · limpeza 02h</em></span>
                                     <span class="prod-linha-item"><b>MELHOR HORA</b>58 t <em>às 10h</em></span>
-                                    <span class="prod-linha-item"><b>ÚLTIMA HORA CHEIA</b>56 t <em>às 13h</em></span>
                                     <span class="prod-linha-item"><b>DISPONIBILIDADE</b>92% <em>do dia decorrido</em></span>
                                 </div>
                             </div>
@@ -2836,7 +2871,7 @@
                             data-temps="23.6,23.6,23.5,23.5,23.4,23.4,23.3,23.3,23.3,23.2,23.2,23.1,23.1,23.0,23.0,22.9,22.9,22.8,22.8,22.8,23.0,22.8,22.6,22.4">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 1</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho<span class="sa-imp">imp. 0,8%</span></span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho<span class="sa-umi">umid. 13,2%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 78%"></div></div>
@@ -2862,7 +2897,7 @@
                             data-temps="20.4,20.4,20.5,20.5,20.5,20.6,20.6,20.6,20.7,20.7,20.7,20.8,20.8,20.8,20.8,20.9,20.9,20.9,20.9,20.9,20.7,20.8,20.9,21.0">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 2</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho<span class="sa-imp">imp. 0,6%</span></span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho<span class="sa-umi">umid. 13,0%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 92%"></div></div>
@@ -2888,7 +2923,7 @@
                             data-temps="24.8,24.8,24.7,24.7,24.6,24.6,24.5,24.5,24.4,24.4,24.3,24.3,24.2,24.2,24.1,24.1,24.0,24.0,24.0,24.0,24.0,23.7,23.4,23.1">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 3</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo<span class="sa-imp">imp. 0,9%</span></span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo<span class="sa-umi">umid. 13,4%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 45%"></div></div>
@@ -2914,7 +2949,7 @@
                             data-temps="22.1,22.1,22.2,22.2,22.2,22.3,22.3,22.3,22.3,22.4,22.4,22.3,22.3,22.3,22.2,22.2,22.2,22.2,22.2,22.2,22.2,22.2,22.2,22.2">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 4</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--trigo"></i>Trigo<span class="sa-imp">imp. 0,5%</span></span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--trigo"></i>Trigo<span class="sa-umi">umid. 12,6%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 68%"></div></div>
@@ -2941,7 +2976,7 @@
                             data-temps="21.8,21.9,22.0,22.1,22.2,22.3,22.4,22.5,22.6,22.7,22.8,22.9,23.0,23.1,23.1,23.2,23.2,23.3,23.3,23.3,23.1,23.5,23.9,24.3">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 5</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho<span class="sa-imp">imp. 0,7%</span></span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho<span class="sa-umi">umid. 13,3%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 84%"></div></div>
@@ -2967,7 +3002,7 @@
                             data-temps="20.6,20.6,20.5,20.5,20.4,20.4,20.3,20.3,20.2,20.2,20.1,20.1,20.0,20.0,20.0,20.0,20.0,20.0,20.0,20.0,19.9,20.0,20.1,20.2">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 6</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo<span class="sa-imp sa-imp--alto" title="Acima do limite de 1%">imp. 1,2%</span></span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo<span class="sa-umi sa-umi--alto" title="Acima do limite de 14% para armazenagem">umid. 14,3%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 57%"></div></div>
@@ -2993,7 +3028,7 @@
                             data-temps="23.5,23.5,23.5,23.5,23.4,23.4,23.4,23.4,23.4,23.3,23.3,23.3,23.3,23.3,23.3,23.3,23.3,23.3,23.3,23.3,23.3,23.2,23.1,23.0">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 7</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--trigo"></i>Trigo<span class="sa-imp">imp. 0,4%</span></span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--trigo"></i>Trigo<span class="sa-umi">umid. 12,4%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 71%"></div></div>
@@ -3019,7 +3054,7 @@
                             data-temps="20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.5,20.6,20.8,21.0,21.2">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 8</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--soja"></i>Soja<span class="sa-imp">imp. 0,9%</span></span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--soja"></i>Soja<span class="sa-umi">umid. 11,8%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 36%"></div></div>
@@ -3043,61 +3078,96 @@
                     </div>
                 </div>
 
-                <!-- pulmao: transito entre moegas e secagem, fora da capacidade estatica -->
-                <div class="content-section sa-section sa-section--pulmao">
-                    <h3>SILOS PULMÃO · TRÂNSITO PARA SECAGEM</h3>
-                    <div class="sa-grid sa-grid--2">
-                        <article class="sa-card sa-card--pulmao" data-silo data-aer="on" data-aer-desde-min="31" data-pausa-ponta="1"
-                            data-temps="24.4,24.4,24.3,24.3,24.2,24.2,24.1,24.1,24.0,24.0,23.9,23.9,23.8,23.8,23.7,23.7,23.7,23.6,23.6,23.6,23.6,23.4,23.2,23.0">
-                            <div class="sa-head">
-                                <span class="sa-name">PULMÃO 1</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--pulmao"></i>500 t</span>
-                            </div>
-                            <div class="sa-body">
-                                <div class="silo-visual"><div class="silo-fill" style="height: 62%"></div></div>
-                                <div class="sa-stock"><b>62%</b><span>310 t</span></div>
-                            </div>
-                            <div class="sa-temp">
-                                <div class="sa-temp-head">
-                                    <span class="sa-temp-rate" data-temp-taxa>--</span>
+                <!-- faixa de baixo: os dois pulmoes a esquerda, na largura de duas colunas
+                     da grade de cima, e a movimentacao silo a silo ocupando o resto -->
+                <div class="split-grid split-grid--silos">
+                    <!-- pulmao: transito entre moegas e secagem, fora da capacidade estatica -->
+                    <div class="content-section sa-section sa-section--pulmao">
+                        <h3>SILOS PULMÃO · TRÂNSITO PARA SECAGEM</h3>
+                        <div class="sa-grid sa-grid--2">
+                            <article class="sa-card sa-card--pulmao" data-silo data-aer="on" data-aer-desde-min="31" data-pausa-ponta="1"
+                                data-temps="24.4,24.4,24.3,24.3,24.2,24.2,24.1,24.1,24.0,24.0,23.9,23.9,23.8,23.8,23.7,23.7,23.7,23.6,23.6,23.6,23.6,23.4,23.2,23.0">
+                                <div class="sa-head">
+                                    <span class="sa-name">PULMÃO 1</span>
+                                    <span class="sa-cultura"><i class="legend-dot legend-dot--pulmao"></i>500 t</span>
                                 </div>
-                                <div class="sa-spark-wrap" data-spark-wrap>
-                                    <b class="sa-temp-ponto sa-temp-ponto--ini" data-temp-inicio title="Primeira leitura da curva (24h atrás)">--</b>
-                                    <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
-                                    <b class="sa-temp-ponto sa-temp-ponto--fim" data-temp-atual title="Leitura atual">--</b>
+                                <div class="sa-body">
+                                    <div class="silo-visual"><div class="silo-fill" style="height: 62%"></div></div>
+                                    <div class="sa-stock"><b>62%</b><span>310 t</span></div>
                                 </div>
-                            </div>
-                            <div class="sa-aer">
-                                <span class="sa-aer-badge" data-aer-badge>--</span>
-                                <span class="sa-aer-info" data-aer-info>--</span>
-                            </div>
-                        </article>
+                                <div class="sa-temp">
+                                    <div class="sa-temp-head">
+                                        <span class="sa-temp-rate" data-temp-taxa>--</span>
+                                    </div>
+                                    <div class="sa-spark-wrap" data-spark-wrap>
+                                        <b class="sa-temp-ponto sa-temp-ponto--ini" data-temp-inicio title="Primeira leitura da curva (24h atrás)">--</b>
+                                        <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
+                                        <b class="sa-temp-ponto sa-temp-ponto--fim" data-temp-atual title="Leitura atual">--</b>
+                                    </div>
+                                </div>
+                                <div class="sa-aer">
+                                    <span class="sa-aer-badge" data-aer-badge>--</span>
+                                    <span class="sa-aer-info" data-aer-info>--</span>
+                                </div>
+                            </article>
 
-                        <article class="sa-card sa-card--pulmao" data-silo data-aer="off" data-aer-fim="13:50" data-aer-rodou="1h15"
-                            data-temps="21.6,21.6,21.6,21.6,21.7,21.7,21.7,21.7,21.7,21.8,21.8,21.8,21.8,21.8,21.8,21.8,21.8,21.8,21.8,21.8,21.7,21.8,21.9,22.0">
-                            <div class="sa-head">
-                                <span class="sa-name">PULMÃO 2</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--pulmao"></i>500 t</span>
-                            </div>
-                            <div class="sa-body">
-                                <div class="silo-visual"><div class="silo-fill" style="height: 44%"></div></div>
-                                <div class="sa-stock"><b>44%</b><span>220 t</span></div>
-                            </div>
-                            <div class="sa-temp">
-                                <div class="sa-temp-head">
-                                    <span class="sa-temp-rate" data-temp-taxa>--</span>
+                            <article class="sa-card sa-card--pulmao" data-silo data-aer="off" data-aer-fim="13:50" data-aer-rodou="1h15"
+                                data-temps="21.6,21.6,21.6,21.6,21.7,21.7,21.7,21.7,21.7,21.8,21.8,21.8,21.8,21.8,21.8,21.8,21.8,21.8,21.8,21.8,21.7,21.8,21.9,22.0">
+                                <div class="sa-head">
+                                    <span class="sa-name">PULMÃO 2</span>
+                                    <span class="sa-cultura"><i class="legend-dot legend-dot--pulmao"></i>500 t</span>
                                 </div>
-                                <div class="sa-spark-wrap" data-spark-wrap>
-                                    <b class="sa-temp-ponto sa-temp-ponto--ini" data-temp-inicio title="Primeira leitura da curva (24h atrás)">--</b>
-                                    <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
-                                    <b class="sa-temp-ponto sa-temp-ponto--fim" data-temp-atual title="Leitura atual">--</b>
+                                <div class="sa-body">
+                                    <div class="silo-visual"><div class="silo-fill" style="height: 44%"></div></div>
+                                    <div class="sa-stock"><b>44%</b><span>220 t</span></div>
                                 </div>
-                            </div>
-                            <div class="sa-aer">
-                                <span class="sa-aer-badge" data-aer-badge>--</span>
-                                <span class="sa-aer-info" data-aer-info>--</span>
-                            </div>
-                        </article>
+                                <div class="sa-temp">
+                                    <div class="sa-temp-head">
+                                        <span class="sa-temp-rate" data-temp-taxa>--</span>
+                                    </div>
+                                    <div class="sa-spark-wrap" data-spark-wrap>
+                                        <b class="sa-temp-ponto sa-temp-ponto--ini" data-temp-inicio title="Primeira leitura da curva (24h atrás)">--</b>
+                                        <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
+                                        <b class="sa-temp-ponto sa-temp-ponto--fim" data-temp-atual title="Leitura atual">--</b>
+                                    </div>
+                                </div>
+                                <div class="sa-aer">
+                                    <span class="sa-aer-badge" data-aer-badge>--</span>
+                                    <span class="sa-aer-info" data-aer-info>--</span>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+
+                    <!-- o que entrou da secagem e o que saiu para a expedicao em cada silo, hoje -->
+                    <div class="content-section sa-section sa-section--mov">
+                        <div class="section-head">
+                            <h3>SILO A SILO · ENTRADAS E SAÍDAS DE HOJE</h3>
+                            <span class="stack-hint">entrada: secagem → silo · saída: silo → expedição</span>
+                        </div>
+                        <table class="data-table sa-mov-table">
+                            <thead>
+                                <tr>
+                                    <th>SILO</th>
+                                    <th>CULTURA</th>
+                                    <th>ENTRADAS</th>
+                                    <th>SAÍDAS</th>
+                                    <th>SALDO</th>
+                                    <th>ESTOQUE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Silo 1</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>380 t</td><td>160 t</td><td class="sa-mov-saldo sa-mov-saldo--sobe">+220 t</td><td>3.120 t<small>78%</small></td></tr>
+                                <tr><td>Silo 2</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>300 t</td><td>300 t</td><td class="sa-mov-saldo">0 t</td><td>3.680 t<small>92%</small></td></tr>
+                                <tr><td>Silo 3</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>360 t</td><td>140 t</td><td class="sa-mov-saldo sa-mov-saldo--sobe">+220 t</td><td>1.800 t<small>45%</small></td></tr>
+                                <tr><td>Silo 4</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>—</td><td>90 t</td><td class="sa-mov-saldo sa-mov-saldo--desce">−90 t</td><td>2.720 t<small>68%</small></td></tr>
+                                <tr><td>Silo 5</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>295 t</td><td>160 t</td><td class="sa-mov-saldo sa-mov-saldo--sobe">+135 t</td><td>3.360 t<small>84%</small></td></tr>
+                                <tr><td>Silo 6</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>305 t</td><td>120 t</td><td class="sa-mov-saldo sa-mov-saldo--sobe">+185 t</td><td>2.280 t<small>57%</small></td></tr>
+                                <tr><td>Silo 7</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>—</td><td>50 t</td><td class="sa-mov-saldo sa-mov-saldo--desce">−50 t</td><td>2.840 t<small>71%</small></td></tr>
+                                <tr><td>Silo 8</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>—</td><td>100 t</td><td class="sa-mov-saldo sa-mov-saldo--desce">−100 t</td><td>1.440 t<small>36%</small></td></tr>
+                                <tr class="sa-mov-total"><td>Total</td><td>8 silos</td><td>1.640 t</td><td>1.120 t</td><td class="sa-mov-saldo sa-mov-saldo--sobe">+520 t</td><td>21.240 t<small>66%</small></td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </section>
@@ -3129,7 +3199,7 @@
                             data-temps="22.9,22.9,22.8,22.8,22.7,22.7,22.7,22.6,22.6,22.5,22.5,22.5,22.4,22.4,22.3,22.3,22.3,22.2,22.2,22.2,22.3,22.2,22.1,22.0">
                             <div class="sa-head">
                                 <span class="sa-name">ÁREA 1</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho · 20.000 t<span class="sa-imp">imp. 0,7%</span></span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho · 20.000 t<span class="sa-umi">umid. 13,1%</span></span>
                             </div>
                             <div class="sa-body sa-body--armazem">
                                 <div class="silo-visual armazem-visual"><div class="silo-fill" style="height: 73%"></div></div>
@@ -3158,7 +3228,7 @@
                             data-temps="20.8,20.8,20.8,20.9,20.9,20.9,21.0,21.0,21.0,21.1,21.1,21.1,21.2,21.2,21.2,21.3,21.3,21.3,21.3,21.4,21.2,21.3,21.4,21.5">
                             <div class="sa-head">
                                 <span class="sa-name">ÁREA 2</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo · 15.000 t<span class="sa-imp sa-imp--alto" title="Acima do limite de 1%">imp. 1,1%</span></span>
+                                <span class="sa-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo · 15.000 t<span class="sa-umi sa-umi--alto" title="Acima do limite de 14% para armazenagem">umid. 14,1%</span></span>
                             </div>
                             <div class="sa-body sa-body--armazem">
                                 <div class="silo-visual armazem-visual"><div class="silo-fill" style="height: 42%"></div></div>
@@ -3186,18 +3256,37 @@
             </section>
 
             <!-- Screen 7: Expedição -->
-            <section class="screen" id="screen-7">
+            <section class="screen" id="screen-7" data-exp-periodo="dia" data-exp-cultura="todas">
                 <div class="screen-header">
                     <div class="screen-badge">09</div>
                     <div class="screen-title-section">
                         <h2>Expedição &amp; Dosagem</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">2</span>s</div>
                     </div>
+                    <!-- filtro geral da tela: cultura (subiu da tabela de cargas) e periodo.
+                         A tela guarda as duas escolhas em data-exp-cultura / data-exp-periodo
+                         e o CSS faz o resto. -->
+                    <div class="exp-filtro">
+                        <div class="class-filtro" role="group" aria-label="Filtrar a expedição por cultura">
+                            <span class="class-filtro-rotulo">Cultura</span>
+                            <button type="button" class="class-filtro-btn is-active" data-exp-cultura="todas" aria-pressed="true">Todas</button>
+                            <button type="button" class="class-filtro-btn" data-exp-cultura="milho" aria-pressed="false"><i class="legend-dot legend-dot--milho"></i>Milho</button>
+                            <button type="button" class="class-filtro-btn" data-exp-cultura="sorgo" aria-pressed="false"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</button>
+                            <button type="button" class="class-filtro-btn" data-exp-cultura="trigo" aria-pressed="false"><i class="legend-dot legend-dot--trigo"></i>Trigo</button>
+                            <button type="button" class="class-filtro-btn" data-exp-cultura="soja" aria-pressed="false"><i class="legend-dot legend-dot--soja"></i>Soja</button>
+                        </div>
+                        <div class="fluxo-periodo" role="group" aria-label="Período da expedição">
+                            <button type="button" class="fluxo-periodo-btn is-active" data-exp-periodo="dia" aria-pressed="true">Dia</button>
+                            <button type="button" class="fluxo-periodo-btn" data-exp-periodo="semana" aria-pressed="false">Semana</button>
+                            <button type="button" class="fluxo-periodo-btn" data-exp-periodo="mes" aria-pressed="false">Mês</button>
+                            <button type="button" class="fluxo-periodo-btn" data-exp-periodo="ano" aria-pressed="false">Ano</button>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Volume, caminhoes e reprovas do dia. Cada cartao abre o "por que"
-                     ao clique (data-motivo), como na recepcao. -->
-                <div class="kpi-grid kpi-grid--tres">
+                <!-- Volume, caminhoes e reprovas do periodo escolhido no filtro geral.
+                     Cada cartao abre o "por que" ao clique (data-motivo), como na recepcao. -->
+                <div class="kpi-grid kpi-grid--tres exp-periodo-bloco" data-periodo="dia">
                     <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Volume carregado hoje por cultura"
@@ -3206,14 +3295,14 @@
                         data-motivo-nota="Ritmo atual de 96 t/h contra 110 t/h necessários para fechar o programado.">
                         <div class="kpi-label">VOLUME CARREGADO HOJE</div>
                         <div class="kpi-value-row">
-                            <div class="kpi-value">1.120 <span class="kpi-value-unit">t</span></div>
-                            <span class="kpi-value-ref">programado 1.400 t</span>
+                            <div class="kpi-value"><span class="exp-cult" data-cultura="todas">1.120 <span class="kpi-value-unit">t</span></span><span class="exp-cult" data-cultura="milho">620 <span class="kpi-value-unit">t</span></span><span class="exp-cult" data-cultura="sorgo">260 <span class="kpi-value-unit">t</span></span><span class="exp-cult" data-cultura="trigo">140 <span class="kpi-value-unit">t</span></span><span class="exp-cult" data-cultura="soja">100 <span class="kpi-value-unit">t</span></span></div>
+                            <span class="kpi-value-ref"><span class="exp-cult" data-cultura="todas">programado 1.400 t</span><span class="exp-cult" data-cultura="milho">programado 775 t</span><span class="exp-cult" data-cultura="sorgo">programado 325 t</span><span class="exp-cult" data-cultura="trigo">programado 175 t</span><span class="exp-cult" data-cultura="soja">programado 125 t</span></span>
                         </div>
                         <div class="kpi-sub">
-                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--milho"></i><b>Milho</b> 620 t</span>
-                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--sorgo"></i><b>Sorgo</b> 260 t</span>
-                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--trigo"></i><b>Trigo</b> 140 t</span>
-                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--soja"></i><b>Soja</b> 100 t</span>
+                            <span class="kpi-sub-item" data-cultura="milho"><i class="legend-dot legend-dot--milho"></i><b>Milho</b> 620 t</span>
+                            <span class="kpi-sub-item" data-cultura="sorgo"><i class="legend-dot legend-dot--sorgo"></i><b>Sorgo</b> 260 t</span>
+                            <span class="kpi-sub-item" data-cultura="trigo"><i class="legend-dot legend-dot--trigo"></i><b>Trigo</b> 140 t</span>
+                            <span class="kpi-sub-item" data-cultura="soja"><i class="legend-dot legend-dot--soja"></i><b>Soja</b> 100 t</span>
                         </div>
                     </div>
                     <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
@@ -3224,39 +3313,207 @@
                         data-motivo-nota="Tempo médio de carregamento hoje: 20 min por caminhão.">
                         <div class="kpi-label">CAMINHÕES</div>
                         <div class="kpi-value-row">
-                            <div class="kpi-value">28 <span class="kpi-value-unit">carregados</span></div>
-                            <span class="kpi-value-ref">3 em carregamento · 6 aguardando</span>
+                            <div class="kpi-value"><span class="exp-cult" data-cultura="todas">28 <span class="kpi-value-unit">carregados</span></span><span class="exp-cult" data-cultura="milho">15 <span class="kpi-value-unit">carregados</span></span><span class="exp-cult" data-cultura="sorgo">7 <span class="kpi-value-unit">carregados</span></span><span class="exp-cult" data-cultura="trigo">3 <span class="kpi-value-unit">carregados</span></span><span class="exp-cult" data-cultura="soja">3 <span class="kpi-value-unit">carregados</span></span></div>
+                            <span class="kpi-value-ref"><span class="exp-cult" data-cultura="todas">3 em carregamento · 6 aguardando</span><span class="exp-cult" data-cultura="milho">13 liberados · 2 reprovados</span><span class="exp-cult" data-cultura="sorgo">6 liberados · 1 reprovados</span><span class="exp-cult" data-cultura="trigo">3 liberados · 0 reprovados</span><span class="exp-cult" data-cultura="soja">2 liberados · 1 reprovados</span></span>
                         </div>
                         <div class="kpi-sub">
-                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--milho"></i><b>Milho</b> 15</span>
-                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--sorgo"></i><b>Sorgo</b> 7</span>
-                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--trigo"></i><b>Trigo</b> 3</span>
-                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--soja"></i><b>Soja</b> 3</span>
+                            <span class="kpi-sub-item" data-cultura="milho"><i class="legend-dot legend-dot--milho"></i><b>Milho</b> 15</span>
+                            <span class="kpi-sub-item" data-cultura="sorgo"><i class="legend-dot legend-dot--sorgo"></i><b>Sorgo</b> 7</span>
+                            <span class="kpi-sub-item" data-cultura="trigo"><i class="legend-dot legend-dot--trigo"></i><b>Trigo</b> 3</span>
+                            <span class="kpi-sub-item" data-cultura="soja"><i class="legend-dot legend-dot--soja"></i><b>Soja</b> 3</span>
                         </div>
                     </div>
                     <div class="kpi-card kpi-card--meta kpi-card--motivo alert" tabindex="0"
                         data-motivo
-                        data-motivo-titulo="Por que 4 cargas foram reprovadas"
-                        data-motivo-resumo="4 de 28 · 14% das cargas carregadas hoje"
-                        data-motivo-lista="Umidade acima de 14%::2 cargas::milho · silos 2 e 3::ruim|Impureza acima de 1%::1 carga::sorgo · silo 5::ruim|Avariados acima de 6%::1 carga::soja · silo 8::ruim"
+                        data-motivo-titulo="Cargas reprovadas hoje por cultura"
+                        data-motivo-resumo="4 de 28 · 14% das cargas carregadas"
+                        data-motivo-lista="Milho::2 cargas::13% das cargas da cultura::ruim|Sorgo::1 cargas::14% das cargas da cultura::ruim|Trigo::0 cargas::nenhuma reprova::bom|Soja::1 cargas::33% das cargas da cultura::ruim"
                         data-motivo-nota="As duas reprovas por umidade saíram do mesmo lote do silo 2.">
                         <div class="kpi-label">CARGAS REPROVADAS</div>
                         <div class="kpi-value-row">
-                            <div class="kpi-value">4</div>
-                            <span class="kpi-flag kpi-flag--alerta">↑ 14% das cargas</span>
+                            <div class="kpi-value"><span class="exp-cult" data-cultura="todas">4</span><span class="exp-cult" data-cultura="milho">2</span><span class="exp-cult" data-cultura="sorgo">1</span><span class="exp-cult" data-cultura="trigo">0</span><span class="exp-cult" data-cultura="soja">1</span></div>
+                            <span class="kpi-flag kpi-flag--alerta"><span class="exp-cult" data-cultura="todas">↑ 14% das cargas</span><span class="exp-cult" data-cultura="milho">↑ 13% das cargas de milho</span><span class="exp-cult" data-cultura="sorgo">↑ 14% das cargas de sorgo</span><span class="exp-cult" data-cultura="trigo">nenhuma carga reprovada</span><span class="exp-cult" data-cultura="soja">↑ 33% das cargas de soja</span></span>
                         </div>
-                        <div class="kpi-sub">
-                            <span class="kpi-sub-item"><b>Umidade</b> 2</span>
-                            <span class="kpi-sub-item"><b>Impureza</b> 1</span>
-                            <span class="kpi-sub-item"><b>Avariados</b> 1</span>
-                        </div>
+                        <div class="kpi-sub exp-cult-bloco" data-cultura="todas"><span class="kpi-sub-item"><b>Umidade</b> 2</span><span class="kpi-sub-item"><b>Impureza</b> 1</span><span class="kpi-sub-item"><b>Avariados</b> 1</span></div>
+                        <div class="kpi-sub exp-cult-bloco" data-cultura="milho"><span class="kpi-sub-item"><b>Umidade</b> 2</span><span class="kpi-sub-item"><b>Impureza</b> 0</span><span class="kpi-sub-item"><b>Avariados</b> 0</span></div>
+                        <div class="kpi-sub exp-cult-bloco" data-cultura="sorgo"><span class="kpi-sub-item"><b>Umidade</b> 0</span><span class="kpi-sub-item"><b>Impureza</b> 1</span><span class="kpi-sub-item"><b>Avariados</b> 0</span></div>
+                        <div class="kpi-sub exp-cult-bloco" data-cultura="trigo"><span class="kpi-sub-item"><b>Umidade</b> 0</span><span class="kpi-sub-item"><b>Impureza</b> 0</span><span class="kpi-sub-item"><b>Avariados</b> 0</span></div>
+                        <div class="kpi-sub exp-cult-bloco" data-cultura="soja"><span class="kpi-sub-item"><b>Umidade</b> 0</span><span class="kpi-sub-item"><b>Impureza</b> 0</span><span class="kpi-sub-item"><b>Avariados</b> 1</span></div>
                     </div>
                 </div>
 
-                <!-- Qualidade por cultura (media ponderada pelo volume) ao lado do
-                     volume por destino. Valores acima da faixa ganham cor. Altura
-                     natural: quem cede e a tabela de cargas, que rola por dentro. -->
-                <div class="split-grid split-grid--exp">
+                <div class="kpi-grid kpi-grid--tres exp-periodo-bloco" data-periodo="semana">
+                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Volume carregado na semana por cultura"
+                        data-motivo-resumo="6.480 t · 162 caminhões · programado 7.000 t"
+                        data-motivo-lista="Milho::3.560 t::89 caminhões::neutro|Sorgo::1.520 t::38 caminhões::neutro|Trigo::820 t::21 caminhões::neutro|Soja::580 t::14 caminhões::neutro|Atingimento do programado::93%::meta 100%::neutro"
+                        data-motivo-nota="Seis dias úteis carregados; faltam 520 t para fechar o programado da semana.">
+                        <div class="kpi-label">VOLUME CARREGADO NA SEMANA</div>
+                        <div class="kpi-value-row">
+                            <div class="kpi-value"><span class="exp-cult" data-cultura="todas">6.480 <span class="kpi-value-unit">t</span></span><span class="exp-cult" data-cultura="milho">3.560 <span class="kpi-value-unit">t</span></span><span class="exp-cult" data-cultura="sorgo">1.520 <span class="kpi-value-unit">t</span></span><span class="exp-cult" data-cultura="trigo">820 <span class="kpi-value-unit">t</span></span><span class="exp-cult" data-cultura="soja">580 <span class="kpi-value-unit">t</span></span></div>
+                            <span class="kpi-value-ref"><span class="exp-cult" data-cultura="todas">programado 7.000 t</span><span class="exp-cult" data-cultura="milho">programado 3.850 t</span><span class="exp-cult" data-cultura="sorgo">programado 1.640 t</span><span class="exp-cult" data-cultura="trigo">programado 885 t</span><span class="exp-cult" data-cultura="soja">programado 625 t</span></span>
+                        </div>
+                        <div class="kpi-sub">
+                            <span class="kpi-sub-item" data-cultura="milho"><i class="legend-dot legend-dot--milho"></i><b>Milho</b> 3.560 t</span>
+                            <span class="kpi-sub-item" data-cultura="sorgo"><i class="legend-dot legend-dot--sorgo"></i><b>Sorgo</b> 1.520 t</span>
+                            <span class="kpi-sub-item" data-cultura="trigo"><i class="legend-dot legend-dot--trigo"></i><b>Trigo</b> 820 t</span>
+                            <span class="kpi-sub-item" data-cultura="soja"><i class="legend-dot legend-dot--soja"></i><b>Soja</b> 580 t</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Caminhões na expedição na semana"
+                        data-motivo-resumo="162 carregados · média de 27 por dia útil"
+                        data-motivo-lista="Carregados e liberados::143::liberados na 2ª pesagem::bom|Carregados e reprovados::19::voltaram para o silo::ruim|Média por dia útil::27::6 dias::neutro|Melhor dia::34::quarta-feira::bom"
+                        data-motivo-nota="Tempo médio de carregamento na semana: 21 min por caminhão.">
+                        <div class="kpi-label">CAMINHÕES</div>
+                        <div class="kpi-value-row">
+                            <div class="kpi-value"><span class="exp-cult" data-cultura="todas">162 <span class="kpi-value-unit">carregados</span></span><span class="exp-cult" data-cultura="milho">89 <span class="kpi-value-unit">carregados</span></span><span class="exp-cult" data-cultura="sorgo">38 <span class="kpi-value-unit">carregados</span></span><span class="exp-cult" data-cultura="trigo">21 <span class="kpi-value-unit">carregados</span></span><span class="exp-cult" data-cultura="soja">14 <span class="kpi-value-unit">carregados</span></span></div>
+                            <span class="kpi-value-ref"><span class="exp-cult" data-cultura="todas">média de 27 por dia útil</span><span class="exp-cult" data-cultura="milho">80 liberados · 9 reprovados</span><span class="exp-cult" data-cultura="sorgo">32 liberados · 6 reprovados</span><span class="exp-cult" data-cultura="trigo">21 liberados · 0 reprovados</span><span class="exp-cult" data-cultura="soja">10 liberados · 4 reprovados</span></span>
+                        </div>
+                        <div class="kpi-sub">
+                            <span class="kpi-sub-item" data-cultura="milho"><i class="legend-dot legend-dot--milho"></i><b>Milho</b> 89</span>
+                            <span class="kpi-sub-item" data-cultura="sorgo"><i class="legend-dot legend-dot--sorgo"></i><b>Sorgo</b> 38</span>
+                            <span class="kpi-sub-item" data-cultura="trigo"><i class="legend-dot legend-dot--trigo"></i><b>Trigo</b> 21</span>
+                            <span class="kpi-sub-item" data-cultura="soja"><i class="legend-dot legend-dot--soja"></i><b>Soja</b> 14</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card kpi-card--meta kpi-card--motivo alert" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Cargas reprovadas na semana por cultura"
+                        data-motivo-resumo="19 de 162 · 12% das cargas carregadas"
+                        data-motivo-lista="Milho::9 cargas::10% das cargas da cultura::ruim|Sorgo::6 cargas::16% das cargas da cultura::ruim|Trigo::0 cargas::nenhuma reprova::bom|Soja::4 cargas::29% das cargas da cultura::ruim"
+                        data-motivo-nota="Metade das reprovas por umidade saiu do silo 2, que segue acima de 14%.">
+                        <div class="kpi-label">CARGAS REPROVADAS</div>
+                        <div class="kpi-value-row">
+                            <div class="kpi-value"><span class="exp-cult" data-cultura="todas">19</span><span class="exp-cult" data-cultura="milho">9</span><span class="exp-cult" data-cultura="sorgo">6</span><span class="exp-cult" data-cultura="trigo">0</span><span class="exp-cult" data-cultura="soja">4</span></div>
+                            <span class="kpi-flag kpi-flag--alerta"><span class="exp-cult" data-cultura="todas">↑ 12% das cargas</span><span class="exp-cult" data-cultura="milho">↑ 10% das cargas de milho</span><span class="exp-cult" data-cultura="sorgo">↑ 16% das cargas de sorgo</span><span class="exp-cult" data-cultura="trigo">nenhuma carga reprovada</span><span class="exp-cult" data-cultura="soja">↑ 29% das cargas de soja</span></span>
+                        </div>
+                        <div class="kpi-sub exp-cult-bloco" data-cultura="todas"><span class="kpi-sub-item"><b>Umidade</b> 9</span><span class="kpi-sub-item"><b>Impureza</b> 6</span><span class="kpi-sub-item"><b>Avariados</b> 4</span></div>
+                        <div class="kpi-sub exp-cult-bloco" data-cultura="milho"><span class="kpi-sub-item"><b>Umidade</b> 9</span><span class="kpi-sub-item"><b>Impureza</b> 0</span><span class="kpi-sub-item"><b>Avariados</b> 0</span></div>
+                        <div class="kpi-sub exp-cult-bloco" data-cultura="sorgo"><span class="kpi-sub-item"><b>Umidade</b> 0</span><span class="kpi-sub-item"><b>Impureza</b> 6</span><span class="kpi-sub-item"><b>Avariados</b> 0</span></div>
+                        <div class="kpi-sub exp-cult-bloco" data-cultura="trigo"><span class="kpi-sub-item"><b>Umidade</b> 0</span><span class="kpi-sub-item"><b>Impureza</b> 0</span><span class="kpi-sub-item"><b>Avariados</b> 0</span></div>
+                        <div class="kpi-sub exp-cult-bloco" data-cultura="soja"><span class="kpi-sub-item"><b>Umidade</b> 0</span><span class="kpi-sub-item"><b>Impureza</b> 0</span><span class="kpi-sub-item"><b>Avariados</b> 4</span></div>
+                    </div>
+                </div>
+
+                <div class="kpi-grid kpi-grid--tres exp-periodo-bloco" data-periodo="mes">
+                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Volume carregado no mês por cultura"
+                        data-motivo-resumo="26.400 t · 660 caminhões · programado 28.000 t"
+                        data-motivo-lista="Milho::14.520 t::363 caminhões::neutro|Sorgo::6.160 t::154 caminhões::neutro|Trigo::3.300 t::83 caminhões::neutro|Soja::2.420 t::60 caminhões::neutro|Atingimento do programado::94%::meta 100%::neutro"
+                        data-motivo-nota="94% do programado do mês com 22 dias de operação.">
+                        <div class="kpi-label">VOLUME CARREGADO NO MÊS</div>
+                        <div class="kpi-value-row">
+                            <div class="kpi-value"><span class="exp-cult" data-cultura="todas">26.400 <span class="kpi-value-unit">t</span></span><span class="exp-cult" data-cultura="milho">14.520 <span class="kpi-value-unit">t</span></span><span class="exp-cult" data-cultura="sorgo">6.160 <span class="kpi-value-unit">t</span></span><span class="exp-cult" data-cultura="trigo">3.300 <span class="kpi-value-unit">t</span></span><span class="exp-cult" data-cultura="soja">2.420 <span class="kpi-value-unit">t</span></span></div>
+                            <span class="kpi-value-ref"><span class="exp-cult" data-cultura="todas">programado 28.000 t</span><span class="exp-cult" data-cultura="milho">programado 15.400 t</span><span class="exp-cult" data-cultura="sorgo">programado 6.530 t</span><span class="exp-cult" data-cultura="trigo">programado 3.500 t</span><span class="exp-cult" data-cultura="soja">programado 2.570 t</span></span>
+                        </div>
+                        <div class="kpi-sub">
+                            <span class="kpi-sub-item" data-cultura="milho"><i class="legend-dot legend-dot--milho"></i><b>Milho</b> 14.520 t</span>
+                            <span class="kpi-sub-item" data-cultura="sorgo"><i class="legend-dot legend-dot--sorgo"></i><b>Sorgo</b> 6.160 t</span>
+                            <span class="kpi-sub-item" data-cultura="trigo"><i class="legend-dot legend-dot--trigo"></i><b>Trigo</b> 3.300 t</span>
+                            <span class="kpi-sub-item" data-cultura="soja"><i class="legend-dot legend-dot--soja"></i><b>Soja</b> 2.420 t</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Caminhões na expedição no mês"
+                        data-motivo-resumo="660 carregados · média de 30 por dia"
+                        data-motivo-lista="Carregados e liberados::586::liberados na 2ª pesagem::bom|Carregados e reprovados::74::voltaram para o silo::ruim|Média por dia::30::22 dias::neutro|Melhor dia::41::dia 12::bom"
+                        data-motivo-nota="Tempo médio de carregamento no mês: 22 min por caminhão.">
+                        <div class="kpi-label">CAMINHÕES</div>
+                        <div class="kpi-value-row">
+                            <div class="kpi-value"><span class="exp-cult" data-cultura="todas">660 <span class="kpi-value-unit">carregados</span></span><span class="exp-cult" data-cultura="milho">363 <span class="kpi-value-unit">carregados</span></span><span class="exp-cult" data-cultura="sorgo">154 <span class="kpi-value-unit">carregados</span></span><span class="exp-cult" data-cultura="trigo">83 <span class="kpi-value-unit">carregados</span></span><span class="exp-cult" data-cultura="soja">60 <span class="kpi-value-unit">carregados</span></span></div>
+                            <span class="kpi-value-ref"><span class="exp-cult" data-cultura="todas">média de 30 por dia</span><span class="exp-cult" data-cultura="milho">329 liberados · 34 reprovados</span><span class="exp-cult" data-cultura="sorgo">132 liberados · 22 reprovados</span><span class="exp-cult" data-cultura="trigo">83 liberados · 0 reprovados</span><span class="exp-cult" data-cultura="soja">42 liberados · 18 reprovados</span></span>
+                        </div>
+                        <div class="kpi-sub">
+                            <span class="kpi-sub-item" data-cultura="milho"><i class="legend-dot legend-dot--milho"></i><b>Milho</b> 363</span>
+                            <span class="kpi-sub-item" data-cultura="sorgo"><i class="legend-dot legend-dot--sorgo"></i><b>Sorgo</b> 154</span>
+                            <span class="kpi-sub-item" data-cultura="trigo"><i class="legend-dot legend-dot--trigo"></i><b>Trigo</b> 83</span>
+                            <span class="kpi-sub-item" data-cultura="soja"><i class="legend-dot legend-dot--soja"></i><b>Soja</b> 60</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card kpi-card--meta kpi-card--motivo alert" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Cargas reprovadas no mês por cultura"
+                        data-motivo-resumo="74 de 660 · 11% das cargas carregadas"
+                        data-motivo-lista="Milho::34 cargas::9% das cargas da cultura::ruim|Sorgo::22 cargas::14% das cargas da cultura::ruim|Trigo::0 cargas::nenhuma reprova::bom|Soja::18 cargas::30% das cargas da cultura::ruim"
+                        data-motivo-nota="As reprovas caíram de 14% para 11% das cargas depois do ajuste do secador 1.">
+                        <div class="kpi-label">CARGAS REPROVADAS</div>
+                        <div class="kpi-value-row">
+                            <div class="kpi-value"><span class="exp-cult" data-cultura="todas">74</span><span class="exp-cult" data-cultura="milho">34</span><span class="exp-cult" data-cultura="sorgo">22</span><span class="exp-cult" data-cultura="trigo">0</span><span class="exp-cult" data-cultura="soja">18</span></div>
+                            <span class="kpi-flag kpi-flag--alerta"><span class="exp-cult" data-cultura="todas">↑ 11% das cargas</span><span class="exp-cult" data-cultura="milho">↑ 9% das cargas de milho</span><span class="exp-cult" data-cultura="sorgo">↑ 14% das cargas de sorgo</span><span class="exp-cult" data-cultura="trigo">nenhuma carga reprovada</span><span class="exp-cult" data-cultura="soja">↑ 30% das cargas de soja</span></span>
+                        </div>
+                        <div class="kpi-sub exp-cult-bloco" data-cultura="todas"><span class="kpi-sub-item"><b>Umidade</b> 34</span><span class="kpi-sub-item"><b>Impureza</b> 22</span><span class="kpi-sub-item"><b>Avariados</b> 18</span></div>
+                        <div class="kpi-sub exp-cult-bloco" data-cultura="milho"><span class="kpi-sub-item"><b>Umidade</b> 34</span><span class="kpi-sub-item"><b>Impureza</b> 0</span><span class="kpi-sub-item"><b>Avariados</b> 0</span></div>
+                        <div class="kpi-sub exp-cult-bloco" data-cultura="sorgo"><span class="kpi-sub-item"><b>Umidade</b> 0</span><span class="kpi-sub-item"><b>Impureza</b> 22</span><span class="kpi-sub-item"><b>Avariados</b> 0</span></div>
+                        <div class="kpi-sub exp-cult-bloco" data-cultura="trigo"><span class="kpi-sub-item"><b>Umidade</b> 0</span><span class="kpi-sub-item"><b>Impureza</b> 0</span><span class="kpi-sub-item"><b>Avariados</b> 0</span></div>
+                        <div class="kpi-sub exp-cult-bloco" data-cultura="soja"><span class="kpi-sub-item"><b>Umidade</b> 0</span><span class="kpi-sub-item"><b>Impureza</b> 0</span><span class="kpi-sub-item"><b>Avariados</b> 18</span></div>
+                    </div>
+                </div>
+
+                <div class="kpi-grid kpi-grid--tres exp-periodo-bloco" data-periodo="ano">
+                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Volume carregado no ano por cultura"
+                        data-motivo-resumo="214.500 t · 5.360 caminhões · programado 220.000 t"
+                        data-motivo-lista="Milho::118.000 t::2.948 caminhões::neutro|Sorgo::50.100 t::1.252 caminhões::neutro|Trigo::26.800 t::670 caminhões::neutro|Soja::19.600 t::490 caminhões::neutro|Atingimento do programado::98%::meta 100%::bom"
+                        data-motivo-nota="98% do programado do ano, com 5.360 caminhões carregados em 248 dias.">
+                        <div class="kpi-label">VOLUME CARREGADO NO ANO</div>
+                        <div class="kpi-value-row">
+                            <div class="kpi-value"><span class="exp-cult" data-cultura="todas">214.500 <span class="kpi-value-unit">t</span></span><span class="exp-cult" data-cultura="milho">118.000 <span class="kpi-value-unit">t</span></span><span class="exp-cult" data-cultura="sorgo">50.100 <span class="kpi-value-unit">t</span></span><span class="exp-cult" data-cultura="trigo">26.800 <span class="kpi-value-unit">t</span></span><span class="exp-cult" data-cultura="soja">19.600 <span class="kpi-value-unit">t</span></span></div>
+                            <span class="kpi-value-ref"><span class="exp-cult" data-cultura="todas">programado 220.000 t</span><span class="exp-cult" data-cultura="milho">programado 121.000 t</span><span class="exp-cult" data-cultura="sorgo">programado 51.400 t</span><span class="exp-cult" data-cultura="trigo">programado 27.500 t</span><span class="exp-cult" data-cultura="soja">programado 20.100 t</span></span>
+                        </div>
+                        <div class="kpi-sub">
+                            <span class="kpi-sub-item" data-cultura="milho"><i class="legend-dot legend-dot--milho"></i><b>Milho</b> 118.000 t</span>
+                            <span class="kpi-sub-item" data-cultura="sorgo"><i class="legend-dot legend-dot--sorgo"></i><b>Sorgo</b> 50.100 t</span>
+                            <span class="kpi-sub-item" data-cultura="trigo"><i class="legend-dot legend-dot--trigo"></i><b>Trigo</b> 26.800 t</span>
+                            <span class="kpi-sub-item" data-cultura="soja"><i class="legend-dot legend-dot--soja"></i><b>Soja</b> 19.600 t</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Caminhões na expedição no ano"
+                        data-motivo-resumo="5.360 carregados · média de 22 por dia"
+                        data-motivo-lista="Carregados e liberados::4.748::liberados na 2ª pesagem::bom|Carregados e reprovados::612::voltaram para o silo::ruim|Média por dia::22::248 dias::neutro|Melhor mês::712::março::bom"
+                        data-motivo-nota="Tempo médio de carregamento no ano: 23 min por caminhão.">
+                        <div class="kpi-label">CAMINHÕES</div>
+                        <div class="kpi-value-row">
+                            <div class="kpi-value"><span class="exp-cult" data-cultura="todas">5.360 <span class="kpi-value-unit">carregados</span></span><span class="exp-cult" data-cultura="milho">2.948 <span class="kpi-value-unit">carregados</span></span><span class="exp-cult" data-cultura="sorgo">1.252 <span class="kpi-value-unit">carregados</span></span><span class="exp-cult" data-cultura="trigo">670 <span class="kpi-value-unit">carregados</span></span><span class="exp-cult" data-cultura="soja">490 <span class="kpi-value-unit">carregados</span></span></div>
+                            <span class="kpi-value-ref"><span class="exp-cult" data-cultura="todas">média de 22 por dia</span><span class="exp-cult" data-cultura="milho">2.668 liberados · 280 reprovados</span><span class="exp-cult" data-cultura="sorgo">1.062 liberados · 190 reprovados</span><span class="exp-cult" data-cultura="trigo">670 liberados · 0 reprovados</span><span class="exp-cult" data-cultura="soja">348 liberados · 142 reprovados</span></span>
+                        </div>
+                        <div class="kpi-sub">
+                            <span class="kpi-sub-item" data-cultura="milho"><i class="legend-dot legend-dot--milho"></i><b>Milho</b> 2.948</span>
+                            <span class="kpi-sub-item" data-cultura="sorgo"><i class="legend-dot legend-dot--sorgo"></i><b>Sorgo</b> 1.252</span>
+                            <span class="kpi-sub-item" data-cultura="trigo"><i class="legend-dot legend-dot--trigo"></i><b>Trigo</b> 670</span>
+                            <span class="kpi-sub-item" data-cultura="soja"><i class="legend-dot legend-dot--soja"></i><b>Soja</b> 490</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card kpi-card--meta kpi-card--motivo alert" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Cargas reprovadas no ano por cultura"
+                        data-motivo-resumo="612 de 5.360 · 11% das cargas carregadas"
+                        data-motivo-lista="Milho::280 cargas::9% das cargas da cultura::ruim|Sorgo::190 cargas::15% das cargas da cultura::ruim|Trigo::0 cargas::nenhuma reprova::bom|Soja::142 cargas::29% das cargas da cultura::ruim"
+                        data-motivo-nota="Média de 11% das cargas reprovadas no ano, com pico de 17% em março.">
+                        <div class="kpi-label">CARGAS REPROVADAS</div>
+                        <div class="kpi-value-row">
+                            <div class="kpi-value"><span class="exp-cult" data-cultura="todas">612</span><span class="exp-cult" data-cultura="milho">280</span><span class="exp-cult" data-cultura="sorgo">190</span><span class="exp-cult" data-cultura="trigo">0</span><span class="exp-cult" data-cultura="soja">142</span></div>
+                            <span class="kpi-flag kpi-flag--alerta"><span class="exp-cult" data-cultura="todas">↑ 11% das cargas</span><span class="exp-cult" data-cultura="milho">↑ 9% das cargas de milho</span><span class="exp-cult" data-cultura="sorgo">↑ 15% das cargas de sorgo</span><span class="exp-cult" data-cultura="trigo">nenhuma carga reprovada</span><span class="exp-cult" data-cultura="soja">↑ 29% das cargas de soja</span></span>
+                        </div>
+                        <div class="kpi-sub exp-cult-bloco" data-cultura="todas"><span class="kpi-sub-item"><b>Umidade</b> 280</span><span class="kpi-sub-item"><b>Impureza</b> 190</span><span class="kpi-sub-item"><b>Avariados</b> 142</span></div>
+                        <div class="kpi-sub exp-cult-bloco" data-cultura="milho"><span class="kpi-sub-item"><b>Umidade</b> 280</span><span class="kpi-sub-item"><b>Impureza</b> 0</span><span class="kpi-sub-item"><b>Avariados</b> 0</span></div>
+                        <div class="kpi-sub exp-cult-bloco" data-cultura="sorgo"><span class="kpi-sub-item"><b>Umidade</b> 0</span><span class="kpi-sub-item"><b>Impureza</b> 190</span><span class="kpi-sub-item"><b>Avariados</b> 0</span></div>
+                        <div class="kpi-sub exp-cult-bloco" data-cultura="trigo"><span class="kpi-sub-item"><b>Umidade</b> 0</span><span class="kpi-sub-item"><b>Impureza</b> 0</span><span class="kpi-sub-item"><b>Avariados</b> 0</span></div>
+                        <div class="kpi-sub exp-cult-bloco" data-cultura="soja"><span class="kpi-sub-item"><b>Umidade</b> 0</span><span class="kpi-sub-item"><b>Impureza</b> 0</span><span class="kpi-sub-item"><b>Avariados</b> 142</span></div>
+                    </div>
+                </div>
+
+                <!-- Qualidade por cultura (media ponderada pelo volume) ao lado do volume
+                     por destino, um par para cada periodo do filtro. Valores acima da faixa
+                     ganham cor. Altura natural: quem cede e a tabela de cargas. -->
+                <div class="split-grid split-grid--exp exp-periodo-bloco" data-periodo="dia">
                     <div class="content-section">
                         <div class="section-head-text">
                             <h3>QUALIDADE POR CULTURA · VOLUME CARREGADO</h3>
@@ -3274,10 +3531,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>620 t</td><td>15</td><td class="class-val class-val--atencao">13,1%</td><td>0,8%</td><td>3,4%</td></tr>
-                                <tr><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>260 t</td><td>7</td><td>12,4%</td><td class="class-val class-val--atencao">0,9%</td><td>2,9%</td></tr>
-                                <tr><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>140 t</td><td>3</td><td>12,0%</td><td>0,6%</td><td>2,1%</td></tr>
-                                <tr><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>100 t</td><td>3</td><td>12,7%</td><td>0,8%</td><td class="class-val class-val--atencao">3,6%</td></tr>
+                                <tr data-cultura="milho"><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>620 t</td><td>15</td><td class="class-val class-val--atencao">13,1%</td><td>0,8%</td><td>3,4%</td></tr>
+                                <tr data-cultura="sorgo"><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>260 t</td><td>7</td><td>12,4%</td><td class="class-val class-val--atencao">0,9%</td><td>2,9%</td></tr>
+                                <tr data-cultura="trigo"><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>140 t</td><td>3</td><td>12,0%</td><td>0,6%</td><td>2,1%</td></tr>
+                                <tr data-cultura="soja"><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>100 t</td><td>3</td><td>12,7%</td><td>0,8%</td><td class="class-val class-val--atencao">3,6%</td></tr>
                                 <tr class="exp-qual-geral"><td><i class="legend-dot legend-dot--geral"></i>Geral</td><td>1.120 t</td><td>28</td><td>12,8%</td><td>0,8%</td><td>3,1%</td></tr>
                             </tbody>
                         </table>
@@ -3287,56 +3544,247 @@
                         <div class="section-head-text">
                             <h3>VOLUME POR DESTINO</h3>
                         </div>
-                        <div class="exp-destinos" style="--exp-max: 420">
-                            <div class="exp-destino" style="--t: 420">
+                        <div class="exp-destinos" style="--max-todas: 420; --max-milho: 260; --max-sorgo: 60; --max-trigo: 40; --max-soja: 60">
+                            <div class="exp-destino" style="--t-todas: 420; --t-milho: 260; --t-sorgo: 60; --t-trigo: 40; --t-soja: 60">
                                 <span class="exp-destino-nome">Porto de Santos</span>
                                 <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
-                                <span class="exp-destino-val"><b>420 t</b> · 11 cam.</span>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>420 t</b> · 11 cam.</span><span class="exp-cult" data-cultura="milho"><b>260 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>60 t</b></span><span class="exp-cult" data-cultura="trigo"><b>40 t</b></span><span class="exp-cult" data-cultura="soja"><b>60 t</b></span></span>
                             </div>
-                            <div class="exp-destino" style="--t: 280">
+                            <div class="exp-destino" style="--t-todas: 280; --t-milho: 180; --t-sorgo: 50; --t-trigo: 30; --t-soja: 20">
                                 <span class="exp-destino-nome">Porto de Paranaguá</span>
                                 <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
-                                <span class="exp-destino-val"><b>280 t</b> · 7 cam.</span>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>280 t</b> · 7 cam.</span><span class="exp-cult" data-cultura="milho"><b>180 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>50 t</b></span><span class="exp-cult" data-cultura="trigo"><b>30 t</b></span><span class="exp-cult" data-cultura="soja"><b>20 t</b></span></span>
                             </div>
-                            <div class="exp-destino" style="--t: 180">
+                            <div class="exp-destino" style="--t-todas: 180; --t-milho: 120; --t-sorgo: 30; --t-trigo: 20; --t-soja: 10">
                                 <span class="exp-destino-nome">Coop. Holambra</span>
                                 <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
-                                <span class="exp-destino-val"><b>180 t</b> · 4 cam.</span>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>180 t</b> · 4 cam.</span><span class="exp-cult" data-cultura="milho"><b>120 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>30 t</b></span><span class="exp-cult" data-cultura="trigo"><b>20 t</b></span><span class="exp-cult" data-cultura="soja"><b>10 t</b></span></span>
                             </div>
-                            <div class="exp-destino" style="--t: 120">
+                            <div class="exp-destino" style="--t-todas: 120; --t-milho: 30; --t-sorgo: 60; --t-trigo: 20; --t-soja: 10">
                                 <span class="exp-destino-nome">Frig. Aurora</span>
                                 <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
-                                <span class="exp-destino-val"><b>120 t</b> · 3 cam.</span>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>120 t</b> · 3 cam.</span><span class="exp-cult" data-cultura="milho"><b>30 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>60 t</b></span><span class="exp-cult" data-cultura="trigo"><b>20 t</b></span><span class="exp-cult" data-cultura="soja"><b>10 t</b></span></span>
                             </div>
-                            <div class="exp-destino" style="--t: 80">
+                            <div class="exp-destino" style="--t-todas: 80; --t-milho: 20; --t-sorgo: 50; --t-trigo: 10; --t-soja: 0">
                                 <span class="exp-destino-nome">Fáb. Ração Nutriave</span>
                                 <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
-                                <span class="exp-destino-val"><b>80 t</b> · 2 cam.</span>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>80 t</b> · 2 cam.</span><span class="exp-cult" data-cultura="milho"><b>20 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>50 t</b></span><span class="exp-cult" data-cultura="trigo"><b>10 t</b></span><span class="exp-cult" data-cultura="soja"><b>0 t</b></span></span>
                             </div>
-                            <div class="exp-destino" style="--t: 40">
+                            <div class="exp-destino" style="--t-todas: 40; --t-milho: 10; --t-sorgo: 10; --t-trigo: 20; --t-soja: 0">
                                 <span class="exp-destino-nome">Ind. Moinho Sul</span>
                                 <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
-                                <span class="exp-destino-val"><b>40 t</b> · 1 cam.</span>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>40 t</b> · 1 cam.</span><span class="exp-cult" data-cultura="milho"><b>10 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>10 t</b></span><span class="exp-cult" data-cultura="trigo"><b>20 t</b></span><span class="exp-cult" data-cultura="soja"><b>0 t</b></span></span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Detalhe por carga. Mesmo filtro de cultura da classificacao:
-                     a section guarda a escolha em data-class-cultura e o CSS esconde
-                     as linhas cujo data-cultura nao bate. -->
-                <div class="content-section content-section--livre class-detalhe class-detalhe--exp" data-class-cultura="todas">
+                <div class="split-grid split-grid--exp exp-periodo-bloco" data-periodo="semana">
+                    <div class="content-section">
+                        <div class="section-head-text">
+                            <h3>QUALIDADE POR CULTURA · VOLUME CARREGADO</h3>
+                            <p class="section-sub">limites: umidade 14% · impureza 1% · avariados 6%</p>
+                        </div>
+                        <table class="data-table exp-qual-table">
+                            <thead>
+                                <tr>
+                                    <th>CULTURA</th>
+                                    <th>VOLUME</th>
+                                    <th>CAMINHÕES</th>
+                                    <th>UMIDADE</th>
+                                    <th>IMPUREZA</th>
+                                    <th>AVARIADOS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-cultura="milho"><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>3.560 t</td><td>89</td><td class="class-val class-val--atencao">13,0%</td><td>0,8%</td><td>3,2%</td></tr>
+                                <tr data-cultura="sorgo"><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>1.520 t</td><td>38</td><td>12,5%</td><td class="class-val class-val--atencao">0,9%</td><td>3,0%</td></tr>
+                                <tr data-cultura="trigo"><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>820 t</td><td>21</td><td>12,1%</td><td>0,6%</td><td>2,3%</td></tr>
+                                <tr data-cultura="soja"><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>580 t</td><td>14</td><td>12,6%</td><td>0,7%</td><td>3,4%</td></tr>
+                                <tr class="exp-qual-geral"><td><i class="legend-dot legend-dot--geral"></i>Geral</td><td>6.480 t</td><td>162</td><td>12,8%</td><td>0,8%</td><td>3,1%</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="content-section">
+                        <div class="section-head-text">
+                            <h3>VOLUME POR DESTINO</h3>
+                        </div>
+                        <div class="exp-destinos" style="--max-todas: 2410; --max-milho: 1500; --max-sorgo: 350; --max-trigo: 220; --max-soja: 340">
+                            <div class="exp-destino" style="--t-todas: 2410; --t-milho: 1500; --t-sorgo: 350; --t-trigo: 220; --t-soja: 340">
+                                <span class="exp-destino-nome">Porto de Santos</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>2.410 t</b> · 60 cam.</span><span class="exp-cult" data-cultura="milho"><b>1.500 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>350 t</b></span><span class="exp-cult" data-cultura="trigo"><b>220 t</b></span><span class="exp-cult" data-cultura="soja"><b>340 t</b></span></span>
+                            </div>
+                            <div class="exp-destino" style="--t-todas: 1620; --t-milho: 1030; --t-sorgo: 290; --t-trigo: 180; --t-soja: 120">
+                                <span class="exp-destino-nome">Porto de Paranaguá</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>1.620 t</b> · 41 cam.</span><span class="exp-cult" data-cultura="milho"><b>1.030 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>290 t</b></span><span class="exp-cult" data-cultura="trigo"><b>180 t</b></span><span class="exp-cult" data-cultura="soja"><b>120 t</b></span></span>
+                            </div>
+                            <div class="exp-destino" style="--t-todas: 1050; --t-milho: 690; --t-sorgo: 180; --t-trigo: 120; --t-soja: 60">
+                                <span class="exp-destino-nome">Coop. Holambra</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>1.050 t</b> · 26 cam.</span><span class="exp-cult" data-cultura="milho"><b>690 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>180 t</b></span><span class="exp-cult" data-cultura="trigo"><b>120 t</b></span><span class="exp-cult" data-cultura="soja"><b>60 t</b></span></span>
+                            </div>
+                            <div class="exp-destino" style="--t-todas: 700; --t-milho: 170; --t-sorgo: 350; --t-trigo: 120; --t-soja: 60">
+                                <span class="exp-destino-nome">Frig. Aurora</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>700 t</b> · 18 cam.</span><span class="exp-cult" data-cultura="milho"><b>170 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>350 t</b></span><span class="exp-cult" data-cultura="trigo"><b>120 t</b></span><span class="exp-cult" data-cultura="soja"><b>60 t</b></span></span>
+                            </div>
+                            <div class="exp-destino" style="--t-todas: 460; --t-milho: 110; --t-sorgo: 290; --t-trigo: 60; --t-soja: 0">
+                                <span class="exp-destino-nome">Fáb. Ração Nutriave</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>460 t</b> · 11 cam.</span><span class="exp-cult" data-cultura="milho"><b>110 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>290 t</b></span><span class="exp-cult" data-cultura="trigo"><b>60 t</b></span><span class="exp-cult" data-cultura="soja"><b>0 t</b></span></span>
+                            </div>
+                            <div class="exp-destino" style="--t-todas: 240; --t-milho: 60; --t-sorgo: 60; --t-trigo: 120; --t-soja: 0">
+                                <span class="exp-destino-nome">Ind. Moinho Sul</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>240 t</b> · 6 cam.</span><span class="exp-cult" data-cultura="milho"><b>60 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>60 t</b></span><span class="exp-cult" data-cultura="trigo"><b>120 t</b></span><span class="exp-cult" data-cultura="soja"><b>0 t</b></span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="split-grid split-grid--exp exp-periodo-bloco" data-periodo="mes">
+                    <div class="content-section">
+                        <div class="section-head-text">
+                            <h3>QUALIDADE POR CULTURA · VOLUME CARREGADO</h3>
+                            <p class="section-sub">limites: umidade 14% · impureza 1% · avariados 6%</p>
+                        </div>
+                        <table class="data-table exp-qual-table">
+                            <thead>
+                                <tr>
+                                    <th>CULTURA</th>
+                                    <th>VOLUME</th>
+                                    <th>CAMINHÕES</th>
+                                    <th>UMIDADE</th>
+                                    <th>IMPUREZA</th>
+                                    <th>AVARIADOS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-cultura="milho"><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>14.520 t</td><td>363</td><td class="class-val class-val--atencao">13,2%</td><td>0,9%</td><td>3,3%</td></tr>
+                                <tr data-cultura="sorgo"><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>6.160 t</td><td>154</td><td>12,6%</td><td class="class-val class-val--atencao">0,9%</td><td>3,1%</td></tr>
+                                <tr data-cultura="trigo"><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>3.300 t</td><td>83</td><td>12,2%</td><td>0,7%</td><td>2,4%</td></tr>
+                                <tr data-cultura="soja"><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>2.420 t</td><td>60</td><td>12,5%</td><td>0,8%</td><td>3,5%</td></tr>
+                                <tr class="exp-qual-geral"><td><i class="legend-dot legend-dot--geral"></i>Geral</td><td>26.400 t</td><td>660</td><td>12,9%</td><td>0,8%</td><td>3,2%</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="content-section">
+                        <div class="section-head-text">
+                            <h3>VOLUME POR DESTINO</h3>
+                        </div>
+                        <div class="exp-destinos" style="--max-todas: 9920; --max-milho: 6090; --max-sorgo: 1430; --max-trigo: 940; --max-soja: 1460">
+                            <div class="exp-destino" style="--t-todas: 9920; --t-milho: 6090; --t-sorgo: 1430; --t-trigo: 940; --t-soja: 1460">
+                                <span class="exp-destino-nome">Porto de Santos</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>9.920 t</b> · 248 cam.</span><span class="exp-cult" data-cultura="milho"><b>6.090 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>1.430 t</b></span><span class="exp-cult" data-cultura="trigo"><b>940 t</b></span><span class="exp-cult" data-cultura="soja"><b>1.460 t</b></span></span>
+                            </div>
+                            <div class="exp-destino" style="--t-todas: 6590; --t-milho: 4220; --t-sorgo: 1180; --t-trigo: 710; --t-soja: 480">
+                                <span class="exp-destino-nome">Porto de Paranaguá</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>6.590 t</b> · 165 cam.</span><span class="exp-cult" data-cultura="milho"><b>4.220 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>1.180 t</b></span><span class="exp-cult" data-cultura="trigo"><b>710 t</b></span><span class="exp-cult" data-cultura="soja"><b>480 t</b></span></span>
+                            </div>
+                            <div class="exp-destino" style="--t-todas: 4230; --t-milho: 2810; --t-sorgo: 710; --t-trigo: 470; --t-soja: 240">
+                                <span class="exp-destino-nome">Coop. Holambra</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>4.230 t</b> · 106 cam.</span><span class="exp-cult" data-cultura="milho"><b>2.810 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>710 t</b></span><span class="exp-cult" data-cultura="trigo"><b>470 t</b></span><span class="exp-cult" data-cultura="soja"><b>240 t</b></span></span>
+                            </div>
+                            <div class="exp-destino" style="--t-todas: 2830; --t-milho: 700; --t-sorgo: 1420; --t-trigo: 470; --t-soja: 240">
+                                <span class="exp-destino-nome">Frig. Aurora</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>2.830 t</b> · 71 cam.</span><span class="exp-cult" data-cultura="milho"><b>700 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>1.420 t</b></span><span class="exp-cult" data-cultura="trigo"><b>470 t</b></span><span class="exp-cult" data-cultura="soja"><b>240 t</b></span></span>
+                            </div>
+                            <div class="exp-destino" style="--t-todas: 1890; --t-milho: 470; --t-sorgo: 1180; --t-trigo: 240; --t-soja: 0">
+                                <span class="exp-destino-nome">Fáb. Ração Nutriave</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>1.890 t</b> · 47 cam.</span><span class="exp-cult" data-cultura="milho"><b>470 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>1.180 t</b></span><span class="exp-cult" data-cultura="trigo"><b>240 t</b></span><span class="exp-cult" data-cultura="soja"><b>0 t</b></span></span>
+                            </div>
+                            <div class="exp-destino" style="--t-todas: 940; --t-milho: 230; --t-sorgo: 240; --t-trigo: 470; --t-soja: 0">
+                                <span class="exp-destino-nome">Ind. Moinho Sul</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>940 t</b> · 23 cam.</span><span class="exp-cult" data-cultura="milho"><b>230 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>240 t</b></span><span class="exp-cult" data-cultura="trigo"><b>470 t</b></span><span class="exp-cult" data-cultura="soja"><b>0 t</b></span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="split-grid split-grid--exp exp-periodo-bloco" data-periodo="ano">
+                    <div class="content-section">
+                        <div class="section-head-text">
+                            <h3>QUALIDADE POR CULTURA · VOLUME CARREGADO</h3>
+                            <p class="section-sub">limites: umidade 14% · impureza 1% · avariados 6%</p>
+                        </div>
+                        <table class="data-table exp-qual-table">
+                            <thead>
+                                <tr>
+                                    <th>CULTURA</th>
+                                    <th>VOLUME</th>
+                                    <th>CAMINHÕES</th>
+                                    <th>UMIDADE</th>
+                                    <th>IMPUREZA</th>
+                                    <th>AVARIADOS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-cultura="milho"><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>118.000 t</td><td>2.948</td><td class="class-val class-val--atencao">13,1%</td><td>0,8%</td><td>3,3%</td></tr>
+                                <tr data-cultura="sorgo"><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>50.100 t</td><td>1.252</td><td>12,5%</td><td class="class-val class-val--atencao">0,9%</td><td>3,0%</td></tr>
+                                <tr data-cultura="trigo"><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>26.800 t</td><td>670</td><td>12,1%</td><td>0,6%</td><td>2,3%</td></tr>
+                                <tr data-cultura="soja"><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>19.600 t</td><td>490</td><td>12,6%</td><td>0,8%</td><td>3,4%</td></tr>
+                                <tr class="exp-qual-geral"><td><i class="legend-dot legend-dot--geral"></i>Geral</td><td>214.500 t</td><td>5.360</td><td>12,8%</td><td>0,8%</td><td>3,2%</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="content-section">
+                        <div class="section-head-text">
+                            <h3>VOLUME POR DESTINO</h3>
+                        </div>
+                        <div class="exp-destinos" style="--max-todas: 80600; --max-milho: 49500; --max-sorgo: 11600; --max-trigo: 7800; --max-soja: 11700">
+                            <div class="exp-destino" style="--t-todas: 80600; --t-milho: 49500; --t-sorgo: 11600; --t-trigo: 7800; --t-soja: 11700">
+                                <span class="exp-destino-nome">Porto de Santos</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>80.600 t</b> · 2.015 cam.</span><span class="exp-cult" data-cultura="milho"><b>49.500 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>11.600 t</b></span><span class="exp-cult" data-cultura="trigo"><b>7.800 t</b></span><span class="exp-cult" data-cultura="soja"><b>11.700 t</b></span></span>
+                            </div>
+                            <div class="exp-destino" style="--t-todas: 53500; --t-milho: 34300; --t-sorgo: 9600; --t-trigo: 5700; --t-soja: 3900">
+                                <span class="exp-destino-nome">Porto de Paranaguá</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>53.500 t</b> · 1.337 cam.</span><span class="exp-cult" data-cultura="milho"><b>34.300 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>9.600 t</b></span><span class="exp-cult" data-cultura="trigo"><b>5.700 t</b></span><span class="exp-cult" data-cultura="soja"><b>3.900 t</b></span></span>
+                            </div>
+                            <div class="exp-destino" style="--t-todas: 34400; --t-milho: 22800; --t-sorgo: 5800; --t-trigo: 3800; --t-soja: 2000">
+                                <span class="exp-destino-nome">Coop. Holambra</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>34.400 t</b> · 860 cam.</span><span class="exp-cult" data-cultura="milho"><b>22.800 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>5.800 t</b></span><span class="exp-cult" data-cultura="trigo"><b>3.800 t</b></span><span class="exp-cult" data-cultura="soja"><b>2.000 t</b></span></span>
+                            </div>
+                            <div class="exp-destino" style="--t-todas: 23100; --t-milho: 5700; --t-sorgo: 11600; --t-trigo: 3800; --t-soja: 2000">
+                                <span class="exp-destino-nome">Frig. Aurora</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>23.100 t</b> · 577 cam.</span><span class="exp-cult" data-cultura="milho"><b>5.700 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>11.600 t</b></span><span class="exp-cult" data-cultura="trigo"><b>3.800 t</b></span><span class="exp-cult" data-cultura="soja"><b>2.000 t</b></span></span>
+                            </div>
+                            <div class="exp-destino" style="--t-todas: 15300; --t-milho: 3800; --t-sorgo: 9600; --t-trigo: 1900; --t-soja: 0">
+                                <span class="exp-destino-nome">Fáb. Ração Nutriave</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>15.300 t</b> · 382 cam.</span><span class="exp-cult" data-cultura="milho"><b>3.800 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>9.600 t</b></span><span class="exp-cult" data-cultura="trigo"><b>1.900 t</b></span><span class="exp-cult" data-cultura="soja"><b>0 t</b></span></span>
+                            </div>
+                            <div class="exp-destino" style="--t-todas: 7600; --t-milho: 1900; --t-sorgo: 1900; --t-trigo: 3800; --t-soja: 0">
+                                <span class="exp-destino-nome">Ind. Moinho Sul</span>
+                                <div class="exp-destino-track"><span class="exp-destino-fill"></span></div>
+                                <span class="exp-destino-val"><span class="exp-cult" data-cultura="todas"><b>7.600 t</b> · 190 cam.</span><span class="exp-cult" data-cultura="milho"><b>1.900 t</b></span><span class="exp-cult" data-cultura="sorgo"><b>1.900 t</b></span><span class="exp-cult" data-cultura="trigo"><b>3.800 t</b></span><span class="exp-cult" data-cultura="soja"><b>0 t</b></span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detalhe por carga. Os dois filtros valem aqui: o periodo troca o
+                     tbody (um por periodo) e a cultura esconde as linhas cujo
+                     data-cultura nao bate. -->
+                <div class="content-section content-section--livre class-detalhe class-detalhe--exp">
                     <div class="section-head section-head--top">
                         <div class="section-head-text">
-                            <h3>CARGAS CARREGADAS HOJE · DETALHE</h3>
-                        </div>
-                        <div class="class-filtro" role="group" aria-label="Filtrar cargas por cultura">
-                            <span class="class-filtro-rotulo">Cultura</span>
-                            <button type="button" class="class-filtro-btn is-active" data-class-cultura="todas" aria-pressed="true">Todas</button>
-                            <button type="button" class="class-filtro-btn" data-class-cultura="milho" aria-pressed="false"><i class="legend-dot legend-dot--milho"></i>Milho</button>
-                            <button type="button" class="class-filtro-btn" data-class-cultura="sorgo" aria-pressed="false"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</button>
-                            <button type="button" class="class-filtro-btn" data-class-cultura="trigo" aria-pressed="false"><i class="legend-dot legend-dot--trigo"></i>Trigo</button>
-                            <button type="button" class="class-filtro-btn" data-class-cultura="soja" aria-pressed="false"><i class="legend-dot legend-dot--soja"></i>Soja</button>
+                            <h3><span class="exp-per" data-periodo="dia">CARGAS CARREGADAS HOJE · DETALHE</span><span class="exp-per" data-periodo="semana">ÚLTIMAS CARGAS DA SEMANA · DETALHE</span><span class="exp-per" data-periodo="mes">ÚLTIMAS CARGAS DO MÊS · DETALHE</span><span class="exp-per" data-periodo="ano">ÚLTIMAS CARGAS DO ANO · DETALHE</span></h3>
+                            <p class="section-sub"><span class="exp-per" data-periodo="dia">as últimas 11 de 28 cargas de hoje</span><span class="exp-per" data-periodo="semana">as últimas 11 de 162 cargas da semana</span><span class="exp-per" data-periodo="mes">as últimas 11 de 660 cargas do mês</span><span class="exp-per" data-periodo="ano">as últimas 11 de 5.360 cargas do ano</span></p>
                         </div>
                     </div>
                     <div class="table-scroll table-scroll--livre">
@@ -3356,7 +3804,7 @@
                                     <th>STATUS</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="exp-cargas-corpo" data-periodo="dia">
                                 <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD126174</span></td><td>Carlos Menezes</td><td>QXA2B71</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td class="exp-fonte-multi" title="Carga composta de 2 silos">Silo 3 + Silo 1<small>28,4 t · 12,8 t</small></td><td>Porto de Santos</td><td>41,2 <small>t</small></td><td>13:52</td><td>14:10</td><td>18 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
                                 <tr data-cultura="sorgo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD0FED74</span></td><td>Ana Paula Ribeiro</td><td>NZV1545</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 5</td><td>Porto de Paranaguá</td><td>38,6 <small>t</small></td><td>13:41</td><td>13:57</td><td>16 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
                                 <tr data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FDE16474</span></td><td>João Batista</td><td>MZX3B39</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Coop. Holambra</td><td>40,4 <small>t</small></td><td>13:30</td><td>13:55</td><td class="class-val class-val--atencao">25 min</td><td><span class="class-status class-status--fora">Reprovada · umidade 14,6%</span></td></tr>
@@ -3368,6 +3816,46 @@
                                 <tr data-cultura="soja" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD61F074</span></td><td>Fernanda Lima</td><td>WER5F63</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Frig. Aurora</td><td>35,9 <small>t</small></td><td>12:02</td><td>12:31</td><td class="class-val class-val--fora">29 min</td><td><span class="class-status class-status--fora">Reprovada · avariados 7,1%</span></td></tr>
                                 <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD84D274</span></td><td>Roberto Nunes</td><td>UIO9G47</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Porto de Paranaguá</td><td>38,2 <small>t</small></td><td>11:50</td><td>12:06</td><td>16 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
                                 <tr data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FDA31B74</span></td><td>Cláudio Ferreira</td><td>ASD3H55</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Coop. Holambra</td><td>41,7 <small>t</small></td><td>11:36</td><td>11:59</td><td>23 min</td><td><span class="class-status class-status--fora">Reprovada · umidade 14,9%</span></td></tr>
+
+                            </tbody>
+                            <tbody class="exp-cargas-corpo" data-periodo="semana">
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD13E674</span></td><td>Marta Siqueira</td><td>WER5F63</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 1</td><td>Porto de Santos</td><td>40,0 <small>t</small></td><td>22/09 <small>07:05</small></td><td>22/09 <small>07:28</small></td><td class="class-val class-val--atencao">23 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="sorgo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD151D74</span></td><td>Elias Moreira</td><td>UIO9G47</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 6</td><td>Coop. Holambra</td><td>40,7 <small>t</small></td><td>22/09 <small>08:18</small></td><td>22/09 <small>08:46</small></td><td class="class-val class-val--atencao">28 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD165474</span></td><td>Tânia Rocha</td><td>ASD3H55</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 5</td><td>Fáb. Ração Nutriave</td><td>41,4 <small>t</small></td><td>21/09 <small>09:31</small></td><td>21/09 <small>09:52</small></td><td>21 min</td><td><span class="class-status class-status--fora">Reprovada · umidade 14,6%</span></td></tr>
+                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD178B74</span></td><td>Nelson Vidal</td><td>FGH6J24</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Porto de Santos</td><td>42,1 <small>t</small></td><td>21/09 <small>10:44</small></td><td>21/09 <small>11:10</small></td><td class="class-val class-val--atencao">26 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="soja" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD18C274</span></td><td>Carlos Menezes</td><td>ZXC8K13</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Coop. Holambra</td><td>38,8 <small>t</small></td><td>20/09 <small>11:57</small></td><td>20/09 <small>12:16</small></td><td>19 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD19F974</span></td><td>Ana Paula Ribeiro</td><td>VBN2L07</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 5</td><td>Fáb. Ração Nutriave</td><td>39,5 <small>t</small></td><td>19/09 <small>12:10</small></td><td>19/09 <small>12:34</small></td><td class="class-val class-val--atencao">24 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="sorgo" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD1B3074</span></td><td>João Batista</td><td>TYU5M81</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 3</td><td>Porto de Santos</td><td>40,2 <small>t</small></td><td>19/09 <small>13:23</small></td><td>19/09 <small>13:40</small></td><td>17 min</td><td><span class="class-status class-status--fora">Reprovada · impureza 1,3%</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1C6774</span></td><td>Marcos Vieira</td><td>GHJ4N36</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Coop. Holambra</td><td>40,9 <small>t</small></td><td>18/09 <small>14:36</small></td><td>18/09 <small>14:58</small></td><td>22 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="soja" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD1D9E74</span></td><td>Rafael Souza</td><td>QWE7P52</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Fáb. Ração Nutriave</td><td>41,6 <small>t</small></td><td>18/09 <small>15:49</small></td><td>18/09 <small>16:16</small></td><td class="class-val class-val--atencao">27 min</td><td><span class="class-status class-status--fora">Reprovada · avariados 6,4%</span></td></tr>
+                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1ED574</span></td><td>Luciana Prado</td><td>RFV9Q18</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Porto de Santos</td><td>38,3 <small>t</small></td><td>17/09 <small>07:02</small></td><td>17/09 <small>07:22</small></td><td>20 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD200C74</span></td><td>Pedro Almeida</td><td>EDC3R64</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Coop. Holambra</td><td>39,0 <small>t</small></td><td>17/09 <small>08:15</small></td><td>17/09 <small>08:40</small></td><td class="class-val class-val--atencao">25 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                            </tbody>
+                            <tbody class="exp-cargas-corpo" data-periodo="mes">
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD12F374</span></td><td>Roberto Nunes</td><td>GHJ4N36</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 1</td><td>Frig. Aurora</td><td>39,1 <small>t</small></td><td>22/09 <small>07:05</small></td><td>22/09 <small>07:25</small></td><td>20 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="sorgo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD142A74</span></td><td>Cláudio Ferreira</td><td>QWE7P52</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 6</td><td>Ind. Moinho Sul</td><td>39,8 <small>t</small></td><td>20/09 <small>08:18</small></td><td>20/09 <small>08:43</small></td><td class="class-val class-val--atencao">25 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD156174</span></td><td>Vera Antunes</td><td>RFV9Q18</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 5</td><td>Porto de Paranaguá</td><td>40,5 <small>t</small></td><td>18/09 <small>09:31</small></td><td>18/09 <small>09:49</small></td><td>18 min</td><td><span class="class-status class-status--fora">Reprovada · umidade 14,6%</span></td></tr>
+                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD169874</span></td><td>Diego Matos</td><td>EDC3R64</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Frig. Aurora</td><td>41,2 <small>t</small></td><td>16/09 <small>10:44</small></td><td>16/09 <small>11:07</small></td><td class="class-val class-val--atencao">23 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="soja" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD17CF74</span></td><td>Helena Braga</td><td>XSW6T29</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Ind. Moinho Sul</td><td>41,9 <small>t</small></td><td>15/09 <small>11:57</small></td><td>15/09 <small>12:25</small></td><td class="class-val class-val--atencao">28 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD190674</span></td><td>Otávio Pinto</td><td>CDE1U73</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 5</td><td>Porto de Paranaguá</td><td>38,6 <small>t</small></td><td>12/09 <small>12:10</small></td><td>12/09 <small>12:31</small></td><td>21 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="sorgo" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD1A3D74</span></td><td>Simone Duarte</td><td>BGT8V45</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 3</td><td>Frig. Aurora</td><td>39,3 <small>t</small></td><td>10/09 <small>13:23</small></td><td>10/09 <small>13:49</small></td><td class="class-val class-val--atencao">26 min</td><td><span class="class-status class-status--fora">Reprovada · impureza 1,3%</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1B7474</span></td><td>Alan Ribeiro</td><td>QXA2B71</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Ind. Moinho Sul</td><td>40,0 <small>t</small></td><td>08/09 <small>14:36</small></td><td>08/09 <small>14:55</small></td><td>19 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="soja" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD1CAB74</span></td><td>Bruno Carvalho</td><td>NZV1545</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Porto de Paranaguá</td><td>40,7 <small>t</small></td><td>05/09 <small>15:49</small></td><td>05/09 <small>16:13</small></td><td class="class-val class-val--atencao">24 min</td><td><span class="class-status class-status--fora">Reprovada · avariados 6,4%</span></td></tr>
+                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1DE274</span></td><td>Marta Siqueira</td><td>MZX3B39</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Frig. Aurora</td><td>41,4 <small>t</small></td><td>03/09 <small>07:02</small></td><td>03/09 <small>07:19</small></td><td>17 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1F1974</span></td><td>Elias Moreira</td><td>PZA4275</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Ind. Moinho Sul</td><td>42,1 <small>t</small></td><td>02/09 <small>08:15</small></td><td>02/09 <small>08:37</small></td><td>22 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                            </tbody>
+                            <tbody class="exp-cargas-corpo" data-periodo="ano">
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD12F374</span></td><td>Roberto Nunes</td><td>GHJ4N36</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 1</td><td>Frig. Aurora</td><td>39,1 <small>t</small></td><td>22/09 <small>07:05</small></td><td>22/09 <small>07:25</small></td><td>20 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="sorgo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD142A74</span></td><td>Cláudio Ferreira</td><td>QWE7P52</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 6</td><td>Ind. Moinho Sul</td><td>39,8 <small>t</small></td><td>14/08 <small>08:18</small></td><td>14/08 <small>08:43</small></td><td class="class-val class-val--atencao">25 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD156174</span></td><td>Vera Antunes</td><td>RFV9Q18</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 5</td><td>Porto de Paranaguá</td><td>40,5 <small>t</small></td><td>30/07 <small>09:31</small></td><td>30/07 <small>09:49</small></td><td>18 min</td><td><span class="class-status class-status--fora">Reprovada · umidade 14,6%</span></td></tr>
+                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD169874</span></td><td>Diego Matos</td><td>EDC3R64</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Frig. Aurora</td><td>41,2 <small>t</small></td><td>19/06 <small>10:44</small></td><td>19/06 <small>11:07</small></td><td class="class-val class-val--atencao">23 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="soja" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD17CF74</span></td><td>Helena Braga</td><td>XSW6T29</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Ind. Moinho Sul</td><td>41,9 <small>t</small></td><td>28/05 <small>11:57</small></td><td>28/05 <small>12:25</small></td><td class="class-val class-val--atencao">28 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD190674</span></td><td>Otávio Pinto</td><td>CDE1U73</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 5</td><td>Porto de Paranaguá</td><td>38,6 <small>t</small></td><td>07/05 <small>12:10</small></td><td>07/05 <small>12:31</small></td><td>21 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="sorgo" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD1A3D74</span></td><td>Simone Duarte</td><td>BGT8V45</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 3</td><td>Frig. Aurora</td><td>39,3 <small>t</small></td><td>16/04 <small>13:23</small></td><td>16/04 <small>13:49</small></td><td class="class-val class-val--atencao">26 min</td><td><span class="class-status class-status--fora">Reprovada · impureza 1,3%</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1B7474</span></td><td>Alan Ribeiro</td><td>QXA2B71</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Ind. Moinho Sul</td><td>40,0 <small>t</small></td><td>25/03 <small>14:36</small></td><td>25/03 <small>14:55</small></td><td>19 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="soja" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD1CAB74</span></td><td>Bruno Carvalho</td><td>NZV1545</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Porto de Paranaguá</td><td>40,7 <small>t</small></td><td>11/03 <small>15:49</small></td><td>11/03 <small>16:13</small></td><td class="class-val class-val--atencao">24 min</td><td><span class="class-status class-status--fora">Reprovada · avariados 6,4%</span></td></tr>
+                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1DE274</span></td><td>Marta Siqueira</td><td>MZX3B39</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Frig. Aurora</td><td>41,4 <small>t</small></td><td>20/02 <small>07:02</small></td><td>20/02 <small>07:19</small></td><td>17 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1F1974</span></td><td>Elias Moreira</td><td>PZA4275</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Ind. Moinho Sul</td><td>42,1 <small>t</small></td><td>05/02 <small>08:15</small></td><td>05/02 <small>08:37</small></td><td>22 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -3382,6 +3870,12 @@
                         <h2>Previsão do Tempo</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">2</span>s</div>
                     </div>
+                    <!-- a tela inteira e de Avare: o selo diz de onde vem tudo o que
+                         esta a esquerda, e os cooperados aparecem so na tabela da direita -->
+                    <div class="pv-local">
+                        <svg class="pv-local-pin" aria-hidden="true"><use href="#ico-local"></use></svg>
+                        <span class="pv-local-txt"><b>AVARÉ</b><small>SP · unidade Holambra</small></span>
+                    </div>
                 </div>
 
                 <!-- Previsão do tempo: valores estáticos até ligar a API meteorológica.
@@ -3389,14 +3883,19 @@
                      cooperados e o que a previsão muda na operação. -->
                 <div class="pv-grid">
                     <div class="pv-col">
-                        <!-- Agora em Avaré -->
+                        <!-- Agora em Avare: a cidade encabeca o cartao, no lugar da
+                             linha miuda de referencia onde ficava antes -->
                         <div class="content-section pv-section pv-agora">
+                            <div class="pv-agora-cidade">
+                                <svg class="pv-local-pin" aria-hidden="true"><use href="#ico-local"></use></svg>
+                                <b>Avaré</b><small>SP · agora</small>
+                            </div>
                             <div class="pv-agora-main">
                                 <svg class="pv-icon pv-icon--xl pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>
                                 <div class="pv-agora-temp">
                                     <span class="pv-temp">27<small>°C</small></span>
                                     <span class="pv-cond">Parcialmente nublado</span>
-                                    <span class="pv-agora-ref">Avaré · sensação 29° · máx 29° · mín 18°</span>
+                                    <span class="pv-agora-ref">sensação 29° · máx 29° · mín 18°</span>
                                 </div>
                             </div>
                             <div class="pv-facts">
@@ -3412,7 +3911,7 @@
                         <!-- Próximas 24h: linha de temperatura sobre barras de chuva (mm). -->
                         <div class="content-section pv-section pv-horas">
                             <div class="section-head">
-                                <h3>PRÓXIMAS 24 HORAS</h3>
+                                <h3>PRÓXIMAS 24 HORAS · AVARÉ</h3>
                                 <span class="pv-legenda"><i class="pv-legenda-temp"></i>temperatura<i class="pv-legenda-chuva"></i>chuva (mm)</span>
                             </div>
                                                         <div class="pv-meteo" role="img" aria-label="Próximas 24 horas: temperatura cai de 28° para 19° e chuva entre 18h e 22h, 4 mm">
@@ -3457,7 +3956,7 @@
                         <!-- Próximos 6 dias em tabela: uma linha por dia, faixa térmica na escala 14–32 °C. -->
                         <div class="content-section pv-section pv-dias">
                             <div class="section-head">
-                                <h3>PRÓXIMOS 6 DIAS</h3>
+                                <h3>PRÓXIMOS 6 DIAS · AVARÉ</h3>
                                 <span class="pv-legenda"><i class="pv-legenda-faixa"></i>mín – máx na escala 14–32 °C · vento → rajada em km/h</span>
                             </div>
                             <table class="pv-tabela pv-tabela--dias">
@@ -3537,22 +4036,24 @@
                     </div>
 
                     <div class="pv-col">
-                        <!-- Cooperados: tabela compacta; linha destacada com chuva ≥ 60% -->
+                        <!-- Avare (a unidade, sempre a primeira e marcada) e os cooperados.
+                             So a unidade tem destaque: as demais linhas sao todas iguais. -->
                         <div class="content-section pv-section pv-coop">
                             <div class="section-head">
-                                <h3>COOPERADOS · AMANHÃ</h3>
-                                <span class="pv-legenda">6 localidades</span>
+                                <h3>AVARÉ E COOPERADOS · AMANHÃ</h3>
+                                <span class="pv-legenda">a unidade + 6 cooperados</span>
                             </div>
                             <table class="pv-tabela">
                                 <thead>
                                     <tr><th>Localidade</th><th></th><th>Máx / mín</th><th class="num">Chuva</th><th class="num">mm</th><th class="num">Vento</th></tr>
                                 </thead>
                                 <tbody>
+                                    <tr class="is-unidade"><td class="pv-tabela-nome">Avaré<span class="pv-unidade-tag">unidade</span></td><td><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg></td><td class="pv-tabela-temp"><b>29°</b><small>18°</small></td><td class="num">10%</td><td class="num">0</td><td class="num">10 km/h</td></tr>
                                     <tr><td class="pv-tabela-nome">Itaí</td><td><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg></td><td class="pv-tabela-temp"><b>30°</b><small>18°</small></td><td class="num">10%</td><td class="num">0</td><td class="num">10 km/h</td></tr>
                                     <tr><td class="pv-tabela-nome">Paranapanema</td><td><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg></td><td class="pv-tabela-temp"><b>28°</b><small>16°</small></td><td class="num">25%</td><td class="num">1</td><td class="num">14 km/h</td></tr>
                                     <tr><td class="pv-tabela-nome">Cerqueira César</td><td><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg></td><td class="pv-tabela-temp"><b>29°</b><small>18°</small></td><td class="num">20%</td><td class="num">0</td><td class="num">12 km/h</td></tr>
                                     <tr><td class="pv-tabela-nome">Taquarituba</td><td><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg></td><td class="pv-tabela-temp"><b>27°</b><small>17°</small></td><td class="num">45%</td><td class="num">3</td><td class="num">16 km/h</td></tr>
-                                    <tr class="is-chuva"><td class="pv-tabela-nome">Itatinga</td><td><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg></td><td class="pv-tabela-temp"><b>25°</b><small>16°</small></td><td class="num">65%</td><td class="num">12</td><td class="num">20 km/h</td></tr>
+                                    <tr><td class="pv-tabela-nome">Itatinga</td><td><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg></td><td class="pv-tabela-temp"><b>25°</b><small>16°</small></td><td class="num">65%</td><td class="num">12</td><td class="num">20 km/h</td></tr>
                                     <tr><td class="pv-tabela-nome">Manduri</td><td><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg></td><td class="pv-tabela-temp"><b>30°</b><small>19°</small></td><td class="num">15%</td><td class="num">0</td><td class="num">9 km/h</td></tr>
                                 </tbody>
                             </table>

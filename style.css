@@ -5141,6 +5141,92 @@ body.theme-light .kpi-flag--alerta {
 
 
 /* ---- agora ---- */
+/* ---- de onde e a previsao: a cidade aparece grande no cabecalho da tela
+   e de novo no topo do cartao de agora, para nao restar duvida de que
+   tudo a esquerda e de Avare ---- */
+.pv-local {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+    padding: 0.4rem 0.75rem;
+    border: 1px solid var(--card-border);
+    border-radius: 999px;
+    background: var(--row-bg);
+}
+
+
+
+.pv-local-pin {
+    width: 1.1rem;
+    height: 1.1rem;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+
+.pv-local-txt {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+
+
+.pv-local-txt b {
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--text);
+}
+
+
+
+.pv-local-txt small {
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+
+
+.pv-agora-cidade {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+
+
+.pv-agora-cidade b {
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--text);
+}
+
+
+
+.pv-agora-cidade small {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+
+
+.pv-agora-cidade .pv-local-pin {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+
+
 .pv-agora {
     flex: 0 0 auto;
     gap: 0.5rem;
@@ -5542,15 +5628,41 @@ body.theme-light .kpi-flag--alerta {
 
 
 
-.pv-tabela tr.is-chuva td {
-    background: rgba(59, 130, 246, 0.08);
+/* a unidade e a linha selecionada da tabela: barra na lateral, fundo mais
+   forte e o nome em caixa alta — bem diferente do azul claro da chuva */
+.pv-tabela tr.is-unidade td {
+    background: var(--hover);
+    border-bottom-color: var(--card-border);
 }
 
 
 
-.pv-tabela tr.is-chuva td.num {
+.pv-tabela tr.is-unidade td:first-child {
+    box-shadow: inset 3px 0 0 var(--accent);
+}
+
+
+
+.pv-tabela tr.is-unidade .pv-tabela-nome {
+    font-weight: 800;
     color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+
+
+.pv-unidade-tag {
+    margin-left: 0.4rem;
+    padding: 0.05rem 0.35rem;
+    border-radius: 999px;
+    border: 1px solid var(--accent);
+    font-size: 0.56rem;
     font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    vertical-align: 0.06rem;
 }
 
 
@@ -6468,7 +6580,7 @@ body.theme-light .kpi-flag--alerta {
     flex: 1 1 auto;
     min-height: 0;
     display: grid;
-    grid-template-columns: 11rem minmax(0, 1fr) 9.5rem;
+    grid-template-columns: 11rem minmax(0, 1fr) 10.5rem;
     gap: 0.875rem;
 }
 
@@ -6571,25 +6683,29 @@ body.theme-light .kpi-flag--alerta {
 
 
 
+/* as tres medidas do ponto, uma por linha: o rotulo puxa para a esquerda e
+   o valor para a direita, entao os numeros ficam alinhados e nada quebra */
 .secador-ponto-dados {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
 }
 
 
 
 .secador-dado {
     display: flex;
-    flex-direction: column;
-    gap: 0.125rem;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
     min-width: 0;
 }
 
 
 
 .secador-dado b {
-    font-size: 1.1rem;
+    flex: 0 0 auto;
+    font-size: 0.95rem;
     font-weight: 700;
     line-height: 1.1;
     color: var(--text);
@@ -6600,9 +6716,13 @@ body.theme-light .kpi-flag--alerta {
 
 
 .secador-dado small {
-    font-size: 0.58rem;
+    min-width: 0;
+    font-size: 0.55rem;
     font-weight: 600;
     color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 
@@ -6627,7 +6747,7 @@ body.theme-light .kpi-flag--alerta {
 .secador-agora-col {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.35rem;
     min-height: 0;
 }
 
@@ -6658,13 +6778,111 @@ body.theme-light .kpi-flag--alerta {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0.125rem;
-    padding: 0.5rem 0.875rem;
+    gap: 0.05rem;
+    padding: 0.3rem 0.625rem;
     border-radius: 10px;
     border: 1px solid var(--row-line);
     border-left: 3px solid var(--cor-serie);
     background: var(--row-bg);
     overflow: hidden;
+}
+
+
+
+/* PROXIMA LIMPEZA: um reloginho depois das tres leituras. O anel esvazia
+   conforme a hora chega (--p vem do script) e o miolo diz quanto falta.
+   Nao divide a altura com as leituras: fica do tamanho do proprio anel. */
+.secador-limpeza {
+    --cor: var(--accent);
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.5rem;
+    border-radius: 10px;
+    border: 1px solid var(--row-line);
+    border-left: 3px solid var(--cor);
+    background: var(--row-bg);
+    overflow: hidden;
+}
+
+
+
+.secador-limpeza-relogio {
+    position: relative;
+    flex: 0 0 auto;
+    width: 2.2rem;
+    height: 2.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+/* o anel: rosca conica mascarada no meio, como os aneis da visao geral */
+.secador-limpeza-relogio::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(var(--cor) calc(var(--p) * 360deg), var(--row-line) 0);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 0.22rem), #000 calc(100% - 0.22rem + 1px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 0.22rem), #000 calc(100% - 0.22rem + 1px));
+}
+
+
+
+.secador-limpeza-relogio b {
+    position: relative;
+    font-size: 0.56rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+
+
+
+.secador-limpeza-txt {
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+    min-width: 0;
+}
+
+
+
+.secador-limpeza-nome {
+    font-size: 0.52rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--cor);
+    white-space: nowrap;
+}
+
+
+
+.secador-limpeza-ref {
+    font-size: 0.52rem;
+    font-weight: 500;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+
+
+/* na ultima hora o reloginho inteiro avisa */
+.secador-limpeza.is-perto {
+    --cor: var(--warn);
+}
+
+
+
+.secador-limpeza.is-perto .secador-limpeza-relogio b {
+    color: var(--warn);
 }
 
 
@@ -6680,7 +6898,7 @@ body.theme-light .kpi-flag--alerta {
 
 
 .secador-leitura-nome {
-    font-size: 0.58rem;
+    font-size: 0.54rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -6691,7 +6909,7 @@ body.theme-light .kpi-flag--alerta {
 
 
 .secador-leitura-valor {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     font-weight: 700;
     line-height: 1.1;
     color: var(--text);
@@ -6702,10 +6920,38 @@ body.theme-light .kpi-flag--alerta {
 
 
 .secador-leitura-ref {
-    font-size: 0.58rem;
+    font-size: 0.52rem;
     font-weight: 500;
     color: var(--muted);
     white-space: nowrap;
+}
+
+
+
+/* desvio da umidade de saida em relacao ao alvo calculado, ao lado do valor */
+.secador-leitura-desvio {
+    font-size: 0.55em;
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--muted);
+}
+
+
+
+.secador-leitura-desvio.is-bom {
+    color: var(--ok);
+}
+
+
+
+body.theme-light .secador-leitura-desvio.is-bom {
+    color: #1e7a45;
+}
+
+
+
+.secador-leitura-desvio.is-atencao {
+    color: var(--warn);
 }
 
 
@@ -7372,6 +7618,28 @@ body.theme-light .kpi-flag--atencao {
 
 
 
+/* secagem por hora: cada secador tem a sua propria barra, lado a lado
+   dentro da mesma hora — as duas dividem a largura da coluna */
+.forecast-chart--turno .hora-col {
+    gap: 3px;
+}
+
+
+
+.forecast-chart--turno .forecast-bar--hora {
+    width: 1.9rem;
+    max-width: 40%;
+}
+
+
+
+/* o numero de quem ficou abaixo da propria meta horaria */
+.forecast-chart--turno .forecast-bar--hora.is-abaixo .forecast-cap {
+    color: var(--warn);
+}
+
+
+
 /* a pilha por secador nao leva a cor unica da barra: cada fatia
    ganha volume (brilho no topo, sombra na base) e a barra inteira
    um halo suave para descolar do fundo */
@@ -7471,6 +7739,19 @@ body.theme-light .forecast-chart--turno .forecast-bar--hora.is-stack {
 .hora-col.is-abaixo .forecast-cap,
 .forecast-day small.is-atencao {
     color: var(--warn);
+}
+
+
+
+/* uma linha de meta para cada secador, na cor da propria barra */
+.forecast-meta-line--sec1 {
+    border-top-color: var(--sec1);
+}
+
+
+
+.forecast-meta-line--sec2 {
+    border-top-color: var(--sec2);
 }
 
 
@@ -9326,8 +9607,15 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 
 
 
+/* faixa de baixo da tela de silos: a primeira coluna tem a largura de duas
+   das oito colunas da grade de cima (mais o respiro e o padding da secao),
+   para os pulmoes ficarem do tamanho dos outros silos; a tabela de
+   movimentacao ocupa o espaco que sobra a direita. */
 .screen > .split-grid--silos {
-    flex: 1 1 0;
+    flex: 1.15 1 0;
+    grid-template-columns: calc(25% + 1.21875rem + 1.5px) minmax(0, 1fr);
+    gap: 0.75rem;
+    min-height: 0;
 }
 
 
@@ -9428,8 +9716,9 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 
 
 
-/* impureza do grão armazenado, ao lado da cultura; vermelha acima do limite de 1% */
-.sa-imp {
+/* umidade do grão armazenado, ao lado da cultura; vermelha acima do limite
+   de 14%, em que o grão não se mantém seguro no silo */
+.sa-umi {
     margin-left: 0.3rem;
     padding-left: 0.3rem;
     border-left: 1px solid var(--card-border);
@@ -9439,7 +9728,7 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 
 
 
-.sa-imp--alto {
+.sa-umi--alto {
     color: var(--danger);
     font-weight: 800;
 }
@@ -9753,13 +10042,94 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 
 
 /* Pulmões embaixo dos silos: a moldura tracejada abraça só os dois
-   cartões. A largura é a de 2 das 8 colunas da grade de cima (mais o
-   respiro e o padding da seção), para os cartões ficarem do tamanho dos
-   outros silos; a faixa tem a mesma altura da seção dos silos. */
-.screen > .sa-section--pulmao {
-    flex: 1.15 1 0;
-    align-self: flex-start;
-    width: calc(25% + 1.21875rem + 1.5px);
+   cartões. A largura vem da primeira coluna da faixa; aqui fica só a
+   altura, a mesma da seção dos silos. */
+.split-grid--silos > .sa-section--pulmao {
+    min-height: 0;
+}
+
+
+
+/* ---- Movimentação silo a silo (ao lado dos pulmões) ---- */
+.sa-section--mov {
+    min-height: 0;
+}
+
+
+
+/* linhas mais baixas que as das outras tabelas: sao nove de uma vez
+   dentro de meia tela */
+.sa-mov-table td {
+    padding: 0.4rem 0.625rem;
+}
+
+
+
+.sa-mov-table th {
+    padding: 0.3rem 0.625rem;
+}
+
+
+
+/* colunas de numero alinhadas a direita, nome e cultura a esquerda */
+.sa-mov-table th:nth-child(n + 3),
+.sa-mov-table td:nth-child(n + 3) {
+    text-align: right;
+}
+
+
+
+.sa-mov-table td:first-child {
+    font-weight: 700;
+}
+
+
+
+/* a ocupacao acompanha o estoque, menor e apagada */
+.sa-mov-table td small {
+    margin-left: 0.375rem;
+    color: var(--muted);
+    font-weight: 600;
+}
+
+
+
+.sa-mov-saldo {
+    font-weight: 700;
+}
+
+
+
+/* encheu mais do que saiu */
+.sa-mov-saldo--sobe {
+    color: var(--ok);
+}
+
+
+
+/* saiu mais do que entrou */
+.sa-mov-saldo--desce {
+    color: var(--warn);
+}
+
+
+
+body.theme-light .sa-mov-saldo--sobe {
+    color: #1e7a45;
+}
+
+
+
+.sa-mov-table tr.sa-mov-total td {
+    border-top: 1px solid var(--card-border);
+    border-bottom: none;
+    color: var(--muted);
+}
+
+
+
+.sa-mov-table tr.sa-mov-total td:first-child {
+    color: var(--text);
 }
 
 
@@ -10996,6 +11366,14 @@ body.edit-mode .fluxo-etapa-pill {
 
 
 
+    /* a faixa dos silos tem regra mais especifica la em cima; aqui ela
+       tambem precisa virar uma coluna so */
+    .screen > .split-grid--silos {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+
+
     .hourly-data {
         grid-template-columns: repeat(4, minmax(0, 1fr));
     }
@@ -11356,6 +11734,69 @@ body.edit-mode .fluxo-etapa-pill {
 
 
 /* anel de percentual */
+/* qualidade media das cargas expedidas, no lugar do anel de dosagem:
+   tres numeros lado a lado, cada um com o proprio limite embaixo */
+.gv-qual {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+    padding-top: 0.45rem;
+    border-top: 1px solid var(--row-line);
+}
+
+/* o titulo atravessa as tres colunas e diz de onde vem o numero */
+.gv-qual-titulo {
+    grid-column: 1 / -1;
+    font-size: 0.58rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.gv-qual-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.1;
+}
+
+.gv-qual-item b {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+}
+
+.gv-qual-item b small {
+    margin-left: 0.05rem;
+    font-size: 0.6em;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.gv-qual-item em {
+    font-style: normal;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.gv-qual-item i {
+    font-style: normal;
+    font-size: 0.56rem;
+    font-weight: 600;
+    color: var(--faint);
+}
+
+/* passou do limite: o numero avisa na cor */
+.gv-qual-item.is-atencao b {
+    color: var(--warn);
+}
+
 .gv-ring {
     position: relative;
     display: flex;
@@ -13409,6 +13850,185 @@ body.theme-light .mensal-ritmo {
 
 
 /* ---- Classificacao · filtro de cultura ---- */
+/* ============================================
+   EXPEDICAO · FILTRO GERAL DA TELA
+   Cultura e periodo moram no cabecalho: a tela guarda as escolhas em
+   data-exp-cultura / data-exp-periodo e o CSS troca os blocos e esconde
+   as linhas que nao batem. A tabela de cargas so obedece a cultura.
+   ============================================ */
+.exp-filtro {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    flex-wrap: wrap;
+    /* empurra o filtro para a direita do cabecalho, como na produtividade */
+    margin-left: auto;
+}
+
+
+
+/* dentro da barra o periodo ja vem depois da cultura; o auto do fluxo
+   so serviria para grudar no canto */
+.exp-filtro .fluxo-periodo {
+    margin-left: 0;
+}
+
+
+
+/* ---- os dois filtros valem para tudo ----
+   Cada numero que muda com a cultura esta no cartao como cinco variantes
+   (.exp-cult / .exp-cult-bloco, uma por cultura mais "todas") e so a
+   escolhida aparece. As barras de destino guardam o valor de cada cultura
+   em variaveis proprias (--t-milho, --max-milho...) e a regra abaixo troca
+   qual delas vale. A tabela de cargas tem um tbody por periodo. */
+#screen-7 .exp-cult,
+#screen-7 .exp-cult-bloco,
+#screen-7 .exp-per,
+#screen-7 .exp-cargas-corpo {
+    display: none;
+}
+
+
+
+#screen-7[data-exp-cultura="todas"] .exp-cult[data-cultura="todas"],
+#screen-7[data-exp-cultura="milho"] .exp-cult[data-cultura="milho"],
+#screen-7[data-exp-cultura="sorgo"] .exp-cult[data-cultura="sorgo"],
+#screen-7[data-exp-cultura="trigo"] .exp-cult[data-cultura="trigo"],
+#screen-7[data-exp-cultura="soja"] .exp-cult[data-cultura="soja"] {
+    display: inline;
+}
+
+
+
+#screen-7[data-exp-cultura="todas"] .exp-cult-bloco[data-cultura="todas"],
+#screen-7[data-exp-cultura="milho"] .exp-cult-bloco[data-cultura="milho"],
+#screen-7[data-exp-cultura="sorgo"] .exp-cult-bloco[data-cultura="sorgo"],
+#screen-7[data-exp-cultura="trigo"] .exp-cult-bloco[data-cultura="trigo"],
+#screen-7[data-exp-cultura="soja"] .exp-cult-bloco[data-cultura="soja"] {
+    display: flex;
+}
+
+
+
+/* na visao de uma cultura so, as pastilhas das outras saem do rodape */
+#screen-7[data-exp-cultura="milho"] .kpi-sub-item[data-cultura]:not([data-cultura="milho"]),
+#screen-7[data-exp-cultura="sorgo"] .kpi-sub-item[data-cultura]:not([data-cultura="sorgo"]),
+#screen-7[data-exp-cultura="trigo"] .kpi-sub-item[data-cultura]:not([data-cultura="trigo"]),
+#screen-7[data-exp-cultura="soja"] .kpi-sub-item[data-cultura]:not([data-cultura="soja"]) {
+    display: none;
+}
+
+
+
+#screen-7[data-exp-cultura="todas"] .exp-destinos {
+    --exp-max: var(--max-todas);
+}
+
+
+
+#screen-7[data-exp-cultura="todas"] .exp-destino {
+    --t: var(--t-todas);
+}
+
+
+
+#screen-7[data-exp-cultura="milho"] .exp-destinos {
+    --exp-max: var(--max-milho);
+}
+
+
+
+#screen-7[data-exp-cultura="milho"] .exp-destino {
+    --t: var(--t-milho);
+}
+
+
+
+#screen-7[data-exp-cultura="sorgo"] .exp-destinos {
+    --exp-max: var(--max-sorgo);
+}
+
+
+
+#screen-7[data-exp-cultura="sorgo"] .exp-destino {
+    --t: var(--t-sorgo);
+}
+
+
+
+#screen-7[data-exp-cultura="trigo"] .exp-destinos {
+    --exp-max: var(--max-trigo);
+}
+
+
+
+#screen-7[data-exp-cultura="trigo"] .exp-destino {
+    --t: var(--t-trigo);
+}
+
+
+
+#screen-7[data-exp-cultura="soja"] .exp-destinos {
+    --exp-max: var(--max-soja);
+}
+
+
+
+#screen-7[data-exp-cultura="soja"] .exp-destino {
+    --t: var(--t-soja);
+}
+
+
+
+#screen-7[data-exp-periodo="dia"] .exp-per[data-periodo="dia"],
+#screen-7[data-exp-periodo="semana"] .exp-per[data-periodo="semana"],
+#screen-7[data-exp-periodo="mes"] .exp-per[data-periodo="mes"],
+#screen-7[data-exp-periodo="ano"] .exp-per[data-periodo="ano"] {
+    display: inline;
+}
+
+
+
+#screen-7[data-exp-periodo="dia"] .exp-cargas-corpo[data-periodo="dia"],
+#screen-7[data-exp-periodo="semana"] .exp-cargas-corpo[data-periodo="semana"],
+#screen-7[data-exp-periodo="mes"] .exp-cargas-corpo[data-periodo="mes"],
+#screen-7[data-exp-periodo="ano"] .exp-cargas-corpo[data-periodo="ano"] {
+    display: table-row-group;
+}
+
+
+
+#screen-7 .exp-periodo-bloco {
+    display: none;
+}
+
+
+
+#screen-7[data-exp-periodo="dia"] .exp-periodo-bloco[data-periodo="dia"],
+#screen-7[data-exp-periodo="semana"] .exp-periodo-bloco[data-periodo="semana"],
+#screen-7[data-exp-periodo="mes"] .exp-periodo-bloco[data-periodo="mes"],
+#screen-7[data-exp-periodo="ano"] .exp-periodo-bloco[data-periodo="ano"] {
+    display: grid;
+}
+
+
+
+/* com uma cultura escolhida, some quem nao bate nas duas tabelas; a linha
+   Geral da qualidade nao tem data-cultura, entao sai junto — o total
+   deixa de valer quando se olha uma cultura so */
+#screen-7[data-exp-cultura="milho"] .exp-qual-table tbody tr:not([data-cultura="milho"]),
+#screen-7[data-exp-cultura="sorgo"] .exp-qual-table tbody tr:not([data-cultura="sorgo"]),
+#screen-7[data-exp-cultura="trigo"] .exp-qual-table tbody tr:not([data-cultura="trigo"]),
+#screen-7[data-exp-cultura="soja"] .exp-qual-table tbody tr:not([data-cultura="soja"]),
+#screen-7[data-exp-cultura="milho"] .class-table tbody tr:not([data-cultura="milho"]),
+#screen-7[data-exp-cultura="sorgo"] .class-table tbody tr:not([data-cultura="sorgo"]),
+#screen-7[data-exp-cultura="trigo"] .class-table tbody tr:not([data-cultura="trigo"]),
+#screen-7[data-exp-cultura="soja"] .class-table tbody tr:not([data-cultura="soja"]) {
+    display: none;
+}
+
+
+
 .class-filtro {
     display: flex;
     align-items: center;
