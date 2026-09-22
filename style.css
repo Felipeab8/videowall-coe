@@ -13719,11 +13719,11 @@ body.theme-light .class-val--fora {
 
 
 
-/* rotulo da meta fica sobre a linha dos 7 dias, longe das barras */
+/* rotulo da meta fica logo abaixo da linha tracejada, para nao brigar com o valor do dia 1 */
 .hist-meta-lbl {
     position: absolute;
     left: 0;
-    transform: translateY(calc(-100% - 0.125rem));
+    transform: translateY(0.125rem);
     font-style: normal;
     font-size: 0.56rem;
     font-weight: 700;
@@ -13786,6 +13786,28 @@ body.theme-light .class-val--fora {
     color: var(--text);
     font-variant-numeric: tabular-nums;
     line-height: 1;
+}
+
+
+
+/* valor de cada um dos 7 dias, acima do seu ponto na linha */
+.hist-spark-dia {
+    position: absolute;
+    transform: translate(-50%, calc(-100% - 0.2rem));
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+
+
+/* o primeiro dia encosta na borda esquerda do grafico */
+.hist-spark-dia--ini {
+    transform: translate(0, calc(-100% - 0.2rem));
 }
 
 
@@ -13899,6 +13921,12 @@ body.theme-light .class-val--fora {
     .hist-plot {
         grid-template-columns: auto minmax(0, 1.3fr) minmax(0, 1fr);
         gap: 0 0.5rem;
+    }
+
+
+
+    .hist-spark-dia {
+        font-size: 0.5rem;
     }
 
 
