@@ -564,13 +564,13 @@
                     <div class="kpi-card kpi-card--meta kpi-card--motivo alert" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Por que o tempo médio de ciclo está em 38 min"
-                        data-motivo-resumo="38 min · meta 25 min · +13 min"
+                        data-motivo-resumo="38 min · fora do padrão · milho 42 min · sorgo 30 min"
                         data-motivo-lista="Chegada até a balança::14 min::+6 min::ruim|Balança até a moega::19 min::+3 min::ruim|Pico de chegadas 13h–15h::41% das cargas::concentração::ruim"
                         data-motivo-nota="A fila do milho responde por 9 dos 12 caminhões parados.">
                         <div class="kpi-label">TEMPO MÉDIO DE CICLO</div>
                         <div class="kpi-value-row">
                             <div class="kpi-value">38 <span class="kpi-value-unit">min</span></div>
-                            <span class="kpi-flag kpi-flag--alerta">↑ +13 min vs meta 25</span>
+                            <span class="kpi-flag kpi-flag--alerta">FORA DO PADRÃO</span>
                         </div>
                         <div class="kpi-sub">
                             <span class="kpi-sub-item"><i class="legend-dot legend-dot--milho"></i><b>Milho</b> 42 min</span>
@@ -621,8 +621,8 @@
                     </div>
                 </div>
 
-                <!-- Ciclo decomposto por etapa: barra empilhada por cultura, escala 0-50 min,
-                     meta institucional em 25 min. A etapa mais longa ganha a moldura de alerta. -->
+                <!-- Ciclo decomposto por etapa: barra empilhada por cultura, escala 0-50 min.
+                     A etapa mais longa ganha a moldura de alerta. -->
                 <div class="content-section etapa-section">
                     <div class="section-head section-head--top">
                         <div class="section-head-text">
@@ -630,7 +630,7 @@
                         </div>
                     </div>
 
-                    <div class="etapa-chart" style="--etapa-max: 50; --etapa-meta: 25">
+                    <div class="etapa-chart" style="--etapa-max: 50">
                         <div class="etapa-row">
                             <div class="etapa-cultura">
                                 <span class="etapa-cultura-nome"><i class="legend-dot legend-dot--milho"></i>MILHO</span>
@@ -676,7 +676,6 @@
                                 <span style="--t: 0">0</span><span style="--t: 10">10</span><span style="--t: 20">20</span><span style="--t: 30">30</span><span style="--t: 40">40</span><span style="--t: 50">50 min</span>
                             </div>
                         </div>
-                        <div class="etapa-meta" aria-hidden="true"><span class="etapa-meta-label">meta 25 min</span></div>
                     </div>
                 </div>
 

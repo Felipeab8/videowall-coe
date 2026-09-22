@@ -13074,35 +13074,6 @@ body.theme-light .kpi-flag--info {
 
 
 
-/* linha vertical da meta: comeca no rotulo (acima das barras) e desce ate o eixo.
-   O deslocamento soma o padding do card e a coluna da cultura (6.5rem + gap 0.75rem). */
-.etapa-meta {
-    position: absolute;
-    top: 1.125rem;
-    bottom: 1.5rem;
-    left: calc(0.875rem + 7.25rem + (100% - 0.875rem * 2 - 7.25rem) * var(--etapa-meta) / var(--etapa-max));
-    border-left: 1px dashed var(--danger);
-    opacity: 0.8;
-    pointer-events: none;
-}
-
-
-
-.etapa-meta-label {
-    position: absolute;
-    top: -0.95rem;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    font-size: 0.58rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--danger);
-}
-
-
-
 /* ---- Visao mensal por cultura ---- */
 .mensal-grid {
     display: grid;
@@ -14023,12 +13994,6 @@ body.theme-light .class-val--fora {
 
     .etapa-seg span {
         font-size: 0.55rem;
-    }
-
-
-
-    .etapa-meta {
-        display: none;
     }
 
 
