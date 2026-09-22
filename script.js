@@ -3533,7 +3533,8 @@ document.addEventListener('click', (e) => {
 // ============================================
 // MOEGAS · FILTROS
 // Período é por moega: cada cartão guarda a escolha em data-moega-periodo
-// e o CSS troca o bloco "Saiu" e as trocas de cultura que entram no
+// e o CSS troca o bloco "Saiu", a entrada/saída (ao vivo no turno, média
+// nos demais) e as trocas de cultura que entram no
 // período. Cultura é da tela (data-moega-cultura na section) e apaga as
 // moegas que não batem. Delegado no documento porque o editor remonta o palco.
 // ============================================

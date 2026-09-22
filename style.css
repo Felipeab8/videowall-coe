@@ -4177,6 +4177,59 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 
 
+/* entrada e saída seguem o período do cartão: "turno" é o estado ao vivo
+   (placa na moega, taxa do momento); hoje, 7 e 30 dias são médias do período,
+   com o número de cargas no lugar da placa. */
+.moega-fluxo-label[data-periodo],
+.moega-fluxo-sub[data-periodo],
+.moega-fluxo-value[data-periodo] {
+    display: none;
+}
+
+
+
+.moega-item[data-moega-periodo="turno"] .moega-fluxo-label[data-periodo~="turno"],
+.moega-item[data-moega-periodo="hoje"] .moega-fluxo-label[data-periodo~="hoje"],
+.moega-item[data-moega-periodo="7d"] .moega-fluxo-label[data-periodo~="7d"],
+.moega-item[data-moega-periodo="30d"] .moega-fluxo-label[data-periodo~="30d"] {
+    display: inline-flex;
+}
+
+
+
+.moega-item[data-moega-periodo="turno"] .moega-fluxo-sub[data-periodo~="turno"],
+.moega-item[data-moega-periodo="hoje"] .moega-fluxo-sub[data-periodo~="hoje"],
+.moega-item[data-moega-periodo="7d"] .moega-fluxo-sub[data-periodo~="7d"],
+.moega-item[data-moega-periodo="30d"] .moega-fluxo-sub[data-periodo~="30d"] {
+    display: -webkit-box;
+}
+
+
+
+.moega-item[data-moega-periodo="turno"] .moega-fluxo-value[data-periodo~="turno"],
+.moega-item[data-moega-periodo="hoje"] .moega-fluxo-value[data-periodo~="hoje"],
+.moega-item[data-moega-periodo="7d"] .moega-fluxo-value[data-periodo~="7d"],
+.moega-item[data-moega-periodo="30d"] .moega-fluxo-value[data-periodo~="30d"] {
+    display: block;
+}
+
+
+
+/* fora do turno o número é média do período, não estado de equipamento:
+   o ponto fica neutro e a média não sai apagada por "parada". */
+.moega-item:not([data-moega-periodo="turno"]) .moega-fluxo-estado {
+    background: var(--faint);
+    border: 0;
+}
+
+
+
+.moega-item:not([data-moega-periodo="turno"]) .moega-fluxo-item.is-parada .moega-fluxo-value {
+    color: var(--text);
+}
+
+
+
 .moega-fluxo-sub {
     font-size: 0.6rem;
     line-height: 1.25;
@@ -9854,7 +9907,7 @@ body.theme-light .kpi-card--destaque .kpi-value {
 
 
 
-/* fila / 1ª pesagem / classificacao / descarga / 2ª pesagem / liberacao */
+/* fila / 1ª pesagem / classificacao / descarga / 2ª pesagem / liberados */
 .fluxo-etapas--seis {
     grid-template-columns: repeat(6, 1fr);
     gap: 1.5rem;
@@ -9956,6 +10009,18 @@ body.theme-light .kpi-card--destaque .kpi-value {
 
 
 
+/* Caminhoes parados esperando a vez na etapa: linha discreta, abaixo de
+   quem esta sendo atendido agora. */
+.fluxo-etapa-espera {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--warn);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
 .fluxo-etapa-sub {
     font-size: 0.66rem;
     font-weight: 600;
@@ -10004,7 +10069,9 @@ body.theme-light .kpi-card--destaque .kpi-value {
 
 
 .fluxo-etapa-estado {
-    margin-top: 0.25rem;
+    /* rodape do cartao: cada etapa tem um numero de linhas diferente e os
+       selos precisam ficar na mesma altura */
+    margin-top: auto;
     align-self: flex-start;
     padding: 0.125rem 0.5rem;
     border-radius: 999px;
@@ -10259,7 +10326,7 @@ body.theme-light .fluxo-tag {
 
 
 
-.fluxo-etapa-pill--liberacao {
+.fluxo-etapa-pill--liberados {
     color: var(--ok);
     background: rgba(46, 204, 113, 0.14);
     border-color: rgba(46, 204, 113, 0.38);
@@ -10297,8 +10364,20 @@ body.theme-light .fluxo-etapa-pill--pesagem2 {
 
 
 
-body.theme-light .fluxo-etapa-pill--liberacao {
+body.theme-light .fluxo-etapa-pill--liberados {
     color: #1e7a45;
+}
+
+
+
+/* Quem espera a vez nao conta como atendido: o selo perde a cor da etapa
+   e fica tracejado, tanto na tabela quanto no filtro. */
+.fluxo-etapa-pill.is-espera,
+body.theme-light .fluxo-etapa-pill.is-espera {
+    color: var(--muted);
+    background: transparent;
+    border-color: var(--card-border);
+    border-style: dashed;
 }
 
 
@@ -12800,44 +12879,6 @@ body.theme-light .kpi-flag--info {
 
 
 
-/* Tempo em Avaré: ícone sol/nuvem ao lado da temperatura; umidade e chuva
-   no rodapé, com pontos nas cores de água e céu para não confundir com
-   as culturas. */
-.tempo-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 10px;
-    background: var(--accent-soft);
-    color: var(--accent);
-    flex-shrink: 0;
-}
-
-
-
-.tempo-icon svg {
-    width: 1.6rem;
-    height: 1.6rem;
-}
-
-
-
-.tempo-desc {
-    flex-basis: 100%;
-    font-size: 0.72rem;
-    margin-top: -0.25rem;
-}
-
-
-
-.legend-dot--umidade { background: #38bdf8; }
-
-
-.legend-dot--chuva { background: #818cf8; }
-
-
 
 /* titulo + subtitulo de secao */
 .section-head--top {
@@ -13696,13 +13737,12 @@ body.theme-light .class-val--fora {
 
 
 
-/* meta: linha tracejada que atravessa sparkline e barras */
+/* meta: o tracejado fica so no trecho dia a dia, onde a leitura e visual;
+   nas barras o numero ja vem escrito em cima, entao a linha so atrapalhava */
 .hist-meta-line {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 1rem;               /* mesma area util do plot (descontando os paddings) */
-    bottom: 1.125rem;
+    grid-column: 2;
+    grid-row: 1;
+    position: relative;
     pointer-events: none;
 }
 
@@ -13719,11 +13759,16 @@ body.theme-light .class-val--fora {
 
 
 
-/* rotulo da meta fica logo abaixo da linha tracejada, para nao brigar com o valor do dia 1 */
+/* rotulo da meta sai da area do grafico: fica na faixa livre acima dela,
+   alinhado ao fim do tracejado, com um tracinho para ligar um ao outro */
 .hist-meta-lbl {
     position: absolute;
-    left: 0;
-    transform: translateY(0.125rem);
+    right: 0;
+    bottom: 100%;
+    margin-bottom: 0.15rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
     font-style: normal;
     font-size: 0.56rem;
     font-weight: 700;
@@ -13734,11 +13779,41 @@ body.theme-light .class-val--fora {
 
 
 
+.hist-meta-lbl::before {
+    content: "";
+    width: 0.875rem;
+    border-top: 1px dashed var(--faint);
+}
+
+
+
 .hist-spark,
 .hist-bars {
     position: relative;
     min-width: 0;
     height: 100%;
+}
+
+
+
+/* colunas fixas: o tracejado divide a celula do meio com a sparkline */
+.hist-plot > .hist-bars--antes {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+
+
+.hist-plot > .hist-spark {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+
+
+.hist-plot > .hist-bars:not(.hist-bars--antes) {
+    grid-column: 3;
+    grid-row: 1;
 }
 
 

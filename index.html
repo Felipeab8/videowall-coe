@@ -547,7 +547,7 @@
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">5</span>s</div>
                     </div>
                 </div>
-                <div class="kpi-grid kpi-grid--four">
+                <div class="kpi-grid kpi-grid--three">
                     <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Por que a fila está em 12 caminhões"
@@ -591,32 +591,6 @@
                         <div class="kpi-sub">
                             <span class="kpi-sub-item"><i class="legend-dot legend-dot--milho"></i><b>Milho</b> 860 t · 34 cam.</span>
                             <span class="kpi-sub-item"><i class="legend-dot legend-dot--sorgo"></i><b>Sorgo</b> 380 t · 14 cam.</span>
-                        </div>
-                    </div>
-                    <!-- Tempo em Avaré: chuva à vista muda a fila descoberta e a umidade
-                         do grão que chega, por isso mora ao lado dos KPIs da recepção.
-                         Dados fixos de exemplo; na planta viriam da estação/serviço de tempo. -->
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo kpi-card--tempo" tabindex="0"
-                        data-motivo
-                        data-motivo-titulo="Tempo em Avaré · próximas horas"
-                        data-motivo-resumo="27°C · umidade 58% · 35% de chance de chuva · 4 mm previstos"
-                        data-motivo-lista="16h::28°C · 20% · 0 mm::parcialmente nublado::neutro|18h::25°C · 45% · 1,5 mm::pancadas isoladas::ruim|20h::22°C · 60% · 2,5 mm::chuva fraca::ruim|Vento::14 km/h NE::rajadas de 26 km/h::neutro"
-                        data-motivo-nota="Chuva acima de 40% a partir das 18h (4 mm até 22h): atenção à fila a céu aberto e à umidade do grão na chegada.">
-                        <div class="kpi-label">TEMPO EM AVARÉ</div>
-                        <div class="kpi-value-row">
-                            <span class="tempo-icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="8" cy="8" r="3.2"></circle>
-                                    <path d="M8 2.5v1.2M8 12.3v1.2M2.5 8h1.2M12.3 8h1.2M4.1 4.1l.9.9M11 11l.9.9M4.1 11.9l.9-.9M11 5l.9-.9"></path>
-                                    <path d="M10.5 19.5H8.2a3.2 3.2 0 0 1-.4-6.4 4.6 4.6 0 0 1 8.9-1.2 3.8 3.8 0 0 1 .6 7.6h-6.8z"></path>
-                                </svg>
-                            </span>
-                            <div class="kpi-value">27 <span class="kpi-value-unit">°C</span></div>
-                            <span class="kpi-value-ref tempo-desc">Parcialmente nublado</span>
-                        </div>
-                        <div class="kpi-sub">
-                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--umidade"></i><b>Umidade</b> 58%</span>
-                            <span class="kpi-sub-item"><i class="legend-dot legend-dot--chuva"></i><b>Chuva</b> 35% · 4 mm</span>
                         </div>
                     </div>
                 </div>
@@ -811,27 +785,32 @@
                             <span class="fluxo-etapa-sub">tempo médio <b data-periodo="turno">8 min</b><b data-periodo="hoje">9 min</b><b data-periodo="7d">11 min</b><b data-periodo="30d">10 min</b></span>
                             <span class="fluxo-etapa-estado">Operando</span>
                         </div>
+                        <!-- Capacidade fisica manda no valor: a etapa mostra quantos estao
+                             sendo atendidos agora e quantos esperam a vez. Com a balanca 2
+                             em afericao so um caminhao pesa por vez. -->
                         <div class="fluxo-etapa fluxo-etapa--alerta" tabindex="0"
                             data-motivo
                             data-motivo-titulo="1ª pesagem"
-                            data-motivo-resumo="4 caminhões na pesagem de entrada · balança 1 de 2"
-                            data-motivo-lista="Balanças de entrada::1 de 2::balança 2 em aferição::ruim|Espera na pesagem::14 min::meta 8 min::ruim|Tempo médio de pesagem::5 min::meta 4 min::ruim"
+                            data-motivo-resumo="1 caminhão na balança · 3 aguardando · balança 1 de 2"
+                            data-motivo-lista="Balanças de entrada::1 de 2::balança 2 em aferição::ruim|Na balança::1::capacidade 1::neutro|Aguardando a vez::3::fila na plataforma::ruim|Espera na pesagem::14 min::meta 8 min::ruim|Tempo médio de pesagem::5 min::meta 4 min::ruim"
                             data-motivo-nota="Peso bruto na balança 1 (balança 2 em aferição desde as 11h20).">
                             <span class="fluxo-etapa-num">2</span>
                             <span class="fluxo-etapa-nome">1ª Pesagem</span>
-                            <span class="fluxo-etapa-valor">4 <small>pesando</small></span>
+                            <span class="fluxo-etapa-valor">1 <small>pesando</small></span>
+                            <span class="fluxo-etapa-espera">3 aguardando</span>
                             <span class="fluxo-etapa-sub">tempo médio <b data-periodo="turno">12 min</b><b data-periodo="hoje">14 min</b><b data-periodo="7d">9 min</b><b data-periodo="30d">8 min</b></span>
                             <span class="fluxo-etapa-estado">Balança 2 em aferição</span>
                         </div>
                         <div class="fluxo-etapa fluxo-etapa--alerta" tabindex="0"
                             data-motivo
                             data-motivo-titulo="Classificação"
-                            data-motivo-resumo="6 caminhões na classificação · 3 análises em andamento"
-                            data-motivo-lista="Amostras coletadas::6 de 6::completo::bom|Análises concluídas::3 de 6::3 em andamento::ruim|Tempo médio de classificação::11 min::meta 8 min::ruim"
+                            data-motivo-resumo="2 amostras em análise · 4 caminhões aguardando · 2 postos de 2"
+                            data-motivo-lista="Postos de classificação::2 de 2::ocupados::ruim|Em análise::2::capacidade 2::neutro|Aguardando a vez::4::fila de amostras::ruim|Tempo médio de classificação::11 min::meta 8 min::ruim"
                             data-motivo-nota="Coleta de amostra, umidade e impurezas. O resultado define o desconto e a moega de destino.">
                             <span class="fluxo-etapa-num">3</span>
                             <span class="fluxo-etapa-nome">Classificação</span>
-                            <span class="fluxo-etapa-valor">6 <small>classificando</small></span>
+                            <span class="fluxo-etapa-valor">2 <small>classificando</small></span>
+                            <span class="fluxo-etapa-espera">4 aguardando</span>
                             <span class="fluxo-etapa-sub">tempo médio <b data-periodo="turno">10 min</b><b data-periodo="hoje">11 min</b><b data-periodo="7d">8 min</b><b data-periodo="30d">8 min</b></span>
                             <span class="fluxo-etapa-estado">Tempo acima da meta</span>
                         </div>
@@ -850,26 +829,28 @@
                         <div class="fluxo-etapa" tabindex="0"
                             data-motivo
                             data-motivo-titulo="2ª pesagem"
-                            data-motivo-resumo="5 caminhões na pesagem de saída · balança 1 de 1"
-                            data-motivo-lista="Balança de saída::1 de 1::operando::bom|Tempo médio de pesagem::4 min::meta 5 min::bom|Divergência de peso::0 de 5::sem ocorrência::bom"
+                            data-motivo-resumo="2 caminhões na balança de saída · 3 aguardando"
+                            data-motivo-lista="Balanças de saída::2 de 2::operando::bom|Na balança::2::capacidade 2::neutro|Aguardando a vez::3::espera 7 min::neutro|Tempo médio de pesagem::4 min::meta 5 min::bom|Divergência de peso::0 de 5::sem ocorrência::bom"
                             data-motivo-nota="Tara do caminhão vazio para fechar o peso líquido.">
                             <span class="fluxo-etapa-num">5</span>
                             <span class="fluxo-etapa-nome">2ª Pesagem</span>
-                            <span class="fluxo-etapa-valor">5 <small>pesando</small></span>
+                            <span class="fluxo-etapa-valor">2 <small>pesando</small></span>
+                            <span class="fluxo-etapa-espera">3 aguardando</span>
                             <span class="fluxo-etapa-sub">tempo médio <b data-periodo="turno">4 min</b><b data-periodo="hoje">4 min</b><b data-periodo="7d">5 min</b><b data-periodo="30d">4 min</b></span>
                             <span class="fluxo-etapa-estado">Operando</span>
                         </div>
-                        <div class="fluxo-etapa" tabindex="0"
+                        <!-- Estado final: nao e' etapa com fila, e' o que ja saiu.
+                             Por isso entra sem tempo medio, so a contagem. -->
+                        <div class="fluxo-etapa fluxo-etapa--liberados" tabindex="0"
                             data-motivo
-                            data-motivo-titulo="Liberação"
-                            data-motivo-resumo="4 caminhões aguardando liberação na portaria de saída"
-                            data-motivo-lista="Romaneios emitidos::4 de 4::completo::bom|Tempo médio até saída::6 min::meta 8 min::bom|Pendências documentais::0::sem ocorrência::bom"
-                            data-motivo-nota="Emissão do romaneio e liberação na portaria de saída.">
+                            data-motivo-titulo="Liberados"
+                            data-motivo-resumo="4 caminhões liberados na portaria de saída"
+                            data-motivo-lista="Romaneios emitidos::4 de 4::completo::bom|Pendências documentais::0::sem ocorrência::bom"
+                            data-motivo-nota="Romaneio emitido e portaria de saída liberada: o caminhão deixou a planta.">
                             <span class="fluxo-etapa-num">6</span>
-                            <span class="fluxo-etapa-nome">Liberação</span>
-                            <span class="fluxo-etapa-valor">4 <small>liberando</small></span>
-                            <span class="fluxo-etapa-sub">tempo médio <b data-periodo="turno">5 min</b><b data-periodo="hoje">6 min</b><b data-periodo="7d">7 min</b><b data-periodo="30d">6 min</b></span>
-                            <span class="fluxo-etapa-estado">Operando</span>
+                            <span class="fluxo-etapa-nome">Liberados</span>
+                            <span class="fluxo-etapa-valor">4 <small>liberados</small></span>
+                            <span class="fluxo-etapa-estado">Concluído</span>
                         </div>
                     </div>
                 </div>
@@ -885,7 +866,7 @@
                             <button type="button" class="fluxo-etapa-pill fluxo-etapa-pill--classificacao" data-fluxo-filtro="classificacao" aria-pressed="false">Classificação · 6</button>
                             <button type="button" class="fluxo-etapa-pill fluxo-etapa-pill--moega" data-fluxo-filtro="moega" aria-pressed="false">Moega · 6</button>
                             <button type="button" class="fluxo-etapa-pill fluxo-etapa-pill--pesagem2" data-fluxo-filtro="pesagem2" aria-pressed="false">2ª pesagem · 5</button>
-                            <button type="button" class="fluxo-etapa-pill fluxo-etapa-pill--liberacao" data-fluxo-filtro="liberacao" aria-pressed="false">Liberação · 4</button>
+                            <button type="button" class="fluxo-etapa-pill fluxo-etapa-pill--liberados" data-fluxo-filtro="liberados" aria-pressed="false">Liberados · 4</button>
                         </div>
                     </div>
                     <div class="table-scroll table-scroll--livre">
@@ -922,15 +903,15 @@
                                 <tr data-etapa="fila"><td><span class="fluxo-tag">E2806995000050136FDEEE774</span></td><td>BXE8A75</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Coop. Holambra</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--fila" data-fluxo-filtro="fila" role="button" tabindex="0">Na fila · entrada</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:02:20</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:03:09</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
                                 <tr data-etapa="fila"><td><span class="fluxo-tag">E2806995000040136FD5EF374</span></td><td>NZV1545</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Santa Rita</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--fila" data-fluxo-filtro="fila" role="button" tabindex="0">Na fila · entrada</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:05:25</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:05:41</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
                                 <tr data-etapa="pesagem1"><td><span class="fluxo-tag">E2806995000040136FD30E474</span></td><td>MZX3B39</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Palmeiras</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--pesagem1" data-fluxo-filtro="pesagem1" role="button" tabindex="0">1ª pesagem</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:09:03</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:10:04</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:14:52</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
-                                <tr data-etapa="pesagem1"><td><span class="fluxo-tag">E2806995000050136FD482E74</span></td><td>PZA4275</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Faz. Três Lagoas</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--pesagem1" data-fluxo-filtro="pesagem1" role="button" tabindex="0">1ª pesagem</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:12:34</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:12:06</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:17:23</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
-                                <tr data-etapa="pesagem1"><td><span class="fluxo-tag">E2806995000040136FDCAE774</span></td><td>TBN5F36</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Sítio Boa Vista</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--pesagem1" data-fluxo-filtro="pesagem1" role="button" tabindex="0">1ª pesagem</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:15:37</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:16:03</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:20:58</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
-                                <tr data-etapa="pesagem1"><td><span class="fluxo-tag">E2806995000040136FD072074</span></td><td>CUH2A22</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Bela Vista</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--pesagem1" data-fluxo-filtro="pesagem1" role="button" tabindex="0">1ª pesagem</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:18:32</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:18:13</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:23:02</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
+                                <tr data-etapa="pesagem1"><td><span class="fluxo-tag">E2806995000050136FD482E74</span></td><td>PZA4275</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Faz. Três Lagoas</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--pesagem1 is-espera" data-fluxo-filtro="pesagem1" role="button" tabindex="0">Aguardando 1ª pesagem</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:12:34</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:12:06</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
+                                <tr data-etapa="pesagem1"><td><span class="fluxo-tag">E2806995000040136FDCAE774</span></td><td>TBN5F36</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Sítio Boa Vista</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--pesagem1 is-espera" data-fluxo-filtro="pesagem1" role="button" tabindex="0">Aguardando 1ª pesagem</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:15:37</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:16:03</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
+                                <tr data-etapa="pesagem1"><td><span class="fluxo-tag">E2806995000040136FD072074</span></td><td>CUH2A22</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Bela Vista</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--pesagem1 is-espera" data-fluxo-filtro="pesagem1" role="button" tabindex="0">Aguardando 1ª pesagem</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:18:32</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:18:13</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
                                 <tr data-etapa="classificacao"><td><span class="fluxo-tag">E2806995000040136FD126174</span></td><td>AOK8H44</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Santa Rita</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--classificacao" data-fluxo-filtro="classificacao" role="button" tabindex="0">Classificação</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:21:05</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:22:27</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:26:26</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:31:04</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
                                 <tr data-etapa="classificacao"><td><span class="fluxo-tag">E2806995000040136FD0FED74</span></td><td>HLF1B57</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Faz. Três Lagoas</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--classificacao" data-fluxo-filtro="classificacao" role="button" tabindex="0">Classificação</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:24:15</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:24:05</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:29:35</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:34:27</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
-                                <tr data-etapa="classificacao"><td><span class="fluxo-tag">E2806995000050136FDE16474</span></td><td>FVX9090</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Coop. Holambra</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--classificacao" data-fluxo-filtro="classificacao" role="button" tabindex="0">Classificação</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:26:03</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:27:52</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:32:36</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:38:07</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
-                                <tr data-etapa="classificacao"><td><span class="fluxo-tag">E2806995000050136FD4DCA74</span></td><td>AKC5C68</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Palmeiras</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--classificacao" data-fluxo-filtro="classificacao" role="button" tabindex="0">Classificação</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:28:14</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:28:40</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:33:40</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:40:37</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
-                                <tr data-etapa="classificacao"><td><span class="fluxo-tag">E2806995000040136FD253074</span></td><td>SWR1J78</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Sítio Boa Vista</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--classificacao" data-fluxo-filtro="classificacao" role="button" tabindex="0">Classificação</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:30:03</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:31:36</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:36:37</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:41:25</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
-                                <tr data-etapa="classificacao"><td><span class="fluxo-tag">E2806995000040136FD96FF74</span></td><td>SUH7H50</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Santa Rita</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--classificacao" data-fluxo-filtro="classificacao" role="button" tabindex="0">Classificação</span></td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 14:32:03</td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 14:32:14</td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 14:37:02</td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 14:43:35</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
+                                <tr data-etapa="classificacao"><td><span class="fluxo-tag">E2806995000050136FDE16474</span></td><td>FVX9090</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Coop. Holambra</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--classificacao is-espera" data-fluxo-filtro="classificacao" role="button" tabindex="0">Aguardando classificação</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:26:03</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:27:52</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:32:36</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
+                                <tr data-etapa="classificacao"><td><span class="fluxo-tag">E2806995000050136FD4DCA74</span></td><td>AKC5C68</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Palmeiras</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--classificacao is-espera" data-fluxo-filtro="classificacao" role="button" tabindex="0">Aguardando classificação</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:28:14</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:28:40</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:33:40</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
+                                <tr data-etapa="classificacao"><td><span class="fluxo-tag">E2806995000040136FD253074</span></td><td>SWR1J78</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Sítio Boa Vista</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--classificacao is-espera" data-fluxo-filtro="classificacao" role="button" tabindex="0">Aguardando classificação</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:30:03</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:31:36</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:36:37</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
+                                <tr data-etapa="classificacao"><td><span class="fluxo-tag">E2806995000040136FD96FF74</span></td><td>SUH7H50</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Santa Rita</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--classificacao is-espera" data-fluxo-filtro="classificacao" role="button" tabindex="0">Aguardando classificação</span></td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 14:32:03</td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 14:32:14</td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 14:37:02</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
                                 <tr data-etapa="moega"><td><span class="fluxo-tag">E2806995000050136FD1D6D74</span></td><td>BWI5241</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Faz. Bela Vista</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--moega" data-fluxo-filtro="moega" role="button" tabindex="0">Descarga na moega</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:58:08</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:59:18</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:06:26</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:21:09</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:43:34</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
                                 <tr data-etapa="moega"><td><span class="fluxo-tag">E2806995000040136FD2CDE74</span></td><td>ACA4652</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Coop. Holambra</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--moega" data-fluxo-filtro="moega" role="button" tabindex="0">Descarga na moega</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:55:07</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:56:36</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:03:19</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:19:35</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:41:52</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
                                 <tr data-etapa="moega"><td><span class="fluxo-tag">E2806995000040136FD2BEA74</span></td><td>CLJ7I79</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Coop. Holambra</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--moega" data-fluxo-filtro="moega" role="button" tabindex="0">Descarga na moega</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:52:43</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:52:11</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:00:06</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:16:37</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:40:36</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
@@ -939,13 +920,13 @@
                                 <tr data-etapa="moega"><td><span class="fluxo-tag">E2806995000050136FDD02A74</span></td><td>FOT5D69</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Santa Rita</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--moega" data-fluxo-filtro="moega" role="button" tabindex="0">Descarga na moega</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:44:13</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:44:31</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:52:43</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:08:34</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:35:27</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
                                 <tr data-etapa="pesagem2"><td><span class="fluxo-tag">E2806995000040136FD721F74</span></td><td>GGP0F77</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Sítio Boa Vista</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--pesagem2" data-fluxo-filtro="pesagem2" role="button" tabindex="0">2ª pesagem</span></td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 13:20:49</td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 13:21:20</td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 13:29:29</td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 13:45:37</td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 14:12:59</td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 14:30:59</td></tr>
                                 <tr data-etapa="pesagem2"><td><span class="fluxo-tag">E2806995000050136FDA17574</span></td><td>CVP2J21</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Coop. Holambra</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--pesagem2" data-fluxo-filtro="pesagem2" role="button" tabindex="0">2ª pesagem</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:24:29</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:24:23</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:33:19</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:49:15</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:15:50</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:33:50</td></tr>
-                                <tr data-etapa="pesagem2"><td><span class="fluxo-tag">E2806995000050136FD0F2374</span></td><td>BWI2J88</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Coop. Holambra</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--pesagem2" data-fluxo-filtro="pesagem2" role="button" tabindex="0">2ª pesagem</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:27:11</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:28:44</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:36:49</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:52:15</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:19:05</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:37:05</td></tr>
-                                <tr data-etapa="pesagem2"><td><span class="fluxo-tag">E2806995000040136FDCD3774</span></td><td>AMC8B09</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Faz. Três Lagoas</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--pesagem2" data-fluxo-filtro="pesagem2" role="button" tabindex="0">2ª pesagem</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:31:36</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:31:19</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:40:33</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:56:31</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:22:56</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:40:56</td></tr>
-                                <tr data-etapa="pesagem2"><td><span class="fluxo-tag">E2806995000050136FDC52274</span></td><td>AWW1460</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Palmeiras</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--pesagem2" data-fluxo-filtro="pesagem2" role="button" tabindex="0">2ª pesagem</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:34:21</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:35:46</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:43:28</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:59:18</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:25:38</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:44:04</td></tr>
-                                <tr data-etapa="liberacao"><td><span class="fluxo-tag">E2806995000050136FD197174</span></td><td>DTC2J27</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Santa Rita</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--liberacao" data-fluxo-filtro="liberacao" role="button" tabindex="0">Liberação</span></td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 13:05:07</td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 13:06:32</td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 13:14:26</td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 13:30:10</td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 13:58:48</td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 14:34:21</td></tr>
-                                <tr data-etapa="liberacao"><td><span class="fluxo-tag">E2806995000040136FD449474</span></td><td>EPU8F66</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Faz. Três Lagoas</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--liberacao" data-fluxo-filtro="liberacao" role="button" tabindex="0">Liberação</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:08:09</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:09:59</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:17:31</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:33:26</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:01:02</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:36:42</td></tr>
-                                <tr data-etapa="liberacao"><td><span class="fluxo-tag">E2806995000050136FD493C74</span></td><td>AHH8B94</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Sítio Boa Vista</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--liberacao" data-fluxo-filtro="liberacao" role="button" tabindex="0">Liberação</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:11:04</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:12:48</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:20:35</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:36:36</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:04:50</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:39:56</td></tr>
-                                <tr data-etapa="liberacao"><td><span class="fluxo-tag">E2806995000050136FD5C3474</span></td><td>URH7I21</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Santa Rita</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--liberacao" data-fluxo-filtro="liberacao" role="button" tabindex="0">Liberação</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:14:52</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:15:20</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:23:21</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:39:44</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:07:22</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:41:38</td></tr>
+                                <tr data-etapa="pesagem2"><td><span class="fluxo-tag">E2806995000050136FD0F2374</span></td><td>BWI2J88</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Coop. Holambra</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--pesagem2 is-espera" data-fluxo-filtro="pesagem2" role="button" tabindex="0">Aguardando 2ª pesagem</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:27:11</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:28:44</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:36:49</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:52:15</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:19:05</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
+                                <tr data-etapa="pesagem2"><td><span class="fluxo-tag">E2806995000040136FDCD3774</span></td><td>AMC8B09</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Faz. Três Lagoas</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--pesagem2 is-espera" data-fluxo-filtro="pesagem2" role="button" tabindex="0">Aguardando 2ª pesagem</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:31:36</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:31:19</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:40:33</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:56:31</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:22:56</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
+                                <tr data-etapa="pesagem2"><td><span class="fluxo-tag">E2806995000050136FDC52274</span></td><td>AWW1460</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Palmeiras</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--pesagem2 is-espera" data-fluxo-filtro="pesagem2" role="button" tabindex="0">Aguardando 2ª pesagem</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:34:21</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:35:46</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:43:28</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:59:18</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:25:38</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
+                                <tr data-etapa="liberados"><td><span class="fluxo-tag">E2806995000050136FD197174</span></td><td>DTC2J27</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Santa Rita</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--liberados" data-fluxo-filtro="liberados" role="button" tabindex="0">Liberado</span></td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 13:05:07</td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 13:06:32</td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 13:14:26</td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 13:30:10</td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 13:58:48</td><td class="fluxo-dt fluxo-dt--cheia">10/09/2026 14:34:21</td></tr>
+                                <tr data-etapa="liberados"><td><span class="fluxo-tag">E2806995000040136FD449474</span></td><td>EPU8F66</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Faz. Três Lagoas</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--liberados" data-fluxo-filtro="liberados" role="button" tabindex="0">Liberado</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:08:09</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:09:59</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:17:31</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:33:26</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:01:02</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:36:42</td></tr>
+                                <tr data-etapa="liberados"><td><span class="fluxo-tag">E2806995000050136FD493C74</span></td><td>AHH8B94</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Sítio Boa Vista</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--liberados" data-fluxo-filtro="liberados" role="button" tabindex="0">Liberado</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:11:04</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:12:48</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:20:35</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:36:36</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:04:50</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:39:56</td></tr>
+                                <tr data-etapa="liberados"><td><span class="fluxo-tag">E2806995000050136FD5C3474</span></td><td>URH7I21</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Santa Rita</td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--liberados" data-fluxo-filtro="liberados" role="button" tabindex="0">Liberado</span></td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:14:52</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:15:20</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:23:21</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 13:39:44</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:07:22</td><td class="fluxo-dt fluxo-dt--cheia">11/09/2026 14:41:38</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -1187,7 +1168,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,21.0 16.7,16.0 33.3,23.0 50.0,19.0 66.7,14.0 83.3,26.0 100.0,24.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl" style="bottom:75.0%">meta 14,0</em>
+                                    <em class="hist-meta-lbl">14,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:47.5%">12,9</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:60.0%">13,4</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:42.5%">12,7</b>
@@ -1210,7 +1191,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,20.0 16.7,10.0 33.3,15.0 50.0,25.0 66.7,5.0 83.3,20.0 100.0,15.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl" style="bottom:75.0%">meta 1,0</em>
+                                    <em class="hist-meta-lbl">1,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:50.0%">0,8</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:75.0%">1,0</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:62.5%">0,9</b>
@@ -1233,7 +1214,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,22.7 16.7,18.7 33.3,20.7 50.0,17.3 66.7,22.0 83.3,19.3 100.0,20.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl" style="bottom:83.3%">meta 6,0</em>
+                                    <em class="hist-meta-lbl">6,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:43.2%">3,6</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:53.2%">4,2</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:48.2%">3,9</b>
@@ -1258,7 +1239,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,24.0 16.7,27.0 33.3,22.0 50.0,30.0 66.7,26.0 83.3,31.0 100.0,29.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl" style="bottom:75.0%">meta 14,0</em>
+                                    <em class="hist-meta-lbl">14,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:40.0%">12,6</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:32.5%">12,3</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:45.0%">12,8</b>
@@ -1281,7 +1262,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,30.0 16.7,20.0 33.3,25.0 50.0,15.0 66.7,30.0 83.3,25.0 100.0,25.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl" style="bottom:75.0%">meta 1,0</em>
+                                    <em class="hist-meta-lbl">1,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:25.0%">0,6</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:50.0%">0,8</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:37.5%">0,7</b>
@@ -1304,7 +1285,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,26.0 16.7,29.3 33.3,27.3 50.0,24.7 66.7,28.7 83.3,26.7 100.0,28.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl" style="bottom:83.3%">meta 6,0</em>
+                                    <em class="hist-meta-lbl">6,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:35.0%">3,1</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:26.8%">2,6</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:31.8%">2,9</b>
@@ -1329,7 +1310,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,28.0 16.7,33.0 33.3,26.0 50.0,32.0 66.7,29.0 83.3,27.0 100.0,31.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl" style="bottom:75.0%">meta 14,0</em>
+                                    <em class="hist-meta-lbl">14,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:30.0%">12,2</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:17.5%">11,7</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:35.0%">12,4</b>
@@ -1352,7 +1333,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,35.0 16.7,25.0 33.3,30.0 50.0,20.0 66.7,35.0 83.3,30.0 100.0,30.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl" style="bottom:75.0%">meta 1,0</em>
+                                    <em class="hist-meta-lbl">1,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:12.5%">0,5</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:37.5%">0,7</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:25.0%">0,6</b>
@@ -1375,7 +1356,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,30.7 16.7,34.0 33.3,31.3 50.0,29.3 66.7,33.3 83.3,32.0 100.0,32.7"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl" style="bottom:83.3%">meta 6,0</em>
+                                    <em class="hist-meta-lbl">6,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:23.2%">2,4</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:15.0%">1,9</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:21.8%">2,3</b>
@@ -1400,7 +1381,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,19.0 16.7,24.0 33.3,17.0 50.0,21.0 66.7,26.0 83.3,20.0 100.0,22.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl" style="bottom:75.0%">meta 14,0</em>
+                                    <em class="hist-meta-lbl">14,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:52.5%">13,1</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:40.0%">12,6</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:57.5%">13,3</b>
@@ -1423,7 +1404,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,10.0 16.7,20.0 33.3,25.0 50.0,5.0 66.7,15.0 83.3,20.0 100.0,15.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl" style="bottom:75.0%">meta 1,0</em>
+                                    <em class="hist-meta-lbl">1,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:75.0%">1,0</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:50.0%">0,8</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:37.5%">0,7</b>
@@ -1446,7 +1427,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,26.7 16.7,22.7 33.3,25.3 50.0,21.3 66.7,23.3 83.3,26.0 100.0,24.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl" style="bottom:83.3%">meta 6,0</em>
+                                    <em class="hist-meta-lbl">6,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:33.2%">3,0</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:43.2%">3,6</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:36.8%">3,2</b>
@@ -1479,7 +1460,9 @@
                         <h3>MOEGAS · NÍVEL, SAÍDA E CULTURA</h3>
                         <!-- Filtro de cultura: apaga as moegas que nao batem (a grade nao reflui);
                              escolha guardada em data-moega-cultura na section da tela. O periodo e
-                             por moega, dentro de cada cartao (data-moega-periodo no .moega-item). -->
+                             por moega, dentro de cada cartao (data-moega-periodo no .moega-item) e
+                             troca tambem entrada/saida: "turno" mostra o estado ao vivo (placa e taxa
+                             do momento), os demais mostram a media do periodo e o total de cargas. -->
                         <div class="moegas-filtros">
                             <div class="moega-filtro" role="group" aria-label="Cultura na moega">
                                 <span class="moega-filtro-rotulo">Cultura</span>
@@ -1509,14 +1492,25 @@
                             </div>
                             <div class="moega-fluxo">
                                 <div class="moega-fluxo-item moega-fluxo-item--entrada">
-                                    <span class="moega-fluxo-label"><i class="moega-fluxo-estado"></i>Entrada</span>
-                                    <span class="moega-fluxo-sub">Tombador · BWI5241</span>
-                                    <span class="moega-fluxo-value">45 t/h</span>
+                                    <span class="moega-fluxo-label" data-periodo="turno"><i class="moega-fluxo-estado"></i>Entrada</span>
+                                    <span class="moega-fluxo-label" data-periodo="hoje 7d 30d"><i class="moega-fluxo-estado"></i>Entrada · média</span>
+                                    <span class="moega-fluxo-sub" data-periodo="turno">Tombador · BWI5241</span>
+                                    <span class="moega-fluxo-sub" data-periodo="hoje">Tombador · 3 cargas</span>
+                                    <span class="moega-fluxo-sub" data-periodo="7d">Tombador · 20 cargas</span>
+                                    <span class="moega-fluxo-sub" data-periodo="30d">Tombador · 74 cargas</span>
+                                    <span class="moega-fluxo-value" data-periodo="turno">45 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="hoje">41 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="7d">38 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="30d">36 t/h</span>
                                 </div>
                                 <div class="moega-fluxo-item moega-fluxo-item--saida">
-                                    <span class="moega-fluxo-label"><i class="moega-fluxo-estado"></i>Saída · ligada</span>
-                                    <span class="moega-fluxo-sub">Elevador E-1 → Secador 1</span>
-                                    <span class="moega-fluxo-value">60 t/h</span>
+                                    <span class="moega-fluxo-label" data-periodo="turno"><i class="moega-fluxo-estado"></i>Saída · ligada</span>
+                                    <span class="moega-fluxo-label" data-periodo="hoje 7d 30d"><i class="moega-fluxo-estado"></i>Saída · média</span>
+                                    <span class="moega-fluxo-sub" data-periodo="turno hoje 7d 30d">Elevador E-1 → Secador 1</span>
+                                    <span class="moega-fluxo-value" data-periodo="turno">60 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="hoje">57 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="7d">54 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="30d">52 t/h</span>
                                 </div>
                             </div>
                             <div class="moega-periodo" role="group" aria-label="Período da moega 1">
@@ -1583,14 +1577,25 @@
                             </div>
                             <div class="moega-fluxo">
                                 <div class="moega-fluxo-item moega-fluxo-item--entrada">
-                                    <span class="moega-fluxo-label"><i class="moega-fluxo-estado"></i>Entrada</span>
-                                    <span class="moega-fluxo-sub">Tombador · QPB4954</span>
-                                    <span class="moega-fluxo-value">42 t/h</span>
+                                    <span class="moega-fluxo-label" data-periodo="turno"><i class="moega-fluxo-estado"></i>Entrada</span>
+                                    <span class="moega-fluxo-label" data-periodo="hoje 7d 30d"><i class="moega-fluxo-estado"></i>Entrada · média</span>
+                                    <span class="moega-fluxo-sub" data-periodo="turno">Tombador · QPB4954</span>
+                                    <span class="moega-fluxo-sub" data-periodo="hoje">Tombador · 4 cargas</span>
+                                    <span class="moega-fluxo-sub" data-periodo="7d">Tombador · 25 cargas</span>
+                                    <span class="moega-fluxo-sub" data-periodo="30d">Tombador · 97 cargas</span>
+                                    <span class="moega-fluxo-value" data-periodo="turno">42 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="hoje">39 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="7d">36 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="30d">34 t/h</span>
                                 </div>
                                 <div class="moega-fluxo-item moega-fluxo-item--saida">
-                                    <span class="moega-fluxo-label"><i class="moega-fluxo-estado"></i>Saída · ligada</span>
-                                    <span class="moega-fluxo-sub">Elevador E-1 → Secador 1</span>
-                                    <span class="moega-fluxo-value">60 t/h</span>
+                                    <span class="moega-fluxo-label" data-periodo="turno"><i class="moega-fluxo-estado"></i>Saída · ligada</span>
+                                    <span class="moega-fluxo-label" data-periodo="hoje 7d 30d"><i class="moega-fluxo-estado"></i>Saída · média</span>
+                                    <span class="moega-fluxo-sub" data-periodo="turno hoje 7d 30d">Elevador E-1 → Secador 1</span>
+                                    <span class="moega-fluxo-value" data-periodo="turno">60 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="hoje">56 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="7d">53 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="30d">51 t/h</span>
                                 </div>
                             </div>
                             <div class="moega-periodo" role="group" aria-label="Período da moega 2">
@@ -1653,14 +1658,25 @@
                             </div>
                             <div class="moega-fluxo">
                                 <div class="moega-fluxo-item moega-fluxo-item--entrada">
-                                    <span class="moega-fluxo-label"><i class="moega-fluxo-estado"></i>Entrada</span>
-                                    <span class="moega-fluxo-sub">Basculante · FOT5D69</span>
-                                    <span class="moega-fluxo-value">30 t/h</span>
+                                    <span class="moega-fluxo-label" data-periodo="turno"><i class="moega-fluxo-estado"></i>Entrada</span>
+                                    <span class="moega-fluxo-label" data-periodo="hoje 7d 30d"><i class="moega-fluxo-estado"></i>Entrada · média</span>
+                                    <span class="moega-fluxo-sub" data-periodo="turno">Basculante · FOT5D69</span>
+                                    <span class="moega-fluxo-sub" data-periodo="hoje">Basculante · 6 cargas</span>
+                                    <span class="moega-fluxo-sub" data-periodo="7d">Basculante · 38 cargas</span>
+                                    <span class="moega-fluxo-sub" data-periodo="30d">Basculante · 150 cargas</span>
+                                    <span class="moega-fluxo-value" data-periodo="turno">30 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="hoje">28 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="7d">26 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="30d">25 t/h</span>
                                 </div>
                                 <div class="moega-fluxo-item moega-fluxo-item--saida">
-                                    <span class="moega-fluxo-label"><i class="moega-fluxo-estado"></i>Saída · ligada</span>
-                                    <span class="moega-fluxo-sub">Correia C-2 → Silo 3</span>
-                                    <span class="moega-fluxo-value">80 t/h</span>
+                                    <span class="moega-fluxo-label" data-periodo="turno"><i class="moega-fluxo-estado"></i>Saída · ligada</span>
+                                    <span class="moega-fluxo-label" data-periodo="hoje 7d 30d"><i class="moega-fluxo-estado"></i>Saída · média</span>
+                                    <span class="moega-fluxo-sub" data-periodo="turno hoje 7d 30d">Correia C-2 → Silo 3</span>
+                                    <span class="moega-fluxo-value" data-periodo="turno">80 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="hoje">74 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="7d">70 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="30d">68 t/h</span>
                                 </div>
                             </div>
                             <div class="moega-periodo" role="group" aria-label="Período da moega 3">
@@ -1727,14 +1743,25 @@
                             </div>
                             <div class="moega-fluxo">
                                 <div class="moega-fluxo-item moega-fluxo-item--entrada">
-                                    <span class="moega-fluxo-label"><i class="moega-fluxo-estado"></i>Entrada</span>
-                                    <span class="moega-fluxo-sub">Basculante · ACA4652</span>
-                                    <span class="moega-fluxo-value">28 t/h</span>
+                                    <span class="moega-fluxo-label" data-periodo="turno"><i class="moega-fluxo-estado"></i>Entrada</span>
+                                    <span class="moega-fluxo-label" data-periodo="hoje 7d 30d"><i class="moega-fluxo-estado"></i>Entrada · média</span>
+                                    <span class="moega-fluxo-sub" data-periodo="turno">Basculante · ACA4652</span>
+                                    <span class="moega-fluxo-sub" data-periodo="hoje">Basculante · 3 cargas</span>
+                                    <span class="moega-fluxo-sub" data-periodo="7d">Basculante · 17 cargas</span>
+                                    <span class="moega-fluxo-sub" data-periodo="30d">Basculante · 65 cargas</span>
+                                    <span class="moega-fluxo-value" data-periodo="turno">28 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="hoje">26 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="7d">24 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="30d">23 t/h</span>
                                 </div>
                                 <div class="moega-fluxo-item moega-fluxo-item--saida">
-                                    <span class="moega-fluxo-label"><i class="moega-fluxo-estado"></i>Saída · ligada</span>
-                                    <span class="moega-fluxo-sub">Elevador E-2 → Secador 2</span>
-                                    <span class="moega-fluxo-value">50 t/h</span>
+                                    <span class="moega-fluxo-label" data-periodo="turno"><i class="moega-fluxo-estado"></i>Saída · ligada</span>
+                                    <span class="moega-fluxo-label" data-periodo="hoje 7d 30d"><i class="moega-fluxo-estado"></i>Saída · média</span>
+                                    <span class="moega-fluxo-sub" data-periodo="turno hoje 7d 30d">Elevador E-2 → Secador 2</span>
+                                    <span class="moega-fluxo-value" data-periodo="turno">50 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="hoje">47 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="7d">45 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="30d">43 t/h</span>
                                 </div>
                             </div>
                             <div class="moega-periodo" role="group" aria-label="Período da moega 4">
@@ -1797,14 +1824,25 @@
                             </div>
                             <div class="moega-fluxo">
                                 <div class="moega-fluxo-item moega-fluxo-item--entrada">
-                                    <span class="moega-fluxo-label"><i class="moega-fluxo-estado"></i>Entrada</span>
-                                    <span class="moega-fluxo-sub">Basculante · SSS8G95</span>
-                                    <span class="moega-fluxo-value">32 t/h</span>
+                                    <span class="moega-fluxo-label" data-periodo="turno"><i class="moega-fluxo-estado"></i>Entrada</span>
+                                    <span class="moega-fluxo-label" data-periodo="hoje 7d 30d"><i class="moega-fluxo-estado"></i>Entrada · média</span>
+                                    <span class="moega-fluxo-sub" data-periodo="turno">Basculante · SSS8G95</span>
+                                    <span class="moega-fluxo-sub" data-periodo="hoje">Basculante · 2 cargas</span>
+                                    <span class="moega-fluxo-sub" data-periodo="7d">Basculante · 13 cargas</span>
+                                    <span class="moega-fluxo-sub" data-periodo="30d">Basculante · 52 cargas</span>
+                                    <span class="moega-fluxo-value" data-periodo="turno">32 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="hoje">29 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="7d">27 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="30d">26 t/h</span>
                                 </div>
                                 <div class="moega-fluxo-item moega-fluxo-item--saida is-parada">
-                                    <span class="moega-fluxo-label"><i class="moega-fluxo-estado"></i>Saída · parada</span>
-                                    <span class="moega-fluxo-sub">Correia C-3 → Silo 5</span>
-                                    <span class="moega-fluxo-value">80 t/h</span>
+                                    <span class="moega-fluxo-label" data-periodo="turno"><i class="moega-fluxo-estado"></i>Saída · parada</span>
+                                    <span class="moega-fluxo-label" data-periodo="hoje 7d 30d"><i class="moega-fluxo-estado"></i>Saída · média</span>
+                                    <span class="moega-fluxo-sub" data-periodo="turno hoje 7d 30d">Correia C-3 → Silo 5</span>
+                                    <span class="moega-fluxo-value" data-periodo="turno">80 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="hoje">52 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="7d">46 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="30d">44 t/h</span>
                                 </div>
                             </div>
                             <div class="moega-periodo" role="group" aria-label="Período da moega 5">
@@ -1871,14 +1909,25 @@
                             </div>
                             <div class="moega-fluxo">
                                 <div class="moega-fluxo-item moega-fluxo-item--entrada is-parada">
-                                    <span class="moega-fluxo-label"><i class="moega-fluxo-estado"></i>Entrada</span>
-                                    <span class="moega-fluxo-sub">Basculante · sem caminhão</span>
-                                    <span class="moega-fluxo-value">0 t/h</span>
+                                    <span class="moega-fluxo-label" data-periodo="turno"><i class="moega-fluxo-estado"></i>Entrada</span>
+                                    <span class="moega-fluxo-label" data-periodo="hoje 7d 30d"><i class="moega-fluxo-estado"></i>Entrada · média</span>
+                                    <span class="moega-fluxo-sub" data-periodo="turno">Basculante · sem caminhão</span>
+                                    <span class="moega-fluxo-sub" data-periodo="hoje">Basculante · 2 cargas</span>
+                                    <span class="moega-fluxo-sub" data-periodo="7d">Basculante · 12 cargas</span>
+                                    <span class="moega-fluxo-sub" data-periodo="30d">Basculante · 47 cargas</span>
+                                    <span class="moega-fluxo-value" data-periodo="turno">0 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="hoje">18 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="7d">22 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="30d">24 t/h</span>
                                 </div>
                                 <div class="moega-fluxo-item moega-fluxo-item--saida is-parada">
-                                    <span class="moega-fluxo-label"><i class="moega-fluxo-estado"></i>Saída · parada</span>
-                                    <span class="moega-fluxo-sub">Correia C-1 → Silo 2</span>
-                                    <span class="moega-fluxo-value">80 t/h</span>
+                                    <span class="moega-fluxo-label" data-periodo="turno"><i class="moega-fluxo-estado"></i>Saída · parada</span>
+                                    <span class="moega-fluxo-label" data-periodo="hoje 7d 30d"><i class="moega-fluxo-estado"></i>Saída · média</span>
+                                    <span class="moega-fluxo-sub" data-periodo="turno hoje 7d 30d">Correia C-1 → Silo 2</span>
+                                    <span class="moega-fluxo-value" data-periodo="turno">80 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="hoje">40 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="7d">42 t/h</span>
+                                    <span class="moega-fluxo-value" data-periodo="30d">44 t/h</span>
                                 </div>
                             </div>
                             <div class="moega-periodo" role="group" aria-label="Período da moega 6">
