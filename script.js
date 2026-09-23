@@ -418,6 +418,7 @@ const EDITABLE_SELECTORS = [
     '.screen-meta',
     '.kpi-label',
     '.kpi-value',
+    '.kpi-tag-rotulo',
     '.kpi-label-small',
     '.kpi-value-small',
     '.kpi-breakdown-label',
@@ -3561,38 +3562,205 @@ function limparFiltrosFluxo() {
 
 // ============================================
 // CLASSIFICACAO · FILTRO GERAL DA TELA (CULTURA + PERIODO)
-// As duas escolhas ficam no cabecalho e moram na tela, em data-class-cultura
-// e data-class-periodo. O CSS faz o resto: troca o numero de cada indicador
-// (ha uma versao por cultura e por periodo), apaga as culturas nao escolhidas
-// na lista do cartao e esconde da tabela as linhas de outra cultura ou fora
-// da janela. O historico mostra uma cultura por vez, entao ele segue a
-// escolha; em "Todas" fica no milho, que e' o maior volume.
+// O periodo e' escolha unica e mora em data-class-periodo. A cultura e'
+// marcacao multipla: as quatro nascem marcadas e cada botao desmarca a sua
+// (data-cult-milho, data-cult-sorgo, data-cult-trigo, data-cult-soja na
+// tela). Tirar uma cultura tira as linhas dela da tabela, o item dela da
+// lista do cartao e o peso dela na conta do indicador — a escala do grafico
+// e a leitura da tela melhoram quando uma cultura pequena sai de cena.
+// O CSS troca o numero de cada indicador (o HTML traz a versao de "todas" e
+// a de cada cultura sozinha); um recorte no meio e' contado aqui e escrito
+// num span "mistura". O historico mostra uma cultura por vez: fica na
+// primeira que estiver marcada.
 // ============================================
 const NOME_PERIODO_CLASS = { turno: 'turno', hoje: 'hoje', '7d': '7 dias', '30d': '30 dias' };
 
+const CULTURAS_CLASS = ['milho', 'sorgo', 'trigo', 'soja'];
+const PERIODOS_CLASS = ['turno', 'hoje', '7d', '30d'];
+
+// data-cult-milho / data-cult-sorgo / ... guardam quem esta marcado; tudo que
+// nao estiver escrito "off" conta como marcado (o HTML nasce com as quatro).
+function chaveCulturaClass(cultura) {
+    return 'cult' + cultura.charAt(0).toUpperCase() + cultura.slice(1);
+}
+
+function culturasMarcadasClass(tela) {
+    return CULTURAS_CLASS.filter((c) => tela.dataset[chaveCulturaClass(c)] !== 'off');
+}
+
+// os numeros da tela sao texto em pt-BR ("2.940", "12,3%", "—"): le como
+// numero para poder somar, e devolve nulo no travessao (cultura sem o ensaio)
+function numeroClass(texto) {
+    const limpo = String(texto).replace(/\./g, '').replace(',', '.').replace(/[^0-9.\-]/g, '');
+    const n = parseFloat(limpo);
+    return Number.isFinite(n) ? n : null;
+}
+
+// o resultado sai no mesmo desenho do valor de origem: mesmas casas decimais,
+// mesmo ponto de milhar e o "%" quando ele existe
+function formatarComoClass(modelo, valor) {
+    const casas = (String(modelo).match(/,(\d+)/) || ['', ''])[1].length;
+    let texto = valor.toFixed(casas).replace('.', ',');
+    if (!casas) texto = texto.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return String(modelo).indexOf('%') >= 0 ? texto + '%' : texto;
+}
+
+// peso de cada cultura na media: o numero de cargas classificadas naquele
+// periodo. Sem o cartao de cargas a media vira simples (peso 1 para todas).
+function pesosClass(tela, periodo) {
+    const cartao = tela.querySelector('[data-class-agg="soma"]');
+    const pesos = {};
+    CULTURAS_CLASS.forEach((c) => {
+        const b = cartao && cartao.querySelector('.grao-metric[data-cultura="' + c + '"] .grao-metric-value b[data-periodo="' + periodo + '"]');
+        const n = b ? numeroClass(b.textContent) : null;
+        pesos[c] = n === null ? 1 : n;
+    });
+    return pesos;
+}
+
+// valor do indicador com mais de uma cultura marcada: soma nas cargas,
+// media ponderada pelas cargas no resto (umidade, impureza, PH...).
+// O farinamber so existe no trigo: as outras entram como "—" e ficam de fora.
+function valorMisturaClass(cartao, periodo, marcadas, pesos) {
+    const soma = cartao.dataset.classAgg === 'soma';
+    let acumulado = 0;
+    let peso = 0;
+    let modelo = '';
+    marcadas.forEach((c) => {
+        const b = cartao.querySelector('.grao-metric[data-cultura="' + c + '"] .grao-metric-value b[data-periodo="' + periodo + '"]');
+        if (!b) return;
+        const n = numeroClass(b.textContent);
+        if (n === null) return;
+        if (!modelo) modelo = b.textContent.trim();
+        const p = soma ? 1 : (pesos[c] || 0);
+        acumulado += n * p;
+        peso += p;
+    });
+    if (!modelo || !peso) return '—';
+    return formatarComoClass(modelo, soma ? acumulado : acumulado / peso);
+}
+
+// os indicadores trazem prontos "todas" e cada cultura sozinha; um recorte no
+// meio (tres das quatro, por exemplo) nao existe no HTML e e' contado aqui,
+// num <span data-cultura="mistura"> que o CSS mostra no lugar do de "todas".
+function escreverMisturaClass(tela, marcadas) {
+    const mistura = marcadas.length > 1 && marcadas.length < CULTURAS_CLASS.length;
+    const pesos = {};
+    if (mistura) PERIODOS_CLASS.forEach((p) => { pesos[p] = pesosClass(tela, p); });
+    tela.querySelectorAll('[data-class-agg]').forEach((cartao) => {
+        const valor = cartao.querySelector('.kpi-value');
+        if (!valor) return;
+        const antigo = valor.querySelector('.class-cult[data-cultura="mistura"]');
+        if (antigo) antigo.remove();
+        if (!mistura) return;
+        const span = document.createElement('span');
+        span.className = 'class-cult';
+        span.dataset.cultura = 'mistura';
+        // marca de gerado: o editor salva o HTML como esta e este span sai fora
+        span.dataset.gerado = '1';
+        PERIODOS_CLASS.forEach((p) => {
+            const b = document.createElement('b');
+            b.dataset.periodo = p;
+            b.textContent = valorMisturaClass(cartao, p, marcadas, pesos[p]);
+            span.appendChild(b);
+        });
+        valor.appendChild(span);
+    });
+}
+
+// "sem soja" quando falta so uma — e' o recorte que mais se pede; nos outros
+// casos lista as culturas que ficaram
+function nomeRecorteClass(marcadas) {
+    if (marcadas.length === CULTURAS_CLASS.length) return '';
+    const fora = CULTURAS_CLASS.filter((c) => marcadas.indexOf(c) < 0);
+    if (fora.length === 1) return ' · sem ' + fora[0];
+    if (marcadas.length === 1) return ' · ' + marcadas[0];
+    return ' · ' + marcadas.slice(0, -1).join(', ') + ' e ' + marcadas[marcadas.length - 1];
+}
+
+// O historico tem filtro proprio, no cabecalho do bloco: ele mostra uma
+// cultura por vez (as tres metricas dela lado a lado) e nao acompanha o
+// recorte do cabecalho da tela, que pode ter varias culturas de uma vez.
+function aplicarCulturaHistorico(historico, cultura) {
+    if (!historico || !cultura) return;
+    historico.dataset.histCultura = cultura;
+    historico.querySelectorAll('.hist-seletor-btn').forEach((btn) => {
+        const ativo = btn.dataset.histCultura === cultura;
+        btn.classList.toggle('is-active', ativo);
+        btn.setAttribute('aria-pressed', String(ativo));
+    });
+    historico.querySelectorAll('[data-hist-cultura-nome]').forEach((el) => {
+        el.textContent = cultura;
+    });
+}
+
+function escolherCulturaHistorico(alvo) {
+    const historico = alvo.closest('.hist-section');
+    if (!historico || alvo.disabled) return;
+    aplicarCulturaHistorico(historico, alvo.dataset.histCultura);
+    scheduleFit();
+}
+
+// cultura desmarcada no cabecalho saiu da tela inteira: o botao dela aqui
+// fica fora de alcance e, se era a que estava no ar, o historico anda para a
+// primeira que sobrou
+function sincronizarHistoricoClass(tela, marcadas) {
+    const historico = tela.querySelector('.hist-section');
+    if (!historico) return;
+    historico.querySelectorAll('.hist-seletor-btn').forEach((btn) => {
+        const fora = marcadas.indexOf(btn.dataset.histCultura) < 0;
+        btn.disabled = fora;
+        btn.classList.toggle('is-off', fora);
+        btn.title = fora ? 'Cultura desmarcada no filtro da tela' : '';
+    });
+    const atual = historico.dataset.histCultura;
+    aplicarCulturaHistorico(historico, marcadas.indexOf(atual) >= 0 ? atual : marcadas[0]);
+}
+
+function aplicarCulturasClassificacao(tela, marcadas) {
+    const lista = CULTURAS_CLASS.filter((c) => marcadas.indexOf(c) >= 0);
+    const todas = lista.length === CULTURAS_CLASS.length;
+    CULTURAS_CLASS.forEach((c) => {
+        tela.dataset[chaveCulturaClass(c)] = lista.indexOf(c) >= 0 ? 'on' : 'off';
+    });
+    // uma so marcada continua valendo pelo nome dela: o HTML ja traz esse
+    // recorte pronto. "mistura" e' o caso contado na hora.
+    tela.dataset.classCultura = todas ? 'todas' : (lista.length === 1 ? lista[0] : 'mistura');
+    tela.querySelectorAll('button[data-class-cultura]').forEach((btn) => {
+        const chave = btn.dataset.classCultura;
+        if (chave === 'todas') {
+            btn.classList.toggle('is-active', todas);
+            btn.setAttribute('aria-pressed', String(todas));
+            return;
+        }
+        const marcada = lista.indexOf(chave) >= 0;
+        btn.classList.toggle('is-off', !marcada);
+        btn.setAttribute('aria-pressed', String(marcada));
+        btn.title = (marcada ? 'Desmarcar ' : 'Marcar ') + chave;
+    });
+    tela.querySelectorAll('[data-class-cultura-nome]').forEach((el) => {
+        el.textContent = nomeRecorteClass(lista);
+    });
+    escreverMisturaClass(tela, lista);
+    // o historico tem seletor proprio: a escolha dele fica de pe, e so muda
+    // quando a cultura em cena e' desmarcada la em cima
+    sincronizarHistoricoClass(tela, lista);
+    scheduleFit();
+}
+
+// "Todas" remarca as quatro; cada cultura alterna a sua. A ultima marcada nao
+// sai sozinha (a tela ficaria vazia): o clique nela devolve todas.
 function escolherCulturaClassificacao(alvo) {
     const tela = alvo.closest('#screen-1');
     const cultura = alvo.dataset.classCultura;
     if (!tela || !cultura) return;
-    tela.dataset.classCultura = cultura;
-    tela.querySelectorAll('button[data-class-cultura]').forEach((btn) => {
-        const ativo = btn.dataset.classCultura === cultura;
-        btn.classList.toggle('is-active', ativo);
-        btn.setAttribute('aria-pressed', String(ativo));
-    });
-    tela.querySelectorAll('[data-class-cultura-nome]').forEach((el) => {
-        el.textContent = cultura === 'todas' ? '' : ' · ' + cultura;
-    });
-    // o historico nao tem "todas": cai no milho para nao ficar sem grafico
-    const historico = tela.querySelector('.hist-section');
-    if (historico) {
-        const doHistorico = cultura === 'todas' ? 'milho' : cultura;
-        historico.dataset.histCultura = doHistorico;
-        historico.querySelectorAll('[data-hist-cultura-nome]').forEach((el) => {
-            el.textContent = doHistorico;
-        });
-    }
-    scheduleFit();
+    const marcadas = culturasMarcadasClass(tela);
+    let novas;
+    if (cultura === 'todas') novas = CULTURAS_CLASS.slice();
+    else if (marcadas.indexOf(cultura) < 0) novas = marcadas.concat([cultura]);
+    else if (marcadas.length === 1) novas = CULTURAS_CLASS.slice();
+    else novas = marcadas.filter((c) => c !== cultura);
+    aplicarCulturasClassificacao(tela, novas);
 }
 
 function escolherPeriodoClassificacao(alvo) {
@@ -3623,6 +3791,12 @@ document.addEventListener('click', (e) => {
     if (periodo) {
         e.preventDefault();
         escolherPeriodoClassificacao(periodo);
+        return;
+    }
+    const doHistorico = e.target.closest('.hist-seletor-btn');
+    if (doHistorico) {
+        e.preventDefault();
+        escolherCulturaHistorico(doHistorico);
     }
 });
 
@@ -3633,36 +3807,25 @@ function limparFiltrosClassificacao() {
     if (todas && !todas.classList.contains('is-active')) escolherCulturaClassificacao(todas);
     const hoje = document.querySelector('#screen-1 .class-periodo-btn[data-class-periodo="hoje"]');
     if (hoje && !hoje.classList.contains('is-active')) escolherPeriodoClassificacao(hoje);
+    // o historico tambem volta ao milho: e' a cultura que o HTML guarda
+    const historico = document.querySelector('#screen-1 .hist-section');
+    if (historico && historico.dataset.histCultura !== 'milho') aplicarCulturaHistorico(historico, 'milho');
 }
 
 // ============================================
-// MOEGAS · FILTROS
-// Período é por moega: cada cartão guarda a escolha em data-moega-periodo
-// e o CSS troca o bloco "Saiu", a entrada/saída (ao vivo no turno, média
-// nos demais) e as trocas de cultura que entram no
-// período. Cultura é da tela (data-moega-cultura na section) e apaga as
-// moegas que não batem. Delegado no documento porque o editor remonta o palco.
+// MOEGAS · FILTRO
+// Período é da tela: a section guarda a escolha em data-moega-periodo e vale
+// para as seis moegas de uma vez — o CSS troca o bloco "Saiu", a entrada/saída
+// (ao vivo no turno, média nos demais) e as trocas de cultura que entram no
+// período. Delegado no documento porque o editor remonta o palco.
 // ============================================
 function escolherPeriodoMoega(alvo) {
-    const cartao = alvo.closest('.moega-item');
-    const periodo = alvo.dataset.moegaPeriodo;
-    if (!cartao || !periodo) return;
-    cartao.dataset.moegaPeriodo = periodo;
-    cartao.querySelectorAll('.moega-periodo-btn').forEach((btn) => {
-        const ativo = btn.dataset.moegaPeriodo === periodo;
-        btn.classList.toggle('is-active', ativo);
-        btn.setAttribute('aria-pressed', String(ativo));
-    });
-    scheduleFit();
-}
-
-function escolherCulturaMoegas(alvo) {
     const tela = alvo.closest('.screen--moegas');
-    const cultura = alvo.dataset.moegaCultura;
-    if (!tela || !cultura) return;
-    tela.dataset.moegaCultura = cultura;
-    tela.querySelectorAll('.moega-filtro-btn[data-moega-cultura]').forEach((btn) => {
-        const ativo = btn.dataset.moegaCultura === cultura;
+    const periodo = alvo.dataset.moegaPeriodo;
+    if (!tela || !periodo) return;
+    tela.dataset.moegaPeriodo = periodo;
+    tela.querySelectorAll('.moega-periodo-btn').forEach((btn) => {
+        const ativo = btn.dataset.moegaPeriodo === periodo;
         btn.classList.toggle('is-active', ativo);
         btn.setAttribute('aria-pressed', String(ativo));
     });
@@ -3815,12 +3978,6 @@ document.addEventListener('click', (e) => {
     if (periodo) {
         e.preventDefault();
         escolherPeriodoMoega(periodo);
-        return;
-    }
-    const cultura = e.target.closest('.moega-filtro-btn[data-moega-cultura]');
-    if (cultura) {
-        e.preventDefault();
-        escolherCulturaMoegas(cultura);
     }
 });
 
