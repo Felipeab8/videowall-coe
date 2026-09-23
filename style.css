@@ -2907,6 +2907,14 @@ body.edit-mode .forecast-bar.is-empty {
     .moega-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+
+
+
+    /* com tres por linha o cartao volta a ser largo: entrada e saida
+       cabem lado a lado de novo */
+    .moega-fluxo {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 @media screen and (max-width: 1024px) {
@@ -3694,6 +3702,42 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 
 
+/* A tela das moegas é a única em duas colunas: a grade das seis moegas à
+   esquerda e os silos pulmão numa coluna estreita à direita (quem enche os
+   pulmões são as moegas). O cabeçalho atravessa as duas.
+
+   A largura da coluna da direita é calculada para o cartão do pulmão sair
+   do mesmo tamanho de um cartão de moega: com 6 colunas de 0.875rem de
+   respiro à esquerda e o padding de 1.125rem + 1px de borda de cada seção,
+   a conta fecha em 1/7 da largura + 0.875rem + 1px. */
+.screen--moegas.active {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) calc(14.2857% + 0.875rem + 1px);
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 0.75rem;
+}
+
+
+
+.screen--moegas > .screen-header {
+    grid-column: 1 / -1;
+}
+
+
+
+/* abaixo de 1280 nao sobra largura para as seis moegas mais a coluna:
+   a tela volta a ser uma pilha e os pulmoes descem para baixo da grade */
+@media screen and (max-width: 1280px) {
+
+
+    .screen--moegas.active {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+
+
 .moegas-painel > .section-head {
     flex: 0 0 auto;
 }
@@ -3813,6 +3857,7 @@ body.edit-mode .header-controls .btn-alertas.active {
     display: none;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
     gap: 0.5rem;
     font-size: 0.66rem;
     font-variant-numeric: tabular-nums;
@@ -4117,11 +4162,15 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 
 
-/* entrada e saída: características fixas do fluxo (não mudam com o período) */
+/* entrada e saída: características fixas do fluxo (não mudam com o período).
+   Empilhadas uma sobre a outra: com a coluna dos pulmões ao lado o cartão
+   ficou estreito demais para as duas lado a lado (o rótulo "ENTRADA ·
+   MÉDIA" e a correia de destino não cabiam numa linha). Na vertical sobra
+   largura e a altura sai do tanque, que tem folga. */
 .moega-fluxo {
     flex: 0 0 auto;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: 0.375rem;
 }
 
@@ -6434,7 +6483,7 @@ body.theme-light .kpi-flag--alerta {
     border-radius: 999px;
     border: 1px solid var(--cor);
     background: color-mix(in srgb, var(--cor) 16%, transparent);
-    font-size: 0.6rem;
+    font-size: 0.64rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -6458,7 +6507,7 @@ body.theme-light .kpi-flag--alerta {
 .secador-cultura-lim {
     padding-left: 0.375rem;
     border-left: 1px solid color-mix(in srgb, var(--cor) 50%, transparent);
-    font-size: 0.56rem;
+    font-size: 0.58rem;
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: none;
@@ -6505,7 +6554,7 @@ body.theme-light .kpi-flag--alerta {
 .secador-estado-pill {
     padding: 0.2rem 0.75rem;
     border-radius: 999px;
-    font-size: 0.66rem;
+    font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -6532,7 +6581,7 @@ body.theme-light .kpi-flag--alerta {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.78rem;
+    font-size: 0.84rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -6566,7 +6615,7 @@ body.theme-light .kpi-flag--alerta {
 
 
 .secador-tipo {
-    font-size: 0.65rem;
+    font-size: 0.68rem;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -6580,7 +6629,7 @@ body.theme-light .kpi-flag--alerta {
     flex: 1 1 auto;
     min-height: 0;
     display: grid;
-    grid-template-columns: 11rem minmax(0, 1fr) 10.5rem;
+    grid-template-columns: 12rem minmax(0, 1fr) 11.75rem;
     gap: 0.875rem;
 }
 
@@ -6589,7 +6638,7 @@ body.theme-light .kpi-flag--alerta {
 /* estado no cabeçalho: a pílula diz a fase, o texto ao lado diz há quanto
    tempo e qual o próximo passo — a linha inteira lê como uma frase */
 .secador-estado-info {
-    font-size: 0.66rem;
+    font-size: 0.68rem;
     font-weight: 500;
     color: var(--muted);
     white-space: nowrap;
@@ -6629,7 +6678,7 @@ body.theme-light .kpi-flag--alerta {
     flex-direction: column;
     justify-content: center;
     gap: 0.375rem;
-    padding: 0.625rem 0.875rem;
+    padding: 0.5rem 0.8125rem;
     border-radius: 10px;
     border: 1px solid var(--row-line);
     background: var(--row-bg);
@@ -6668,7 +6717,7 @@ body.theme-light .kpi-flag--alerta {
 
 
 .secador-ponto-nome {
-    font-size: 0.58rem;
+    font-size: 0.66rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -6705,7 +6754,7 @@ body.theme-light .kpi-flag--alerta {
 
 .secador-dado b {
     flex: 0 0 auto;
-    font-size: 0.95rem;
+    font-size: 1.08rem;
     font-weight: 700;
     line-height: 1.1;
     color: var(--text);
@@ -6717,7 +6766,7 @@ body.theme-light .kpi-flag--alerta {
 
 .secador-dado small {
     min-width: 0;
-    font-size: 0.55rem;
+    font-size: 0.62rem;
     font-weight: 600;
     color: var(--muted);
     white-space: nowrap;
@@ -6728,7 +6777,7 @@ body.theme-light .kpi-flag--alerta {
 
 
 .secador-ponto-nota {
-    font-size: 0.58rem;
+    font-size: 0.62rem;
     font-weight: 500;
     color: var(--muted);
 }
@@ -6747,7 +6796,7 @@ body.theme-light .kpi-flag--alerta {
 .secador-agora-col {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 0.2rem;
     min-height: 0;
 }
 
@@ -6755,7 +6804,7 @@ body.theme-light .kpi-flag--alerta {
 
 .secador-agora-titulo {
     flex: 0 0 auto;
-    font-size: 0.62rem;
+    font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -6779,7 +6828,7 @@ body.theme-light .kpi-flag--alerta {
     flex-direction: column;
     justify-content: center;
     gap: 0.05rem;
-    padding: 0.3rem 0.625rem;
+    padding: 0.3rem 0.5625rem;
     border-radius: 10px;
     border: 1px solid var(--row-line);
     border-left: 3px solid var(--cor-serie);
@@ -6835,7 +6884,7 @@ body.theme-light .kpi-flag--alerta {
 
 .secador-limpeza-relogio b {
     position: relative;
-    font-size: 0.56rem;
+    font-size: 0.6rem;
     font-weight: 800;
     line-height: 1;
     color: var(--text);
@@ -6855,7 +6904,7 @@ body.theme-light .kpi-flag--alerta {
 
 
 .secador-limpeza-nome {
-    font-size: 0.52rem;
+    font-size: 0.58rem;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -6866,7 +6915,7 @@ body.theme-light .kpi-flag--alerta {
 
 
 .secador-limpeza-ref {
-    font-size: 0.52rem;
+    font-size: 0.58rem;
     font-weight: 500;
     color: var(--muted);
     white-space: nowrap;
@@ -6898,8 +6947,9 @@ body.theme-light .kpi-flag--alerta {
 
 
 .secador-leitura-nome {
-    font-size: 0.54rem;
+    font-size: 0.6rem;
     font-weight: 700;
+    line-height: 1.2;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--cor-serie);
@@ -6909,9 +6959,9 @@ body.theme-light .kpi-flag--alerta {
 
 
 .secador-leitura-valor {
-    font-size: 0.95rem;
+    font-size: 1.12rem;
     font-weight: 700;
-    line-height: 1.1;
+    line-height: 1.05;
     color: var(--text);
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.01em;
@@ -6920,8 +6970,9 @@ body.theme-light .kpi-flag--alerta {
 
 
 .secador-leitura-ref {
-    font-size: 0.52rem;
+    font-size: 0.58rem;
     font-weight: 500;
+    line-height: 1.2;
     color: var(--muted);
     white-space: nowrap;
 }
@@ -7085,7 +7136,7 @@ body.theme-light .secador-leitura-desvio.is-bom {
     left: 0.375rem;
     transform: translateY(-100%);
     margin-top: -2px;
-    font-size: 0.48rem;
+    font-size: 0.54rem;
     font-weight: 700;
     letter-spacing: 0.06em;
     color: var(--muted);
@@ -7131,7 +7182,7 @@ body.theme-light .secador-leitura-desvio.is-bom {
     top: 0.125rem;
     left: 0.5rem;
     display: block;
-    font-size: 0.5rem;
+    font-size: 0.54rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -7149,7 +7200,7 @@ body.theme-light .secador-leitura-desvio.is-bom {
 
 .secador-agora-label small {
     display: block;
-    font-size: 0.46rem;
+    font-size: 0.48rem;
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: none;
@@ -7209,9 +7260,9 @@ body.theme-light .secador-agora {
 
 
 .secador-fase b {
-    font-size: 0.5rem;
+    font-size: 0.52rem;
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--faint);
     white-space: nowrap;
@@ -7301,7 +7352,7 @@ body.theme-light .secador-fase--descarga {
     display: inline-flex;
     align-items: center;
     gap: 0.375rem;
-    font-size: 0.58rem;
+    font-size: 0.62rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -7401,7 +7452,7 @@ body.theme-light .secador-fase--descarga {
     display: flex;
     justify-content: space-between;
     padding-top: 0.375rem;
-    font-size: 0.58rem;
+    font-size: 0.64rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     color: var(--faint);
@@ -9607,15 +9658,11 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 
 
 
-/* faixa de baixo da tela de silos: a primeira coluna tem a largura de duas
-   das oito colunas da grade de cima (mais o respiro e o padding da secao),
-   para os pulmoes ficarem do tamanho dos outros silos; a tabela de
-   movimentacao ocupa o espaco que sobra a direita. */
-.screen > .split-grid--silos {
+/* faixa de baixo da tela de silos: a movimentacao do dia ocupa a largura
+   inteira e divide a altura meio a meio com a grade dos silos, como era
+   quando os pulmoes ainda dividiam esta faixa */
+.screen > .sa-section--mov {
     flex: 1.15 1 0;
-    grid-template-columns: calc(25% + 1.21875rem + 1.5px) minmax(0, 1fr);
-    gap: 0.75rem;
-    min-height: 0;
 }
 
 
@@ -10041,16 +10088,23 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 
 
 
-/* Pulmões embaixo dos silos: a moldura tracejada abraça só os dois
-   cartões. A largura vem da primeira coluna da faixa; aqui fica só a
-   altura, a mesma da seção dos silos. */
-.split-grid--silos > .sa-section--pulmao {
+/* Pulmões na tela das moegas: coluna estreita à direita da grade, os dois
+   cartões um sobre o outro e em pé, iguais aos da tela de silos. A largura
+   da coluna é a de um cartão de moega (mais o respiro e o padding da
+   seção), então os dois blocos ficam no mesmo ritmo. */
+.screen--moegas > .sa-section--pulmao {
     min-height: 0;
 }
 
 
 
-/* ---- Movimentação silo a silo (ao lado dos pulmões) ---- */
+.screen--moegas .sa-grid--2 {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+
+
+/* ---- Movimentação silo a silo (faixa de baixo da tela de silos) ---- */
 .sa-section--mov {
     min-height: 0;
 }
@@ -10400,20 +10454,39 @@ body.theme-light .kpi-card--destaque .kpi-value {
 
 
 
-/* so o tempo medio do periodo escolhido na tela (data-fluxo-periodo na section) */
 .fluxo-etapa-sub b {
-    display: none;
     font-weight: 700;
     color: var(--text);
 }
 
 
 
-#screen-fluxo[data-fluxo-periodo="turno"] .fluxo-etapa-sub b[data-periodo="turno"],
-#screen-fluxo[data-fluxo-periodo="hoje"] .fluxo-etapa-sub b[data-periodo="hoje"],
-#screen-fluxo[data-fluxo-periodo="7d"] .fluxo-etapa-sub b[data-periodo="7d"],
-#screen-fluxo[data-fluxo-periodo="30d"] .fluxo-etapa-sub b[data-periodo="30d"] {
+/* Todo valor com versao por periodo (quantidade, fila, estado, tempo medio):
+   so o do periodo escolhido na tela aparece (data-fluxo-periodo na section). */
+#screen-fluxo [data-periodo] {
+    display: none;
+}
+
+
+
+#screen-fluxo[data-fluxo-periodo="turno"] [data-periodo="turno"],
+#screen-fluxo[data-fluxo-periodo="hoje"] [data-periodo="hoje"],
+#screen-fluxo[data-fluxo-periodo="7d"] [data-periodo="7d"],
+#screen-fluxo[data-fluxo-periodo="30d"] [data-periodo="30d"] {
     display: inline;
+}
+
+
+
+/* A tabela segue o mesmo periodo: cada linha traz em data-janela a menor
+   janela em que aparece (turno ⊂ hoje ⊂ 7d ⊂ 30d). */
+#screen-fluxo[data-fluxo-periodo="turno"] tbody tr[data-janela="hoje"],
+#screen-fluxo[data-fluxo-periodo="turno"] tbody tr[data-janela="7d"],
+#screen-fluxo[data-fluxo-periodo="turno"] tbody tr[data-janela="30d"],
+#screen-fluxo[data-fluxo-periodo="hoje"] tbody tr[data-janela="7d"],
+#screen-fluxo[data-fluxo-periodo="hoje"] tbody tr[data-janela="30d"],
+#screen-fluxo[data-fluxo-periodo="7d"] tbody tr[data-janela="30d"] {
+    display: none;
 }
 
 
@@ -10438,6 +10511,36 @@ body.theme-light .kpi-card--destaque .kpi-value {
 
 
 
+/* barra de filtro do fluxo: cultura + periodo, encostada na direita do
+   cabecalho (mesma solucao da expedicao) */
+.fluxo-filtro {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    flex-wrap: wrap;
+    margin-left: auto;
+}
+
+
+
+.fluxo-filtro .fluxo-periodo {
+    margin-left: 0;
+}
+
+
+
+/* barrinha entre o filtro de cultura e o de tempo: sao duas escolhas
+   diferentes e a barra do cabecalho e' uma linha so */
+.fluxo-filtro .fluxo-periodo::before {
+    content: "|";
+    color: var(--faint);
+    font-size: 0.8rem;
+    line-height: 1;
+    margin-right: 0.125rem;
+}
+
+
+
 .fluxo-etapa-estado {
     /* rodape do cartao: cada etapa tem um numero de linhas diferente e os
        selos precisam ficar na mesma altura */
@@ -10457,14 +10560,24 @@ body.theme-light .kpi-card--destaque .kpi-value {
 
 
 
+/* O alerta tambem segue o periodo: data-alerta lista em quais janelas a
+   etapa esta fora do padrao (ex.: data-alerta="turno hoje"). */
 .fluxo-etapa--alerta,
-.fluxo-etapa--alerta:hover {
+.fluxo-etapa--alerta:hover,
+#screen-fluxo[data-fluxo-periodo="turno"] .fluxo-etapa[data-alerta~="turno"],
+#screen-fluxo[data-fluxo-periodo="hoje"] .fluxo-etapa[data-alerta~="hoje"],
+#screen-fluxo[data-fluxo-periodo="7d"] .fluxo-etapa[data-alerta~="7d"],
+#screen-fluxo[data-fluxo-periodo="30d"] .fluxo-etapa[data-alerta~="30d"] {
     border-left-color: var(--danger);
 }
 
 
 
-.fluxo-etapa--alerta .fluxo-etapa-estado {
+.fluxo-etapa--alerta .fluxo-etapa-estado,
+#screen-fluxo[data-fluxo-periodo="turno"] .fluxo-etapa[data-alerta~="turno"] .fluxo-etapa-estado,
+#screen-fluxo[data-fluxo-periodo="hoje"] .fluxo-etapa[data-alerta~="hoje"] .fluxo-etapa-estado,
+#screen-fluxo[data-fluxo-periodo="7d"] .fluxo-etapa[data-alerta~="7d"] .fluxo-etapa-estado,
+#screen-fluxo[data-fluxo-periodo="30d"] .fluxo-etapa[data-alerta~="30d"] .fluxo-etapa-estado {
     color: var(--danger);
     background: rgba(231, 76, 60, 0.16);
     border-color: rgba(231, 76, 60, 0.4);
@@ -10472,7 +10585,11 @@ body.theme-light .kpi-card--destaque .kpi-value {
 
 
 
-body.theme-light .fluxo-etapa--alerta .fluxo-etapa-estado {
+body.theme-light .fluxo-etapa--alerta .fluxo-etapa-estado,
+body.theme-light #screen-fluxo[data-fluxo-periodo="turno"] .fluxo-etapa[data-alerta~="turno"] .fluxo-etapa-estado,
+body.theme-light #screen-fluxo[data-fluxo-periodo="hoje"] .fluxo-etapa[data-alerta~="hoje"] .fluxo-etapa-estado,
+body.theme-light #screen-fluxo[data-fluxo-periodo="7d"] .fluxo-etapa[data-alerta~="7d"] .fluxo-etapa-estado,
+body.theme-light #screen-fluxo[data-fluxo-periodo="30d"] .fluxo-etapa[data-alerta~="30d"] .fluxo-etapa-estado {
     color: #b3261e;
     background: rgba(179, 38, 30, 0.12);
     border-color: rgba(179, 38, 30, 0.35);
@@ -10871,6 +10988,39 @@ span[data-fluxo-filtro].fluxo-etapa-pill:focus-visible {
 
 
 body.edit-mode .fluxo-etapa-pill {
+    cursor: text;
+}
+
+
+
+/* cartao de etapa tambem filtra a tabela: o escolhido ganha contorno e os
+   outros apagam um pouco, igual aos selos do cabecalho da tabela */
+.fluxo-etapa[data-fluxo-filtro] {
+    cursor: pointer;
+}
+
+
+
+.fluxo-etapa[data-fluxo-filtro].is-active {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent) inset;
+}
+
+
+
+#screen-fluxo.is-etapa-filtrada .fluxo-etapa[data-fluxo-filtro]:not(.is-active) {
+    opacity: 0.5;
+}
+
+
+
+#screen-fluxo.is-etapa-filtrada .fluxo-etapa[data-fluxo-filtro]:not(.is-active):hover {
+    opacity: 1;
+}
+
+
+
+body.edit-mode .fluxo-etapa[data-fluxo-filtro] {
     cursor: text;
 }
 
@@ -11355,7 +11505,6 @@ body.edit-mode .fluxo-etapa-pill {
     .fluxo-etapas,
     .sa-grid--8,
     .sa-grid--2,
-    .split-grid--silos,
     .sa-grid--armazem,
     .sa-foot--armazem,
     .ponta-strip,
@@ -11366,11 +11515,6 @@ body.edit-mode .fluxo-etapa-pill {
 
 
 
-    /* a faixa dos silos tem regra mais especifica la em cima; aqui ela
-       tambem precisa virar uma coluna so */
-    .screen > .split-grid--silos {
-        grid-template-columns: minmax(0, 1fr);
-    }
 
 
 
@@ -14049,10 +14193,72 @@ body.theme-light .mensal-ritmo {
 
 
 
-.class-detalhe[data-class-cultura="milho"] .class-table tbody tr:not([data-cultura="milho"]),
-.class-detalhe[data-class-cultura="sorgo"] .class-table tbody tr:not([data-cultura="sorgo"]),
-.class-detalhe[data-class-cultura="trigo"] .class-table tbody tr:not([data-cultura="trigo"]),
-.class-detalhe[data-class-cultura="soja"] .class-table tbody tr:not([data-cultura="soja"]) {
+/* ============================================
+   CLASSIFICACAO · FILTRO GERAL DA TELA
+   Cultura e periodo moram no cabecalho e a tela guarda as escolhas em
+   data-class-cultura / data-class-periodo. Os quatro indicadores trazem
+   cada numero em 20 versoes (5 culturas x 4 periodos) e o CSS mostra so a
+   que esta valendo; a tabela esconde as linhas de outra cultura e as que
+   estao fora da janela do periodo.
+   ============================================ */
+#screen-1 .class-cult,
+#screen-1 b[data-periodo] {
+    display: none;
+}
+
+
+
+#screen-1[data-class-cultura="todas"] .class-cult[data-cultura="todas"],
+#screen-1[data-class-cultura="milho"] .class-cult[data-cultura="milho"],
+#screen-1[data-class-cultura="sorgo"] .class-cult[data-cultura="sorgo"],
+#screen-1[data-class-cultura="trigo"] .class-cult[data-cultura="trigo"],
+#screen-1[data-class-cultura="soja"] .class-cult[data-cultura="soja"],
+#screen-1[data-class-periodo="turno"] b[data-periodo="turno"],
+#screen-1[data-class-periodo="hoje"] b[data-periodo="hoje"],
+#screen-1[data-class-periodo="7d"] b[data-periodo="7d"],
+#screen-1[data-class-periodo="30d"] b[data-periodo="30d"] {
+    display: inline;
+}
+
+
+
+/* os <b> das versoes nao podem mudar o desenho do numero nem da lista */
+#screen-1 .kpi-value b,
+#screen-1 .grao-metric-value b {
+    font-weight: inherit;
+    font-size: inherit;
+    color: inherit;
+}
+
+
+
+/* com uma cultura escolhida a lista continua inteira, mas so a dela acesa:
+   o cartao mostra o recorte sem perder a comparacao */
+#screen-1[data-class-cultura="milho"] .grao-metric:not([data-cultura="milho"]),
+#screen-1[data-class-cultura="sorgo"] .grao-metric:not([data-cultura="sorgo"]),
+#screen-1[data-class-cultura="trigo"] .grao-metric:not([data-cultura="trigo"]),
+#screen-1[data-class-cultura="soja"] .grao-metric:not([data-cultura="soja"]) {
+    opacity: 0.32;
+}
+
+
+
+#screen-1[data-class-cultura="milho"] .class-table tbody tr:not([data-cultura="milho"]),
+#screen-1[data-class-cultura="sorgo"] .class-table tbody tr:not([data-cultura="sorgo"]),
+#screen-1[data-class-cultura="trigo"] .class-table tbody tr:not([data-cultura="trigo"]),
+#screen-1[data-class-cultura="soja"] .class-table tbody tr:not([data-cultura="soja"]) {
+    display: none;
+}
+
+
+
+/* janelas encaixadas: uma carga marcada com "hoje" aparece em hoje, 7 e 30 dias */
+#screen-1[data-class-periodo="turno"] .class-table tbody tr[data-janela="hoje"],
+#screen-1[data-class-periodo="turno"] .class-table tbody tr[data-janela="7d"],
+#screen-1[data-class-periodo="turno"] .class-table tbody tr[data-janela="30d"],
+#screen-1[data-class-periodo="hoje"] .class-table tbody tr[data-janela="7d"],
+#screen-1[data-class-periodo="hoje"] .class-table tbody tr[data-janela="30d"],
+#screen-1[data-class-periodo="7d"] .class-table tbody tr[data-janela="30d"] {
     display: none;
 }
 
@@ -14205,6 +14411,7 @@ body.theme-light .class-val--fora {
 
 .hist-seletor-btn,
 .class-filtro-btn,
+.class-periodo-btn,
 .moega-filtro-btn,
 .fluxo-periodo-btn {
     display: inline-flex;
@@ -14239,6 +14446,7 @@ body.theme-light .class-val--fora {
 
 .hist-seletor-btn:hover,
 .class-filtro-btn:hover,
+.class-periodo-btn:hover,
 .moega-filtro-btn:hover,
 .fluxo-periodo-btn:hover {
     color: var(--text);
@@ -14249,6 +14457,7 @@ body.theme-light .class-val--fora {
 
 .hist-seletor-btn:focus-visible,
 .class-filtro-btn:focus-visible,
+.class-periodo-btn:focus-visible,
 .moega-filtro-btn:focus-visible,
 .fluxo-periodo-btn:focus-visible {
     outline: 2px solid var(--accent);
@@ -14259,6 +14468,7 @@ body.theme-light .class-val--fora {
 
 .hist-seletor-btn.is-active,
 .class-filtro-btn.is-active,
+.class-periodo-btn.is-active,
 .moega-filtro-btn.is-active,
 .fluxo-periodo-btn.is-active {
     color: var(--text);

@@ -1119,6 +1119,7 @@ function applyEditMode(enabled) {
     if (enabled) {
         limparFiltrosGrao();
         limparFiltrosFluxo();
+        limparFiltrosClassificacao();
     }
     applyTextEditing(enabled);
     setupDragHandles(enabled);
@@ -1329,14 +1330,27 @@ function buildMotivoTip() {
 
 const MOTIVO_TONS = { ruim: 'is-ruim', bom: 'is-bom' };
 
+// Dentro de uma tela com periodo (data-fluxo-periodo) o balao segue a escolha:
+// data-motivo-lista-7d ganha de data-motivo-lista quando "7 dias" esta ativo.
+// Sem a versao do periodo, cai no atributo base.
+function campoMotivo(alvo, campo) {
+    const tela = alvo.closest('[data-fluxo-periodo]');
+    const periodo = tela ? tela.dataset.fluxoPeriodo : '';
+    if (periodo) {
+        const chave = campo + periodo.charAt(0).toUpperCase() + periodo.slice(1);
+        if (alvo.dataset[chave]) return alvo.dataset[chave];
+    }
+    return alvo.dataset[campo] || '';
+}
+
 function preencherMotivo(alvo) {
     // Tudo vem de data-attributes: sempre textContent, nunca innerHTML.
-    motivoTip.titulo.textContent = alvo.dataset.motivoTitulo || '';
-    motivoTip.resumo.textContent = alvo.dataset.motivoResumo || '';
-    motivoTip.nota.textContent = alvo.dataset.motivoNota || '';
+    motivoTip.titulo.textContent = campoMotivo(alvo, 'motivoTitulo');
+    motivoTip.resumo.textContent = campoMotivo(alvo, 'motivoResumo');
+    motivoTip.nota.textContent = campoMotivo(alvo, 'motivoNota');
 
     motivoTip.lista.textContent = '';
-    const bruto = alvo.dataset.motivoLista || '';
+    const bruto = campoMotivo(alvo, 'motivoLista');
     bruto.split('|').forEach(function (linha) {
         const campos = linha.split('::');
         const rotulo = (campos[0] || '').trim();
@@ -3419,40 +3433,93 @@ function limparFiltrosGrao() {
 // lista: um clique mostra so aquela etapa, outro clique (ou "Todos")
 // devolve a lista inteira. Cada linha carrega a etapa em data-etapa.
 // ============================================
+// As janelas sao encaixadas: uma linha marcada com "hoje" aparece em hoje,
+// 7 dias e 30 dias; o CSS esconde as que estao fora da janela escolhida.
+const JANELAS_FLUXO = ['turno', 'hoje', '7d', '30d'];
+
+function noPeriodoFluxo(tr, periodo) {
+    const linha = JANELAS_FLUXO.indexOf(tr.dataset.janela || 'turno');
+    const limite = JANELAS_FLUXO.indexOf(periodo);
+    if (linha < 0 || limite < 0) return true;
+    return linha <= limite;
+}
+
 function filtrarFluxo(secao, etapa) {
+    const tela = secao.closest('[data-fluxo-periodo]');
+    const periodo = tela ? tela.dataset.fluxoPeriodo || 'hoje' : 'hoje';
+    // a cultura e' o outro filtro da tela: entra junto com o periodo, antes
+    // da etapa, para que a contagem dos selos ja saia so com o que esta valendo
+    const cultura = tela ? tela.dataset.fluxoCultura || 'todas' : 'todas';
     const linhas = secao.querySelectorAll('tbody tr[data-etapa]');
+    const contagem = { todos: 0 };
     let visiveis = 0;
     linhas.forEach((tr) => {
-        const mostra = etapa === 'todos' || tr.dataset.etapa === etapa;
+        const dentro = noPeriodoFluxo(tr, periodo)
+            && (cultura === 'todas' || tr.dataset.cultura === cultura);
+        if (dentro) {
+            const chave = tr.dataset.etapa || '';
+            contagem[chave] = (contagem[chave] || 0) + 1;
+            contagem.todos += 1;
+        }
+        const mostra = dentro && (etapa === 'todos' || tr.dataset.etapa === etapa);
         tr.hidden = !mostra;
         if (mostra) visiveis += 1;
     });
+    // o numero de cada selo e' o que sobra na janela do periodo e na cultura
     secao.querySelectorAll('.fluxo-tabela-resumo [data-fluxo-filtro]').forEach((btn) => {
-        const ativo = (btn.dataset.fluxoFiltro || 'todos') === etapa;
+        const chave = btn.dataset.fluxoFiltro || 'todos';
+        const ativo = chave === etapa;
         btn.classList.toggle('is-active', ativo);
         btn.setAttribute('aria-pressed', String(ativo));
+        const conta = btn.querySelector('[data-fluxo-conta]');
+        if (conta) conta.textContent = String(contagem[chave] || 0);
     });
     secao.classList.toggle('is-filtrada', etapa !== 'todos');
     secao.dataset.fluxoEtapa = etapa;
 
-    // sem linha para mostrar (dado editado): avisa em vez de deixar vazio
+    // os cartoes de etapa no topo da tela sao o mesmo filtro dos selos:
+    // o cartao escolhido fica marcado e os outros apagam um pouco
+    if (tela) {
+        tela.classList.toggle('is-etapa-filtrada', etapa !== 'todos');
+        tela.querySelectorAll('.fluxo-etapa[data-fluxo-filtro]').forEach((cartao) => {
+            const ativo = cartao.dataset.fluxoFiltro === etapa;
+            cartao.classList.toggle('is-active', ativo);
+            cartao.setAttribute('aria-pressed', String(ativo));
+        });
+    }
+
+    // sem linha para mostrar (filtro sem resultado ou dado editado): avisa
+    // em vez de deixar a tabela vazia, dizendo qual recorte nao tem caminhao
     let vazio = secao.querySelector('.fluxo-vazio');
     if (!visiveis) {
         if (!vazio) {
             vazio = document.createElement('p');
             vazio.className = 'fluxo-vazio';
-            vazio.textContent = 'Nenhum caminhão nesta etapa agora.';
             const rolagem = secao.querySelector('.table-scroll');
             if (rolagem) rolagem.appendChild(vazio);
         }
+        vazio.textContent = cultura === 'todas'
+            ? 'Nenhum caminhão nesta etapa agora.'
+            : 'Nenhum caminhão de ' + (NOME_CULTURA_FLUXO[cultura] || cultura)
+                + (etapa === 'todos' ? ' no período.' : ' nesta etapa agora.');
     } else if (vazio) {
         vazio.remove();
     }
     if (secao.querySelector('.table-scroll')) secao.querySelector('.table-scroll').scrollTop = 0;
 }
 
-function acionarFiltroFluxo(alvo) {
+// a tabela pode estar em outra secao da mesma tela: e' o caso do cartao de
+// etapa, que fica no bloco de cima e filtra a lista de baixo
+function secaoTabelaFluxo(alvo) {
     const secao = alvo.closest('.content-section');
+    if (secao && secao.querySelector('tbody tr[data-etapa]')) return secao;
+    const tela = alvo.closest('.screen');
+    const linha = tela ? tela.querySelector('tbody tr[data-etapa]') : null;
+    return linha ? linha.closest('.content-section') : null;
+}
+
+function acionarFiltroFluxo(alvo) {
+    const secao = secaoTabelaFluxo(alvo);
     if (!secao) return;
     const pedida = alvo.dataset.fluxoFiltro || 'todos';
     const atual = secao.dataset.fluxoEtapa || 'todos';
@@ -3467,10 +3534,11 @@ document.addEventListener('click', (e) => {
     acionarFiltroFluxo(alvo);
 });
 
-// selo dentro da linha e um span: Enter/Espaco fazem o mesmo que o clique
+// selo na linha e cartao de etapa nao sao <button>: Enter/Espaco precisam
+// fazer o mesmo que o clique (no botao o navegador ja faz isso sozinho)
 document.addEventListener('keydown', (e) => {
     if (e.key !== 'Enter' && e.key !== ' ') return;
-    const alvo = e.target instanceof Element ? e.target.closest('span[data-fluxo-filtro]') : null;
+    const alvo = e.target instanceof Element ? e.target.closest('[data-fluxo-filtro]:not(button)') : null;
     if (!alvo || isEditing()) return;
     e.preventDefault();
     acionarFiltroFluxo(alvo);
@@ -3479,62 +3547,93 @@ document.addEventListener('keydown', (e) => {
 // o editor salva o HTML como esta: o filtro volta para "todos" antes,
 // senao as linhas escondidas virariam o dado guardado.
 function limparFiltrosFluxo() {
+    // o periodo tambem volta para "hoje": as contagens dos selos sao escritas
+    // pelo filtro e o HTML guardado precisa sair com os valores de origem
+    const botaoHoje = document.querySelector('#screen-fluxo .fluxo-periodo-btn[data-fluxo-periodo="hoje"]');
+    if (botaoHoje && !botaoHoje.classList.contains('is-active')) escolherPeriodoFluxo(botaoHoje);
+    // a cultura tambem volta para "todas" pelo mesmo motivo
+    const botaoTodas = document.querySelector('#screen-fluxo button[data-fluxo-cultura="todas"]');
+    if (botaoTodas && !botaoTodas.classList.contains('is-active')) escolherCulturaFluxo(botaoTodas);
     document.querySelectorAll('.content-section[data-fluxo-etapa]').forEach((secao) => {
         if (secao.dataset.fluxoEtapa !== 'todos') filtrarFluxo(secao, 'todos');
     });
 }
 
 // ============================================
-// CLASSIFICACAO · HISTORICO POR CULTURA
-// Os botoes do cabecalho escolhem a cultura; a secao guarda a escolha em
-// data-hist-cultura e o CSS mostra so a linha correspondente. Delegado no
-// documento porque o editor pode remontar o palco inteiro.
+// CLASSIFICACAO · FILTRO GERAL DA TELA (CULTURA + PERIODO)
+// As duas escolhas ficam no cabecalho e moram na tela, em data-class-cultura
+// e data-class-periodo. O CSS faz o resto: troca o numero de cada indicador
+// (ha uma versao por cultura e por periodo), apaga as culturas nao escolhidas
+// na lista do cartao e esconde da tabela as linhas de outra cultura ou fora
+// da janela. O historico mostra uma cultura por vez, entao ele segue a
+// escolha; em "Todas" fica no milho, que e' o maior volume.
 // ============================================
-function escolherCulturaHistorico(alvo) {
-    const secao = alvo.closest('.hist-section');
-    if (!secao) return;
-    const cultura = alvo.dataset.histCultura;
-    if (!cultura) return;
-    secao.dataset.histCultura = cultura;
-    secao.querySelectorAll('.hist-seletor-btn').forEach((btn) => {
-        const ativo = btn.dataset.histCultura === cultura;
-        btn.classList.toggle('is-active', ativo);
-        btn.setAttribute('aria-pressed', String(ativo));
-    });
-    scheduleFit();
-}
+const NOME_PERIODO_CLASS = { turno: 'turno', hoje: 'hoje', '7d': '7 dias', '30d': '30 dias' };
 
-document.addEventListener('click', (e) => {
-    const alvo = e.target instanceof Element ? e.target.closest('.hist-seletor-btn') : null;
-    if (!alvo || isEditing()) return;
-    e.preventDefault();
-    escolherCulturaHistorico(alvo);
-});
-
-// ============================================
-// CLASSIFICACAO · FILTRO DE CULTURA DA TABELA
-// A section guarda a escolha em data-class-cultura e o CSS esconde as
-// linhas cujo data-cultura nao bate. Delegado no documento.
-// ============================================
 function escolherCulturaClassificacao(alvo) {
-    const secao = alvo.closest('.class-detalhe');
+    const tela = alvo.closest('#screen-1');
     const cultura = alvo.dataset.classCultura;
-    if (!secao || !cultura) return;
-    secao.dataset.classCultura = cultura;
-    secao.querySelectorAll('.class-filtro-btn').forEach((btn) => {
+    if (!tela || !cultura) return;
+    tela.dataset.classCultura = cultura;
+    tela.querySelectorAll('button[data-class-cultura]').forEach((btn) => {
         const ativo = btn.dataset.classCultura === cultura;
         btn.classList.toggle('is-active', ativo);
         btn.setAttribute('aria-pressed', String(ativo));
     });
+    tela.querySelectorAll('[data-class-cultura-nome]').forEach((el) => {
+        el.textContent = cultura === 'todas' ? '' : ' · ' + cultura;
+    });
+    // o historico nao tem "todas": cai no milho para nao ficar sem grafico
+    const historico = tela.querySelector('.hist-section');
+    if (historico) {
+        const doHistorico = cultura === 'todas' ? 'milho' : cultura;
+        historico.dataset.histCultura = doHistorico;
+        historico.querySelectorAll('[data-hist-cultura-nome]').forEach((el) => {
+            el.textContent = doHistorico;
+        });
+    }
+    scheduleFit();
+}
+
+function escolherPeriodoClassificacao(alvo) {
+    const tela = alvo.closest('#screen-1');
+    const periodo = alvo.dataset.classPeriodo;
+    if (!tela || !periodo) return;
+    tela.dataset.classPeriodo = periodo;
+    tela.querySelectorAll('.class-periodo-btn').forEach((btn) => {
+        const ativo = btn.dataset.classPeriodo === periodo;
+        btn.classList.toggle('is-active', ativo);
+        btn.setAttribute('aria-pressed', String(ativo));
+    });
+    tela.querySelectorAll('[data-class-periodo-nome]').forEach((el) => {
+        el.textContent = NOME_PERIODO_CLASS[periodo] || periodo;
+    });
     scheduleFit();
 }
 
 document.addEventListener('click', (e) => {
-    const alvo = e.target instanceof Element ? e.target.closest('.class-filtro-btn') : null;
-    if (!alvo || isEditing()) return;
-    e.preventDefault();
-    escolherCulturaClassificacao(alvo);
+    if (!(e.target instanceof Element) || isEditing()) return;
+    const cultura = e.target.closest('button[data-class-cultura]');
+    if (cultura) {
+        e.preventDefault();
+        escolherCulturaClassificacao(cultura);
+        return;
+    }
+    const periodo = e.target.closest('.class-periodo-btn');
+    if (periodo) {
+        e.preventDefault();
+        escolherPeriodoClassificacao(periodo);
+    }
 });
+
+// o editor salva o HTML como esta: a tela volta ao recorte inteiro antes,
+// senao o filtro de uma cultura ou de um periodo viraria o dado guardado
+function limparFiltrosClassificacao() {
+    const todas = document.querySelector('#screen-1 button[data-class-cultura="todas"]');
+    if (todas && !todas.classList.contains('is-active')) escolherCulturaClassificacao(todas);
+    const hoje = document.querySelector('#screen-1 .class-periodo-btn[data-class-periodo="hoje"]');
+    if (hoje && !hoje.classList.contains('is-active')) escolherPeriodoClassificacao(hoje);
+}
 
 // ============================================
 // MOEGAS · FILTROS
@@ -3571,11 +3670,15 @@ function escolherCulturaMoegas(alvo) {
 }
 
 // ============================================
-// FLUXO · PERIODO DOS TEMPOS MEDIOS
-// A section guarda a escolha em data-fluxo-periodo e o CSS mostra so o
-// tempo medio correspondente em cada etapa. Delegado no documento.
+// FLUXO · PERIODO E CULTURA DA TELA
+// A section guarda as duas escolhas em data-fluxo-periodo / data-fluxo-cultura.
+// O periodo vale para tudo:
+// o CSS mostra so o valor daquele periodo em cada etapa (quantidade, fila,
+// estado e tempo medio) e esconde as linhas fora da janela; o filtro da
+// tabela recalcula a contagem dos selos. Delegado no documento.
 // ============================================
 const NOME_PERIODO_FLUXO = { turno: 'turno', hoje: 'hoje', '7d': '7 dias', '30d': '30 dias' };
+const NOME_CULTURA_FLUXO = { milho: 'milho', sorgo: 'sorgo', trigo: 'trigo', soja: 'soja' };
 
 function escolherPeriodoFluxo(alvo) {
     const tela = alvo.closest('#screen-fluxo');
@@ -3590,8 +3693,41 @@ function escolherPeriodoFluxo(alvo) {
     tela.querySelectorAll('[data-fluxo-periodo-nome]').forEach((el) => {
         el.textContent = NOME_PERIODO_FLUXO[periodo] || periodo;
     });
+    // a tabela e os selos seguem o mesmo periodo: refaz o filtro de etapa
+    // dentro da nova janela
+    atualizarTabelasFluxo(tela);
     scheduleFit();
 }
+
+// A cultura mora na mesma section (data-fluxo-cultura) e vale para a tabela
+// e para a contagem dos selos; os cartoes de etapa continuam no periodo, que
+// e' a foto da planta inteira. Delegado no documento, como o periodo.
+function escolherCulturaFluxo(alvo) {
+    const tela = alvo.closest('#screen-fluxo');
+    const cultura = alvo.dataset.fluxoCultura;
+    if (!tela || !cultura) return;
+    tela.dataset.fluxoCultura = cultura;
+    tela.querySelectorAll('button[data-fluxo-cultura]').forEach((btn) => {
+        const ativo = btn.dataset.fluxoCultura === cultura;
+        btn.classList.toggle('is-active', ativo);
+        btn.setAttribute('aria-pressed', String(ativo));
+    });
+    tela.querySelectorAll('[data-fluxo-cultura-nome]').forEach((el) => {
+        el.textContent = cultura === 'todas' ? '' : ' · ' + (NOME_CULTURA_FLUXO[cultura] || cultura);
+    });
+    atualizarTabelasFluxo(tela);
+    scheduleFit();
+}
+
+function atualizarTabelasFluxo(tela) {
+    (tela || document).querySelectorAll('.fluxo-tabela-resumo').forEach((resumo) => {
+        const secao = resumo.closest('.content-section');
+        if (secao) filtrarFluxo(secao, secao.dataset.fluxoEtapa || 'todos');
+    });
+}
+
+// primeira carga: alinha linhas e contagens com o periodo que veio no HTML
+atualizarTabelasFluxo(document.getElementById('screen-fluxo'));
 
 // ============================================
 // EXPEDICAO · FILTRO GERAL (CULTURA + PERIODO)
@@ -3667,6 +3803,12 @@ document.addEventListener('click', (e) => {
     if (periodoFluxo) {
         e.preventDefault();
         escolherPeriodoFluxo(periodoFluxo);
+        return;
+    }
+    const culturaFluxo = e.target.closest('button[data-fluxo-cultura]');
+    if (culturaFluxo) {
+        e.preventDefault();
+        escolherCulturaFluxo(culturaFluxo);
         return;
     }
     const periodo = e.target.closest('.moega-periodo-btn');
