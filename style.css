@@ -3119,6 +3119,12 @@ body.theme-light {
 
 
 
+.kpi-grid--two {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+
+
 .kpi-grid--three {
     grid-template-columns: repeat(3, 1fr);
 }
@@ -3811,8 +3817,9 @@ body.edit-mode .header-controls .btn-alertas.active {
     gap: 0.25rem;
     padding: 0.4375rem 0 0;
     border-top: 1px solid var(--card-border);
-    /* altura de rótulo + 3 trocas: os tanques ficam alinhados entre os cartões */
-    min-height: 4.375rem;
+    /* rotulo + 3 trocas, que e o maximo do projeto: em "30 dias" nenhum
+       cartao passa disso, entao os seis mantem a mesma altura */
+    min-height: 4.9rem;
 }
 
 
@@ -3911,14 +3918,20 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 
 
+/* Cartao em grade de linhas fixas, para os seis ficarem no mesmo desenho:
+   cabecalho, cultura, tanque, fluxo, "saiu" e historico sempre na mesma
+   altura em todos. Tudo abaixo do tanque tem altura propria fechada
+   (o par entrada/saida em .moega-fluxo-item, o historico em .moega-hist),
+   entao a sobra vai toda para o tanque — e como os cartoes tem a mesma
+   altura, os tanques saem iguais e nada fica desnivelado. */
 .moega-item {
     --grao: var(--muted);
     background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
     border: 1px solid var(--card-border);
     border-radius: 12px;
     padding: 0.875rem 1rem 0.75rem;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: auto auto minmax(4.5rem, 1fr) auto auto auto;
     gap: 0.5rem;
     min-height: 0;
     min-width: 0;
@@ -4017,7 +4030,7 @@ body.edit-mode .header-controls .btn-alertas.active {
 /* tanque: o nível preenche de baixo para cima na cor do grão */
 .moega-tank {
     position: relative;
-    flex: 1 1 auto;
+    /* linha elastica da grade do cartao: o tanque absorve a sobra */
     min-height: 4.5rem;
     border-radius: 8px;
     background: var(--section-bg);
@@ -4123,19 +4136,25 @@ body.edit-mode .header-controls .btn-alertas.active {
    MÉDIA" e a correia de destino não cabiam numa linha). Na vertical sobra
    largura e a altura sai do tanque, que tem folga. */
 .moega-fluxo {
-    flex: 0 0 auto;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: 1fr;
     gap: 0.375rem;
 }
 
 
 
+/* altura fechada, igual nas doze caixas das seis moegas: cabe a combinacao
+   mais alta (rotulo + taxa + destino em duas linhas, caso de "Pre-limpeza 1 →
+   Secador 1") e uma caixa so com "parada" nao encolhe. Altura fixa, nao
+   minima: nenhum conteudo empurra o cartao e os tanques ficam iguais. */
 .moega-fluxo-item {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 0.125rem;
     min-width: 0;
+    height: 4.6rem;
     padding: 0.375rem 0.5rem;
     border-radius: 6px;
     background: var(--row-bg);
@@ -4181,9 +4200,9 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 
 
-/* entrada e saída seguem o período do cartão: "turno" é o estado ao vivo
-   (placa na moega, taxa do momento); hoje, 7 e 30 dias são médias do período,
-   com o número de cargas no lugar da placa. */
+/* entrada e saída seguem o período do cartão: a entrada mostra so a taxa
+   ("turno" e a do momento; hoje, 7 e 30 dias sao medias do periodo) e a
+   saida mostra so para onde o grao vai, que nao muda com o periodo. */
 .moega-fluxo-label[data-periodo],
 .moega-fluxo-sub[data-periodo],
 .moega-fluxo-value[data-periodo] {
@@ -4219,25 +4238,29 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 
 
-/* fora do turno o número é média do período, não estado de equipamento:
-   o ponto fica neutro e a média não sai apagada por "parada". */
-.screen--moegas:not([data-moega-periodo="turno"]) .moega-fluxo-estado {
+/* fora do turno a entrada mostra media do periodo, nao estado de equipamento:
+   o ponto dela fica neutro e a media nao sai apagada por "parada". A saida
+   nao tem media — ela diz se esta mandando grao ou nao, em qualquer janela,
+   entao o ponto dela guarda a cor de ligada/parada. */
+.screen--moegas:not([data-moega-periodo="turno"]) .moega-fluxo-item--entrada .moega-fluxo-estado {
     background: var(--faint);
     border: 0;
 }
 
 
 
-.screen--moegas:not([data-moega-periodo="turno"]) .moega-fluxo-item.is-parada .moega-fluxo-value {
+.screen--moegas:not([data-moega-periodo="turno"]) .moega-fluxo-item--entrada.is-parada .moega-fluxo-value {
     color: var(--text);
 }
 
 
 
+/* o destino acompanha a taxa da saida: legivel, mas um degrau abaixo do numero */
 .moega-fluxo-sub {
-    font-size: 0.6rem;
+    font-size: 0.68rem;
+    font-weight: 600;
     line-height: 1.25;
-    color: var(--faint);
+    color: var(--muted);
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
@@ -4289,7 +4312,6 @@ body.theme-light .moega-item--vazia .moega-tank-num {
 
 /* dados de apoio: saída, última cultura e filtros */
 .moega-dados {
-    flex: 0 0 auto;
     display: flex;
     flex-direction: column;
 }
@@ -6580,11 +6602,20 @@ body.theme-light .kpi-flag--alerta {
 
 
 
+/* o quanto falta para a proxima parada sai do tom do rotulo e vira numero */
+.secador-tipo b {
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
 .secador-body {
     flex: 1 1 auto;
     min-height: 0;
     display: grid;
-    grid-template-columns: 12rem minmax(0, 1fr) 11.75rem;
+    grid-template-columns: 11.5rem 11.5rem minmax(0, 1fr);
     gap: 0.875rem;
 }
 
@@ -6616,12 +6647,91 @@ body.theme-light .kpi-flag--alerta {
 
 
 
-/* o grão como entra e como sai: dois painéis quietos, empilhados, com uma
-   seta entre eles marcando o sentido do fluxo */
-.secador-fluxo {
+/* na ultima hora antes da limpeza o script marca is-perto e a linha avisa */
+.secador-estado-info--prox.is-perto,
+.secador-estado-info--prox.is-perto b {
+    color: var(--warn);
+}
+
+
+
+/* as duas colunas à esquerda do gráfico: o calor (fornalha em cima, secador
+   embaixo, partidos por um separador) e a massa do grão (entrada e saída,
+   com a seta marcando o sentido do fluxo) */
+.secador-col {
     display: flex;
     flex-direction: column;
     min-height: 0;
+}
+
+
+
+.secador-col-titulo {
+    flex: 0 0 auto;
+    margin-bottom: 0.3rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+
+
+/* fornalha e secador dividem a mesma moldura; o separador é a linha no meio */
+.secador-col--calor {
+    justify-content: center;
+    gap: 0;
+    padding: 0.5rem 0.8125rem;
+    border-radius: 10px;
+    border: 1px solid var(--row-line);
+    background: var(--row-bg);
+}
+
+
+
+.secador-bloco {
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.375rem;
+}
+
+
+
+.secador-col-sep {
+    flex: 0 0 auto;
+    height: 1px;
+    margin: 0.5rem 0;
+    background: var(--row-line);
+}
+
+
+
+.secador-bloco-nome {
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cor-serie, var(--muted));
+}
+
+
+
+.secador-bloco--fornalha { --cor-serie: var(--danger); }
+
+
+
+.secador-bloco--ar { --cor-serie: var(--warn); }
+
+
+
+.secador-bloco-dados {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
 }
 
 
@@ -6988,10 +7098,86 @@ body.theme-light .secador-leitura-desvio.is-bom {
 
 /* área do gráfico: as linhas correm até o marcador AGORA; o resto do turno
    fica esmaecido com as fases previstas */
+/* o gráfico é uma grade: o eixo Y à esquerda, o desenho ao lado e a régua das
+   horas embaixo — assim as duas réguas nascem do mesmo retângulo */
 .secador-chart {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr) auto;
+    column-gap: 0.4375rem;
     min-height: 0;
+}
+
+
+
+/* eixos Y: temperatura à esquerda (0–200 °C) e umidade à direita (12–20%).
+   As duas réguas dividem as mesmas cinco linhas do grid, então cada valor
+   escrito cai exatamente sobre uma linha. */
+.secador-eixo {
+    position: relative;
+    width: 1.875rem;
+}
+
+
+
+.secador-eixo span {
+    position: absolute;
+    transform: translateY(-50%);
+    font-size: 0.64rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+
+
+.secador-eixo--temp span { right: 0; }
+
+
+
+/* a umidade tem escala própria: o rótulo puxa a cor da série para dizer isso */
+.secador-eixo--umi span {
+    left: 0;
+    color: color-mix(in srgb, var(--viz-real) 70%, var(--faint));
+}
+
+
+
+/* os rótulos das pontas não cabem centrados na linha: encostam nela por dentro */
+.secador-eixo span:first-child { transform: translateY(0); }
+
+
+
+.secador-eixo span:last-child { transform: translateY(-100%); }
+
+
+
+/* o que cada eixo mede, escrito no pé da régua, na linha das horas */
+.secador-eixo-cap {
+    grid-row: 2;
+    padding-top: 0.375rem;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--faint);
+    white-space: nowrap;
+}
+
+
+
+.secador-eixo-cap--temp {
+    grid-column: 1;
+    text-align: right;
+}
+
+
+
+.secador-eixo-cap--umi {
+    grid-column: 3;
+    color: color-mix(in srgb, var(--viz-real) 70%, var(--faint));
 }
 
 
@@ -7004,26 +7190,36 @@ body.theme-light .secador-leitura-desvio.is-bom {
 
 
 
+/* as linhas caem de 25 em 25%: 200/150/100/50/0 °C à esquerda e
+   20/18/16/14/12% à direita, os valores escritos nos dois eixos */
 .secador-grid {
     position: absolute;
     inset: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
     pointer-events: none;
 }
 
 
 
 .secador-grid i {
-    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
     height: 1px;
     background: var(--row-line);
 }
 
 
 
+.secador-grid i:nth-child(1) { top: 0; }
+.secador-grid i:nth-child(2) { top: 25%; }
+.secador-grid i:nth-child(3) { top: 50%; }
+.secador-grid i:nth-child(4) { top: 75%; }
+
+
+
 .secador-grid i:last-child {
+    top: auto;
+    bottom: 0;
     background: var(--panel-border);
 }
 
@@ -7293,6 +7489,81 @@ body.theme-light .secador-fase--descarga {
 
 
 /* legenda das fases no cabecalho da secao */
+/* legenda das linhas do gráfico: um traço na cor da série, para o nome e a
+   curva se reconhecerem. Fica antes da legenda das fases, no fim do título */
+.serie-legenda {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+
+
+.serie-legenda-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+
+
+.serie-legenda-item::before {
+    content: "";
+    width: 1.125rem;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--cor-serie, var(--muted));
+}
+
+
+
+.serie-legenda-item--fornalha { --cor-serie: var(--danger); }
+
+
+
+.serie-legenda-item--temp { --cor-serie: var(--warn); }
+
+
+
+.serie-legenda-item--umi { --cor-serie: var(--viz-real); }
+
+
+
+/* a desejada repete a linha tracejada atrás das curvas: mesmo tracejado e
+   mesma cor da fornalha */
+.serie-legenda-item--setada {
+    --cor-serie: var(--danger);
+}
+
+
+
+.serie-legenda-item--setada::before {
+    background: repeating-linear-gradient(
+        to right,
+        var(--cor-serie) 0 4px,
+        transparent 4px 7px
+    );
+}
+
+
+
+/* separa os dois grupos de legenda sem pesar */
+.serie-legenda + .fase-legenda {
+    margin-left: 0;
+    padding-left: 0.75rem;
+    border-left: 1px solid var(--row-line);
+}
+
+
+
 .fase-legenda {
     margin-left: auto;
     display: flex;
@@ -7403,6 +7674,7 @@ body.theme-light .secador-fase--descarga {
 
 
 .secador-horas {
+    grid-column: 2;
     flex: 0 0 auto;
     display: flex;
     justify-content: space-between;
@@ -11307,9 +11579,26 @@ body.edit-mode .fluxo-etapa[data-fluxo-filtro] {
 
 
 
-    .secador-fluxo {
+    .secador-col--massa {
         flex-direction: row;
         gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+
+
+    .secador-col--calor {
+        flex-direction: row;
+        align-items: stretch;
+        gap: 0.8125rem;
+    }
+
+
+
+    .secador-col-sep {
+        width: 1px;
+        height: auto;
+        margin: 0 0.25rem;
     }
 
 
@@ -11423,6 +11712,7 @@ body.edit-mode .fluxo-etapa[data-fluxo-filtro] {
 
     /* ---- Grades: empilham ---- */
     .kpi-grid,
+    .kpi-grid--two,
     .kpi-grid--three,
     .kpi-grid--four,
     .kpi-grid--six,
@@ -13921,54 +14211,66 @@ body.theme-light .mensal-ritmo {
 
 
 
+/* seis indicadores numa linha so: o numero e o unico dado no rosto do cartao,
+   entao ele manda, mas nao pode estourar um sexto da largura */
 .kpi-grid--class .kpi-value {
-    font-size: 1.8rem;
-}
-
-
-
-/* os quatro graos ficam numa linha so, dividindo a largura do cartao */
-.kpi-grid--class .grao-metrics {
-    flex-wrap: nowrap;
-    gap: 0.25rem 0.5rem;
-}
-
-
-
-.kpi-grid--class .grao-metric {
-    flex: 1 1 0;
-    min-width: 0;
-}
-
-
-
-.kpi-grid--class .grao-metric-value {
-    font-size: 0.9rem;
-}
-
-
-
-.kpi-grid--class .grao-metric-name {
-    font-size: 0.52rem;
-}
-
-
-
-.kpi-grid--class .grao-icon {
-    width: 1rem;
-    height: 1rem;
+    font-size: 1.5rem;
 }
 
 
 
 /* ============================================
-   CLASSIFICACAO — FAIXA COMPLEMENTAR
-   PH, farinamber e queimado entram numa faixa mais
-   baixa que a dos quatro cartoes principais: sao leituras
-   de apoio e a tabela do meio precisa da altura.
+   CLASSIFICACAO — FAIXA DE INDICADORES
+   Os seis indicadores dividem uma linha so; o rosto do cartao
+   tem apenas o numero do recorte escolhido, porque a quebra por
+   cultura foi para o balao do mouse over e a tabela do meio
+   precisa da altura.
    ============================================ */
-.kpi-grid--class-extra {
+.kpi-grid--class {
     margin-bottom: 0.875rem;
+}
+
+
+
+.kpi-grid--class .kpi-value-ref {
+    margin-left: 0.25rem;
+}
+
+
+
+/* O queimado esta contado dentro do avariado: entra como linha de apoio do
+   cartao de avariados, discreta, entre o numero grande e a lista de culturas.
+   O numero segue o mesmo jogo de spans por cultura e por periodo. */
+.kpi-queimado {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.kpi-queimado-rotulo {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--faint);
+}
+
+
+
+.kpi-queimado .class-cult {
+    color: var(--text);
+}
+
+
+
+.kpi-queimado .kpi-lim {
+    margin-left: 0.15rem;
 }
 
 
@@ -13981,32 +14283,9 @@ body.theme-light .mensal-ritmo {
 
 
 
-.kpi-grid--class-extra .kpi-value {
-    font-size: 1.35rem;
-}
 
 
-
-.kpi-grid--class-extra .kpi-value-ref {
-    margin-left: 0.25rem;
-}
-
-
-
-.kpi-grid--class-extra .grao-metrics {
-    padding-top: 0.375rem;
-    gap: 0.25rem 0.5rem;
-}
-
-
-
-.kpi-grid--class-extra .grao-metric-value {
-    font-size: 0.8rem;
-}
-
-
-
-/* o limite anda junto do rotulo: PH e farinamber sao minimos
+/* o limite anda junto do rotulo: PH e falling number sao minimos
    (quanto maior, melhor) e o queimado tem teto proprio de 1%
    mesmo ja estando contado dentro do avariado */
 .kpi-lim {
@@ -14275,7 +14554,7 @@ body.theme-light .mensal-ritmo {
    CLASSIFICACAO · FILTRO GERAL DA TELA
    O periodo mora em data-class-periodo e a cultura em data-cult-<cultura>:
    as quatro nascem "on" e cada botao desmarca a sua. Os indicadores trazem
-   cada numero em 20 versoes (5 culturas x 4 periodos) e o CSS mostra so a
+   cada numero por cultura e por janela (hoje, 7 e 30 dias) e o CSS mostra so a
    que esta valendo; com um recorte no meio (duas ou tres culturas) quem
    aparece e' o span "mistura", que o script conta na hora. A cultura
    desmarcada some da lista do cartao e da tabela.
@@ -14312,17 +14591,8 @@ body.theme-light .mensal-ritmo {
 
 
 
-/* cultura desmarcada sai da lista do cartao: o que fica ganha espaco e a
-   comparacao acontece so entre as culturas que interessam */
-#screen-1[data-cult-milho="off"] .grao-metric[data-cultura="milho"],
-#screen-1[data-cult-sorgo="off"] .grao-metric[data-cultura="sorgo"],
-#screen-1[data-cult-trigo="off"] .grao-metric[data-cultura="trigo"],
-#screen-1[data-cult-soja="off"] .grao-metric[data-cultura="soja"] {
-    display: none;
-}
-
-
-
+/* cultura desmarcada sai da tabela; nos indicadores ela sai da lista do balao,
+   que o script monta so com as culturas marcadas */
 #screen-1[data-cult-milho="off"] .class-table tbody tr[data-cultura="milho"],
 #screen-1[data-cult-sorgo="off"] .class-table tbody tr[data-cultura="sorgo"],
 #screen-1[data-cult-trigo="off"] .class-table tbody tr[data-cultura="trigo"],

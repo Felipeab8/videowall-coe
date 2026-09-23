@@ -491,6 +491,8 @@ const EDITABLE_SELECTORS = [
     '.secador-tipo',
     '.secador-estado-info',
     '.secador-ponto-nome',
+    '.secador-bloco-nome',
+    '.secador-col-titulo',
     '.secador-dado b',
     '.secador-dado small',
     '.secador-ponto-nota',
@@ -505,6 +507,10 @@ const EDITABLE_SELECTORS = [
     '.secador-leitura-ref',
     '.serie-tag',
     '.secador-horas span',
+    '.secador-eixo span',
+    '.secador-eixo-cap',
+    '.serie-legenda-item',
+    '.fase-legenda-item',
     '.rank-nome',
     '.rank-valor',
     '.donut-nome',
@@ -601,6 +607,7 @@ const DRAG_CONFIG = [
     { selector: '.kpi-card-small', group: 'kpi-small' },
     { selector: '.secador', group: 'secador' },
     { selector: '.secador-ponto', group: 'secador-dado' },
+    { selector: '.secador-bloco', group: 'secador-dado' },
     { selector: '.secador-leitura', group: 'secador-leitura' },
     { selector: '.silo-group', group: 'silo-cultura' },
     { selector: '.silo-item', group: 'silo' },
@@ -3605,13 +3612,31 @@ function formatarComoClass(modelo, valor) {
     return String(modelo).indexOf('%') >= 0 ? texto + '%' : texto;
 }
 
+// Um grupo de valores e' tudo que tem data-class-agg: o cartao inteiro, ou
+// uma linha dentro dele (o queimado mora no cartao de avariados). Cada
+// elemento pertence ao grupo mais proximo, entao um grupo nunca le o numero
+// do outro.
+function dentroDoGrupoClass(grupo, seletor) {
+    return Array.prototype.filter.call(
+        grupo.querySelectorAll(seletor),
+        (el) => el.closest('[data-class-agg]') === grupo
+    );
+}
+
+// o numero de uma cultura num periodo: sai do proprio <span class="class-cult">
+// que o HTML ja traz pronto
+function fonteClass(grupo, cultura, periodo) {
+    const span = dentroDoGrupoClass(grupo, '.class-cult[data-cultura="' + cultura + '"]')[0];
+    return span ? span.querySelector('b[data-periodo="' + periodo + '"]') : null;
+}
+
 // peso de cada cultura na media: o numero de cargas classificadas naquele
 // periodo. Sem o cartao de cargas a media vira simples (peso 1 para todas).
 function pesosClass(tela, periodo) {
-    const cartao = tela.querySelector('[data-class-agg="soma"]');
+    const grupo = tela.querySelector('[data-class-agg="soma"]');
     const pesos = {};
     CULTURAS_CLASS.forEach((c) => {
-        const b = cartao && cartao.querySelector('.grao-metric[data-cultura="' + c + '"] .grao-metric-value b[data-periodo="' + periodo + '"]');
+        const b = grupo ? fonteClass(grupo, c, periodo) : null;
         const n = b ? numeroClass(b.textContent) : null;
         pesos[c] = n === null ? 1 : n;
     });
@@ -3619,15 +3644,16 @@ function pesosClass(tela, periodo) {
 }
 
 // valor do indicador com mais de uma cultura marcada: soma nas cargas,
-// media ponderada pelas cargas no resto (umidade, impureza, PH...).
-// O farinamber so existe no trigo: as outras entram como "—" e ficam de fora.
-function valorMisturaClass(cartao, periodo, marcadas, pesos) {
-    const soma = cartao.dataset.classAgg === 'soma';
+// media ponderada pelas cargas no resto (umidade, impureza, queimado...).
+// PH e falling number so existem no trigo: as outras entram como "—" e ficam
+// de fora da conta.
+function valorMisturaClass(grupo, periodo, marcadas, pesos) {
+    const soma = grupo.dataset.classAgg === 'soma';
     let acumulado = 0;
     let peso = 0;
     let modelo = '';
     marcadas.forEach((c) => {
-        const b = cartao.querySelector('.grao-metric[data-cultura="' + c + '"] .grao-metric-value b[data-periodo="' + periodo + '"]');
+        const b = fonteClass(grupo, c, periodo);
         if (!b) return;
         const n = numeroClass(b.textContent);
         if (n === null) return;
@@ -3647,12 +3673,13 @@ function escreverMisturaClass(tela, marcadas) {
     const mistura = marcadas.length > 1 && marcadas.length < CULTURAS_CLASS.length;
     const pesos = {};
     if (mistura) PERIODOS_CLASS.forEach((p) => { pesos[p] = pesosClass(tela, p); });
-    tela.querySelectorAll('[data-class-agg]').forEach((cartao) => {
-        const valor = cartao.querySelector('.kpi-value');
-        if (!valor) return;
-        const antigo = valor.querySelector('.class-cult[data-cultura="mistura"]');
+    tela.querySelectorAll('[data-class-agg]').forEach((grupo) => {
+        const antigo = dentroDoGrupoClass(grupo, '.class-cult[data-cultura="mistura"]')[0];
         if (antigo) antigo.remove();
         if (!mistura) return;
+        const irmaos = dentroDoGrupoClass(grupo, '.class-cult');
+        const ultimo = irmaos[irmaos.length - 1];
+        if (!ultimo) return;
         const span = document.createElement('span');
         span.className = 'class-cult';
         span.dataset.cultura = 'mistura';
@@ -3661,10 +3688,11 @@ function escreverMisturaClass(tela, marcadas) {
         PERIODOS_CLASS.forEach((p) => {
             const b = document.createElement('b');
             b.dataset.periodo = p;
-            b.textContent = valorMisturaClass(cartao, p, marcadas, pesos[p]);
+            b.textContent = valorMisturaClass(grupo, p, marcadas, pesos[p]);
             span.appendChild(b);
         });
-        valor.appendChild(span);
+        // entra logo depois das culturas, antes da unidade ("kg/hL", "s")
+        ultimo.parentElement.insertBefore(span, ultimo.nextSibling);
     });
 }
 
@@ -3676,6 +3704,25 @@ function nomeRecorteClass(marcadas) {
     if (fora.length === 1) return ' · sem ' + fora[0];
     if (marcadas.length === 1) return ' · ' + marcadas[0];
     return ' · ' + marcadas.slice(0, -1).join(', ') + ' e ' + marcadas[marcadas.length - 1];
+}
+
+// A quebra por cultura saiu do rosto do cartao e vive no balao do mouse over.
+// A lista e' montada dos proprios spans do indicador, no periodo que esta
+// valendo e so com as culturas marcadas — refeita a cada troca de filtro.
+const ROTULO_CULTURA_CLASS = { milho: 'Milho', sorgo: 'Sorgo', trigo: 'Trigo', soja: 'Soja' };
+
+function escreverMotivoClass(tela, marcadas) {
+    if (!tela) return;
+    const periodo = tela.dataset.classPeriodo || 'hoje';
+    const recorte = nomeRecorteClass(marcadas) || ' · todas as culturas';
+    tela.querySelectorAll('[data-class-agg]').forEach((grupo) => {
+        const itens = marcadas.map((c) => {
+            const b = fonteClass(grupo, c, periodo);
+            return ROTULO_CULTURA_CLASS[c] + '::' + (b ? b.textContent.trim() : '—');
+        });
+        grupo.dataset.motivoLista = itens.join('|');
+        grupo.dataset.motivoResumo = (NOME_PERIODO_CLASS[periodo] || periodo) + recorte;
+    });
 }
 
 // O historico tem filtro proprio, no cabecalho do bloco: ele mostra uma
@@ -3742,6 +3789,7 @@ function aplicarCulturasClassificacao(tela, marcadas) {
         el.textContent = nomeRecorteClass(lista);
     });
     escreverMisturaClass(tela, lista);
+    escreverMotivoClass(tela, lista);
     // o historico tem seletor proprio: a escolha dele fica de pe, e so muda
     // quando a cultura em cena e' desmarcada la em cima
     sincronizarHistoricoClass(tela, lista);
@@ -3776,6 +3824,8 @@ function escolherPeriodoClassificacao(alvo) {
     tela.querySelectorAll('[data-class-periodo-nome]').forEach((el) => {
         el.textContent = NOME_PERIODO_CLASS[periodo] || periodo;
     });
+    // o balao mostra a quebra por cultura do periodo que esta valendo
+    escreverMotivoClass(tela, culturasMarcadasClass(tela));
     scheduleFit();
 }
 
@@ -3799,6 +3849,13 @@ document.addEventListener('click', (e) => {
         escolherCulturaHistorico(doHistorico);
     }
 });
+
+// primeira carga: o balao de cada indicador nasce com a quebra por cultura
+// do periodo que veio no HTML
+(function () {
+    const tela = document.getElementById('screen-1');
+    if (tela) escreverMotivoClass(tela, culturasMarcadasClass(tela));
+})();
 
 // o editor salva o HTML como esta: a tela volta ao recorte inteiro antes,
 // senao o filtro de uma cultura ou de um periodo viraria o dado guardado
