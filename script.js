@@ -158,8 +158,11 @@ function fitTargets() {
         : document.querySelector('.screen.active');
     if (!active) return [];
     // .table-scroll--livre rola por dentro em vez de encolher a tela inteira
-    // (lista longa de caminhoes): fica fora da conta.
-    return [active, ...active.querySelectorAll('.content-section:not(.content-section--livre), .table-scroll:not(.table-scroll--livre), .alerts-list, .geral-grid')];
+    // (lista longa de caminhoes): fica fora da conta. Bloco com overflow
+    // visivel tambem sai: o que passa dele ja aparece na medida da tela, e
+    // um menu aberto por cima (contratos da expedicao) nao e transbordo.
+    const blocos = active.querySelectorAll('.content-section:not(.content-section--livre), .table-scroll:not(.table-scroll--livre), .alerts-list, .geral-grid');
+    return [active, ...Array.prototype.filter.call(blocos, (el) => getComputedStyle(el).overflowY !== 'visible')];
 }
 
 function fitOverflow(targets) {
@@ -441,7 +444,8 @@ const EDITABLE_SELECTORS = [
     '.summary-label',
     '.progress-label',
     '.moega-name',
-    '.moega-tons',
+    '.moega-cargas-tabela th',
+    '.moega-cargas-tabela td',
     '.silo-name',
     '.silo-temp',
     '.silo-volume',
@@ -462,7 +466,7 @@ const EDITABLE_SELECTORS = [
     '.kpi-meta-ref',
     '.moega-tipo',
     '.moega-cultura',
-    '.moega-nivel-pct',
+    '.moega-cargas-total',
     '.moega-dado-label',
     '.moega-dado-sub',
     '.moega-dado-value',
@@ -510,7 +514,6 @@ const EDITABLE_SELECTORS = [
     '.secador-eixo span',
     '.secador-eixo-cap',
     '.serie-legenda-item',
-    '.fase-legenda-item',
     '.rank-nome',
     '.rank-valor',
     '.donut-nome',
@@ -533,6 +536,8 @@ const EDITABLE_SELECTORS = [
 const TEXTO_NAO_MOVEL = [
     '.data-table th',        // moveria a coluna inteira do lugar
     '.data-table td',        // a linha ja se arrasta inteira
+    '.moega-cargas-tabela th',
+    '.moega-cargas-tabela td',
     '.forecast-yaxis span',  // eixo e escala, nao informacao solta
     '.linha-eixo span',
     '.forecast-cap',         // vive dentro da barra que se arrasta pelo valor
@@ -1188,7 +1193,7 @@ if (firstScreen) {
 // ============================================
 // GRÁFICO: RECEBIDO x PROGRAMADO (7 DIAS)
 // ============================================
-const FORECAST_MAX = 1800; // topo do eixo Y, em toneladas
+const FORECAST_MAX = 1800; // topo do eixo Y, em m³
 
 function formatTon(value) {
     return Math.round(value).toLocaleString('pt-BR');
@@ -1496,7 +1501,7 @@ function setForecastValue(bar, clientY) {
     // barras que representam uma serie propria (ex.: cada secador no grafico por hora)
     // dizem qual linha do tooltip atualizar; as demais caem no total recebido
     const serie = bar.dataset.serie || (bar.classList.contains('forecast-bar--prog') ? 'programado' : 'recebido');
-    col.dataset[serie] = formatTon(tons) + ' t';
+    col.dataset[serie] = formatTon(tons) + ' m³';
 }
 
 document.addEventListener('pointerdown', (e) => {
@@ -2208,7 +2213,7 @@ const CATALOGO = [
             { nome: 'rotulos', rotulo: 'Rótulos do eixo X', tipo: 'textarea', padrao: '07h, 08h, 09h, 10h, 11h, 12h', dica: 'Separe por vírgula' },
             { nome: 'valores', rotulo: 'Valores', tipo: 'textarea', padrao: '142, 155, 148, 162, 137, 104' },
             { nome: 'max', rotulo: 'Topo do eixo Y (0 = automático)', tipo: 'number', padrao: 0 },
-            { nome: 'unidade', rotulo: 'Unidade', tipo: 'text', padrao: 't' },
+            { nome: 'unidade', rotulo: 'Unidade', tipo: 'text', padrao: 'm³' },
             { nome: 'cor', rotulo: 'Cor das barras', tipo: 'select', opcoes: OPCOES_COR, padrao: 'azul' },
             { nome: 'mostrarValores', rotulo: 'Mostrar o valor em cada barra', tipo: 'check', padrao: true },
             { nome: 'mostrarGrade', rotulo: 'Mostrar linhas de grade', tipo: 'check', padrao: true }
@@ -2230,7 +2235,7 @@ const CATALOGO = [
             { nome: 'valoresB', rotulo: 'Valores da 2ª série', tipo: 'textarea', padrao: '1500, 1450, 1450, 1600, 950' },
             { nome: 'corB', rotulo: 'Cor da 2ª série', tipo: 'select', opcoes: OPCOES_COR, padrao: 'verde' },
             { nome: 'max', rotulo: 'Topo do eixo Y (0 = automático)', tipo: 'number', padrao: 0 },
-            { nome: 'unidade', rotulo: 'Unidade', tipo: 'text', padrao: 't' },
+            { nome: 'unidade', rotulo: 'Unidade', tipo: 'text', padrao: 'm³' },
             { nome: 'mostrarValores', rotulo: 'Mostrar o valor da 1ª série', tipo: 'check', padrao: true }
         ],
         montar: montarComparativo
@@ -2264,7 +2269,7 @@ const CATALOGO = [
             { nome: 'rotulos', rotulo: 'Nomes', tipo: 'textarea', padrao: 'Moega 1, Moega 2, Moega 3' },
             { nome: 'valores', rotulo: 'Valores', tipo: 'textarea', padrao: '110, 68, 92' },
             { nome: 'max', rotulo: 'Valor cheio da barra (0 = maior valor)', tipo: 'number', padrao: 120 },
-            { nome: 'unidade', rotulo: 'Unidade', tipo: 'text', padrao: 't' },
+            { nome: 'unidade', rotulo: 'Unidade', tipo: 'text', padrao: 'm³' },
             { nome: 'cor', rotulo: 'Cor', tipo: 'select', opcoes: OPCOES_COR, padrao: 'milho' },
             { nome: 'mostrarPercent', rotulo: 'Mostrar percentual ao lado', tipo: 'check', padrao: true }
         ],
@@ -2280,7 +2285,7 @@ const CATALOGO = [
             { nome: 'rotulos', rotulo: 'Nomes das partes', tipo: 'textarea', padrao: 'Milho, Sorgo, Trigo' },
             { nome: 'valores', rotulo: 'Valores', tipo: 'textarea', padrao: '860, 380, 240' },
             { nome: 'cores', rotulo: 'Cores (uma por parte)', tipo: 'textarea', padrao: 'milho, sorgo, trigo', dica: 'azul, verde, milho, sorgo, trigo, soja, ok, atencao, alerta' },
-            { nome: 'unidade', rotulo: 'Unidade', tipo: 'text', padrao: 't' },
+            { nome: 'unidade', rotulo: 'Unidade', tipo: 'text', padrao: 'm³' },
             { nome: 'mostrarLegenda', rotulo: 'Mostrar legenda', tipo: 'check', padrao: true }
         ],
         montar: montarEmpilhada
@@ -2295,7 +2300,7 @@ const CATALOGO = [
             { nome: 'rotulos', rotulo: 'Nomes', tipo: 'textarea', padrao: 'Milho, Sorgo, Trigo, Soja' },
             { nome: 'valores', rotulo: 'Valores', tipo: 'textarea', padrao: '860, 380, 240, 160' },
             { nome: 'cores', rotulo: 'Cores', tipo: 'textarea', padrao: 'milho, sorgo, trigo, soja' },
-            { nome: 'unidade', rotulo: 'Unidade do total', tipo: 'text', padrao: 't' }
+            { nome: 'unidade', rotulo: 'Unidade do total', tipo: 'text', padrao: 'm³' }
         ],
         montar: montarRosca
     },
@@ -2309,7 +2314,7 @@ const CATALOGO = [
             { nome: 'rotulos', rotulo: 'Nomes', tipo: 'textarea', padrao: 'SILO 1, SILO 2, SILO 3' },
             { nome: 'valores', rotulo: 'Percentuais', tipo: 'textarea', padrao: '78, 92, 64' },
             { nome: 'topos', rotulo: 'Texto do canto (temperatura, etc.)', tipo: 'textarea', padrao: '22°C, 21°C, 24°C' },
-            { nome: 'volumes', rotulo: 'Texto do rodapé', tipo: 'textarea', padrao: '3.120 t, 3.680 t, 2.560 t' },
+            { nome: 'volumes', rotulo: 'Texto do rodapé', tipo: 'textarea', padrao: '3.120 m³, 3.680 m³, 2.560 m³' },
             { nome: 'cor', rotulo: 'Cor do preenchimento', tipo: 'select', opcoes: OPCOES_COR, padrao: 'milho' }
         ],
         montar: montarMedidores
@@ -2322,7 +2327,7 @@ const CATALOGO = [
         campos: [
             { nome: 'titulo', rotulo: 'Título da seção (vazio = sem título)', tipo: 'text', padrao: '' },
             { nome: 'rotulos', rotulo: 'Rótulos', tipo: 'textarea', padrao: 'CAMINHÕES NA FILA, ESPERA MÉDIA, RITMO ATUAL' },
-            { nome: 'valores', rotulo: 'Valores', tipo: 'textarea', padrao: '12, 38 min, 82 t/h' },
+            { nome: 'valores', rotulo: 'Valores', tipo: 'textarea', padrao: '12, 38 min, 82 m³/h' },
             { nome: 'tamanho', rotulo: 'Tamanho', tipo: 'select', padrao: 'grande', opcoes: [
                 { valor: 'grande', texto: 'Grande' },
                 { valor: 'pequeno', texto: 'Compacto' }
@@ -3140,7 +3145,7 @@ function graoNumero(txt) {
     return isFinite(n) ? n : 0;
 }
 
-// "900 t \u00b7 prog 950 t" ou "\u2014 \u00b7 prog 1.100 t";
+// "900 m³ \u00b7 prog 950 m³" ou "\u2014 \u00b7 prog 1.100 m³";
 // atributo ausente = a cultura nao veio naquele dia
 function lerCultura(col, chave) {
     const bruto = col.dataset[chave];
@@ -3235,8 +3240,8 @@ function atualizarResumoGrao(secao, grao) {
     const passados = secao.querySelectorAll('.forecast-col.is-passado');
     const t = hoje ? totaisDaColuna(hoje, grao) : { real: null, prog: null };
 
-    escreverTexto(stats[0], t.real == null ? GRAO_VAZIO : formatTon(t.real) + ' t');
-    escreverTexto(stats[1], t.prog == null ? GRAO_VAZIO : formatTon(t.prog) + ' t');
+    escreverTexto(stats[0], t.real == null ? GRAO_VAZIO : formatTon(t.real) + ' m³');
+    escreverTexto(stats[1], t.prog == null ? GRAO_VAZIO : formatTon(t.prog) + ' m³');
     escreverTexto(stats[2], t.real == null || !(t.prog > 0)
         ? GRAO_VAZIO
         : Math.round((t.real / t.prog) * 100) + '%');
@@ -3245,7 +3250,7 @@ function atualizarResumoGrao(secao, grao) {
     passados.forEach((col) => {
         soma += totaisDaColuna(col, grao).real || 0;
     });
-    escreverTexto(stats[3], passados.length ? formatTon(soma / passados.length) + ' t' : GRAO_VAZIO);
+    escreverTexto(stats[3], passados.length ? formatTon(soma / passados.length) + ' m³' : GRAO_VAZIO);
 }
 
 function atualizarTabelaGrao(secao, grao) {
@@ -3275,8 +3280,8 @@ function atualizarTabelaGrao(secao, grao) {
         const prog = celulas[celulas.length - 2];
         const pct = celulas[celulas.length - 1];
 
-        escreverTexto(real, d.real == null ? GRAO_VAZIO : formatTon(d.real) + ' t');
-        escreverTexto(prog, d.prog == null ? GRAO_VAZIO : formatTon(d.prog) + ' t');
+        escreverTexto(real, d.real == null ? GRAO_VAZIO : formatTon(d.real) + ' m³');
+        escreverTexto(prog, d.prog == null ? GRAO_VAZIO : formatTon(d.prog) + ' m³');
         real.classList.toggle('is-vazio', d.real == null);
         prog.classList.toggle('is-vazio', d.prog == null);
 
@@ -3315,8 +3320,8 @@ function aplicarFiltroGrao(secao, grao) {
         const temReal = d.real != null && d.real > 0;
         pintarBarra(col.querySelector('.forecast-bar--real'), d.itens, 'real', d.real, max, true);
         pintarBarra(col.querySelector('.forecast-bar--prog'), d.itens, 'prog', d.prog, max, !temReal);
-        col.dataset.recebido = d.real == null ? GRAO_VAZIO : formatTon(d.real) + ' t';
-        col.dataset.programado = d.prog == null ? GRAO_VAZIO : formatTon(d.prog) + ' t';
+        col.dataset.recebido = d.real == null ? GRAO_VAZIO : formatTon(d.real) + ' m³';
+        col.dataset.programado = d.prog == null ? GRAO_VAZIO : formatTon(d.prog) + ' m³';
     });
 
     secao.querySelectorAll('.chart-legend .legend-item').forEach((item) => {
@@ -3965,8 +3970,89 @@ function escolherCulturaExp(alvo) {
         btn.classList.toggle('is-active', ativo);
         btn.setAttribute('aria-pressed', String(ativo));
     });
+    const contratos = tela.querySelector('.exp-contratos');
+    if (contratos) atualizarContratos(contratos);
     scheduleFit();
 }
+
+// ============================================
+// EXPEDICAO · RITMO POR CONTRATO
+// O menu "Contratos" guarda a escolha nos proprios checkboxes; cada linha
+// .exp-contrato fica hidden quando o seu nao esta marcado. A cultura do
+// filtro geral esconde por CSS, entao a mensagem de vazio considera as duas.
+// Delegado no documento porque o editor remonta o palco.
+// ============================================
+function atualizarContratos(bloco) {
+    const tela = bloco.closest('#screen-7');
+    const cultura = tela ? tela.dataset.expCultura : 'todas';
+    const opcoes = bloco.querySelectorAll('.exp-contrato-opcao input');
+    const marcados = new Set();
+    opcoes.forEach((input) => {
+        if (input.checked) marcados.add(input.value);
+    });
+    let visiveis = 0;
+    bloco.querySelectorAll('.exp-contrato').forEach((linha) => {
+        const escolhido = marcados.has(linha.dataset.contrato);
+        linha.hidden = !escolhido;
+        if (escolhido && (!cultura || cultura === 'todas' || linha.dataset.cultura === cultura)) visiveis++;
+    });
+    const conta = bloco.querySelector('.exp-contratos-conta');
+    if (conta) conta.textContent = marcados.size + ' de ' + opcoes.length;
+    const vazio = bloco.querySelector('.exp-contratos-vazio');
+    if (vazio) vazio.hidden = visiveis > 0;
+    scheduleFit();
+}
+
+function abrirMenuContratos(bloco, abrir) {
+    const btn = bloco.querySelector('.exp-contratos-btn');
+    const lista = bloco.querySelector('.exp-contratos-lista');
+    if (!btn || !lista) return;
+    lista.hidden = !abrir;
+    btn.setAttribute('aria-expanded', String(abrir));
+}
+
+function fecharMenusContratos(exceto) {
+    document.querySelectorAll('.exp-contratos').forEach((bloco) => {
+        if (bloco !== exceto) abrirMenuContratos(bloco, false);
+    });
+}
+
+document.addEventListener('click', (e) => {
+    if (!(e.target instanceof Element)) return;
+    const bloco = e.target.closest('.exp-contratos');
+    if (isEditing()) return;
+    fecharMenusContratos(e.target.closest('.exp-contratos-menu') ? bloco : null);
+    if (!bloco) return;
+    const btn = e.target.closest('.exp-contratos-btn');
+    if (btn) {
+        abrirMenuContratos(bloco, btn.getAttribute('aria-expanded') !== 'true');
+        return;
+    }
+    const acao = e.target.closest('[data-contratos-acao]');
+    if (acao) {
+        const tipo = acao.dataset.contratosAcao;
+        bloco.querySelectorAll('.exp-contrato-opcao input').forEach((input) => {
+            const linha = bloco.querySelector('.exp-contrato[data-contrato="' + input.value + '"]');
+            const foraDoRitmo = !!linha && !linha.classList.contains('exp-contrato--ok');
+            input.checked = tipo === 'todos' || (tipo === 'atrasados' && foraDoRitmo);
+        });
+        atualizarContratos(bloco);
+    }
+});
+
+document.addEventListener('change', (e) => {
+    if (!(e.target instanceof Element) || !e.target.matches('.exp-contrato-opcao input')) return;
+    const bloco = e.target.closest('.exp-contratos');
+    if (bloco) atualizarContratos(bloco);
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const aberto = document.querySelector('.exp-contratos-btn[aria-expanded="true"]');
+    if (!aberto) return;
+    fecharMenusContratos(null);
+    aberto.focus();
+});
 
 function escolherPeriodoExp(alvo) {
     const tela = alvo.closest('#screen-7');

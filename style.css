@@ -2908,13 +2908,6 @@ body.edit-mode .forecast-bar.is-empty {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-
-
-    /* com tres por linha o cartao volta a ser largo: entrada e saida
-       cabem lado a lado de novo */
-    .moega-fluxo {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
 }
 
 @media screen and (max-width: 1024px) {
@@ -3731,19 +3724,6 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 
 
-/* abaixo de 1280 nao sobra largura para as seis moegas mais a coluna:
-   a tela volta a ser uma pilha e os pulmoes descem para baixo da grade */
-@media screen and (max-width: 1280px) {
-
-
-    .screen--moegas.active {
-        display: flex;
-        flex-direction: column;
-    }
-}
-
-
-
 .moegas-painel > .section-head {
     flex: 0 0 auto;
 }
@@ -3790,22 +3770,6 @@ body.edit-mode .header-controls .btn-alertas.active {
     background: var(--accent-soft);
     border-color: var(--accent);
     box-shadow: 0 0 0 1px var(--accent) inset;
-}
-
-
-
-/* só o bloco "Saiu" do período escolhido aparece */
-.moega-dado--saida[data-periodo] {
-    display: none;
-}
-
-
-
-.screen--moegas[data-moega-periodo="turno"] .moega-dado--saida[data-periodo="turno"],
-.screen--moegas[data-moega-periodo="hoje"] .moega-dado--saida[data-periodo="hoje"],
-.screen--moegas[data-moega-periodo="7d"] .moega-dado--saida[data-periodo="7d"],
-.screen--moegas[data-moega-periodo="30d"] .moega-dado--saida[data-periodo="30d"] {
-    display: grid;
 }
 
 
@@ -3910,7 +3874,7 @@ body.edit-mode .header-controls .btn-alertas.active {
 .moega-grid {
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
-    grid-auto-rows: minmax(0, 1fr);
+    grid-auto-rows: minmax(min-content, 1fr);
     gap: 0.875rem;
     flex: 1 1 auto;
     min-height: 0;
@@ -3919,19 +3883,18 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 
 /* Cartao em grade de linhas fixas, para os seis ficarem no mesmo desenho:
-   cabecalho, cultura, tanque, fluxo, "saiu" e historico sempre na mesma
-   altura em todos. Tudo abaixo do tanque tem altura propria fechada
-   (o par entrada/saida em .moega-fluxo-item, o historico em .moega-hist),
-   entao a sobra vai toda para o tanque — e como os cartoes tem a mesma
-   altura, os tanques saem iguais e nada fica desnivelado. */
+   cabecalho, cultura, cargas de hoje, entrada e historico. A linha das
+   cargas nunca fica menor que a tabela (minmax com min-content): se os seis
+   nao couberem, o excesso sobe para a section e o fitToScreen reduz a tela,
+   em vez de a tabela ser cortada. A sobra de altura fica com as cargas. */
 .moega-item {
     --grao: var(--muted);
     background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
     border: 1px solid var(--card-border);
     border-radius: 12px;
-    padding: 0.875rem 1rem 0.75rem;
+    padding: 0.875rem 0.75rem 0.75rem;
     display: grid;
-    grid-template-rows: auto auto minmax(4.5rem, 1fr) auto auto auto;
+    grid-template-rows: auto auto minmax(min-content, 1fr) auto auto;
     gap: 0.5rem;
     min-height: 0;
     min-width: 0;
@@ -4023,109 +3986,6 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 .moega-item--vazia .moega-cultura {
     color: var(--muted);
-}
-
-
-
-/* tanque: o nível preenche de baixo para cima na cor do grão */
-.moega-tank {
-    position: relative;
-    /* linha elastica da grade do cartao: o tanque absorve a sobra */
-    min-height: 4.5rem;
-    border-radius: 8px;
-    background: var(--section-bg);
-    border: 1px solid var(--card-border);
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-
-
-.moega-tank-max {
-    position: absolute;
-    top: 0.3125rem;
-    right: 0.4375rem;
-    font-size: 0.5rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    color: var(--faint);
-    z-index: 2;
-}
-
-
-
-/* linha tracejada do máximo logo abaixo do rótulo */
-.moega-tank::before {
-    content: '';
-    position: absolute;
-    left: 0.4375rem;
-    right: 0.4375rem;
-    top: 1.125rem;
-    border-top: 1px dashed var(--faint);
-    opacity: 0.6;
-    z-index: 2;
-}
-
-
-
-/* 100% encosta na linha do máximo (que fica a 1.125rem do topo) */
-.moega-tank-fill {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: calc((100% - 1.125rem) * var(--nivel, 0) / 100);
-    background: var(--grao);
-    transition: height 0.6s ease;
-}
-
-
-
-.moega-tank-num {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.125rem;
-    text-align: center;
-    color: #fff;
-    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
-}
-
-
-
-.moega-nivel-pct {
-    font-size: 2.1rem;
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    font-variant-numeric: tabular-nums;
-}
-
-
-
-.moega-tons {
-    font-size: 0.66rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-    opacity: 0.92;
-}
-
-
-
-/* capacidade nominal em m³, abaixo das toneladas */
-.moega-vol {
-    font-size: 0.56rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-    opacity: 0.72;
 }
 
 
@@ -4280,36 +4140,6 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 
 
-/* moega vazia: número apagado sobre o fundo */
-.moega-item--vazia .moega-tank-num {
-    color: var(--faint);
-    text-shadow: none;
-}
-
-
-
-/* tema claro: o tanque continua escuro para o número branco ler sobre o vazio */
-body.theme-light .moega-tank {
-    background: #2c3644;
-    border-color: #3a4656;
-}
-
-
-
-body.theme-light .moega-tank-max,
-body.theme-light .moega-tank::before {
-    color: #97a6b8;
-    border-color: #97a6b8;
-}
-
-
-
-body.theme-light .moega-item--vazia .moega-tank-num {
-    color: #97a6b8;
-}
-
-
-
 /* dados de apoio: saída, última cultura e filtros */
 .moega-dados {
     display: flex;
@@ -4367,11 +4197,146 @@ body.theme-light .moega-item--vazia .moega-tank-num {
 
 
 
-/* volume que saiu é o número de destaque do rodapé */
-.moega-dado--saida .moega-dado-value {
-    font-size: 1.15rem;
-    letter-spacing: -0.01em;
+/* Cargas de hoje: uma linha por caminhao descarregado (placa com a bolinha
+   da cultura, volume, umidade, impureza e avariados), a mais recente em
+   cima, e a media geral do dia ponderada pelo volume no rodape. Impureza acima
+   de 1% e avariados acima de 6% ficam em laranja. Sem altura fixa nem
+   rolagem: se nao couber, o excesso chega a section e o fitToScreen reduz. */
+.moega-cargas {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3125rem;
+    min-width: 0;
+    padding-top: 0.4375rem;
+    border-top: 1px solid var(--card-border);
 }
+
+
+
+.moega-cargas-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.375rem;
+}
+
+
+
+.moega-cargas-head .moega-dado-label {
+    white-space: nowrap;
+}
+
+
+
+.moega-cargas-total {
+    font-size: 0.62rem;
+    color: var(--muted);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.moega-cargas-total b {
+    font-size: 0.72rem;
+    color: var(--text);
+}
+
+
+
+.moega-cargas-tabela {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.58rem;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.moega-cargas-tabela th {
+    padding: 0 0.125rem 0.1875rem;
+    font-size: 0.44rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--faint);
+    text-align: right;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--row-line);
+}
+
+
+
+.moega-cargas-tabela td {
+    padding: 0.3125rem 0.125rem;
+    text-align: right;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+
+
+.moega-cargas-tabela th:first-child,
+.moega-cargas-tabela td:first-child {
+    padding-left: 0;
+    text-align: left;
+}
+
+
+
+.moega-cargas-tabela th:last-child,
+.moega-cargas-tabela td:last-child {
+    padding-right: 0;
+}
+
+
+
+.moega-cargas-tabela tbody td:first-child {
+    font-weight: 700;
+    color: var(--muted);
+}
+
+
+
+.moega-cargas-tabela tbody tr + tr td {
+    border-top: 1px solid var(--row-line);
+}
+
+
+
+.moega-cargas-tabela .legend-dot {
+    display: inline-block;
+    width: 0.375rem;
+    height: 0.375rem;
+    margin-right: 0.25rem;
+    vertical-align: 0.05rem;
+}
+
+
+
+.moega-cargas-tabela td.is-atencao {
+    color: var(--warn);
+    font-weight: 700;
+}
+
+
+
+/* media geral fecha a tabela: separada e em destaque */
+.moega-cargas-tabela tfoot td {
+    padding-top: 0.3125rem;
+    border-top: 1px solid var(--card-border);
+    font-weight: 800;
+}
+
+
+
+.moega-cargas-tabela tfoot td:first-child {
+    font-size: 0.46rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
 
 
 
@@ -6615,7 +6580,7 @@ body.theme-light .kpi-flag--alerta {
     flex: 1 1 auto;
     min-height: 0;
     display: grid;
-    grid-template-columns: 11.5rem 11.5rem minmax(0, 1fr);
+    grid-template-columns: 13rem 11.5rem minmax(0, 1fr);
     gap: 0.875rem;
 }
 
@@ -6829,14 +6794,15 @@ body.theme-light .kpi-flag--alerta {
 
 
 
+/* o rotulo nunca e cortado: quebra em duas linhas em vez de virar "...".
+   Cortar aqui esconderia o excesso do bloco e o --fit-adjust nao teria o
+   que medir; quebrando, a altura cresce e a tela se ajusta sozinha. */
 .secador-dado small {
     min-width: 0;
     font-size: 0.62rem;
     font-weight: 600;
+    line-height: 1.2;
     color: var(--muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 
@@ -7555,79 +7521,6 @@ body.theme-light .secador-fase--descarga {
 
 
 
-/* separa os dois grupos de legenda sem pesar */
-.serie-legenda + .fase-legenda {
-    margin-left: 0;
-    padding-left: 0.75rem;
-    border-left: 1px solid var(--row-line);
-}
-
-
-
-.fase-legenda {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-shrink: 0;
-}
-
-
-
-.fase-legenda-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    white-space: nowrap;
-}
-
-
-
-.fase-legenda-item::before {
-    content: "";
-    width: 0.625rem;
-    height: 0.625rem;
-    border-radius: 3px;
-    border: 1px solid var(--card-border);
-}
-
-
-
-.fase-legenda-item--carga::before {
-    background: rgba(142, 163, 186, 0.35);
-}
-
-
-
-.fase-legenda-item--aquec::before {
-    background: rgba(243, 156, 18, 0.45);
-}
-
-
-
-.fase-legenda-item--secagem::before {
-    background: rgba(46, 204, 113, 0.4);
-}
-
-
-
-.fase-legenda-item--resfr::before {
-    background: rgba(59, 130, 246, 0.45);
-}
-
-
-
-.fase-legenda-item--descarga::before {
-    background: rgba(139, 92, 246, 0.5);
-}
-
-
-
 /* rótulo na ponta da linha, alinhado com o último ponto */
 .serie-tag {
     position: absolute;
@@ -7705,9 +7598,12 @@ body.theme-light .secador-fase--descarga {
 }
 
 
-
+/* duas fileiras numa grade so: a esquerda tem o grafico por hora em cima
+   e o bloco de paradas embaixo (na altura do proprio conteudo); a coluna
+   dos secadores, a direita, atravessa as duas e ganha a sobra de altura */
 .split-grid--prod {
     grid-template-columns: 1.5fr 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
 }
 
 
@@ -10582,17 +10478,7 @@ body.theme-light .kpi-card--destaque .kpi-value {
     border: 1px solid var(--card-border);
     border-left: 3px solid var(--ok);
     border-radius: 10px;
-    cursor: help;
-    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-
-
-.fluxo-etapa:hover {
-    border-color: var(--accent);
-    border-left-color: var(--ok);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-soft);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 
@@ -14379,9 +14265,7 @@ body.theme-light .mensal-ritmo {
 /* ---- os dois filtros valem para tudo ----
    Cada numero que muda com a cultura esta no cartao como cinco variantes
    (.exp-cult / .exp-cult-bloco, uma por cultura mais "todas") e so a
-   escolhida aparece. As barras de destino guardam o valor de cada cultura
-   em variaveis proprias (--t-milho, --max-milho...) e a regra abaixo troca
-   qual delas vale. A tabela de cargas tem um tbody por periodo. */
+   escolhida aparece. A tabela de cargas tem um tbody por periodo. */
 #screen-7 .exp-cult,
 #screen-7 .exp-cult-bloco,
 #screen-7 .exp-per,
@@ -14421,63 +14305,13 @@ body.theme-light .mensal-ritmo {
 
 
 
-#screen-7[data-exp-cultura="todas"] .exp-destinos {
-    --exp-max: var(--max-todas);
-}
 
 
 
-#screen-7[data-exp-cultura="todas"] .exp-destino {
-    --t: var(--t-todas);
-}
 
 
 
-#screen-7[data-exp-cultura="milho"] .exp-destinos {
-    --exp-max: var(--max-milho);
-}
 
-
-
-#screen-7[data-exp-cultura="milho"] .exp-destino {
-    --t: var(--t-milho);
-}
-
-
-
-#screen-7[data-exp-cultura="sorgo"] .exp-destinos {
-    --exp-max: var(--max-sorgo);
-}
-
-
-
-#screen-7[data-exp-cultura="sorgo"] .exp-destino {
-    --t: var(--t-sorgo);
-}
-
-
-
-#screen-7[data-exp-cultura="trigo"] .exp-destinos {
-    --exp-max: var(--max-trigo);
-}
-
-
-
-#screen-7[data-exp-cultura="trigo"] .exp-destino {
-    --t: var(--t-trigo);
-}
-
-
-
-#screen-7[data-exp-cultura="soja"] .exp-destinos {
-    --exp-max: var(--max-soja);
-}
-
-
-
-#screen-7[data-exp-cultura="soja"] .exp-destino {
-    --t: var(--t-soja);
-}
 
 
 
@@ -14514,6 +14348,16 @@ body.theme-light .mensal-ritmo {
 
 
 
+/* a qualidade do periodo e uma section (coluna flex), nao uma grade */
+#screen-7[data-exp-periodo="dia"] .content-section.exp-periodo-bloco[data-periodo="dia"],
+#screen-7[data-exp-periodo="semana"] .content-section.exp-periodo-bloco[data-periodo="semana"],
+#screen-7[data-exp-periodo="mes"] .content-section.exp-periodo-bloco[data-periodo="mes"],
+#screen-7[data-exp-periodo="ano"] .content-section.exp-periodo-bloco[data-periodo="ano"] {
+    display: flex;
+}
+
+
+
 /* com uma cultura escolhida, some quem nao bate nas duas tabelas; a linha
    Geral da qualidade nao tem data-cultura, entao sai junto — o total
    deixa de valer quando se olha uma cultura so */
@@ -14527,6 +14371,526 @@ body.theme-light .mensal-ritmo {
 #screen-7[data-exp-cultura="soja"] .class-table tbody tr:not([data-cultura="soja"]) {
     display: none;
 }
+
+
+/* ============================================
+   EXPEDICAO · RITMO POR CONTRATO
+   Uma linha por contrato: identificacao, barra do entregue com a marca de
+   onde deveria estar pelo prazo, ritmo atual / necessario e a situacao.
+   O menu "Contratos" escolhe quais linhas aparecem (atributo hidden, via
+   script.js); a cultura do filtro geral esconde por CSS, como nas tabelas.
+   Sem altura fixa e sem rolagem: o excesso sobe para o fitToScreen.
+   ============================================ */
+.exp-contratos {
+    /* o menu abre por cima das secoes de baixo, entao a secao nao corta */
+    overflow: visible;
+    position: relative;
+    z-index: 5;
+}
+
+
+
+.exp-contratos-menu {
+    position: relative;
+    flex-shrink: 0;
+}
+
+
+
+.exp-contratos-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid var(--card-border);
+    background: var(--row-bg);
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+
+
+.exp-contratos-btn b {
+    color: var(--text);
+}
+
+
+
+.exp-contratos-btn:hover,
+.exp-contratos-btn[aria-expanded="true"] {
+    color: var(--text);
+    border-color: var(--accent);
+}
+
+
+
+.exp-contratos-btn[aria-expanded="true"] {
+    background: var(--accent-soft);
+}
+
+
+
+.exp-contratos-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+
+
+.exp-contratos-caret {
+    width: 0.75rem;
+    height: 0.75rem;
+    transition: transform 0.2s ease;
+}
+
+
+
+.exp-contratos-btn[aria-expanded="true"] .exp-contratos-caret {
+    transform: rotate(180deg);
+}
+
+
+
+.exp-contratos-lista {
+    position: absolute;
+    top: calc(100% + 0.375rem);
+    right: 0;
+    z-index: 60;
+    width: 25rem;
+    padding: 0.375rem;
+    background: var(--header-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+
+
+.exp-contratos-lista[hidden] {
+    display: none;
+}
+
+
+
+.exp-contratos-acoes {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.125rem 0.125rem 0.375rem;
+    margin-bottom: 0.125rem;
+    border-bottom: 1px solid var(--row-line);
+}
+
+
+
+.exp-contratos-acoes button {
+    appearance: none;
+    border: 1px solid var(--card-border);
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.5rem;
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+
+
+.exp-contratos-acoes button:hover,
+.exp-contratos-acoes button:focus-visible {
+    color: var(--accent);
+    border-color: var(--accent);
+    outline: none;
+}
+
+
+
+.exp-contrato-opcao {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 0.5rem;
+    padding: 0.5rem 0.625rem;
+    border-radius: 7px;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+
+
+.exp-contrato-opcao:hover,
+.exp-contrato-opcao:focus-within {
+    background: var(--accent-soft);
+}
+
+
+
+.exp-contrato-opcao input {
+    margin: 0;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+
+
+.exp-contrato-opcao-txt {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+}
+
+
+
+.exp-contrato-opcao-txt b {
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+
+.exp-contrato-opcao-txt small {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3125rem;
+    font-size: 0.82em;
+    color: var(--muted);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.exp-contrato-opcao-st {
+    font-size: 0.8rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.exp-contrato-opcao-st--ok { color: var(--ok); }
+.exp-contrato-opcao-st--atencao { color: var(--warn); }
+.exp-contrato-opcao-st--fora { color: var(--danger); }
+
+
+
+.exp-contratos-linhas {
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+/* meia largura (ao lado da qualidade): em cima quem e, o ritmo e a
+   situacao; embaixo a barra ocupando a linha toda */
+.exp-contrato {
+    --cor: var(--ok);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+        "id status"
+        "barra ritmo";
+    align-items: center;
+    column-gap: 1rem;
+    row-gap: 0.375rem;
+    padding: 0.625rem 0;
+    border-top: 1px solid var(--row-line);
+}
+
+
+
+.exp-contrato:first-child {
+    border-top: 0;
+    padding-top: 0.125rem;
+}
+
+
+
+.exp-contrato[hidden] {
+    display: none;
+}
+
+
+
+.exp-contrato--atencao { --cor: var(--warn); }
+.exp-contrato--fora { --cor: var(--danger); }
+
+
+
+.exp-contrato-id {
+    grid-area: id;
+    display: flex;
+    align-items: baseline;
+    gap: 0.625rem;
+    min-width: 0;
+}
+
+
+
+.exp-contrato-cliente {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+
+
+.exp-contrato-ref {
+    min-width: 0;
+    font-size: 0.86rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+
+.exp-contrato-barra {
+    grid-area: barra;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 0.875rem;
+    min-width: 0;
+}
+
+
+
+/* o entregue vem antes da barra (display: contents solta o span na grade) */
+.exp-contrato-escala > span {
+    order: -1;
+}
+
+
+
+/* trilho + entregue; a marca branca e o "deveria estar" de hoje */
+.exp-contrato-track {
+    position: relative;
+    height: 0.875rem;
+    border-radius: 999px;
+    background: var(--row-bg);
+    border: 1px solid var(--row-line);
+}
+
+
+
+.exp-contrato-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: calc(var(--pct) * 1%);
+    border-radius: 999px;
+    background: var(--cor);
+}
+
+
+
+.exp-contrato-marca {
+    position: absolute;
+    top: -0.3125rem;
+    bottom: -0.3125rem;
+    left: calc(var(--esperado) * 1%);
+    width: 3px;
+    margin-left: -1.5px;
+    border-radius: 1px;
+    background: var(--text);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
+
+
+.exp-contrato-escala {
+    display: contents;
+    font-size: 0.92rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+
+
+.exp-contrato-escala b {
+    color: var(--text);
+    font-weight: 700;
+}
+
+
+
+.exp-contrato-ritmo {
+    grid-area: ritmo;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+
+
+.exp-contrato-ritmo-val {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+
+
+.exp-contrato-ritmo-val b {
+    color: var(--text);
+    font-weight: 700;
+}
+
+
+
+.exp-contrato-ritmo-val b.is-abaixo {
+    color: var(--danger);
+}
+
+
+
+.exp-contrato-ritmo-val small {
+    font-size: 0.72em;
+    color: var(--muted);
+}
+
+
+
+.exp-contrato-ritmo-sub {
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+
+
+.exp-contrato > .class-status {
+    grid-area: status;
+    justify-self: end;
+    padding: 0.3125rem 0.875rem;
+    font-size: 0.82rem;
+}
+
+
+
+.exp-contratos-vazio {
+    margin: 0;
+    font-size: 0.72rem;
+    font-style: italic;
+    color: var(--faint);
+}
+
+
+
+.exp-contratos-vazio[hidden] {
+    display: none;
+}
+
+
+
+/* ---- Equilibrio da tela: tudo na mesma escala de leitura do bloco de
+   contratos. So dentro da expedicao; as outras telas seguem o padrao. ---- */
+#screen-7 .content-section h3 {
+    font-size: 0.82rem;
+}
+
+
+
+#screen-7 .section-sub {
+    font-size: 0.8rem;
+    color: var(--muted);
+}
+
+
+
+#screen-7 .kpi-label {
+    font-size: 0.8rem;
+}
+
+
+
+#screen-7 .kpi-sub-item {
+    font-size: 0.95rem;
+}
+
+
+
+#screen-7 .kpi-sub-item b {
+    font-size: 0.7rem;
+}
+
+
+
+#screen-7 .kpi-flag {
+    padding: 0.1875rem 0.5625rem;
+    font-size: 0.7rem;
+}
+
+
+
+#screen-7 .data-table th {
+    font-size: 0.72rem;
+}
+
+
+
+#screen-7 .exp-qual-table td {
+    font-size: 0.92rem;
+    white-space: nowrap;
+}
+
+
+
+#screen-7 .exp-table td {
+    font-size: 0.92rem;
+}
+
+
+
+#screen-7 .exp-table .class-status {
+    font-size: 0.68rem;
+}
+
+
+
+.exp-contrato-ref .legend-dot {
+    display: inline-block;
+    margin: 0 0.3125rem 0 0.125rem;
+    vertical-align: 0.05em;
+}
+
+
+
+/* a cultura do filtro geral vale tambem para os contratos */
+#screen-7[data-exp-cultura="milho"] .exp-contrato:not([data-cultura="milho"]),
+#screen-7[data-exp-cultura="sorgo"] .exp-contrato:not([data-cultura="sorgo"]),
+#screen-7[data-exp-cultura="trigo"] .exp-contrato:not([data-cultura="trigo"]),
+#screen-7[data-exp-cultura="soja"] .exp-contrato:not([data-cultura="soja"]) {
+    display: none;
+}
+
 
 
 
@@ -15348,8 +15712,7 @@ body.theme-light .class-val--fora {
 /* ============================================
    EXPEDICAO
    Qualidade por cultura (tabela compacta) ao lado do
-   volume por destino (barras na mesma escala). O
-   detalhe por carga reaproveita class-detalhe/class-table.
+   ritmo por contrato. O detalhe por carga reaproveita class-detalhe/class-table.
    ============================================ */
 .exp-qual-table th:nth-child(n+2),
 .exp-qual-table td:nth-child(n+2) {
@@ -15391,79 +15754,40 @@ body.theme-light .class-val--fora {
 
 
 
-/* ---- Volume por destino ---- */
-.exp-destinos {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    gap: 0.5rem;
-    flex: 1 1 auto;
-    min-height: 0;
+
+/* ---- Detalhe por carga ----
+   tag, motorista, placa, cultura, fonte, destino, frete, volume, horario,
+   tempo, status */
+.exp-table td:nth-child(2),
+.exp-table td:nth-child(3),
+.exp-table td:nth-child(4),
+.exp-table td:nth-child(6),
+.exp-table td:nth-child(8),
+.exp-table td:nth-child(9) {
+    white-space: nowrap;
 }
 
 
 
-.exp-destino {
-    display: grid;
-    grid-template-columns: minmax(6.5rem, 0.8fr) 1fr auto;
-    align-items: center;
-    gap: 0.625rem;
-}
-
-
-
-.exp-destino-nome {
-    font-size: 0.72rem;
+.exp-table td:nth-child(3) {
     font-weight: 700;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-
-
-.exp-destino-track {
-    height: 0.7rem;
-    border-radius: 999px;
-    background: var(--row-bg);
-    border: 1px solid var(--card-border);
-    overflow: hidden;
-}
-
-
-
-/* --t e o volume do destino; --exp-max (no container) e o maior deles */
-.exp-destino-fill {
-    display: block;
-    height: 100%;
-    width: calc(var(--t) / var(--exp-max) * 100%);
-    background: var(--accent);
-    border-radius: inherit;
-}
-
-
-
-.exp-destino-val {
-    font-size: 0.68rem;
-    color: var(--muted);
-    white-space: nowrap;
+    letter-spacing: 0.02em;
     font-variant-numeric: tabular-nums;
 }
 
 
 
-.exp-destino-val b {
-    color: var(--text);
+/* horario: a data (so nas semanas, meses e ano) fica discreta antes da faixa */
+.exp-table td:nth-child(9) {
+    font-variant-numeric: tabular-nums;
 }
 
 
 
-/* ---- Detalhe por carga ---- */
-.exp-table td:nth-child(4),
-.exp-table td:nth-child(5),
-.exp-table td:nth-child(6),
-.exp-table td:nth-child(7) {
-    white-space: nowrap;
+.exp-table td:nth-child(9) small {
+    font-size: 0.8em;
+    color: var(--muted);
+    margin-right: 0.25rem;
 }
 
 
@@ -15480,17 +15804,85 @@ body.theme-light .class-val--fora {
 
 
 /* volume por caminhao: unidade discreta ao lado do numero */
-.exp-table td:nth-child(7) small {
+.exp-table td:nth-child(8) small {
     font-size: 0.8em;
     color: var(--muted);
     margin-left: 0.125rem;
 }
 
 
+/* frete: CIF (a cooperativa entrega no destino) em azul, FOB (o cliente
+   retira na unidade) em contorno neutro */
+.exp-frete {
+    display: inline-block;
+    min-width: 2.75em;
+    padding: 0.125rem 0.5rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-align: center;
+}
 
-/* qualidade x destino em altura natural; a tabela de cargas absorve a sobra */
+
+
+.exp-frete--cif {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+
+
+.exp-frete--fob {
+    color: var(--muted);
+    border-color: var(--card-border);
+}
+
+
+
+
+/* volume x programado: barra no rodape do cartao, no lugar da quebra por
+   cultura (que ja esta na tabela de qualidade). Abaixo de 85% fica laranja. */
+#screen-7 .exp-meta {
+    align-items: center;
+    row-gap: 0.4375rem;
+}
+
+
+
+.exp-meta-track {
+    flex: 1 0 100%;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--row-bg);
+    border: 1px solid var(--row-line);
+}
+
+
+
+.exp-meta-fill {
+    display: block;
+    height: 100%;
+    width: calc(var(--p) * 1%);
+    max-width: 100%;
+    border-radius: inherit;
+    background: var(--accent);
+}
+
+
+
+.exp-meta--baixo .exp-meta-fill {
+    background: var(--warn);
+}
+
+
+
+/* qualidade x contratos em altura natural; a tabela de cargas absorve a sobra */
 .screen > .split-grid--exp {
     flex: 0 0 auto;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
 }
 
 
@@ -15501,8 +15893,365 @@ body.theme-light .class-val--fora {
 
 
 
-/* a tabela de cargas rola por dentro, mas garante ~7 linhas visiveis:
-   o piso empurra a tela para o ajuste (--fit-adjust) em vez de sumir */
+/* a tabela de cargas rola por dentro e fica com a sobra da tela; o piso
+   garante cabecalho + ~4 linhas sem empurrar o resto para o ajuste */
 .screen > .class-detalhe--exp {
-    min-height: 21rem;
+    min-height: 17rem;
 }
+
+/* ============================================
+   SECAGEM · PRODUTIVIDADE — TERCEIRA FILEIRA
+   Paradas e disponibilidade fisica (manutencao). A cor identifica o
+   ESTADO da hora de equipamento: operando (neutro), parada programada
+   (amarelo) e nao programada (vermelho) — o que a tela quer destacar
+   e o tempo parado, nao o tempo rodando.
+   ============================================ */
+#screen-4 {
+    --manut-op: rgba(120, 160, 210, 0.3);
+    --manut-prog: var(--warn);
+    --manut-nprog: var(--danger);
+}
+
+
+
+body.theme-light #screen-4 {
+    --manut-op: rgba(60, 70, 80, 0.22);
+}
+
+
+
+.prod-col--secadores {
+    grid-column: 2;
+    grid-row: 1 / -1;
+}
+
+
+
+.prod-col--paradas {
+    grid-column: 1;
+}
+
+
+
+.legend-dot--op {
+    background: var(--manut-op);
+}
+
+
+
+.legend-dot--prog {
+    background: var(--manut-prog);
+}
+
+
+
+.legend-dot--nprog {
+    background: var(--manut-nprog);
+}
+
+
+
+/* ---- paradas e disponibilidade fisica ---- */
+#screen-4 .manut-bloco.prod-periodo-bloco {
+    grid-template-rows: auto 1fr;
+    gap: 0.625rem;
+}
+
+
+
+.manut-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.5rem;
+}
+
+
+
+.manut-kpi {
+    display: flex;
+    flex-direction: column;
+    gap: 0.0625rem;
+    padding: 0.375rem 0.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--row-line);
+    background: var(--row-bg);
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.manut-kpi b {
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+
+
+.manut-kpi small {
+    font-size: 0.55rem;
+    font-weight: 700;
+    color: var(--faint);
+}
+
+
+
+.manut-kpi em {
+    font-style: normal;
+    font-size: 0.58rem;
+    font-weight: 600;
+    color: var(--faint);
+}
+
+
+
+.manut-kpi-track {
+    display: block;
+    height: 0.25rem;
+    margin: 0.125rem 0 0.0625rem;
+    border-radius: 2px;
+    background: var(--row-bg);
+    overflow: hidden;
+}
+
+
+
+.manut-kpi-track i {
+    display: block;
+    height: 100%;
+    border-radius: 2px;
+    background: var(--muted);
+}
+
+
+
+.manut-kpi-track i.is-ok {
+    background: var(--ok);
+}
+
+
+
+.manut-kpi-track i.is-atencao {
+    background: var(--warn);
+}
+
+
+
+.manut-kpi-track i.is-ruim {
+    background: var(--danger);
+}
+
+
+
+/* uma linha por secador: a barra e o tempo programado do periodo inteiro */
+.manut-secadores {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+
+
+.manut-disp-linha {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr) 2.75rem 8rem;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+
+
+.manut-disp-nome {
+    display: flex;
+    align-items: center;
+    gap: 0.3125rem;
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--text);
+}
+
+
+
+.manut-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+
+
+.manut-dot--sec1 {
+    background: var(--sec1);
+}
+
+
+
+.manut-dot--sec2 {
+    background: var(--sec2);
+}
+
+
+
+.manut-disp-barra {
+    display: flex;
+    height: 0.75rem;
+    border-radius: 3px;
+    background: var(--row-bg);
+    overflow: hidden;
+}
+
+
+
+.manut-seg {
+    display: block;
+    height: 100%;
+}
+
+
+
+.manut-seg--op {
+    background: var(--manut-op);
+}
+
+
+
+.manut-seg--prog {
+    background: var(--manut-prog);
+}
+
+
+
+.manut-seg--nprog {
+    background: var(--manut-nprog);
+}
+
+
+
+.manut-disp-valor {
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-align: right;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.manut-disp-valor small {
+    font-size: 0.55rem;
+    font-weight: 700;
+    color: var(--faint);
+}
+
+
+
+.manut-disp-valor.is-ok {
+    color: var(--ok);
+}
+
+
+
+.manut-disp-valor.is-atencao {
+    color: var(--warn);
+}
+
+
+
+.manut-disp-valor.is-ruim {
+    color: var(--danger);
+}
+
+
+
+.manut-disp-ref {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+@media screen and (max-width: 1024px) {
+
+    .manut-kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+
+@media screen and (max-width: 768px) {
+
+    .prod-col--secadores,
+    .prod-col--paradas {
+        grid-column: 1;
+        grid-row: auto;
+    }
+
+
+    .manut-disp-linha {
+        grid-template-columns: 5rem minmax(0, 1fr) 2.75rem;
+    }
+
+
+    .manut-disp-linha .manut-disp-ref {
+        display: none;
+    }
+}
+
+
+
+/* O bloco de manutencao ocupa a fileira inteira: os KPIs em cima e a
+   barra de disponibilidade de cada secador logo abaixo. */
+#screen-4 .manut-bloco.prod-periodo-bloco {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+}
+
+
+
+/* Ajuste fino de densidade: a fileira precisa caber junto com o grafico
+   por hora em 1600x900 sem depender so do --fit-adjust. */
+#screen-4 .manut-bloco.prod-periodo-bloco {
+    gap: 0.4375rem;
+}
+
+
+
+.manut-kpi {
+    padding: 0.3125rem 0.5rem;
+    font-size: 0.9rem;
+}
+
+
+
+.manut-secadores {
+    gap: 0.25rem;
+}
+
+
+
+/* Com a tela mais enxuta sobra altura nos dois blocos: em vez de deixar
+   um buraco no pe, as linhas se distribuem e ganham respiro. */
+#screen-4 .manut-bloco.prod-periodo-bloco {
+    align-content: space-between;
+}
+
+
+
+/* o bloco do periodo ocupa a altura da secao para o align-content ter
+   sobra para distribuir (sem isso a folga fica toda no pe do painel) */
+#screen-4 .manut-bloco.prod-periodo-bloco {
+    flex: 1 1 auto;
+}
+
+
+
