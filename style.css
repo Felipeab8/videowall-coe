@@ -2907,6 +2907,7 @@ body.edit-mode .forecast-bar.is-empty {
     .moega-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+
 }
 
 @media screen and (max-width: 1024px) {
@@ -3107,6 +3108,12 @@ body.theme-light {
 
 .kpi-grid--eight {
     grid-template-columns: repeat(8, 1fr);
+}
+
+
+
+.kpi-grid--two {
+    grid-template-columns: repeat(2, 1fr);
 }
 
 
@@ -3694,62 +3701,48 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 
 
+/* A tela das moegas é a única em duas colunas: a grade das seis moegas à
+   esquerda e os silos pulmão numa coluna estreita à direita (quem enche os
+   pulmões são as moegas). O cabeçalho atravessa as duas.
+
+   A largura da coluna da direita é calculada para o cartão do pulmão sair
+   do mesmo tamanho de um cartão de moega: com 6 colunas de 0.875rem de
+   respiro à esquerda e o padding de 1.125rem + 1px de borda de cada seção,
+   a conta fecha em 1/7 da largura + 0.875rem + 1px. */
+.screen--moegas.active {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) calc(14.2857% + 0.875rem + 1px);
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 0.75rem;
+}
+
+
+
+.screen--moegas > .screen-header {
+    grid-column: 1 / -1;
+}
+
+
+
 .moegas-painel > .section-head {
     flex: 0 0 auto;
 }
 
 
 
-/* filtros no cabeçalho: período da saída e cultura */
-.moegas-filtros {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.375rem 1.25rem;
-}
-
-
-
-.moega-filtro {
-    display: flex;
-    align-items: center;
-    gap: 0.375rem;
-    flex-wrap: wrap;
-}
-
-
-
-.moega-filtro-rotulo {
-    font-size: 0.56rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--faint);
-    margin-right: 0.125rem;
-}
-
-
-
-/* período por moega: pills dentro do cartão, escolha em data-moega-periodo no .moega-item */
-.moega-periodo {
-    flex: 0 0 auto;
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0.1875rem;
-}
-
-
-
+/* período da tela: pills no cabeçalho, escolha em data-moega-periodo na section */
 .moega-periodo-btn {
-    padding: 0.25rem 0.125rem;
-    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.625rem;
+    border-radius: 999px;
     border: 1px solid var(--card-border);
     background: var(--row-bg);
     color: var(--muted);
     font: inherit;
-    font-size: 0.52rem;
+    font-size: 0.6rem;
     font-weight: 700;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     white-space: nowrap;
     cursor: pointer;
@@ -3776,22 +3769,7 @@ body.edit-mode .header-controls .btn-alertas.active {
     color: var(--text);
     background: var(--accent-soft);
     border-color: var(--accent);
-}
-
-
-
-/* só o bloco "Saiu" do período escolhido aparece */
-.moega-dado--saida[data-periodo] {
-    display: none;
-}
-
-
-
-.moega-item[data-moega-periodo="turno"] .moega-dado--saida[data-periodo="turno"],
-.moega-item[data-moega-periodo="hoje"] .moega-dado--saida[data-periodo="hoje"],
-.moega-item[data-moega-periodo="7d"] .moega-dado--saida[data-periodo="7d"],
-.moega-item[data-moega-periodo="30d"] .moega-dado--saida[data-periodo="30d"] {
-    display: grid;
+    box-shadow: 0 0 0 1px var(--accent) inset;
 }
 
 
@@ -3803,8 +3781,9 @@ body.edit-mode .header-controls .btn-alertas.active {
     gap: 0.25rem;
     padding: 0.4375rem 0 0;
     border-top: 1px solid var(--card-border);
-    /* altura de rótulo + 3 trocas: os tanques ficam alinhados entre os cartões */
-    min-height: 4.375rem;
+    /* rotulo + 3 trocas, que e o maximo do projeto: em "30 dias" nenhum
+       cartao passa disso, entao os seis mantem a mesma altura */
+    min-height: 4.9rem;
 }
 
 
@@ -3813,6 +3792,7 @@ body.edit-mode .header-controls .btn-alertas.active {
     display: none;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
     gap: 0.5rem;
     font-size: 0.66rem;
     font-variant-numeric: tabular-nums;
@@ -3845,13 +3825,13 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 
 
-.moega-item[data-moega-periodo="turno"] .moega-hist-item[data-desde="turno"],
-.moega-item[data-moega-periodo="hoje"] .moega-hist-item[data-desde="turno"],
-.moega-item[data-moega-periodo="hoje"] .moega-hist-item[data-desde="hoje"],
-.moega-item[data-moega-periodo="7d"] .moega-hist-item[data-desde="turno"],
-.moega-item[data-moega-periodo="7d"] .moega-hist-item[data-desde="hoje"],
-.moega-item[data-moega-periodo="7d"] .moega-hist-item[data-desde="7d"],
-.moega-item[data-moega-periodo="30d"] .moega-hist-item {
+.screen--moegas[data-moega-periodo="turno"] .moega-hist-item[data-desde="turno"],
+.screen--moegas[data-moega-periodo="hoje"] .moega-hist-item[data-desde="turno"],
+.screen--moegas[data-moega-periodo="hoje"] .moega-hist-item[data-desde="hoje"],
+.screen--moegas[data-moega-periodo="7d"] .moega-hist-item[data-desde="turno"],
+.screen--moegas[data-moega-periodo="7d"] .moega-hist-item[data-desde="hoje"],
+.screen--moegas[data-moega-periodo="7d"] .moega-hist-item[data-desde="7d"],
+.screen--moegas[data-moega-periodo="30d"] .moega-hist-item {
     display: flex;
 }
 
@@ -3866,24 +3846,15 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 
 
-.moega-item[data-moega-periodo="turno"] .moega-hist-vazio[data-vazio-em~="turno"],
-.moega-item[data-moega-periodo="hoje"] .moega-hist-vazio[data-vazio-em~="hoje"],
-.moega-item[data-moega-periodo="7d"] .moega-hist-vazio[data-vazio-em~="7d"],
-.moega-item[data-moega-periodo="30d"] .moega-hist-vazio[data-vazio-em~="30d"] {
+.screen--moegas[data-moega-periodo="turno"] .moega-hist-vazio[data-vazio-em~="turno"],
+.screen--moegas[data-moega-periodo="hoje"] .moega-hist-vazio[data-vazio-em~="hoje"],
+.screen--moegas[data-moega-periodo="7d"] .moega-hist-vazio[data-vazio-em~="7d"],
+.screen--moegas[data-moega-periodo="30d"] .moega-hist-vazio[data-vazio-em~="30d"] {
     display: block;
 }
 
 
 
-/* cultura escolhida: as outras moegas apagam (a grade não reflui) */
-.screen--moegas[data-moega-cultura="milho"] .moega-item:not([data-cultura="milho"]),
-.screen--moegas[data-moega-cultura="sorgo"] .moega-item:not([data-cultura="sorgo"]),
-.screen--moegas[data-moega-cultura="trigo"] .moega-item:not([data-cultura="trigo"]),
-.screen--moegas[data-moega-cultura="soja"] .moega-item:not([data-cultura="soja"]),
-.screen--moegas[data-moega-cultura="vazia"] .moega-item:not([data-cultura="vazia"]) {
-    opacity: 0.28;
-    filter: saturate(0.4);
-}
 
 
 
@@ -3903,7 +3874,7 @@ body.edit-mode .header-controls .btn-alertas.active {
 .moega-grid {
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
-    grid-auto-rows: minmax(0, 1fr);
+    grid-auto-rows: minmax(min-content, 1fr);
     gap: 0.875rem;
     flex: 1 1 auto;
     min-height: 0;
@@ -3911,14 +3882,19 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 
 
+/* Cartao em grade de linhas fixas, para os seis ficarem no mesmo desenho:
+   cabecalho, cultura, cargas de hoje, entrada e historico. A linha das
+   cargas nunca fica menor que a tabela (minmax com min-content): se os seis
+   nao couberem, o excesso sobe para a section e o fitToScreen reduz a tela,
+   em vez de a tabela ser cortada. A sobra de altura fica com as cargas. */
 .moega-item {
     --grao: var(--muted);
     background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
     border: 1px solid var(--card-border);
     border-radius: 12px;
-    padding: 0.875rem 1rem 0.75rem;
-    display: flex;
-    flex-direction: column;
+    padding: 0.875rem 0.75rem 0.75rem;
+    display: grid;
+    grid-template-rows: auto auto minmax(min-content, 1fr) auto auto;
     gap: 0.5rem;
     min-height: 0;
     min-width: 0;
@@ -4014,124 +3990,31 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 
 
-/* tanque: o nível preenche de baixo para cima na cor do grão */
-.moega-tank {
-    position: relative;
-    flex: 1 1 auto;
-    min-height: 4.5rem;
-    border-radius: 8px;
-    background: var(--section-bg);
-    border: 1px solid var(--card-border);
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-
-
-.moega-tank-max {
-    position: absolute;
-    top: 0.3125rem;
-    right: 0.4375rem;
-    font-size: 0.5rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    color: var(--faint);
-    z-index: 2;
-}
-
-
-
-/* linha tracejada do máximo logo abaixo do rótulo */
-.moega-tank::before {
-    content: '';
-    position: absolute;
-    left: 0.4375rem;
-    right: 0.4375rem;
-    top: 1.125rem;
-    border-top: 1px dashed var(--faint);
-    opacity: 0.6;
-    z-index: 2;
-}
-
-
-
-/* 100% encosta na linha do máximo (que fica a 1.125rem do topo) */
-.moega-tank-fill {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: calc((100% - 1.125rem) * var(--nivel, 0) / 100);
-    background: var(--grao);
-    transition: height 0.6s ease;
-}
-
-
-
-.moega-tank-num {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.125rem;
-    text-align: center;
-    color: #fff;
-    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
-}
-
-
-
-.moega-nivel-pct {
-    font-size: 2.1rem;
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    font-variant-numeric: tabular-nums;
-}
-
-
-
-.moega-tons {
-    font-size: 0.66rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-    opacity: 0.92;
-}
-
-
-
-/* capacidade nominal em m³, abaixo das toneladas */
-.moega-vol {
-    font-size: 0.56rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-    opacity: 0.72;
-}
-
-
-
-/* entrada e saída: características fixas do fluxo (não mudam com o período) */
+/* entrada e saída: características fixas do fluxo (não mudam com o período).
+   Empilhadas uma sobre a outra: com a coluna dos pulmões ao lado o cartão
+   ficou estreito demais para as duas lado a lado (o rótulo "ENTRADA ·
+   MÉDIA" e a correia de destino não cabiam numa linha). Na vertical sobra
+   largura e a altura sai do tanque, que tem folga. */
 .moega-fluxo {
-    flex: 0 0 auto;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: 1fr;
     gap: 0.375rem;
 }
 
 
 
+/* altura fechada, igual nas doze caixas das seis moegas: cabe a combinacao
+   mais alta (rotulo + taxa + destino em duas linhas, caso de "Pre-limpeza 1 →
+   Secador 1") e uma caixa so com "parada" nao encolhe. Altura fixa, nao
+   minima: nenhum conteudo empurra o cartao e os tanques ficam iguais. */
 .moega-fluxo-item {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 0.125rem;
     min-width: 0;
+    height: 4.6rem;
     padding: 0.375rem 0.5rem;
     border-radius: 6px;
     background: var(--row-bg);
@@ -4177,10 +4060,67 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 
 
+/* entrada e saída seguem o período do cartão: a entrada mostra so a taxa
+   ("turno" e a do momento; hoje, 7 e 30 dias sao medias do periodo) e a
+   saida mostra so para onde o grao vai, que nao muda com o periodo. */
+.moega-fluxo-label[data-periodo],
+.moega-fluxo-sub[data-periodo],
+.moega-fluxo-value[data-periodo] {
+    display: none;
+}
+
+
+
+.screen--moegas[data-moega-periodo="turno"] .moega-fluxo-label[data-periodo~="turno"],
+.screen--moegas[data-moega-periodo="hoje"] .moega-fluxo-label[data-periodo~="hoje"],
+.screen--moegas[data-moega-periodo="7d"] .moega-fluxo-label[data-periodo~="7d"],
+.screen--moegas[data-moega-periodo="30d"] .moega-fluxo-label[data-periodo~="30d"] {
+    display: inline-flex;
+}
+
+
+
+.screen--moegas[data-moega-periodo="turno"] .moega-fluxo-sub[data-periodo~="turno"],
+.screen--moegas[data-moega-periodo="hoje"] .moega-fluxo-sub[data-periodo~="hoje"],
+.screen--moegas[data-moega-periodo="7d"] .moega-fluxo-sub[data-periodo~="7d"],
+.screen--moegas[data-moega-periodo="30d"] .moega-fluxo-sub[data-periodo~="30d"] {
+    display: -webkit-box;
+}
+
+
+
+.screen--moegas[data-moega-periodo="turno"] .moega-fluxo-value[data-periodo~="turno"],
+.screen--moegas[data-moega-periodo="hoje"] .moega-fluxo-value[data-periodo~="hoje"],
+.screen--moegas[data-moega-periodo="7d"] .moega-fluxo-value[data-periodo~="7d"],
+.screen--moegas[data-moega-periodo="30d"] .moega-fluxo-value[data-periodo~="30d"] {
+    display: block;
+}
+
+
+
+/* fora do turno a entrada mostra media do periodo, nao estado de equipamento:
+   o ponto dela fica neutro e a media nao sai apagada por "parada". A saida
+   nao tem media — ela diz se esta mandando grao ou nao, em qualquer janela,
+   entao o ponto dela guarda a cor de ligada/parada. */
+.screen--moegas:not([data-moega-periodo="turno"]) .moega-fluxo-item--entrada .moega-fluxo-estado {
+    background: var(--faint);
+    border: 0;
+}
+
+
+
+.screen--moegas:not([data-moega-periodo="turno"]) .moega-fluxo-item--entrada.is-parada .moega-fluxo-value {
+    color: var(--text);
+}
+
+
+
+/* o destino acompanha a taxa da saida: legivel, mas um degrau abaixo do numero */
 .moega-fluxo-sub {
-    font-size: 0.6rem;
+    font-size: 0.68rem;
+    font-weight: 600;
     line-height: 1.25;
-    color: var(--faint);
+    color: var(--muted);
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
@@ -4200,39 +4140,8 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 
 
-/* moega vazia: número apagado sobre o fundo */
-.moega-item--vazia .moega-tank-num {
-    color: var(--faint);
-    text-shadow: none;
-}
-
-
-
-/* tema claro: o tanque continua escuro para o número branco ler sobre o vazio */
-body.theme-light .moega-tank {
-    background: #2c3644;
-    border-color: #3a4656;
-}
-
-
-
-body.theme-light .moega-tank-max,
-body.theme-light .moega-tank::before {
-    color: #97a6b8;
-    border-color: #97a6b8;
-}
-
-
-
-body.theme-light .moega-item--vazia .moega-tank-num {
-    color: #97a6b8;
-}
-
-
-
 /* dados de apoio: saída, última cultura e filtros */
 .moega-dados {
-    flex: 0 0 auto;
     display: flex;
     flex-direction: column;
 }
@@ -4288,11 +4197,146 @@ body.theme-light .moega-item--vazia .moega-tank-num {
 
 
 
-/* volume que saiu é o número de destaque do rodapé */
-.moega-dado--saida .moega-dado-value {
-    font-size: 1.15rem;
-    letter-spacing: -0.01em;
+/* Cargas de hoje: uma linha por caminhao descarregado (placa com a bolinha
+   da cultura, volume, umidade, impureza e avariados), a mais recente em
+   cima, e a media geral do dia ponderada pelo volume no rodape. Impureza acima
+   de 1% e avariados acima de 6% ficam em laranja. Sem altura fixa nem
+   rolagem: se nao couber, o excesso chega a section e o fitToScreen reduz. */
+.moega-cargas {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3125rem;
+    min-width: 0;
+    padding-top: 0.4375rem;
+    border-top: 1px solid var(--card-border);
 }
+
+
+
+.moega-cargas-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.375rem;
+}
+
+
+
+.moega-cargas-head .moega-dado-label {
+    white-space: nowrap;
+}
+
+
+
+.moega-cargas-total {
+    font-size: 0.62rem;
+    color: var(--muted);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.moega-cargas-total b {
+    font-size: 0.72rem;
+    color: var(--text);
+}
+
+
+
+.moega-cargas-tabela {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.58rem;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.moega-cargas-tabela th {
+    padding: 0 0.125rem 0.1875rem;
+    font-size: 0.44rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--faint);
+    text-align: right;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--row-line);
+}
+
+
+
+.moega-cargas-tabela td {
+    padding: 0.3125rem 0.125rem;
+    text-align: right;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+
+
+.moega-cargas-tabela th:first-child,
+.moega-cargas-tabela td:first-child {
+    padding-left: 0;
+    text-align: left;
+}
+
+
+
+.moega-cargas-tabela th:last-child,
+.moega-cargas-tabela td:last-child {
+    padding-right: 0;
+}
+
+
+
+.moega-cargas-tabela tbody td:first-child {
+    font-weight: 700;
+    color: var(--muted);
+}
+
+
+
+.moega-cargas-tabela tbody tr + tr td {
+    border-top: 1px solid var(--row-line);
+}
+
+
+
+.moega-cargas-tabela .legend-dot {
+    display: inline-block;
+    width: 0.375rem;
+    height: 0.375rem;
+    margin-right: 0.25rem;
+    vertical-align: 0.05rem;
+}
+
+
+
+.moega-cargas-tabela td.is-atencao {
+    color: var(--warn);
+    font-weight: 700;
+}
+
+
+
+/* media geral fecha a tabela: separada e em destaque */
+.moega-cargas-tabela tfoot td {
+    padding-top: 0.3125rem;
+    border-top: 1px solid var(--card-border);
+    font-weight: 800;
+}
+
+
+
+.moega-cargas-tabela tfoot td:first-child {
+    font-size: 0.46rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
 
 
 
@@ -5088,6 +5132,92 @@ body.theme-light .kpi-flag--alerta {
 
 
 /* ---- agora ---- */
+/* ---- de onde e a previsao: a cidade aparece grande no cabecalho da tela
+   e de novo no topo do cartao de agora, para nao restar duvida de que
+   tudo a esquerda e de Avare ---- */
+.pv-local {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+    padding: 0.4rem 0.75rem;
+    border: 1px solid var(--card-border);
+    border-radius: 999px;
+    background: var(--row-bg);
+}
+
+
+
+.pv-local-pin {
+    width: 1.1rem;
+    height: 1.1rem;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+
+.pv-local-txt {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+
+
+.pv-local-txt b {
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--text);
+}
+
+
+
+.pv-local-txt small {
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+
+
+.pv-agora-cidade {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+
+
+.pv-agora-cidade b {
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--text);
+}
+
+
+
+.pv-agora-cidade small {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+
+
+.pv-agora-cidade .pv-local-pin {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+
+
 .pv-agora {
     flex: 0 0 auto;
     gap: 0.5rem;
@@ -5489,15 +5619,41 @@ body.theme-light .kpi-flag--alerta {
 
 
 
-.pv-tabela tr.is-chuva td {
-    background: rgba(59, 130, 246, 0.08);
+/* a unidade e a linha selecionada da tabela: barra na lateral, fundo mais
+   forte e o nome em caixa alta — bem diferente do azul claro da chuva */
+.pv-tabela tr.is-unidade td {
+    background: var(--hover);
+    border-bottom-color: var(--card-border);
 }
 
 
 
-.pv-tabela tr.is-chuva td.num {
+.pv-tabela tr.is-unidade td:first-child {
+    box-shadow: inset 3px 0 0 var(--accent);
+}
+
+
+
+.pv-tabela tr.is-unidade .pv-tabela-nome {
+    font-weight: 800;
     color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+
+
+.pv-unidade-tag {
+    margin-left: 0.4rem;
+    padding: 0.05rem 0.35rem;
+    border-radius: 999px;
+    border: 1px solid var(--accent);
+    font-size: 0.56rem;
     font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    vertical-align: 0.06rem;
 }
 
 
@@ -6269,7 +6425,7 @@ body.theme-light .kpi-flag--alerta {
     border-radius: 999px;
     border: 1px solid var(--cor);
     background: color-mix(in srgb, var(--cor) 16%, transparent);
-    font-size: 0.6rem;
+    font-size: 0.64rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -6293,7 +6449,7 @@ body.theme-light .kpi-flag--alerta {
 .secador-cultura-lim {
     padding-left: 0.375rem;
     border-left: 1px solid color-mix(in srgb, var(--cor) 50%, transparent);
-    font-size: 0.56rem;
+    font-size: 0.58rem;
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: none;
@@ -6340,7 +6496,7 @@ body.theme-light .kpi-flag--alerta {
 .secador-estado-pill {
     padding: 0.2rem 0.75rem;
     border-radius: 999px;
-    font-size: 0.66rem;
+    font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -6367,7 +6523,7 @@ body.theme-light .kpi-flag--alerta {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.78rem;
+    font-size: 0.84rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -6401,7 +6557,7 @@ body.theme-light .kpi-flag--alerta {
 
 
 .secador-tipo {
-    font-size: 0.65rem;
+    font-size: 0.68rem;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -6411,11 +6567,20 @@ body.theme-light .kpi-flag--alerta {
 
 
 
+/* o quanto falta para a proxima parada sai do tom do rotulo e vira numero */
+.secador-tipo b {
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
 .secador-body {
     flex: 1 1 auto;
     min-height: 0;
     display: grid;
-    grid-template-columns: 11rem minmax(0, 1fr) 9.5rem;
+    grid-template-columns: 13rem 11.5rem minmax(0, 1fr);
     gap: 0.875rem;
 }
 
@@ -6424,7 +6589,7 @@ body.theme-light .kpi-flag--alerta {
 /* estado no cabeçalho: a pílula diz a fase, o texto ao lado diz há quanto
    tempo e qual o próximo passo — a linha inteira lê como uma frase */
 .secador-estado-info {
-    font-size: 0.66rem;
+    font-size: 0.68rem;
     font-weight: 500;
     color: var(--muted);
     white-space: nowrap;
@@ -6447,12 +6612,91 @@ body.theme-light .kpi-flag--alerta {
 
 
 
-/* o grão como entra e como sai: dois painéis quietos, empilhados, com uma
-   seta entre eles marcando o sentido do fluxo */
-.secador-fluxo {
+/* na ultima hora antes da limpeza o script marca is-perto e a linha avisa */
+.secador-estado-info--prox.is-perto,
+.secador-estado-info--prox.is-perto b {
+    color: var(--warn);
+}
+
+
+
+/* as duas colunas à esquerda do gráfico: o calor (fornalha em cima, secador
+   embaixo, partidos por um separador) e a massa do grão (entrada e saída,
+   com a seta marcando o sentido do fluxo) */
+.secador-col {
     display: flex;
     flex-direction: column;
     min-height: 0;
+}
+
+
+
+.secador-col-titulo {
+    flex: 0 0 auto;
+    margin-bottom: 0.3rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+
+
+/* fornalha e secador dividem a mesma moldura; o separador é a linha no meio */
+.secador-col--calor {
+    justify-content: center;
+    gap: 0;
+    padding: 0.5rem 0.8125rem;
+    border-radius: 10px;
+    border: 1px solid var(--row-line);
+    background: var(--row-bg);
+}
+
+
+
+.secador-bloco {
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.375rem;
+}
+
+
+
+.secador-col-sep {
+    flex: 0 0 auto;
+    height: 1px;
+    margin: 0.5rem 0;
+    background: var(--row-line);
+}
+
+
+
+.secador-bloco-nome {
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cor-serie, var(--muted));
+}
+
+
+
+.secador-bloco--fornalha { --cor-serie: var(--danger); }
+
+
+
+.secador-bloco--ar { --cor-serie: var(--warn); }
+
+
+
+.secador-bloco-dados {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
 }
 
 
@@ -6464,7 +6708,7 @@ body.theme-light .kpi-flag--alerta {
     flex-direction: column;
     justify-content: center;
     gap: 0.375rem;
-    padding: 0.625rem 0.875rem;
+    padding: 0.5rem 0.8125rem;
     border-radius: 10px;
     border: 1px solid var(--row-line);
     background: var(--row-bg);
@@ -6503,7 +6747,7 @@ body.theme-light .kpi-flag--alerta {
 
 
 .secador-ponto-nome {
-    font-size: 0.58rem;
+    font-size: 0.66rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -6518,25 +6762,29 @@ body.theme-light .kpi-flag--alerta {
 
 
 
+/* as tres medidas do ponto, uma por linha: o rotulo puxa para a esquerda e
+   o valor para a direita, entao os numeros ficam alinhados e nada quebra */
 .secador-ponto-dados {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
 }
 
 
 
 .secador-dado {
     display: flex;
-    flex-direction: column;
-    gap: 0.125rem;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
     min-width: 0;
 }
 
 
 
 .secador-dado b {
-    font-size: 1.1rem;
+    flex: 0 0 auto;
+    font-size: 1.08rem;
     font-weight: 700;
     line-height: 1.1;
     color: var(--text);
@@ -6546,16 +6794,21 @@ body.theme-light .kpi-flag--alerta {
 
 
 
+/* o rotulo nunca e cortado: quebra em duas linhas em vez de virar "...".
+   Cortar aqui esconderia o excesso do bloco e o --fit-adjust nao teria o
+   que medir; quebrando, a altura cresce e a tela se ajusta sozinha. */
 .secador-dado small {
-    font-size: 0.58rem;
+    min-width: 0;
+    font-size: 0.62rem;
     font-weight: 600;
+    line-height: 1.2;
     color: var(--muted);
 }
 
 
 
 .secador-ponto-nota {
-    font-size: 0.58rem;
+    font-size: 0.62rem;
     font-weight: 500;
     color: var(--muted);
 }
@@ -6574,7 +6827,7 @@ body.theme-light .kpi-flag--alerta {
 .secador-agora-col {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.2rem;
     min-height: 0;
 }
 
@@ -6582,7 +6835,7 @@ body.theme-light .kpi-flag--alerta {
 
 .secador-agora-titulo {
     flex: 0 0 auto;
-    font-size: 0.62rem;
+    font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -6605,13 +6858,111 @@ body.theme-light .kpi-flag--alerta {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0.125rem;
-    padding: 0.5rem 0.875rem;
+    gap: 0.05rem;
+    padding: 0.3rem 0.5625rem;
     border-radius: 10px;
     border: 1px solid var(--row-line);
     border-left: 3px solid var(--cor-serie);
     background: var(--row-bg);
     overflow: hidden;
+}
+
+
+
+/* PROXIMA LIMPEZA: um reloginho depois das tres leituras. O anel esvazia
+   conforme a hora chega (--p vem do script) e o miolo diz quanto falta.
+   Nao divide a altura com as leituras: fica do tamanho do proprio anel. */
+.secador-limpeza {
+    --cor: var(--accent);
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.5rem;
+    border-radius: 10px;
+    border: 1px solid var(--row-line);
+    border-left: 3px solid var(--cor);
+    background: var(--row-bg);
+    overflow: hidden;
+}
+
+
+
+.secador-limpeza-relogio {
+    position: relative;
+    flex: 0 0 auto;
+    width: 2.2rem;
+    height: 2.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+/* o anel: rosca conica mascarada no meio, como os aneis da visao geral */
+.secador-limpeza-relogio::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(var(--cor) calc(var(--p) * 360deg), var(--row-line) 0);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 0.22rem), #000 calc(100% - 0.22rem + 1px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 0.22rem), #000 calc(100% - 0.22rem + 1px));
+}
+
+
+
+.secador-limpeza-relogio b {
+    position: relative;
+    font-size: 0.6rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+
+
+
+.secador-limpeza-txt {
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+    min-width: 0;
+}
+
+
+
+.secador-limpeza-nome {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--cor);
+    white-space: nowrap;
+}
+
+
+
+.secador-limpeza-ref {
+    font-size: 0.58rem;
+    font-weight: 500;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+
+
+/* na ultima hora o reloginho inteiro avisa */
+.secador-limpeza.is-perto {
+    --cor: var(--warn);
+}
+
+
+
+.secador-limpeza.is-perto .secador-limpeza-relogio b {
+    color: var(--warn);
 }
 
 
@@ -6627,8 +6978,9 @@ body.theme-light .kpi-flag--alerta {
 
 
 .secador-leitura-nome {
-    font-size: 0.58rem;
+    font-size: 0.6rem;
     font-weight: 700;
+    line-height: 1.2;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--cor-serie);
@@ -6638,9 +6990,9 @@ body.theme-light .kpi-flag--alerta {
 
 
 .secador-leitura-valor {
-    font-size: 1.1rem;
+    font-size: 1.12rem;
     font-weight: 700;
-    line-height: 1.1;
+    line-height: 1.05;
     color: var(--text);
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.01em;
@@ -6651,8 +7003,37 @@ body.theme-light .kpi-flag--alerta {
 .secador-leitura-ref {
     font-size: 0.58rem;
     font-weight: 500;
+    line-height: 1.2;
     color: var(--muted);
     white-space: nowrap;
+}
+
+
+
+/* desvio da umidade de saida em relacao ao alvo calculado, ao lado do valor */
+.secador-leitura-desvio {
+    font-size: 0.55em;
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--muted);
+}
+
+
+
+.secador-leitura-desvio.is-bom {
+    color: var(--ok);
+}
+
+
+
+body.theme-light .secador-leitura-desvio.is-bom {
+    color: #1e7a45;
+}
+
+
+
+.secador-leitura-desvio.is-atencao {
+    color: var(--warn);
 }
 
 
@@ -6683,10 +7064,86 @@ body.theme-light .kpi-flag--alerta {
 
 /* área do gráfico: as linhas correm até o marcador AGORA; o resto do turno
    fica esmaecido com as fases previstas */
+/* o gráfico é uma grade: o eixo Y à esquerda, o desenho ao lado e a régua das
+   horas embaixo — assim as duas réguas nascem do mesmo retângulo */
 .secador-chart {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr) auto;
+    column-gap: 0.4375rem;
     min-height: 0;
+}
+
+
+
+/* eixos Y: temperatura à esquerda (0–200 °C) e umidade à direita (12–20%).
+   As duas réguas dividem as mesmas cinco linhas do grid, então cada valor
+   escrito cai exatamente sobre uma linha. */
+.secador-eixo {
+    position: relative;
+    width: 1.875rem;
+}
+
+
+
+.secador-eixo span {
+    position: absolute;
+    transform: translateY(-50%);
+    font-size: 0.64rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+
+
+.secador-eixo--temp span { right: 0; }
+
+
+
+/* a umidade tem escala própria: o rótulo puxa a cor da série para dizer isso */
+.secador-eixo--umi span {
+    left: 0;
+    color: color-mix(in srgb, var(--viz-real) 70%, var(--faint));
+}
+
+
+
+/* os rótulos das pontas não cabem centrados na linha: encostam nela por dentro */
+.secador-eixo span:first-child { transform: translateY(0); }
+
+
+
+.secador-eixo span:last-child { transform: translateY(-100%); }
+
+
+
+/* o que cada eixo mede, escrito no pé da régua, na linha das horas */
+.secador-eixo-cap {
+    grid-row: 2;
+    padding-top: 0.375rem;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--faint);
+    white-space: nowrap;
+}
+
+
+
+.secador-eixo-cap--temp {
+    grid-column: 1;
+    text-align: right;
+}
+
+
+
+.secador-eixo-cap--umi {
+    grid-column: 3;
+    color: color-mix(in srgb, var(--viz-real) 70%, var(--faint));
 }
 
 
@@ -6699,26 +7156,36 @@ body.theme-light .kpi-flag--alerta {
 
 
 
+/* as linhas caem de 25 em 25%: 200/150/100/50/0 °C à esquerda e
+   20/18/16/14/12% à direita, os valores escritos nos dois eixos */
 .secador-grid {
     position: absolute;
     inset: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
     pointer-events: none;
 }
 
 
 
 .secador-grid i {
-    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
     height: 1px;
     background: var(--row-line);
 }
 
 
 
+.secador-grid i:nth-child(1) { top: 0; }
+.secador-grid i:nth-child(2) { top: 25%; }
+.secador-grid i:nth-child(3) { top: 50%; }
+.secador-grid i:nth-child(4) { top: 75%; }
+
+
+
 .secador-grid i:last-child {
+    top: auto;
+    bottom: 0;
     background: var(--panel-border);
 }
 
@@ -6786,7 +7253,7 @@ body.theme-light .kpi-flag--alerta {
     left: 0.375rem;
     transform: translateY(-100%);
     margin-top: -2px;
-    font-size: 0.48rem;
+    font-size: 0.54rem;
     font-weight: 700;
     letter-spacing: 0.06em;
     color: var(--muted);
@@ -6832,7 +7299,7 @@ body.theme-light .kpi-flag--alerta {
     top: 0.125rem;
     left: 0.5rem;
     display: block;
-    font-size: 0.5rem;
+    font-size: 0.54rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -6850,7 +7317,7 @@ body.theme-light .kpi-flag--alerta {
 
 .secador-agora-label small {
     display: block;
-    font-size: 0.46rem;
+    font-size: 0.48rem;
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: none;
@@ -6910,9 +7377,9 @@ body.theme-light .secador-agora {
 
 
 .secador-fase b {
-    font-size: 0.5rem;
+    font-size: 0.52rem;
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--faint);
     white-space: nowrap;
@@ -6988,7 +7455,9 @@ body.theme-light .secador-fase--descarga {
 
 
 /* legenda das fases no cabecalho da secao */
-.fase-legenda {
+/* legenda das linhas do gráfico: um traço na cor da série, para o nome e a
+   curva se reconhecerem. Fica antes da legenda das fases, no fim do título */
+.serie-legenda {
     margin-left: auto;
     display: flex;
     align-items: center;
@@ -6998,11 +7467,11 @@ body.theme-light .secador-fase--descarga {
 
 
 
-.fase-legenda-item {
+.serie-legenda-item {
     display: inline-flex;
     align-items: center;
     gap: 0.375rem;
-    font-size: 0.58rem;
+    font-size: 0.62rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -7012,42 +7481,42 @@ body.theme-light .secador-fase--descarga {
 
 
 
-.fase-legenda-item::before {
+.serie-legenda-item::before {
     content: "";
-    width: 0.625rem;
-    height: 0.625rem;
-    border-radius: 3px;
-    border: 1px solid var(--card-border);
+    width: 1.125rem;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--cor-serie, var(--muted));
 }
 
 
 
-.fase-legenda-item--carga::before {
-    background: rgba(142, 163, 186, 0.35);
+.serie-legenda-item--fornalha { --cor-serie: var(--danger); }
+
+
+
+.serie-legenda-item--temp { --cor-serie: var(--warn); }
+
+
+
+.serie-legenda-item--umi { --cor-serie: var(--viz-real); }
+
+
+
+/* a desejada repete a linha tracejada atrás das curvas: mesmo tracejado e
+   mesma cor da fornalha */
+.serie-legenda-item--setada {
+    --cor-serie: var(--danger);
 }
 
 
 
-.fase-legenda-item--aquec::before {
-    background: rgba(243, 156, 18, 0.45);
-}
-
-
-
-.fase-legenda-item--secagem::before {
-    background: rgba(46, 204, 113, 0.4);
-}
-
-
-
-.fase-legenda-item--resfr::before {
-    background: rgba(59, 130, 246, 0.45);
-}
-
-
-
-.fase-legenda-item--descarga::before {
-    background: rgba(139, 92, 246, 0.5);
+.serie-legenda-item--setada::before {
+    background: repeating-linear-gradient(
+        to right,
+        var(--cor-serie) 0 4px,
+        transparent 4px 7px
+    );
 }
 
 
@@ -7098,11 +7567,12 @@ body.theme-light .secador-fase--descarga {
 
 
 .secador-horas {
+    grid-column: 2;
     flex: 0 0 auto;
     display: flex;
     justify-content: space-between;
     padding-top: 0.375rem;
-    font-size: 0.58rem;
+    font-size: 0.64rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     color: var(--faint);
@@ -7128,9 +7598,12 @@ body.theme-light .secador-fase--descarga {
 }
 
 
-
+/* duas fileiras numa grade so: a esquerda tem o grafico por hora em cima
+   e o bloco de paradas embaixo (na altura do proprio conteudo); a coluna
+   dos secadores, a direita, atravessa as duas e ganha a sobra de altura */
 .split-grid--prod {
     grid-template-columns: 1.5fr 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
 }
 
 
@@ -7319,6 +7792,28 @@ body.theme-light .kpi-flag--atencao {
 
 
 
+/* secagem por hora: cada secador tem a sua propria barra, lado a lado
+   dentro da mesma hora — as duas dividem a largura da coluna */
+.forecast-chart--turno .hora-col {
+    gap: 3px;
+}
+
+
+
+.forecast-chart--turno .forecast-bar--hora {
+    width: 1.9rem;
+    max-width: 40%;
+}
+
+
+
+/* o numero de quem ficou abaixo da propria meta horaria */
+.forecast-chart--turno .forecast-bar--hora.is-abaixo .forecast-cap {
+    color: var(--warn);
+}
+
+
+
 /* a pilha por secador nao leva a cor unica da barra: cada fatia
    ganha volume (brilho no topo, sombra na base) e a barra inteira
    um halo suave para descolar do fundo */
@@ -7418,6 +7913,19 @@ body.theme-light .forecast-chart--turno .forecast-bar--hora.is-stack {
 .hora-col.is-abaixo .forecast-cap,
 .forecast-day small.is-atencao {
     color: var(--warn);
+}
+
+
+
+/* uma linha de meta para cada secador, na cor da propria barra */
+.forecast-meta-line--sec1 {
+    border-top-color: var(--sec1);
+}
+
+
+
+.forecast-meta-line--sec2 {
+    border-top-color: var(--sec2);
 }
 
 
@@ -9273,8 +9781,11 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 
 
 
-.screen > .split-grid--silos {
-    flex: 1 1 0;
+/* faixa de baixo da tela de silos: a movimentacao do dia ocupa a largura
+   inteira e divide a altura meio a meio com a grade dos silos, como era
+   quando os pulmoes ainda dividiam esta faixa */
+.screen > .sa-section--mov {
+    flex: 1.15 1 0;
 }
 
 
@@ -9375,8 +9886,9 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 
 
 
-/* impureza do grão armazenado, ao lado da cultura; vermelha acima do limite de 1% */
-.sa-imp {
+/* umidade do grão armazenado, ao lado da cultura; vermelha acima do limite
+   de 14%, em que o grão não se mantém seguro no silo */
+.sa-umi {
     margin-left: 0.3rem;
     padding-left: 0.3rem;
     border-left: 1px solid var(--card-border);
@@ -9386,7 +9898,7 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 
 
 
-.sa-imp--alto {
+.sa-umi--alto {
     color: var(--danger);
     font-weight: 800;
 }
@@ -9699,14 +10211,102 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 
 
 
-/* Pulmões embaixo dos silos: a moldura tracejada abraça só os dois
-   cartões. A largura é a de 2 das 8 colunas da grade de cima (mais o
-   respiro e o padding da seção), para os cartões ficarem do tamanho dos
-   outros silos; a faixa tem a mesma altura da seção dos silos. */
-.screen > .sa-section--pulmao {
-    flex: 1.15 1 0;
-    align-self: flex-start;
-    width: calc(25% + 1.21875rem + 1.5px);
+/* Pulmões na tela das moegas: coluna estreita à direita da grade, os dois
+   cartões um sobre o outro e em pé, iguais aos da tela de silos. A largura
+   da coluna é a de um cartão de moega (mais o respiro e o padding da
+   seção), então os dois blocos ficam no mesmo ritmo. */
+.screen--moegas > .sa-section--pulmao {
+    min-height: 0;
+}
+
+
+
+.screen--moegas .sa-grid--2 {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+
+
+/* ---- Movimentação silo a silo (faixa de baixo da tela de silos) ---- */
+.sa-section--mov {
+    min-height: 0;
+}
+
+
+
+/* linhas mais baixas que as das outras tabelas: sao nove de uma vez
+   dentro de meia tela */
+.sa-mov-table td {
+    padding: 0.4rem 0.625rem;
+}
+
+
+
+.sa-mov-table th {
+    padding: 0.3rem 0.625rem;
+}
+
+
+
+/* colunas de numero alinhadas a direita, nome e cultura a esquerda */
+.sa-mov-table th:nth-child(n + 3),
+.sa-mov-table td:nth-child(n + 3) {
+    text-align: right;
+}
+
+
+
+.sa-mov-table td:first-child {
+    font-weight: 700;
+}
+
+
+
+/* a ocupacao acompanha o estoque, menor e apagada */
+.sa-mov-table td small {
+    margin-left: 0.375rem;
+    color: var(--muted);
+    font-weight: 600;
+}
+
+
+
+.sa-mov-saldo {
+    font-weight: 700;
+}
+
+
+
+/* encheu mais do que saiu */
+.sa-mov-saldo--sobe {
+    color: var(--ok);
+}
+
+
+
+/* saiu mais do que entrou */
+.sa-mov-saldo--desce {
+    color: var(--warn);
+}
+
+
+
+body.theme-light .sa-mov-saldo--sobe {
+    color: #1e7a45;
+}
+
+
+
+.sa-mov-table tr.sa-mov-total td {
+    border-top: 1px solid var(--card-border);
+    border-bottom: none;
+    color: var(--muted);
+}
+
+
+
+.sa-mov-table tr.sa-mov-total td:first-child {
+    color: var(--text);
 }
 
 
@@ -9854,7 +10454,7 @@ body.theme-light .kpi-card--destaque .kpi-value {
 
 
 
-/* fila / 1ª pesagem / classificacao / descarga / 2ª pesagem / liberacao */
+/* fila / 1ª pesagem / classificacao / descarga / 2ª pesagem / liberados */
 .fluxo-etapas--seis {
     grid-template-columns: repeat(6, 1fr);
     gap: 1.5rem;
@@ -9878,17 +10478,7 @@ body.theme-light .kpi-card--destaque .kpi-value {
     border: 1px solid var(--card-border);
     border-left: 3px solid var(--ok);
     border-radius: 10px;
-    cursor: help;
-    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-
-
-.fluxo-etapa:hover {
-    border-color: var(--accent);
-    border-left-color: var(--ok);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-soft);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 
@@ -9956,6 +10546,18 @@ body.theme-light .kpi-card--destaque .kpi-value {
 
 
 
+/* Caminhoes parados esperando a vez na etapa: linha discreta, abaixo de
+   quem esta sendo atendido agora. */
+.fluxo-etapa-espera {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--warn);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
 .fluxo-etapa-sub {
     font-size: 0.66rem;
     font-weight: 600;
@@ -9965,20 +10567,39 @@ body.theme-light .kpi-card--destaque .kpi-value {
 
 
 
-/* so o tempo medio do periodo escolhido na tela (data-fluxo-periodo na section) */
 .fluxo-etapa-sub b {
-    display: none;
     font-weight: 700;
     color: var(--text);
 }
 
 
 
-#screen-fluxo[data-fluxo-periodo="turno"] .fluxo-etapa-sub b[data-periodo="turno"],
-#screen-fluxo[data-fluxo-periodo="hoje"] .fluxo-etapa-sub b[data-periodo="hoje"],
-#screen-fluxo[data-fluxo-periodo="7d"] .fluxo-etapa-sub b[data-periodo="7d"],
-#screen-fluxo[data-fluxo-periodo="30d"] .fluxo-etapa-sub b[data-periodo="30d"] {
+/* Todo valor com versao por periodo (quantidade, fila, estado, tempo medio):
+   so o do periodo escolhido na tela aparece (data-fluxo-periodo na section). */
+#screen-fluxo [data-periodo] {
+    display: none;
+}
+
+
+
+#screen-fluxo[data-fluxo-periodo="turno"] [data-periodo="turno"],
+#screen-fluxo[data-fluxo-periodo="hoje"] [data-periodo="hoje"],
+#screen-fluxo[data-fluxo-periodo="7d"] [data-periodo="7d"],
+#screen-fluxo[data-fluxo-periodo="30d"] [data-periodo="30d"] {
     display: inline;
+}
+
+
+
+/* A tabela segue o mesmo periodo: cada linha traz em data-janela a menor
+   janela em que aparece (turno ⊂ hoje ⊂ 7d ⊂ 30d). */
+#screen-fluxo[data-fluxo-periodo="turno"] tbody tr[data-janela="hoje"],
+#screen-fluxo[data-fluxo-periodo="turno"] tbody tr[data-janela="7d"],
+#screen-fluxo[data-fluxo-periodo="turno"] tbody tr[data-janela="30d"],
+#screen-fluxo[data-fluxo-periodo="hoje"] tbody tr[data-janela="7d"],
+#screen-fluxo[data-fluxo-periodo="hoje"] tbody tr[data-janela="30d"],
+#screen-fluxo[data-fluxo-periodo="7d"] tbody tr[data-janela="30d"] {
+    display: none;
 }
 
 
@@ -10003,8 +10624,40 @@ body.theme-light .kpi-card--destaque .kpi-value {
 
 
 
+/* barra de filtro do fluxo: cultura + periodo, encostada na direita do
+   cabecalho (mesma solucao da expedicao) */
+.fluxo-filtro {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    flex-wrap: wrap;
+    margin-left: auto;
+}
+
+
+
+.fluxo-filtro .fluxo-periodo {
+    margin-left: 0;
+}
+
+
+
+/* barrinha entre o filtro de cultura e o de tempo: sao duas escolhas
+   diferentes e a barra do cabecalho e' uma linha so */
+.fluxo-filtro .fluxo-periodo::before {
+    content: "|";
+    color: var(--faint);
+    font-size: 0.8rem;
+    line-height: 1;
+    margin-right: 0.125rem;
+}
+
+
+
 .fluxo-etapa-estado {
-    margin-top: 0.25rem;
+    /* rodape do cartao: cada etapa tem um numero de linhas diferente e os
+       selos precisam ficar na mesma altura */
+    margin-top: auto;
     align-self: flex-start;
     padding: 0.125rem 0.5rem;
     border-radius: 999px;
@@ -10020,14 +10673,24 @@ body.theme-light .kpi-card--destaque .kpi-value {
 
 
 
+/* O alerta tambem segue o periodo: data-alerta lista em quais janelas a
+   etapa esta fora do padrao (ex.: data-alerta="turno hoje"). */
 .fluxo-etapa--alerta,
-.fluxo-etapa--alerta:hover {
+.fluxo-etapa--alerta:hover,
+#screen-fluxo[data-fluxo-periodo="turno"] .fluxo-etapa[data-alerta~="turno"],
+#screen-fluxo[data-fluxo-periodo="hoje"] .fluxo-etapa[data-alerta~="hoje"],
+#screen-fluxo[data-fluxo-periodo="7d"] .fluxo-etapa[data-alerta~="7d"],
+#screen-fluxo[data-fluxo-periodo="30d"] .fluxo-etapa[data-alerta~="30d"] {
     border-left-color: var(--danger);
 }
 
 
 
-.fluxo-etapa--alerta .fluxo-etapa-estado {
+.fluxo-etapa--alerta .fluxo-etapa-estado,
+#screen-fluxo[data-fluxo-periodo="turno"] .fluxo-etapa[data-alerta~="turno"] .fluxo-etapa-estado,
+#screen-fluxo[data-fluxo-periodo="hoje"] .fluxo-etapa[data-alerta~="hoje"] .fluxo-etapa-estado,
+#screen-fluxo[data-fluxo-periodo="7d"] .fluxo-etapa[data-alerta~="7d"] .fluxo-etapa-estado,
+#screen-fluxo[data-fluxo-periodo="30d"] .fluxo-etapa[data-alerta~="30d"] .fluxo-etapa-estado {
     color: var(--danger);
     background: rgba(231, 76, 60, 0.16);
     border-color: rgba(231, 76, 60, 0.4);
@@ -10035,7 +10698,11 @@ body.theme-light .kpi-card--destaque .kpi-value {
 
 
 
-body.theme-light .fluxo-etapa--alerta .fluxo-etapa-estado {
+body.theme-light .fluxo-etapa--alerta .fluxo-etapa-estado,
+body.theme-light #screen-fluxo[data-fluxo-periodo="turno"] .fluxo-etapa[data-alerta~="turno"] .fluxo-etapa-estado,
+body.theme-light #screen-fluxo[data-fluxo-periodo="hoje"] .fluxo-etapa[data-alerta~="hoje"] .fluxo-etapa-estado,
+body.theme-light #screen-fluxo[data-fluxo-periodo="7d"] .fluxo-etapa[data-alerta~="7d"] .fluxo-etapa-estado,
+body.theme-light #screen-fluxo[data-fluxo-periodo="30d"] .fluxo-etapa[data-alerta~="30d"] .fluxo-etapa-estado {
     color: #b3261e;
     background: rgba(179, 38, 30, 0.12);
     border-color: rgba(179, 38, 30, 0.35);
@@ -10259,7 +10926,7 @@ body.theme-light .fluxo-tag {
 
 
 
-.fluxo-etapa-pill--liberacao {
+.fluxo-etapa-pill--liberados {
     color: var(--ok);
     background: rgba(46, 204, 113, 0.14);
     border-color: rgba(46, 204, 113, 0.38);
@@ -10297,8 +10964,20 @@ body.theme-light .fluxo-etapa-pill--pesagem2 {
 
 
 
-body.theme-light .fluxo-etapa-pill--liberacao {
+body.theme-light .fluxo-etapa-pill--liberados {
     color: #1e7a45;
+}
+
+
+
+/* Quem espera a vez nao conta como atendido: o selo perde a cor da etapa
+   e fica tracejado, tanto na tabela quanto no filtro. */
+.fluxo-etapa-pill.is-espera,
+body.theme-light .fluxo-etapa-pill.is-espera {
+    color: var(--muted);
+    background: transparent;
+    border-color: var(--card-border);
+    border-style: dashed;
 }
 
 
@@ -10422,6 +11101,39 @@ span[data-fluxo-filtro].fluxo-etapa-pill:focus-visible {
 
 
 body.edit-mode .fluxo-etapa-pill {
+    cursor: text;
+}
+
+
+
+/* cartao de etapa tambem filtra a tabela: o escolhido ganha contorno e os
+   outros apagam um pouco, igual aos selos do cabecalho da tabela */
+.fluxo-etapa[data-fluxo-filtro] {
+    cursor: pointer;
+}
+
+
+
+.fluxo-etapa[data-fluxo-filtro].is-active {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent) inset;
+}
+
+
+
+#screen-fluxo.is-etapa-filtrada .fluxo-etapa[data-fluxo-filtro]:not(.is-active) {
+    opacity: 0.5;
+}
+
+
+
+#screen-fluxo.is-etapa-filtrada .fluxo-etapa[data-fluxo-filtro]:not(.is-active):hover {
+    opacity: 1;
+}
+
+
+
+body.edit-mode .fluxo-etapa[data-fluxo-filtro] {
     cursor: text;
 }
 
@@ -10753,9 +11465,26 @@ body.edit-mode .fluxo-etapa-pill {
 
 
 
-    .secador-fluxo {
+    .secador-col--massa {
         flex-direction: row;
         gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+
+
+    .secador-col--calor {
+        flex-direction: row;
+        align-items: stretch;
+        gap: 0.8125rem;
+    }
+
+
+
+    .secador-col-sep {
+        width: 1px;
+        height: auto;
+        margin: 0 0.25rem;
     }
 
 
@@ -10869,6 +11598,7 @@ body.edit-mode .fluxo-etapa-pill {
 
     /* ---- Grades: empilham ---- */
     .kpi-grid,
+    .kpi-grid--two,
     .kpi-grid--three,
     .kpi-grid--four,
     .kpi-grid--six,
@@ -10906,7 +11636,6 @@ body.edit-mode .fluxo-etapa-pill {
     .fluxo-etapas,
     .sa-grid--8,
     .sa-grid--2,
-    .split-grid--silos,
     .sa-grid--armazem,
     .sa-foot--armazem,
     .ponta-strip,
@@ -10914,6 +11643,9 @@ body.edit-mode .fluxo-etapa-pill {
     .editor-form {
         grid-template-columns: minmax(0, 1fr);
     }
+
+
+
 
 
 
@@ -11277,6 +12009,69 @@ body.edit-mode .fluxo-etapa-pill {
 
 
 /* anel de percentual */
+/* qualidade media das cargas expedidas, no lugar do anel de dosagem:
+   tres numeros lado a lado, cada um com o proprio limite embaixo */
+.gv-qual {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+    padding-top: 0.45rem;
+    border-top: 1px solid var(--row-line);
+}
+
+/* o titulo atravessa as tres colunas e diz de onde vem o numero */
+.gv-qual-titulo {
+    grid-column: 1 / -1;
+    font-size: 0.58rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.gv-qual-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.1;
+}
+
+.gv-qual-item b {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+}
+
+.gv-qual-item b small {
+    margin-left: 0.05rem;
+    font-size: 0.6em;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.gv-qual-item em {
+    font-style: normal;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.gv-qual-item i {
+    font-style: normal;
+    font-size: 0.56rem;
+    font-weight: 600;
+    color: var(--faint);
+}
+
+/* passou do limite: o numero avisa na cor */
+.gv-qual-item.is-atencao b {
+    color: var(--warn);
+}
+
 .gv-ring {
     position: relative;
     display: flex;
@@ -12567,113 +13362,6 @@ body.theme-light .gv-meter-dot {
 
 
 
-/* faixa de alertas: mesmos itens da pagina ALERTAS, cada um leva a area */
-.geral-alerts {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.625rem;
-    padding: 0.75rem 1rem;
-    background: var(--section-bg);
-    border: 1px solid var(--panel-border);
-    border-radius: 12px;
-}
-
-
-.geral-alerts-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-right: 0.5rem;
-    font-size: 0.76rem;
-    font-weight: 700;
-    color: var(--muted);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-
-.geral-alerts-count {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 1.375rem;
-    height: 1.375rem;
-    padding: 0 0.375rem;
-    border-radius: 999px;
-    background: var(--danger);
-    color: #fff;
-    font-size: 0.76rem;
-    font-weight: 800;
-}
-
-
-.geral-alert {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.4375rem 0.75rem;
-    background: var(--row-bg);
-    border: 1px solid var(--row-line);
-    border-radius: 999px;
-    color: var(--text);
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 0.8rem;
-    transition: border-color 0.2s ease, background 0.2s ease;
-}
-
-
-.geral-alert:hover,
-.geral-alert:focus-visible {
-    border-color: var(--accent);
-    background: var(--hover);
-    outline: none;
-}
-
-
-.geral-alert-dot {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background: var(--accent);
-    flex-shrink: 0;
-}
-
-
-.geral-alert--critico .geral-alert-dot {
-    background: var(--danger);
-    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
-}
-
-
-.geral-alert--aviso .geral-alert-dot {
-    background: var(--warn);
-    box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.2);
-}
-
-
-.geral-alert--info .geral-alert-dot {
-    background: var(--accent);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-}
-
-
-.geral-alert-area {
-    font-weight: 700;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-size: 0.76rem;
-}
-
-
-.geral-alert-text {
-    font-weight: 600;
-}
-
-
-
 /* tema claro: mesmas cores das pilulas .kpi-flag no claro */
 body.theme-light .geral-card.atencao {
     border-color: rgba(184, 108, 0, 0.35);
@@ -12718,16 +13406,6 @@ body.theme-light .kpi-flag--info {
         font-size: 28px;
     }
 
-
-    .geral-alerts {
-        align-items: stretch;
-        flex-direction: column;
-    }
-
-
-    .geral-alert {
-        border-radius: 10px;
-    }
 }
 
 
@@ -12800,42 +13478,64 @@ body.theme-light .kpi-flag--info {
 
 
 
-/* Tempo em Avaré: ícone sol/nuvem ao lado da temperatura; umidade e chuva
-   no rodapé, com pontos nas cores de água e céu para não confundir com
-   as culturas. */
-.tempo-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 10px;
-    background: var(--accent-soft);
-    color: var(--accent);
-    flex-shrink: 0;
+/* fila da recepcao: o mesmo cartao mostra com tag e sem tag lado a lado,
+   separados por um risco, cada metade com o seu total e a quebra por cultura */
+.kpi-tag-split {
+    align-self: stretch;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.875rem;
 }
 
 
 
-.tempo-icon svg {
-    width: 1.6rem;
-    height: 1.6rem;
+.kpi-tag-bloco {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    min-width: 0;
 }
 
 
 
-.tempo-desc {
-    flex-basis: 100%;
-    font-size: 0.72rem;
-    margin-top: -0.25rem;
+.kpi-tag-bloco--sem {
+    padding-left: 0.875rem;
+    border-left: 1px solid var(--card-border);
 }
 
 
 
-.legend-dot--umidade { background: #38bdf8; }
+.kpi-tag-rotulo {
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--faint);
+}
 
 
-.legend-dot--chuva { background: #818cf8; }
+
+/* a metade sem tag e' o dado secundario: mesmo desenho, peso menor */
+.kpi-tag-bloco--sem .kpi-value {
+    color: var(--muted);
+}
+
+
+
+.kpi-tag-bloco .kpi-sub {
+    gap: 0.25rem 0;
+    margin-top: 0.125rem;
+    padding-top: 0.375rem;
+}
+
+
+
+.kpi-tag-bloco .kpi-sub-item {
+    padding: 0 0.5rem;
+    font-size: 0.68rem;
+}
+
 
 
 
@@ -13074,35 +13774,6 @@ body.theme-light .kpi-flag--info {
 
 
 
-/* linha vertical da meta: comeca no rotulo (acima das barras) e desce ate o eixo.
-   O deslocamento soma o padding do card e a coluna da cultura (6.5rem + gap 0.75rem). */
-.etapa-meta {
-    position: absolute;
-    top: 1.125rem;
-    bottom: 1.5rem;
-    left: calc(0.875rem + 7.25rem + (100% - 0.875rem * 2 - 7.25rem) * var(--etapa-meta) / var(--etapa-max));
-    border-left: 1px dashed var(--danger);
-    opacity: 0.8;
-    pointer-events: none;
-}
-
-
-
-.etapa-meta-label {
-    position: absolute;
-    top: -0.95rem;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    font-size: 0.58rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--danger);
-}
-
-
-
 /* ---- Visao mensal por cultura ---- */
 .mensal-grid {
     display: grid;
@@ -13309,42 +13980,94 @@ body.theme-light .mensal-ritmo {
 
 
 
+/* seis indicadores numa linha so: o numero e o unico dado no rosto do cartao,
+   entao ele manda, mas nao pode estourar um sexto da largura */
 .kpi-grid--class .kpi-value {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
 }
 
 
 
-/* os quatro graos ficam numa linha so, dividindo a largura do cartao */
-.kpi-grid--class .grao-metrics {
-    flex-wrap: nowrap;
-    gap: 0.25rem 0.5rem;
+/* ============================================
+   CLASSIFICACAO — FAIXA DE INDICADORES
+   Os seis indicadores dividem uma linha so; o rosto do cartao
+   tem apenas o numero do recorte escolhido, porque a quebra por
+   cultura foi para o balao do mouse over e a tabela do meio
+   precisa da altura.
+   ============================================ */
+.kpi-grid--class {
+    margin-bottom: 0.875rem;
 }
 
 
 
-.kpi-grid--class .grao-metric {
-    flex: 1 1 0;
-    min-width: 0;
+.kpi-grid--class .kpi-value-ref {
+    margin-left: 0.25rem;
 }
 
 
 
-.kpi-grid--class .grao-metric-value {
-    font-size: 0.9rem;
+/* O queimado esta contado dentro do avariado: entra como linha de apoio do
+   cartao de avariados, discreta, entre o numero grande e a lista de culturas.
+   O numero segue o mesmo jogo de spans por cultura e por periodo. */
+.kpi-queimado {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
 }
 
 
 
-.kpi-grid--class .grao-metric-name {
-    font-size: 0.52rem;
+.kpi-queimado-rotulo {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--faint);
 }
 
 
 
-.kpi-grid--class .grao-icon {
-    width: 1rem;
-    height: 1rem;
+.kpi-queimado .class-cult {
+    color: var(--text);
+}
+
+
+
+.kpi-queimado .kpi-lim {
+    margin-left: 0.15rem;
+}
+
+
+
+.kpi-card--slim {
+    min-height: 4.25rem;
+    padding: 0.5rem 0.875rem;
+    gap: 0.25rem;
+}
+
+
+
+
+
+/* o limite anda junto do rotulo: PH e falling number sao minimos
+   (quanto maior, melhor) e o queimado tem teto proprio de 1%
+   mesmo ja estando contado dentro do avariado */
+.kpi-lim {
+    margin-left: 0.4rem;
+    padding: 0.05rem 0.35rem;
+    border: 1px solid var(--card-border);
+    border-radius: 999px;
+    font-size: 0.55rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    color: var(--faint);
+    white-space: nowrap;
 }
 
 
@@ -13397,6 +14120,663 @@ body.theme-light .mensal-ritmo {
 
 
 /* ---- Classificacao · filtro de cultura ---- */
+/* ============================================
+   EXPEDICAO · FILTRO GERAL DA TELA
+   Cultura e periodo moram no cabecalho: a tela guarda as escolhas em
+   data-exp-cultura / data-exp-periodo e o CSS troca os blocos e esconde
+   as linhas que nao batem. A tabela de cargas so obedece a cultura.
+   ============================================ */
+.exp-filtro {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    flex-wrap: wrap;
+    /* empurra o filtro para a direita do cabecalho, como na produtividade */
+    margin-left: auto;
+}
+
+
+
+/* dentro da barra o periodo ja vem depois da cultura; o auto do fluxo
+   so serviria para grudar no canto */
+.exp-filtro .fluxo-periodo {
+    margin-left: 0;
+}
+
+
+
+/* ---- os dois filtros valem para tudo ----
+   Cada numero que muda com a cultura esta no cartao como cinco variantes
+   (.exp-cult / .exp-cult-bloco, uma por cultura mais "todas") e so a
+   escolhida aparece. A tabela de cargas tem um tbody por periodo. */
+#screen-7 .exp-cult,
+#screen-7 .exp-cult-bloco,
+#screen-7 .exp-per,
+#screen-7 .exp-cargas-corpo {
+    display: none;
+}
+
+
+
+#screen-7[data-exp-cultura="todas"] .exp-cult[data-cultura="todas"],
+#screen-7[data-exp-cultura="milho"] .exp-cult[data-cultura="milho"],
+#screen-7[data-exp-cultura="sorgo"] .exp-cult[data-cultura="sorgo"],
+#screen-7[data-exp-cultura="trigo"] .exp-cult[data-cultura="trigo"],
+#screen-7[data-exp-cultura="soja"] .exp-cult[data-cultura="soja"] {
+    display: inline;
+}
+
+
+
+#screen-7[data-exp-cultura="todas"] .exp-cult-bloco[data-cultura="todas"],
+#screen-7[data-exp-cultura="milho"] .exp-cult-bloco[data-cultura="milho"],
+#screen-7[data-exp-cultura="sorgo"] .exp-cult-bloco[data-cultura="sorgo"],
+#screen-7[data-exp-cultura="trigo"] .exp-cult-bloco[data-cultura="trigo"],
+#screen-7[data-exp-cultura="soja"] .exp-cult-bloco[data-cultura="soja"] {
+    display: flex;
+}
+
+
+
+/* na visao de uma cultura so, as pastilhas das outras saem do rodape */
+#screen-7[data-exp-cultura="milho"] .kpi-sub-item[data-cultura]:not([data-cultura="milho"]),
+#screen-7[data-exp-cultura="sorgo"] .kpi-sub-item[data-cultura]:not([data-cultura="sorgo"]),
+#screen-7[data-exp-cultura="trigo"] .kpi-sub-item[data-cultura]:not([data-cultura="trigo"]),
+#screen-7[data-exp-cultura="soja"] .kpi-sub-item[data-cultura]:not([data-cultura="soja"]) {
+    display: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+#screen-7[data-exp-periodo="dia"] .exp-per[data-periodo="dia"],
+#screen-7[data-exp-periodo="semana"] .exp-per[data-periodo="semana"],
+#screen-7[data-exp-periodo="mes"] .exp-per[data-periodo="mes"],
+#screen-7[data-exp-periodo="ano"] .exp-per[data-periodo="ano"] {
+    display: inline;
+}
+
+
+
+#screen-7[data-exp-periodo="dia"] .exp-cargas-corpo[data-periodo="dia"],
+#screen-7[data-exp-periodo="semana"] .exp-cargas-corpo[data-periodo="semana"],
+#screen-7[data-exp-periodo="mes"] .exp-cargas-corpo[data-periodo="mes"],
+#screen-7[data-exp-periodo="ano"] .exp-cargas-corpo[data-periodo="ano"] {
+    display: table-row-group;
+}
+
+
+
+#screen-7 .exp-periodo-bloco {
+    display: none;
+}
+
+
+
+#screen-7[data-exp-periodo="dia"] .exp-periodo-bloco[data-periodo="dia"],
+#screen-7[data-exp-periodo="semana"] .exp-periodo-bloco[data-periodo="semana"],
+#screen-7[data-exp-periodo="mes"] .exp-periodo-bloco[data-periodo="mes"],
+#screen-7[data-exp-periodo="ano"] .exp-periodo-bloco[data-periodo="ano"] {
+    display: grid;
+}
+
+
+
+/* a qualidade do periodo e uma section (coluna flex), nao uma grade */
+#screen-7[data-exp-periodo="dia"] .content-section.exp-periodo-bloco[data-periodo="dia"],
+#screen-7[data-exp-periodo="semana"] .content-section.exp-periodo-bloco[data-periodo="semana"],
+#screen-7[data-exp-periodo="mes"] .content-section.exp-periodo-bloco[data-periodo="mes"],
+#screen-7[data-exp-periodo="ano"] .content-section.exp-periodo-bloco[data-periodo="ano"] {
+    display: flex;
+}
+
+
+
+/* com uma cultura escolhida, some quem nao bate nas duas tabelas; a linha
+   Geral da qualidade nao tem data-cultura, entao sai junto — o total
+   deixa de valer quando se olha uma cultura so */
+#screen-7[data-exp-cultura="milho"] .exp-qual-table tbody tr:not([data-cultura="milho"]),
+#screen-7[data-exp-cultura="sorgo"] .exp-qual-table tbody tr:not([data-cultura="sorgo"]),
+#screen-7[data-exp-cultura="trigo"] .exp-qual-table tbody tr:not([data-cultura="trigo"]),
+#screen-7[data-exp-cultura="soja"] .exp-qual-table tbody tr:not([data-cultura="soja"]),
+#screen-7[data-exp-cultura="milho"] .class-table tbody tr:not([data-cultura="milho"]),
+#screen-7[data-exp-cultura="sorgo"] .class-table tbody tr:not([data-cultura="sorgo"]),
+#screen-7[data-exp-cultura="trigo"] .class-table tbody tr:not([data-cultura="trigo"]),
+#screen-7[data-exp-cultura="soja"] .class-table tbody tr:not([data-cultura="soja"]) {
+    display: none;
+}
+
+
+/* ============================================
+   EXPEDICAO · RITMO POR CONTRATO
+   Uma linha por contrato: identificacao, barra do entregue com a marca de
+   onde deveria estar pelo prazo, ritmo atual / necessario e a situacao.
+   O menu "Contratos" escolhe quais linhas aparecem (atributo hidden, via
+   script.js); a cultura do filtro geral esconde por CSS, como nas tabelas.
+   Sem altura fixa e sem rolagem: o excesso sobe para o fitToScreen.
+   ============================================ */
+.exp-contratos {
+    /* o menu abre por cima das secoes de baixo, entao a secao nao corta */
+    overflow: visible;
+    position: relative;
+    z-index: 5;
+}
+
+
+
+.exp-contratos-menu {
+    position: relative;
+    flex-shrink: 0;
+}
+
+
+
+.exp-contratos-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid var(--card-border);
+    background: var(--row-bg);
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+
+
+.exp-contratos-btn b {
+    color: var(--text);
+}
+
+
+
+.exp-contratos-btn:hover,
+.exp-contratos-btn[aria-expanded="true"] {
+    color: var(--text);
+    border-color: var(--accent);
+}
+
+
+
+.exp-contratos-btn[aria-expanded="true"] {
+    background: var(--accent-soft);
+}
+
+
+
+.exp-contratos-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+
+
+.exp-contratos-caret {
+    width: 0.75rem;
+    height: 0.75rem;
+    transition: transform 0.2s ease;
+}
+
+
+
+.exp-contratos-btn[aria-expanded="true"] .exp-contratos-caret {
+    transform: rotate(180deg);
+}
+
+
+
+.exp-contratos-lista {
+    position: absolute;
+    top: calc(100% + 0.375rem);
+    right: 0;
+    z-index: 60;
+    width: 25rem;
+    padding: 0.375rem;
+    background: var(--header-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+
+
+.exp-contratos-lista[hidden] {
+    display: none;
+}
+
+
+
+.exp-contratos-acoes {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.125rem 0.125rem 0.375rem;
+    margin-bottom: 0.125rem;
+    border-bottom: 1px solid var(--row-line);
+}
+
+
+
+.exp-contratos-acoes button {
+    appearance: none;
+    border: 1px solid var(--card-border);
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.5rem;
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+
+
+.exp-contratos-acoes button:hover,
+.exp-contratos-acoes button:focus-visible {
+    color: var(--accent);
+    border-color: var(--accent);
+    outline: none;
+}
+
+
+
+.exp-contrato-opcao {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 0.5rem;
+    padding: 0.5rem 0.625rem;
+    border-radius: 7px;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+
+
+.exp-contrato-opcao:hover,
+.exp-contrato-opcao:focus-within {
+    background: var(--accent-soft);
+}
+
+
+
+.exp-contrato-opcao input {
+    margin: 0;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+
+
+.exp-contrato-opcao-txt {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+}
+
+
+
+.exp-contrato-opcao-txt b {
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+
+.exp-contrato-opcao-txt small {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3125rem;
+    font-size: 0.82em;
+    color: var(--muted);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.exp-contrato-opcao-st {
+    font-size: 0.8rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.exp-contrato-opcao-st--ok { color: var(--ok); }
+.exp-contrato-opcao-st--atencao { color: var(--warn); }
+.exp-contrato-opcao-st--fora { color: var(--danger); }
+
+
+
+.exp-contratos-linhas {
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+/* meia largura (ao lado da qualidade): em cima quem e, o ritmo e a
+   situacao; embaixo a barra ocupando a linha toda */
+.exp-contrato {
+    --cor: var(--ok);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+        "id status"
+        "barra ritmo";
+    align-items: center;
+    column-gap: 1rem;
+    row-gap: 0.375rem;
+    padding: 0.625rem 0;
+    border-top: 1px solid var(--row-line);
+}
+
+
+
+.exp-contrato:first-child {
+    border-top: 0;
+    padding-top: 0.125rem;
+}
+
+
+
+.exp-contrato[hidden] {
+    display: none;
+}
+
+
+
+.exp-contrato--atencao { --cor: var(--warn); }
+.exp-contrato--fora { --cor: var(--danger); }
+
+
+
+.exp-contrato-id {
+    grid-area: id;
+    display: flex;
+    align-items: baseline;
+    gap: 0.625rem;
+    min-width: 0;
+}
+
+
+
+.exp-contrato-cliente {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+
+
+.exp-contrato-ref {
+    min-width: 0;
+    font-size: 0.86rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+
+.exp-contrato-barra {
+    grid-area: barra;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 0.875rem;
+    min-width: 0;
+}
+
+
+
+/* o entregue vem antes da barra (display: contents solta o span na grade) */
+.exp-contrato-escala > span {
+    order: -1;
+}
+
+
+
+/* trilho + entregue; a marca branca e o "deveria estar" de hoje */
+.exp-contrato-track {
+    position: relative;
+    height: 0.875rem;
+    border-radius: 999px;
+    background: var(--row-bg);
+    border: 1px solid var(--row-line);
+}
+
+
+
+.exp-contrato-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: calc(var(--pct) * 1%);
+    border-radius: 999px;
+    background: var(--cor);
+}
+
+
+
+.exp-contrato-marca {
+    position: absolute;
+    top: -0.3125rem;
+    bottom: -0.3125rem;
+    left: calc(var(--esperado) * 1%);
+    width: 3px;
+    margin-left: -1.5px;
+    border-radius: 1px;
+    background: var(--text);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
+
+
+.exp-contrato-escala {
+    display: contents;
+    font-size: 0.92rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+
+
+.exp-contrato-escala b {
+    color: var(--text);
+    font-weight: 700;
+}
+
+
+
+.exp-contrato-ritmo {
+    grid-area: ritmo;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+
+
+.exp-contrato-ritmo-val {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+
+
+.exp-contrato-ritmo-val b {
+    color: var(--text);
+    font-weight: 700;
+}
+
+
+
+.exp-contrato-ritmo-val b.is-abaixo {
+    color: var(--danger);
+}
+
+
+
+.exp-contrato-ritmo-val small {
+    font-size: 0.72em;
+    color: var(--muted);
+}
+
+
+
+.exp-contrato-ritmo-sub {
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+
+
+.exp-contrato > .class-status {
+    grid-area: status;
+    justify-self: end;
+    padding: 0.3125rem 0.875rem;
+    font-size: 0.82rem;
+}
+
+
+
+.exp-contratos-vazio {
+    margin: 0;
+    font-size: 0.72rem;
+    font-style: italic;
+    color: var(--faint);
+}
+
+
+
+.exp-contratos-vazio[hidden] {
+    display: none;
+}
+
+
+
+/* ---- Equilibrio da tela: tudo na mesma escala de leitura do bloco de
+   contratos. So dentro da expedicao; as outras telas seguem o padrao. ---- */
+#screen-7 .content-section h3 {
+    font-size: 0.82rem;
+}
+
+
+
+#screen-7 .section-sub {
+    font-size: 0.8rem;
+    color: var(--muted);
+}
+
+
+
+#screen-7 .kpi-label {
+    font-size: 0.8rem;
+}
+
+
+
+#screen-7 .kpi-sub-item {
+    font-size: 0.95rem;
+}
+
+
+
+#screen-7 .kpi-sub-item b {
+    font-size: 0.7rem;
+}
+
+
+
+#screen-7 .kpi-flag {
+    padding: 0.1875rem 0.5625rem;
+    font-size: 0.7rem;
+}
+
+
+
+#screen-7 .data-table th {
+    font-size: 0.72rem;
+}
+
+
+
+#screen-7 .exp-qual-table td {
+    font-size: 0.92rem;
+    white-space: nowrap;
+}
+
+
+
+#screen-7 .exp-table td {
+    font-size: 0.92rem;
+}
+
+
+
+#screen-7 .exp-table .class-status {
+    font-size: 0.68rem;
+}
+
+
+
+.exp-contrato-ref .legend-dot {
+    display: inline-block;
+    margin: 0 0.3125rem 0 0.125rem;
+    vertical-align: 0.05em;
+}
+
+
+
+/* a cultura do filtro geral vale tambem para os contratos */
+#screen-7[data-exp-cultura="milho"] .exp-contrato:not([data-cultura="milho"]),
+#screen-7[data-exp-cultura="sorgo"] .exp-contrato:not([data-cultura="sorgo"]),
+#screen-7[data-exp-cultura="trigo"] .exp-contrato:not([data-cultura="trigo"]),
+#screen-7[data-exp-cultura="soja"] .exp-contrato:not([data-cultura="soja"]) {
+    display: none;
+}
+
+
+
+
 .class-filtro {
     display: flex;
     align-items: center;
@@ -13417,11 +14797,253 @@ body.theme-light .mensal-ritmo {
 
 
 
-.class-detalhe[data-class-cultura="milho"] .class-table tbody tr:not([data-cultura="milho"]),
-.class-detalhe[data-class-cultura="sorgo"] .class-table tbody tr:not([data-cultura="sorgo"]),
-.class-detalhe[data-class-cultura="trigo"] .class-table tbody tr:not([data-cultura="trigo"]),
-.class-detalhe[data-class-cultura="soja"] .class-table tbody tr:not([data-cultura="soja"]) {
+/* ============================================
+   CLASSIFICACAO · FILTRO GERAL DA TELA
+   O periodo mora em data-class-periodo e a cultura em data-cult-<cultura>:
+   as quatro nascem "on" e cada botao desmarca a sua. Os indicadores trazem
+   cada numero por cultura e por janela (hoje, 7 e 30 dias) e o CSS mostra so a
+   que esta valendo; com um recorte no meio (duas ou tres culturas) quem
+   aparece e' o span "mistura", que o script conta na hora. A cultura
+   desmarcada some da lista do cartao e da tabela.
+   ============================================ */
+#screen-1 .class-cult,
+#screen-1 b[data-periodo] {
     display: none;
+}
+
+
+
+#screen-1[data-class-cultura="todas"] .class-cult[data-cultura="todas"],
+#screen-1[data-class-cultura="mistura"] .class-cult[data-cultura="mistura"],
+#screen-1[data-class-cultura="milho"] .class-cult[data-cultura="milho"],
+#screen-1[data-class-cultura="sorgo"] .class-cult[data-cultura="sorgo"],
+#screen-1[data-class-cultura="trigo"] .class-cult[data-cultura="trigo"],
+#screen-1[data-class-cultura="soja"] .class-cult[data-cultura="soja"],
+#screen-1[data-class-periodo="turno"] b[data-periodo="turno"],
+#screen-1[data-class-periodo="hoje"] b[data-periodo="hoje"],
+#screen-1[data-class-periodo="7d"] b[data-periodo="7d"],
+#screen-1[data-class-periodo="30d"] b[data-periodo="30d"] {
+    display: inline;
+}
+
+
+
+/* os <b> das versoes nao podem mudar o desenho do numero nem da lista */
+#screen-1 .kpi-value b,
+#screen-1 .grao-metric-value b {
+    font-weight: inherit;
+    font-size: inherit;
+    color: inherit;
+}
+
+
+
+/* cultura desmarcada sai da tabela; nos indicadores ela sai da lista do balao,
+   que o script monta so com as culturas marcadas */
+#screen-1[data-cult-milho="off"] .class-table tbody tr[data-cultura="milho"],
+#screen-1[data-cult-sorgo="off"] .class-table tbody tr[data-cultura="sorgo"],
+#screen-1[data-cult-trigo="off"] .class-table tbody tr[data-cultura="trigo"],
+#screen-1[data-cult-soja="off"] .class-table tbody tr[data-cultura="soja"] {
+    display: none;
+}
+
+
+
+/* janelas encaixadas: uma carga marcada com "hoje" aparece em hoje, 7 e 30 dias */
+#screen-1[data-class-periodo="turno"] .class-table tbody tr[data-janela="hoje"],
+#screen-1[data-class-periodo="turno"] .class-table tbody tr[data-janela="7d"],
+#screen-1[data-class-periodo="turno"] .class-table tbody tr[data-janela="30d"],
+#screen-1[data-class-periodo="hoje"] .class-table tbody tr[data-janela="7d"],
+#screen-1[data-class-periodo="hoje"] .class-table tbody tr[data-janela="30d"],
+#screen-1[data-class-periodo="7d"] .class-table tbody tr[data-janela="30d"],
+#screen-1[data-class-periodo="turno"] .conc-table tbody tr[data-janela="hoje"],
+#screen-1[data-class-periodo="turno"] .conc-table tbody tr[data-janela="7d"],
+#screen-1[data-class-periodo="turno"] .conc-table tbody tr[data-janela="30d"],
+#screen-1[data-class-periodo="hoje"] .conc-table tbody tr[data-janela="7d"],
+#screen-1[data-class-periodo="hoje"] .conc-table tbody tr[data-janela="30d"],
+#screen-1[data-class-periodo="7d"] .conc-table tbody tr[data-janela="30d"] {
+    display: none;
+}
+
+
+
+/* ============================================
+   CLASSIFICACAO — CONCILIACAO DA PRE-LIMPEZA
+   Faixa baixa: tres numeros a esquerda (descontado, pesado, diferenca)
+   e as caçambas a direita, rolando por dentro.
+   ============================================ */
+.screen > .conc-section {
+    flex: 0 0 auto;
+}
+
+
+
+.conc-corpo {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 1rem;
+    align-items: stretch;
+}
+
+
+
+.conc-resumo {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.625rem;
+    align-content: start;
+}
+
+
+
+.conc-num {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    padding: 0.4rem 0.75rem;
+    background: var(--row-bg);
+    border: 1px solid var(--row-line);
+    border-radius: 10px;
+    min-width: 0;
+}
+
+
+
+.conc-num-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+
+
+.conc-num-valor {
+    font-size: 1.35rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.conc-num-valor small {
+    margin-left: 0.2rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+
+
+#screen-1 .conc-num-valor b,
+#screen-1 .conc-num-sub b {
+    font-weight: inherit;
+}
+
+
+
+.conc-num-sub {
+    font-size: 0.62rem;
+    color: var(--faint);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+
+.conc-num-sub .class-status {
+    margin-right: 0.25rem;
+}
+
+
+
+.conc-dif--ok { color: var(--ok); }
+.conc-dif--atencao { color: var(--warn); }
+.conc-dif--fora { color: var(--danger); }
+
+
+
+.conc-aberto {
+    margin: 0 0 0 auto;
+    font-size: 0.62rem;
+    color: var(--faint);
+    text-align: right;
+}
+
+
+
+/* o cabecalho da conciliacao fica mais baixo que o das outras secoes */
+.conc-section .section-head {
+    margin-bottom: 0.5rem;
+}
+
+
+
+/* valores com unidade: sem a caixa alta do selo de status */
+.class-status.conc-pill {
+    text-transform: none;
+    letter-spacing: 0.02em;
+}
+
+
+
+.conc-aberto strong {
+    color: var(--muted);
+}
+
+
+
+/* a lista de caçambas rola por dentro: a faixa nao cresce com o periodo */
+.conc-scroll {
+    max-height: 6.25rem;
+    overflow-y: auto;
+}
+
+
+
+.conc-table th,
+.conc-table td {
+    padding: 0.3rem 0.625rem;
+    white-space: nowrap;
+}
+
+
+
+.conc-table th:nth-child(n+4),
+.conc-table td:nth-child(n+4) {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.conc-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--header-bg);
+}
+
+
+
+@media screen and (max-width: 1024px) {
+
+    .conc-corpo {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+@media screen and (max-width: 640px) {
+
+    .conc-resumo {
+        grid-template-columns: 1fr;
+    }
 }
 
 
@@ -13573,7 +15195,7 @@ body.theme-light .class-val--fora {
 
 .hist-seletor-btn,
 .class-filtro-btn,
-.moega-filtro-btn,
+.class-periodo-btn,
 .fluxo-periodo-btn {
     display: inline-flex;
     align-items: center;
@@ -13595,8 +15217,7 @@ body.theme-light .class-val--fora {
 
 
 .hist-seletor-btn .legend-dot,
-.class-filtro-btn .legend-dot,
-.moega-filtro-btn .legend-dot {
+.class-filtro-btn .legend-dot {
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 50%;
@@ -13607,7 +15228,7 @@ body.theme-light .class-val--fora {
 
 .hist-seletor-btn:hover,
 .class-filtro-btn:hover,
-.moega-filtro-btn:hover,
+.class-periodo-btn:hover,
 .fluxo-periodo-btn:hover {
     color: var(--text);
     border-color: var(--accent);
@@ -13617,7 +15238,7 @@ body.theme-light .class-val--fora {
 
 .hist-seletor-btn:focus-visible,
 .class-filtro-btn:focus-visible,
-.moega-filtro-btn:focus-visible,
+.class-periodo-btn:focus-visible,
 .fluxo-periodo-btn:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
@@ -13627,12 +15248,49 @@ body.theme-light .class-val--fora {
 
 .hist-seletor-btn.is-active,
 .class-filtro-btn.is-active,
-.moega-filtro-btn.is-active,
+.class-periodo-btn.is-active,
 .fluxo-periodo-btn.is-active {
     color: var(--text);
     background: var(--accent-soft);
     border-color: var(--accent);
     box-shadow: 0 0 0 1px var(--accent) inset;
+}
+
+
+
+/* cultura desmarcada: o botao continua legivel (e' por ele que ela volta),
+   mas riscado e apagado para ficar claro que aquela cultura saiu da conta */
+.class-filtro-btn.is-off {
+    opacity: 0.4;
+    text-decoration: line-through;
+    border-style: dashed;
+}
+
+
+
+.class-filtro-btn.is-off .legend-dot {
+    filter: grayscale(1);
+}
+
+
+
+.class-filtro-btn.is-off:hover {
+    opacity: 0.75;
+}
+
+
+/* cultura desmarcada no cabecalho da tela: o historico dela sai de alcance */
+.hist-seletor-btn[disabled] {
+    opacity: 0.3;
+    text-decoration: line-through;
+    cursor: not-allowed;
+}
+
+
+
+.hist-seletor-btn[disabled]:hover {
+    color: var(--muted);
+    border-color: var(--card-border);
 }
 
 
@@ -13725,13 +15383,12 @@ body.theme-light .class-val--fora {
 
 
 
-/* meta: linha tracejada que atravessa sparkline e barras */
+/* meta: o tracejado fica so no trecho dia a dia, onde a leitura e visual;
+   nas barras o numero ja vem escrito em cima, entao a linha so atrapalhava */
 .hist-meta-line {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 1rem;               /* mesma area util do plot (descontando os paddings) */
-    bottom: 1.125rem;
+    grid-column: 2;
+    grid-row: 1;
+    position: relative;
     pointer-events: none;
 }
 
@@ -13748,11 +15405,16 @@ body.theme-light .class-val--fora {
 
 
 
-/* rotulo da meta fica sobre a linha dos 7 dias, longe das barras */
+/* rotulo da meta sai da area do grafico: fica na faixa livre acima dela,
+   alinhado ao fim do tracejado, com um tracinho para ligar um ao outro */
 .hist-meta-lbl {
     position: absolute;
-    left: 0;
-    transform: translateY(calc(-100% - 0.125rem));
+    right: 0;
+    bottom: 100%;
+    margin-bottom: 0.15rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
     font-style: normal;
     font-size: 0.56rem;
     font-weight: 700;
@@ -13763,11 +15425,41 @@ body.theme-light .class-val--fora {
 
 
 
+.hist-meta-lbl::before {
+    content: "";
+    width: 0.875rem;
+    border-top: 1px dashed var(--faint);
+}
+
+
+
 .hist-spark,
 .hist-bars {
     position: relative;
     min-width: 0;
     height: 100%;
+}
+
+
+
+/* colunas fixas: o tracejado divide a celula do meio com a sparkline */
+.hist-plot > .hist-bars--antes {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+
+
+.hist-plot > .hist-spark {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+
+
+.hist-plot > .hist-bars:not(.hist-bars--antes) {
+    grid-column: 3;
+    grid-row: 1;
 }
 
 
@@ -13815,6 +15507,28 @@ body.theme-light .class-val--fora {
     color: var(--text);
     font-variant-numeric: tabular-nums;
     line-height: 1;
+}
+
+
+
+/* valor de cada um dos 7 dias, acima do seu ponto na linha */
+.hist-spark-dia {
+    position: absolute;
+    transform: translate(-50%, calc(-100% - 0.2rem));
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+
+
+/* o primeiro dia encosta na borda esquerda do grafico */
+.hist-spark-dia--ini {
+    transform: translate(0, calc(-100% - 0.2rem));
 }
 
 
@@ -13932,6 +15646,12 @@ body.theme-light .class-val--fora {
 
 
 
+    .hist-spark-dia {
+        font-size: 0.5rem;
+    }
+
+
+
     .hist-bars {
         padding-left: 0.5rem;
         gap: 0.3rem;
@@ -14027,12 +15747,6 @@ body.theme-light .class-val--fora {
 
 
 
-    .etapa-meta {
-        display: none;
-    }
-
-
-
     .mensal-grid {
         grid-template-columns: 1fr;
         gap: 0.5rem;
@@ -14068,8 +15782,7 @@ body.theme-light .class-val--fora {
 /* ============================================
    EXPEDICAO
    Qualidade por cultura (tabela compacta) ao lado do
-   volume por destino (barras na mesma escala). O
-   detalhe por carga reaproveita class-detalhe/class-table.
+   ritmo por contrato. O detalhe por carga reaproveita class-detalhe/class-table.
    ============================================ */
 .exp-qual-table th:nth-child(n+2),
 .exp-qual-table td:nth-child(n+2) {
@@ -14111,79 +15824,41 @@ body.theme-light .class-val--fora {
 
 
 
-/* ---- Volume por destino ---- */
-.exp-destinos {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    gap: 0.5rem;
-    flex: 1 1 auto;
-    min-height: 0;
+
+/* ---- Detalhe por carga ----
+   tag, motorista, placa, cultura, fonte, destino, frete, volume, dosagem,
+   horario, tempo, status */
+.exp-table td:nth-child(2),
+.exp-table td:nth-child(3),
+.exp-table td:nth-child(4),
+.exp-table td:nth-child(6),
+.exp-table td:nth-child(8),
+.exp-table td:nth-child(9),
+.exp-table td:nth-child(10) {
+    white-space: nowrap;
 }
 
 
 
-.exp-destino {
-    display: grid;
-    grid-template-columns: minmax(6.5rem, 0.8fr) 1fr auto;
-    align-items: center;
-    gap: 0.625rem;
-}
-
-
-
-.exp-destino-nome {
-    font-size: 0.72rem;
+.exp-table td:nth-child(3) {
     font-weight: 700;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-
-
-.exp-destino-track {
-    height: 0.7rem;
-    border-radius: 999px;
-    background: var(--row-bg);
-    border: 1px solid var(--card-border);
-    overflow: hidden;
-}
-
-
-
-/* --t e o volume do destino; --exp-max (no container) e o maior deles */
-.exp-destino-fill {
-    display: block;
-    height: 100%;
-    width: calc(var(--t) / var(--exp-max) * 100%);
-    background: var(--accent);
-    border-radius: inherit;
-}
-
-
-
-.exp-destino-val {
-    font-size: 0.68rem;
-    color: var(--muted);
-    white-space: nowrap;
+    letter-spacing: 0.02em;
     font-variant-numeric: tabular-nums;
 }
 
 
 
-.exp-destino-val b {
-    color: var(--text);
+/* horario: a data (so nas semanas, meses e ano) fica discreta antes da faixa */
+.exp-table td:nth-child(10) {
+    font-variant-numeric: tabular-nums;
 }
 
 
 
-/* ---- Detalhe por carga ---- */
-.exp-table td:nth-child(4),
-.exp-table td:nth-child(5),
-.exp-table td:nth-child(6),
-.exp-table td:nth-child(7) {
-    white-space: nowrap;
+.exp-table td:nth-child(10) small {
+    font-size: 0.8em;
+    color: var(--muted);
+    margin-right: 0.25rem;
 }
 
 
@@ -14200,17 +15875,85 @@ body.theme-light .class-val--fora {
 
 
 /* volume por caminhao: unidade discreta ao lado do numero */
-.exp-table td:nth-child(7) small {
+.exp-table td:nth-child(8) small {
     font-size: 0.8em;
     color: var(--muted);
     margin-left: 0.125rem;
 }
 
 
+/* frete: CIF (a cooperativa entrega no destino) em azul, FOB (o cliente
+   retira na unidade) em contorno neutro */
+.exp-frete {
+    display: inline-block;
+    min-width: 2.75em;
+    padding: 0.125rem 0.5rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-align: center;
+}
 
-/* qualidade x destino em altura natural; a tabela de cargas absorve a sobra */
+
+
+.exp-frete--cif {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+
+
+.exp-frete--fob {
+    color: var(--muted);
+    border-color: var(--card-border);
+}
+
+
+
+
+/* volume x programado: barra no rodape do cartao, no lugar da quebra por
+   cultura (que ja esta na tabela de qualidade). Abaixo de 85% fica laranja. */
+#screen-7 .exp-meta {
+    align-items: center;
+    row-gap: 0.4375rem;
+}
+
+
+
+.exp-meta-track {
+    flex: 1 0 100%;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--row-bg);
+    border: 1px solid var(--row-line);
+}
+
+
+
+.exp-meta-fill {
+    display: block;
+    height: 100%;
+    width: calc(var(--p) * 1%);
+    max-width: 100%;
+    border-radius: inherit;
+    background: var(--accent);
+}
+
+
+
+.exp-meta--baixo .exp-meta-fill {
+    background: var(--warn);
+}
+
+
+
+/* qualidade x contratos em altura natural; a tabela de cargas absorve a sobra */
 .screen > .split-grid--exp {
     flex: 0 0 auto;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
 }
 
 
@@ -14221,8 +15964,438 @@ body.theme-light .class-val--fora {
 
 
 
-/* a tabela de cargas rola por dentro, mas garante ~7 linhas visiveis:
-   o piso empurra a tela para o ajuste (--fit-adjust) em vez de sumir */
+/* a tabela de cargas rola por dentro e fica com a sobra da tela; o piso
+   garante cabecalho + ~4 linhas sem empurrar o resto para o ajuste */
+/* piso de ~6 cargas visiveis: se faltar altura, o ajuste encolhe a tela
+   inteira em vez de espremer a tabela */
 .screen > .class-detalhe--exp {
-    min-height: 21rem;
+    min-height: 24rem;
 }
+
+
+
+/* uma linha por carga: nada quebra dentro da celula (a origem composta
+   mantem a parte de cada silo embaixo) */
+#screen-7 .exp-table th,
+#screen-7 .exp-table td {
+    white-space: nowrap;
+}
+
+
+
+/* ============================================
+   EXPEDICAO · DOSAGEM DE RESIDUO
+   O total do periodo e' o 4o cartao da faixa de cima; a barra dele e' o
+   uso da margem, dosado / (dosado + ainda cabia): verde a partir de 90%,
+   ambar de 75% a 90%, vermelho abaixo. A quebra por cultura entrou como
+   colunas na tabela de qualidade.
+   ============================================ */
+.exp-meta--ok .exp-meta-fill { background: var(--ok); }
+.exp-meta--atencao .exp-meta-fill { background: var(--warn); }
+.exp-meta--fora .exp-meta-fill { background: var(--danger); }
+
+
+
+.dos-val--ok { color: var(--ok); }
+.dos-val--atencao { color: var(--warn); }
+.dos-val--fora { color: var(--danger); }
+
+
+
+/* primeira coluna da dosagem abre um grupo novo na tabela */
+.exp-qual-table td.dos-col,
+.exp-qual-table th:nth-child(7) {
+    border-left: 1px solid var(--row-line);
+}
+
+
+
+/* dez colunas na metade da tela: celulas mais justas que as outras tabelas */
+#screen-7 .exp-qual-table th,
+#screen-7 .exp-qual-table td {
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
+    white-space: nowrap;
+}
+
+
+
+/* coluna DOSAGEM do detalhe: o bag e, embaixo, a folga ate o limite */
+.exp-table td.dos-carga {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.exp-table td.dos-carga .dos-carga-folga {
+    display: block;
+    font-size: 0.6rem;
+    color: var(--faint);
+}
+
+
+
+.exp-table td.dos-carga--atencao .dos-carga-folga { color: var(--warn); }
+.exp-table td.dos-carga--fora .dos-carga-folga { color: var(--danger); }
+
+
+
+
+
+/* ============================================
+   SECAGEM · PRODUTIVIDADE — TERCEIRA FILEIRA
+   Paradas e disponibilidade fisica (manutencao). A cor identifica o
+   ESTADO da hora de equipamento: operando (neutro), parada programada
+   (amarelo) e nao programada (vermelho) — o que a tela quer destacar
+   e o tempo parado, nao o tempo rodando.
+   ============================================ */
+#screen-4 {
+    --manut-op: rgba(120, 160, 210, 0.3);
+    --manut-prog: var(--warn);
+    --manut-nprog: var(--danger);
+}
+
+
+
+body.theme-light #screen-4 {
+    --manut-op: rgba(60, 70, 80, 0.22);
+}
+
+
+
+.prod-col--secadores {
+    grid-column: 2;
+    grid-row: 1 / -1;
+}
+
+
+
+.prod-col--paradas {
+    grid-column: 1;
+}
+
+
+
+.legend-dot--op {
+    background: var(--manut-op);
+}
+
+
+
+.legend-dot--prog {
+    background: var(--manut-prog);
+}
+
+
+
+.legend-dot--nprog {
+    background: var(--manut-nprog);
+}
+
+
+
+/* ---- paradas e disponibilidade fisica ---- */
+#screen-4 .manut-bloco.prod-periodo-bloco {
+    grid-template-rows: auto 1fr;
+    gap: 0.625rem;
+}
+
+
+
+.manut-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.5rem;
+}
+
+
+
+.manut-kpi {
+    display: flex;
+    flex-direction: column;
+    gap: 0.0625rem;
+    padding: 0.375rem 0.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--row-line);
+    background: var(--row-bg);
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.manut-kpi b {
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+
+
+.manut-kpi small {
+    font-size: 0.55rem;
+    font-weight: 700;
+    color: var(--faint);
+}
+
+
+
+.manut-kpi em {
+    font-style: normal;
+    font-size: 0.58rem;
+    font-weight: 600;
+    color: var(--faint);
+}
+
+
+
+.manut-kpi-track {
+    display: block;
+    height: 0.25rem;
+    margin: 0.125rem 0 0.0625rem;
+    border-radius: 2px;
+    background: var(--row-bg);
+    overflow: hidden;
+}
+
+
+
+.manut-kpi-track i {
+    display: block;
+    height: 100%;
+    border-radius: 2px;
+    background: var(--muted);
+}
+
+
+
+.manut-kpi-track i.is-ok {
+    background: var(--ok);
+}
+
+
+
+.manut-kpi-track i.is-atencao {
+    background: var(--warn);
+}
+
+
+
+.manut-kpi-track i.is-ruim {
+    background: var(--danger);
+}
+
+
+
+/* uma linha por secador: a barra e o tempo programado do periodo inteiro */
+.manut-secadores {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+
+
+.manut-disp-linha {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr) 2.75rem 8rem;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+
+
+.manut-disp-nome {
+    display: flex;
+    align-items: center;
+    gap: 0.3125rem;
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--text);
+}
+
+
+
+.manut-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+
+
+.manut-dot--sec1 {
+    background: var(--sec1);
+}
+
+
+
+.manut-dot--sec2 {
+    background: var(--sec2);
+}
+
+
+
+.manut-disp-barra {
+    display: flex;
+    height: 0.75rem;
+    border-radius: 3px;
+    background: var(--row-bg);
+    overflow: hidden;
+}
+
+
+
+.manut-seg {
+    display: block;
+    height: 100%;
+}
+
+
+
+.manut-seg--op {
+    background: var(--manut-op);
+}
+
+
+
+.manut-seg--prog {
+    background: var(--manut-prog);
+}
+
+
+
+.manut-seg--nprog {
+    background: var(--manut-nprog);
+}
+
+
+
+.manut-disp-valor {
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-align: right;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.manut-disp-valor small {
+    font-size: 0.55rem;
+    font-weight: 700;
+    color: var(--faint);
+}
+
+
+
+.manut-disp-valor.is-ok {
+    color: var(--ok);
+}
+
+
+
+.manut-disp-valor.is-atencao {
+    color: var(--warn);
+}
+
+
+
+.manut-disp-valor.is-ruim {
+    color: var(--danger);
+}
+
+
+
+.manut-disp-ref {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+@media screen and (max-width: 1024px) {
+
+    .manut-kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+
+@media screen and (max-width: 768px) {
+
+    .prod-col--secadores,
+    .prod-col--paradas {
+        grid-column: 1;
+        grid-row: auto;
+    }
+
+
+    .manut-disp-linha {
+        grid-template-columns: 5rem minmax(0, 1fr) 2.75rem;
+    }
+
+
+    .manut-disp-linha .manut-disp-ref {
+        display: none;
+    }
+}
+
+
+
+/* O bloco de manutencao ocupa a fileira inteira: os KPIs em cima e a
+   barra de disponibilidade de cada secador logo abaixo. */
+#screen-4 .manut-bloco.prod-periodo-bloco {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+}
+
+
+
+/* Ajuste fino de densidade: a fileira precisa caber junto com o grafico
+   por hora em 1600x900 sem depender so do --fit-adjust. */
+#screen-4 .manut-bloco.prod-periodo-bloco {
+    gap: 0.4375rem;
+}
+
+
+
+.manut-kpi {
+    padding: 0.3125rem 0.5rem;
+    font-size: 0.9rem;
+}
+
+
+
+.manut-secadores {
+    gap: 0.25rem;
+}
+
+
+
+/* Com a tela mais enxuta sobra altura nos dois blocos: em vez de deixar
+   um buraco no pe, as linhas se distribuem e ganham respiro. */
+#screen-4 .manut-bloco.prod-periodo-bloco {
+    align-content: space-between;
+}
+
+
+
+/* o bloco do periodo ocupa a altura da secao para o align-content ter
+   sobra para distribuir (sem isso a folga fica toda no pe do painel) */
+#screen-4 .manut-bloco.prod-periodo-bloco {
+    flex: 1 1 auto;
+}
+
+
+
