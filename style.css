@@ -4339,6 +4339,22 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 
 
+/* a lista mostra so as 5 descargas mais recentes; o resto do dia entra no
+   total do cabecalho e na media geral, e esta linha diz quantas ficaram de fora */
+.moega-cargas-tabela tfoot tr.moega-cargas-mais td {
+    padding: 0.25rem 0 0.125rem;
+    border-top: 1px dashed var(--row-line);
+    font-size: 0.5rem;
+    font-weight: 600;
+    font-style: italic;
+    letter-spacing: 0;
+    text-transform: none;
+    text-align: left;
+    color: var(--faint);
+}
+
+
+
 
 .moega-dado-value--ok,
 .moega-dado-value--warn {
@@ -10030,9 +10046,10 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 
 
 
-/* Pontas da curva: a primeira leitura (24h atrás) fica pendurada no
-   começo da linha e a atual no fim, cada uma na altura do próprio ponto
-   (--y-ini / --y-fim vêm do script, em % da altura do gráfico). */
+/* Temperaturas em cima da curva: a primeira leitura (12h atrás) no começo,
+   a atual no "agora" (fim do eixo, --x-agora) e a projeção no fim do
+   tracejado, cada uma na altura do próprio ponto (--y-ini / --y-fim /
+   --y-proj vêm do script, em % da altura do gráfico). */
 .sa-spark-wrap {
     position: relative;
     /* margem (e não padding) para o % de top dos rótulos bater com a altura do svg */
@@ -10050,6 +10067,8 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     font-variant-numeric: tabular-nums;
     line-height: 1;
     transform: translateY(calc(-100% - 0.15rem));
+    /* halo da cor do fundo: o rotulo continua legivel quando cruza a linha */
+    text-shadow: 0 0 2px var(--section-bg), 0 0 4px var(--section-bg);
 }
 
 
@@ -10062,8 +10081,80 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 
 
 .sa-temp-ponto--fim {
-    right: 0;
+    left: var(--x-agora, 65%);
     top: var(--y-fim, 80%);
+    /* puxado um pouco para a esquerda, para nao encostar na projecao */
+    transform: translate(-62%, calc(-100% - 0.3rem));
+}
+
+
+
+.sa-temp-ponto--proj {
+    right: 0;
+    top: var(--y-proj, 80%);
+    font-size: 0.58rem;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+
+
+/* quando o valor projetado nao cabe ao lado do atual ele sai; bem perto
+   do fim do bloco o atual ainda encosta na direita */
+.sa-spark-wrap[data-sem-proj="1"] .sa-temp-ponto--proj {
+    display: none;
+}
+
+
+
+.sa-spark-wrap[data-fim-bloco="1"] .sa-temp-ponto--fim {
+    left: auto;
+    right: 0;
+    transform: translateY(calc(-100% - 0.3rem));
+}
+
+
+
+/* horario embaixo do eixo, nas tres marcas dos blocos de 12h: inicio do
+   bloco anterior, virada e fim do bloco atual (este ainda projetado) */
+.sa-spark-horas {
+    position: relative;
+    height: 0.7rem;
+    margin-top: 0.3rem;
+    font-size: 0.56rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.sa-spark-horas span {
+    position: absolute;
+    top: 0;
+    white-space: nowrap;
+}
+
+
+
+.sa-spark-horas span:nth-child(1) {
+    left: 0;
+    transform: translateX(-35%);
+}
+
+
+
+.sa-spark-horas span:nth-child(2) {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+
+
+.sa-spark-horas span:nth-child(3) {
+    right: 0;
+    transform: translateX(35%);
 }
 
 
@@ -10110,7 +10201,7 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 .sa-spark {
     display: block;
     width: 100%;
-    height: 2rem;
+    height: 2.5rem;
     overflow: visible;
 }
 
@@ -10129,6 +10220,42 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     stroke-width: 1.6;
     stroke-linejoin: round;
     stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+}
+
+
+
+/* eixo do historico, com as marcas do inicio e do agora nas pontas */
+.sa-spark-eixo {
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 2;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+}
+
+
+
+/* resto do bloco atual, ainda por vir: eixo fino e tracejado */
+.sa-spark-eixo-proj {
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 1;
+    stroke-dasharray: 2 3;
+    opacity: 0.6;
+    vector-effect: non-scaling-stroke;
+}
+
+
+
+.sa-spark-proj {
+    fill: none;
+    stroke: var(--c);
+    stroke-width: 1.4;
+    stroke-dasharray: 3 3;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    opacity: 0.75;
     vector-effect: non-scaling-stroke;
 }
 
@@ -10415,7 +10542,7 @@ body.theme-light .sa-mov-saldo--sobe {
 
 
 .sa-foot--armazem .sa-spark {
-    height: 2.5rem;
+    height: 3rem;
 }
 
 
@@ -13362,113 +13489,6 @@ body.theme-light .gv-meter-dot {
 
 
 
-/* faixa de alertas: mesmos itens da pagina ALERTAS, cada um leva a area */
-.geral-alerts {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.625rem;
-    padding: 0.75rem 1rem;
-    background: var(--section-bg);
-    border: 1px solid var(--panel-border);
-    border-radius: 12px;
-}
-
-
-.geral-alerts-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-right: 0.5rem;
-    font-size: 0.76rem;
-    font-weight: 700;
-    color: var(--muted);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-
-.geral-alerts-count {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 1.375rem;
-    height: 1.375rem;
-    padding: 0 0.375rem;
-    border-radius: 999px;
-    background: var(--danger);
-    color: #fff;
-    font-size: 0.76rem;
-    font-weight: 800;
-}
-
-
-.geral-alert {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.4375rem 0.75rem;
-    background: var(--row-bg);
-    border: 1px solid var(--row-line);
-    border-radius: 999px;
-    color: var(--text);
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 0.8rem;
-    transition: border-color 0.2s ease, background 0.2s ease;
-}
-
-
-.geral-alert:hover,
-.geral-alert:focus-visible {
-    border-color: var(--accent);
-    background: var(--hover);
-    outline: none;
-}
-
-
-.geral-alert-dot {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background: var(--accent);
-    flex-shrink: 0;
-}
-
-
-.geral-alert--critico .geral-alert-dot {
-    background: var(--danger);
-    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
-}
-
-
-.geral-alert--aviso .geral-alert-dot {
-    background: var(--warn);
-    box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.2);
-}
-
-
-.geral-alert--info .geral-alert-dot {
-    background: var(--accent);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-}
-
-
-.geral-alert-area {
-    font-weight: 700;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-size: 0.76rem;
-}
-
-
-.geral-alert-text {
-    font-weight: 600;
-}
-
-
-
 /* tema claro: mesmas cores das pilulas .kpi-flag no claro */
 body.theme-light .geral-card.atencao {
     border-color: rgba(184, 108, 0, 0.35);
@@ -13513,16 +13533,6 @@ body.theme-light .kpi-flag--info {
         font-size: 28px;
     }
 
-
-    .geral-alerts {
-        align-items: stretch;
-        flex-direction: column;
-    }
-
-
-    .geral-alert {
-        border-radius: 10px;
-    }
 }
 
 
@@ -14222,10 +14232,11 @@ body.theme-light .mensal-ritmo {
 
 
 
-/* a tabela cede: rola por dentro em vez de encolher a tela inteira */
+/* a tabela toma a sobra e rola por dentro, mas nao cede abaixo de umas
+   seis linhas: o que faltar vira reducao de escala da tela inteira (fit) */
 .screen > .class-detalhe {
     flex: 1 1 auto;
-    min-height: 9rem;
+    min-height: 19rem;
 }
 
 
@@ -14972,8 +14983,195 @@ body.theme-light .mensal-ritmo {
 #screen-1[data-class-periodo="turno"] .class-table tbody tr[data-janela="30d"],
 #screen-1[data-class-periodo="hoje"] .class-table tbody tr[data-janela="7d"],
 #screen-1[data-class-periodo="hoje"] .class-table tbody tr[data-janela="30d"],
-#screen-1[data-class-periodo="7d"] .class-table tbody tr[data-janela="30d"] {
+#screen-1[data-class-periodo="7d"] .class-table tbody tr[data-janela="30d"],
+#screen-1[data-class-periodo="turno"] .conc-table tbody tr[data-janela="hoje"],
+#screen-1[data-class-periodo="turno"] .conc-table tbody tr[data-janela="7d"],
+#screen-1[data-class-periodo="turno"] .conc-table tbody tr[data-janela="30d"],
+#screen-1[data-class-periodo="hoje"] .conc-table tbody tr[data-janela="7d"],
+#screen-1[data-class-periodo="hoje"] .conc-table tbody tr[data-janela="30d"],
+#screen-1[data-class-periodo="7d"] .conc-table tbody tr[data-janela="30d"] {
     display: none;
+}
+
+
+
+/* ============================================
+   CLASSIFICACAO — CONCILIACAO DA PRE-LIMPEZA
+   Faixa baixa: tres numeros a esquerda (descontado, pesado, diferenca)
+   e as caçambas a direita, rolando por dentro.
+   ============================================ */
+.screen > .conc-section {
+    flex: 0 0 auto;
+}
+
+
+
+.conc-corpo {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 1rem;
+    align-items: stretch;
+}
+
+
+
+.conc-resumo {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.625rem;
+    align-content: start;
+}
+
+
+
+.conc-num {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    padding: 0.4rem 0.75rem;
+    background: var(--row-bg);
+    border: 1px solid var(--row-line);
+    border-radius: 10px;
+    min-width: 0;
+}
+
+
+
+.conc-num-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+
+
+.conc-num-valor {
+    font-size: 1.35rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.conc-num-valor small {
+    margin-left: 0.2rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+
+
+#screen-1 .conc-num-valor b,
+#screen-1 .conc-num-sub b {
+    font-weight: inherit;
+}
+
+
+
+.conc-num-sub {
+    font-size: 0.62rem;
+    color: var(--faint);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+
+.conc-num-sub .class-status {
+    margin-right: 0.25rem;
+}
+
+
+
+.conc-dif--ok { color: var(--ok); }
+.conc-dif--atencao { color: var(--warn); }
+.conc-dif--fora { color: var(--danger); }
+
+
+
+.conc-aberto {
+    margin: 0 0 0 auto;
+    font-size: 0.62rem;
+    color: var(--faint);
+    text-align: right;
+}
+
+
+
+/* o cabecalho da conciliacao fica mais baixo que o das outras secoes */
+.conc-section .section-head {
+    margin-bottom: 0.5rem;
+}
+
+
+
+/* valores com unidade: sem a caixa alta do selo de status */
+.class-status.conc-pill {
+    text-transform: none;
+    letter-spacing: 0.02em;
+}
+
+
+
+.conc-aberto strong {
+    color: var(--muted);
+}
+
+
+
+/* a lista de caçambas rola por dentro: a faixa nao cresce com o periodo */
+.conc-scroll {
+    max-height: 6.25rem;
+    overflow-y: auto;
+}
+
+
+
+.conc-table th,
+.conc-table td {
+    padding: 0.3rem 0.625rem;
+    white-space: nowrap;
+}
+
+
+
+.conc-table th:nth-child(n+4),
+.conc-table td:nth-child(n+4) {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.conc-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--header-bg);
+}
+
+
+
+@media screen and (max-width: 1024px) {
+
+    .conc-corpo {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+@media screen and (max-width: 640px) {
+
+    .conc-resumo {
+        grid-template-columns: 1fr;
+    }
 }
 
 
@@ -15756,14 +15954,15 @@ body.theme-light .class-val--fora {
 
 
 /* ---- Detalhe por carga ----
-   tag, motorista, placa, cultura, fonte, destino, frete, volume, horario,
-   tempo, status */
+   tag, motorista, placa, cultura, fonte, destino, frete, volume, dosagem,
+   horario, tempo, status */
 .exp-table td:nth-child(2),
 .exp-table td:nth-child(3),
 .exp-table td:nth-child(4),
 .exp-table td:nth-child(6),
 .exp-table td:nth-child(8),
-.exp-table td:nth-child(9) {
+.exp-table td:nth-child(9),
+.exp-table td:nth-child(10) {
     white-space: nowrap;
 }
 
@@ -15778,13 +15977,13 @@ body.theme-light .class-val--fora {
 
 
 /* horario: a data (so nas semanas, meses e ano) fica discreta antes da faixa */
-.exp-table td:nth-child(9) {
+.exp-table td:nth-child(10) {
     font-variant-numeric: tabular-nums;
 }
 
 
 
-.exp-table td:nth-child(9) small {
+.exp-table td:nth-child(10) small {
     font-size: 0.8em;
     color: var(--muted);
     margin-right: 0.25rem;
@@ -15882,7 +16081,7 @@ body.theme-light .class-val--fora {
 /* qualidade x contratos em altura natural; a tabela de cargas absorve a sobra */
 .screen > .split-grid--exp {
     flex: 0 0 auto;
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
 }
 
 
@@ -15895,9 +16094,82 @@ body.theme-light .class-val--fora {
 
 /* a tabela de cargas rola por dentro e fica com a sobra da tela; o piso
    garante cabecalho + ~4 linhas sem empurrar o resto para o ajuste */
+/* piso de ~6 cargas visiveis: se faltar altura, o ajuste encolhe a tela
+   inteira em vez de espremer a tabela */
 .screen > .class-detalhe--exp {
-    min-height: 17rem;
+    min-height: 24rem;
 }
+
+
+
+/* uma linha por carga: nada quebra dentro da celula (a origem composta
+   mantem a parte de cada silo embaixo) */
+#screen-7 .exp-table th,
+#screen-7 .exp-table td {
+    white-space: nowrap;
+}
+
+
+
+/* ============================================
+   EXPEDICAO · DOSAGEM DE RESIDUO
+   O total do periodo e' o 4o cartao da faixa de cima; a barra dele e' o
+   uso da margem, dosado / (dosado + ainda cabia): verde a partir de 90%,
+   ambar de 75% a 90%, vermelho abaixo. A quebra por cultura entrou como
+   colunas na tabela de qualidade.
+   ============================================ */
+.exp-meta--ok .exp-meta-fill { background: var(--ok); }
+.exp-meta--atencao .exp-meta-fill { background: var(--warn); }
+.exp-meta--fora .exp-meta-fill { background: var(--danger); }
+
+
+
+.dos-val--ok { color: var(--ok); }
+.dos-val--atencao { color: var(--warn); }
+.dos-val--fora { color: var(--danger); }
+
+
+
+/* primeira coluna da dosagem abre um grupo novo na tabela */
+.exp-qual-table td.dos-col,
+.exp-qual-table th:nth-child(7) {
+    border-left: 1px solid var(--row-line);
+}
+
+
+
+/* dez colunas na metade da tela: celulas mais justas que as outras tabelas */
+#screen-7 .exp-qual-table th,
+#screen-7 .exp-qual-table td {
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
+    white-space: nowrap;
+}
+
+
+
+/* coluna DOSAGEM do detalhe: o bag e, embaixo, a folga ate o limite */
+.exp-table td.dos-carga {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.exp-table td.dos-carga .dos-carga-folga {
+    display: block;
+    font-size: 0.6rem;
+    color: var(--faint);
+}
+
+
+
+.exp-table td.dos-carga--atencao .dos-carga-folga { color: var(--warn); }
+.exp-table td.dos-carga--fora .dos-carga-folga { color: var(--danger); }
+
+
+
+
 
 /* ============================================
    SECAGEM · PRODUTIVIDADE — TERCEIRA FILEIRA
