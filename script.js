@@ -4339,9 +4339,9 @@ atualizarLimpezas();
 // ============================================
 // Cada cartão de silo traz 24 leituras horárias de temperatura em
 // data-temps (a última é a atual) e o estado do ventilador em data-aer.
-// A curva segue os blocos de 12h (00–12 e 12–24): mostra o bloco anterior
-// inteiro, o atual até agora e a projeção até o fim dele, e só é
-// redesenhada quando a hora vira; a taxa em °C/h sai das últimas 3 horas.
+// A curva segue as contagens de 12h (00–12 e 12–24): mostra a última
+// contagem fechada e a projeção do bloco seguinte, e só é redesenhada
+// quando fecha outra contagem; a taxa em °C/h sai das últimas 3 horas.
 // O contador de "ligado há" anda a partir
 // do carregamento — na planta o acumulado viria do CLP, aqui ele avança
 // sozinho para o cartão não congelar no videowall. Silos com
@@ -4365,9 +4365,9 @@ function formatarTemperatura(valor) {
 // Sparkline em viewBox 100x32: uma curva reta ganha meio grau de folga
 // para não virar uma linha colada no fundo. O eixo tem sempre dois blocos
 // de 12h (ex.: 00:00 · 12:00 · 00:00), com o horário embaixo: linha cheia
-// do começo até agora e, dali até o fim do bloco atual, a projeção
-// tracejada. Como a série sempre fecha no fim do bloco, cada hora ocupa
-// a mesma largura (1/24) e as marcas de 12h ficam paradas.
+// na primeira metade (a última contagem fechada) e projeção tracejada na
+// segunda. Cada hora ocupa a mesma largura (1/24) e as marcas de 12h
+// ficam paradas.
 const SPARK_W = 100;
 const SPARK_H = 32;
 const SPARK_BLOCO = 12;
@@ -4400,9 +4400,9 @@ function caminho(pontos) {
         .join(' ');
 }
 
-// hist e proj em sequência: o último ponto do histórico é o "agora",
-// onde o eixo cheio termina e a linha passa a tracejada. As marcas ficam
-// no começo, na virada do bloco (meio) e no fim.
+// hist e proj em sequência: o último ponto do histórico é o fechamento da
+// contagem, onde o eixo cheio termina e a linha passa a tracejada. As
+// marcas ficam no começo, na virada do bloco (meio) e no fim.
 function desenharSparkline(svg, hist, proj) {
     if (!svg || hist.length < 2) return;
     const W = SPARK_W;
@@ -4430,18 +4430,18 @@ function taxaTemperatura(temps) {
     return (temps[temps.length - 1] - temps[temps.length - 4]) / 3;
 }
 
-// Projeção hora a hora até o fim do bloco, a partir da taxa das últimas
-// 3h, perdendo força a cada hora (a massa de grão não mantém o ritmo para
+// Projeção hora a hora a partir do fechamento da contagem, pela taxa das
+// 3 últimas horas dela, perdendo força a cada hora (a massa de grão não mantém o ritmo para
 // sempre). Silo que para na ponta deixa de esfriar nessas horas e
 // esquenta de leve.
-function projetarTemperaturas(temps, card, horaAgora, horas) {
+function projetarTemperaturas(temps, card, inicio, horas) {
     const paraNaPonta = card.dataset.aer === 'on' && card.dataset.pausaPonta === '1';
     let taxa = taxaTemperatura(temps);
     let t = temps[temps.length - 1];
     const proj = [];
     for (let k = 1; k <= horas; k += 1) {
         taxa *= 0.8;
-        const inicioHora = new Date(horaAgora.getTime() + (k - 1) * HORA_MS);
+        const inicioHora = new Date(inicio.getTime() + (k - 1) * HORA_MS);
         t += paraNaPonta && emPonta(inicioHora) ? 0.05 : taxa;
         proj.push(t);
     }
@@ -4470,21 +4470,25 @@ function formatarTaxa(taxa) {
 function prepararSilo(card) {
     const temps = numeros(card.dataset.temps);
     if (temps.length < 2) return;
-    // a última leitura é a da hora cheia atual; a projeção muda com a hora
-    // (por causa da ponta), então a curva é redesenhada quando ela vira
+    // A contagem fecha a cada 12h (00:00 e 12:00): a linha cheia é a última
+    // contagem fechada, da virada anterior até a última (ex.: 00:00 → 12:00),
+    // e não passa dela. Dali até o fim do bloco (ex.: 12:00 → 00:00) é só
+    // projeção tracejada, feita a partir do fechamento. As leituras de
+    // data-temps depois da virada ainda não entraram em contagem.
     const horaAgora = new Date();
     horaAgora.setMinutes(0, 0, 0);
-    // horas já corridas no bloco atual: o histórico pega o bloco anterior
-    // inteiro mais essas horas, e a projeção cobre o que falta do bloco
     const corridas = horaAgora.getHours() % SPARK_BLOCO;
-    const hist = temps.slice(-(SPARK_BLOCO + corridas + 1));
-    const faltam = SPARK_BLOCO - corridas;
-    const proj = projetarTemperaturas(temps, card, horaAgora, faltam);
-    const chaveHora = String(horaAgora.getTime());
+    const viradaBloco = new Date(horaAgora.getTime() - corridas * HORA_MS);
+    const fimContagem = temps.length - corridas;
+    const hist = temps.slice(Math.max(0, fimContagem - SPARK_BLOCO - 1), fimContagem);
+    if (hist.length < 2) return;
+    const proj = projetarTemperaturas(hist, card, viradaBloco, SPARK_BLOCO);
+    // a projeção só muda quando fecha uma nova contagem
+    const chaveBloco = String(viradaBloco.getTime());
     const svg = card.querySelector('[data-spark]');
-    if (svg && (svg.childElementCount === 0 || svg.dataset.hora !== chaveHora)) {
+    if (svg && (svg.childElementCount === 0 || svg.dataset.bloco !== chaveBloco)) {
         desenharSparkline(svg, hist, proj);
-        svg.dataset.hora = chaveHora;
+        svg.dataset.bloco = chaveBloco;
     }
 
     const taxa = taxaTemperatura(temps);
@@ -4492,30 +4496,22 @@ function prepararSilo(card) {
     escreverTexto(card.querySelector('[data-temp-inicio]'), formatarTemperatura(hist[0]));
     escreverTexto(card.querySelector('[data-temp-atual]'), formatarTemperatura(hist[hist.length - 1]));
     escreverTexto(card.querySelector('[data-temp-proj]'), formatarTemperatura(proj[proj.length - 1]));
-    const fimBloco = new Date(horaAgora.getTime() + faltam * HORA_MS);
-    const viradaBloco = new Date(fimBloco.getTime() - SPARK_BLOCO * HORA_MS);
-    const inicio = new Date(fimBloco.getTime() - SPARK_SLOTS * HORA_MS);
+    const fimBloco = new Date(viradaBloco.getTime() + SPARK_BLOCO * HORA_MS);
+    const inicio = new Date(viradaBloco.getTime() - SPARK_BLOCO * HORA_MS);
     escreverTexto(card.querySelector('[data-hora-inicio]'), formatarHora(inicio));
     escreverTexto(card.querySelector('[data-hora-meio]'), formatarHora(viradaBloco));
     escreverTexto(card.querySelector('[data-hora-fim]'), formatarHora(fimBloco));
-    // rótulos acompanham a altura da curva no início, no agora e no fim do
-    // bloco; --x-agora é onde o eixo cheio termina e o tracejado começa.
-    // Perto do fim do bloco não cabe o valor projetado ao lado do atual:
-    // ele sai e o atual encosta na direita. Na metade final do bloco ele
-    // também sai quando ficaria na mesma altura do atual.
+    // rótulos acompanham a altura da curva no início, no fechamento da
+    // contagem (--x-agora, onde o eixo cheio termina e o tracejado começa)
+    // e no fim da projeção
     const pontos = pontosSparkline(hist.concat(proj));
     const pct = (v, total) => `${((v / total) * 100).toFixed(1)}%`;
-    const yAtual = pontos[hist.length - 1][1];
-    const yProj = pontos[pontos.length - 1][1];
     const wrap = card.querySelector('[data-spark-wrap]');
     if (wrap) {
         wrap.style.setProperty('--x-agora', pct(pontos[hist.length - 1][0], SPARK_W));
         wrap.style.setProperty('--y-ini', pct(pontos[0][1], SPARK_H));
-        wrap.style.setProperty('--y-fim', pct(yAtual, SPARK_H));
-        wrap.style.setProperty('--y-proj', pct(yProj, SPARK_H));
-        const perto = faltam <= SPARK_BLOCO / 2 && Math.abs(yAtual - yProj) < SPARK_H * 0.3;
-        wrap.dataset.fimBloco = faltam < 3 ? '1' : '0';
-        wrap.dataset.semProj = faltam < 3 || perto ? '1' : '0';
+        wrap.style.setProperty('--y-fim', pct(pontos[hist.length - 1][1], SPARK_H));
+        wrap.style.setProperty('--y-proj', pct(pontos[pontos.length - 1][1], SPARK_H));
     }
     const rate = card.querySelector('[data-temp-taxa]');
     if (rate) {

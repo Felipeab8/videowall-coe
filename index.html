@@ -297,12 +297,12 @@
                             <span class="kpi-flag kpi-flag--ok">OK</span>
                         </div>
                         <div class="gv-hero">
-                            <div class="gv-ring" style="--p: 0.72" role="img" aria-label="Ocupação 72%">
-                                <span class="gv-ring-value">72<small>%</small></span>
+                            <div class="gv-ring" style="--p: 0.63" role="img" aria-label="Ocupação 63%">
+                                <span class="gv-ring-value">63<small>%</small></span>
                                 <span class="gv-ring-label">ocupação</span>
                             </div>
                             <div class="gv-side">
-                                <div class="gv-kpi"><span class="gv-kpi-value">433,6<small>/ 600 m³</small></span><span class="gv-kpi-label">em 6 moegas</span></div>
+                                <div class="gv-kpi"><span class="gv-kpi-value">378,0<small>/ 600 m³</small></span><span class="gv-kpi-label">em 6 moegas</span></div>
                                 <div class="gv-kpi"><span class="gv-kpi-value">93</span><span class="gv-kpi-label">cargas hoje</span></div>
                                 <div class="gv-kpi"><span class="gv-kpi-value">12,4<small>%</small></span><span class="gv-kpi-label">umidade · impureza 0,9%</span></div>
                             </div>
@@ -313,7 +313,7 @@
                             <div class="gv-col gv-col--alto" style="--p: 0.85"><span class="gv-col-value">85%</span><span class="gv-col-track"><span class="gv-col-fill"></span></span><span class="gv-col-name">M3</span><span class="gv-col-sub">12,6%</span></div>
                             <div class="gv-col" style="--p: 0.75"><span class="gv-col-value">75%</span><span class="gv-col-track"><span class="gv-col-fill"></span></span><span class="gv-col-name">M4</span><span class="gv-col-sub">12,9%</span></div>
                             <div class="gv-col" style="--p: 0.58"><span class="gv-col-value">58%</span><span class="gv-col-track"><span class="gv-col-fill"></span></span><span class="gv-col-name">M5</span><span class="gv-col-sub">12,2%</span></div>
-                            <div class="gv-col" style="--p: 0.44"><span class="gv-col-value">44%</span><span class="gv-col-track"><span class="gv-col-fill"></span></span><span class="gv-col-name">M6</span><span class="gv-col-sub is-atencao">13,0%</span></div>
+                            <div class="gv-col" style="--p: 0"><span class="gv-col-value">0%</span><span class="gv-col-track"><span class="gv-col-fill"></span></span><span class="gv-col-name">M6</span><span class="gv-col-sub is-atencao">13,0%</span></div>
                         </div>
                     </button>
 
@@ -581,16 +581,16 @@
                     <!-- Espera e' so o trecho da portaria ate a 1a pesagem (o segmento
                          FILA do grafico de ciclo): 8 min na media, contra os 38 min do
                          ciclo inteiro. Os dois numeros moram lado a lado de proposito —
-                         fila grande com espera dentro da meta aponta gargalo la na frente. -->
+                         fila grande com espera dentro do limite aponta gargalo la na frente. -->
                     <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Por que o tempo médio de espera está em 8 min"
-                        data-motivo-resumo="8 min da portaria até a 1ª pesagem · meta 10 min"
-                        data-motivo-lista="Milho::9 min::fila de 10 caminhões::neutro|Sorgo::6 min::fila de 5 caminhões::bom|Meta de espera::10 min::margem de 2 min::bom|Pico de chegadas 13h–15h::12 min::41% das cargas no período::ruim">
+                        data-motivo-resumo="8 min da portaria até a 1ª pesagem · limite 10 min"
+                        data-motivo-lista="Milho::9 min::fila de 10 caminhões::neutro|Sorgo::6 min::fila de 5 caminhões::bom|Limite de espera::10 min::margem de 2 min::bom|Pico de chegadas 13h–15h::12 min::41% das cargas no período::ruim">
                         <div class="kpi-label">TEMPO MÉDIO DE ESPERA</div>
                         <div class="kpi-value-row">
                             <div class="kpi-value">8 <span class="kpi-value-unit">min</span></div>
-                            <span class="kpi-flag kpi-flag--ok">DENTRO DA META</span>
+                            <span class="kpi-flag kpi-flag--ok">DENTRO DO LIMITE</span>
                         </div>
                         <div class="kpi-sub">
                             <span class="kpi-sub-item"><i class="legend-dot legend-dot--milho"></i><b>Milho</b> 9 min</span>
@@ -833,7 +833,7 @@
                             <span class="fluxo-etapa-nome">Fila</span>
                             <span class="fluxo-etapa-valor"><b data-periodo="turno">2 <small>caminhões</small></b><b data-periodo="hoje">2 <small>caminhões</small></b><b data-periodo="7d">336 <small>atendidos</small></b><b data-periodo="30d">1.440 <small>atendidos</small></b></span>
                             <span class="fluxo-etapa-sub">tempo médio <b data-periodo="turno">8 min</b><b data-periodo="hoje">9 min</b><b data-periodo="7d">11 min</b><b data-periodo="30d">10 min</b></span>
-                            <span class="fluxo-etapa-estado"><b data-periodo="turno">Operando</b><b data-periodo="hoje">Operando</b><b data-periodo="7d">Espera acima da meta</b><b data-periodo="30d">Dentro da meta</b></span>
+                            <span class="fluxo-etapa-estado"><b data-periodo="turno">Operando</b><b data-periodo="hoje">Operando</b><b data-periodo="7d">Espera acima do limite</b><b data-periodo="30d">Dentro do limite</b></span>
                         </div>
                         <!-- Capacidade fisica manda no valor: a etapa mostra quantos estao
                              sendo atendidos agora e quantos esperam a vez. Com a balanca 2
@@ -844,7 +844,7 @@
                             <span class="fluxo-etapa-valor"><b data-periodo="turno">1 <small>pesando</small></b><b data-periodo="hoje">1 <small>pesando</small></b><b data-periodo="7d">334 <small>pesados</small></b><b data-periodo="30d">1.436 <small>pesados</small></b></span>
                             <span class="fluxo-etapa-espera"><b data-periodo="turno">3 aguardando</b><b data-periodo="hoje">3 aguardando</b><b data-periodo="7d">fila média 3</b><b data-periodo="30d">fila média 2</b></span>
                             <span class="fluxo-etapa-sub">tempo médio <b data-periodo="turno">12 min</b><b data-periodo="hoje">14 min</b><b data-periodo="7d">9 min</b><b data-periodo="30d">8 min</b></span>
-                            <span class="fluxo-etapa-estado"><b data-periodo="turno">Balança 2 em aferição</b><b data-periodo="hoje">Balança 2 em aferição</b><b data-periodo="7d">Espera acima da meta</b><b data-periodo="30d">Dentro da meta</b></span>
+                            <span class="fluxo-etapa-estado"><b data-periodo="turno">Balança 2 em aferição</b><b data-periodo="hoje">Balança 2 em aferição</b><b data-periodo="7d">Espera acima do limite</b><b data-periodo="30d">Dentro do limite</b></span>
                         </div>
                         <div class="fluxo-etapa" tabindex="0" role="button" aria-pressed="false" data-fluxo-filtro="classificacao" data-alerta="turno hoje">
                             <span class="fluxo-etapa-num">3</span>
@@ -852,7 +852,7 @@
                             <span class="fluxo-etapa-valor"><b data-periodo="turno">2 <small>classificando</small></b><b data-periodo="hoje">2 <small>classificando</small></b><b data-periodo="7d">331 <small>classificados</small></b><b data-periodo="30d">1.429 <small>classificados</small></b></span>
                             <span class="fluxo-etapa-espera"><b data-periodo="turno">3 aguardando</b><b data-periodo="hoje">4 aguardando</b><b data-periodo="7d">fila média 3</b><b data-periodo="30d">fila média 2</b></span>
                             <span class="fluxo-etapa-sub">tempo médio <b data-periodo="turno">10 min</b><b data-periodo="hoje">11 min</b><b data-periodo="7d">8 min</b><b data-periodo="30d">8 min</b></span>
-                            <span class="fluxo-etapa-estado"><b data-periodo="turno">Tempo acima da meta</b><b data-periodo="hoje">Tempo acima da meta</b><b data-periodo="7d">Dentro da meta</b><b data-periodo="30d">Dentro da meta</b></span>
+                            <span class="fluxo-etapa-estado"><b data-periodo="turno">Tempo acima do limite</b><b data-periodo="hoje">Tempo acima do limite</b><b data-periodo="7d">Dentro do limite</b><b data-periodo="30d">Dentro do limite</b></span>
                         </div>
                         <div class="fluxo-etapa" tabindex="0" role="button" aria-pressed="false" data-fluxo-filtro="moega" data-alerta="turno hoje">
                             <span class="fluxo-etapa-num">4</span>
@@ -1574,6 +1574,7 @@
                                 <span class="moega-tipo">Graneleiro · Tombador</span>
                             </div>
                             <div class="moega-cultura"><i class="legend-dot legend-dot--milho"></i>Milho <b>20%</b></div>
+                            <div class="moega-status" data-estado="cheia"><i class="moega-status-luz"></i>Cheia</div>
                             <div class="moega-cargas">
                                 <div class="moega-cargas-head"><span class="moega-dado-label">Hoje · 9 cargas</span><span class="moega-cargas-total"><b>363,4 t</b></span></div>
                                 <table class="moega-cargas-tabela">
@@ -1625,6 +1626,7 @@
                                 <span class="moega-tipo">Graneleiro · Tombador</span>
                             </div>
                             <div class="moega-cultura"><i class="legend-dot legend-dot--milho"></i>Milho <b>17%</b></div>
+                            <div class="moega-status" data-estado="disponivel"><i class="moega-status-luz"></i>Disponível</div>
                             <div class="moega-cargas">
                                 <div class="moega-cargas-head"><span class="moega-dado-label">Hoje · 8 cargas</span><span class="moega-cargas-total"><b>318,2 t</b></span></div>
                                 <table class="moega-cargas-tabela">
@@ -1672,6 +1674,7 @@
                                 <span class="moega-tipo">Basculante</span>
                             </div>
                             <div class="moega-cultura"><i class="legend-dot legend-dot--milho"></i>Milho <b>14%</b></div>
+                            <div class="moega-status" data-estado="cheia"><i class="moega-status-luz"></i>Cheia</div>
                             <div class="moega-cargas">
                                 <div class="moega-cargas-head"><span class="moega-dado-label">Hoje · 6 cargas</span><span class="moega-cargas-total"><b>236,5 t</b></span></div>
                                 <table class="moega-cargas-tabela">
@@ -1723,6 +1726,7 @@
                                 <span class="moega-tipo">Basculante</span>
                             </div>
                             <div class="moega-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo <b>15%</b></div>
+                            <div class="moega-status" data-estado="disponivel"><i class="moega-status-luz"></i>Disponível</div>
                             <div class="moega-cargas">
                                 <div class="moega-cargas-head"><span class="moega-dado-label">Hoje · 7 cargas</span><span class="moega-cargas-total"><b>271,8 t</b></span></div>
                                 <table class="moega-cargas-tabela">
@@ -1770,6 +1774,7 @@
                                 <span class="moega-tipo">Basculante</span>
                             </div>
                             <div class="moega-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo <b>13%</b></div>
+                            <div class="moega-status" data-estado="disponivel"><i class="moega-status-luz"></i>Disponível</div>
                             <div class="moega-cargas">
                                 <div class="moega-cargas-head"><span class="moega-dado-label">Hoje · 6 cargas</span><span class="moega-cargas-total"><b>232,9 t</b></span></div>
                                 <table class="moega-cargas-tabela">
@@ -1821,6 +1826,7 @@
                                 <span class="moega-tipo">Basculante</span>
                             </div>
                             <div class="moega-cultura"><i class="legend-dot legend-dot--vazia"></i>Vazia</div>
+                            <div class="moega-status" data-estado="disponivel"><i class="moega-status-luz"></i>Disponível</div>
                             <div class="moega-cargas">
                                 <div class="moega-cargas-head"><span class="moega-dado-label">Hoje · 2 cargas</span><span class="moega-cargas-total"><b>77,4 t</b></span></div>
                                 <table class="moega-cargas-tabela">

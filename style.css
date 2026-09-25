@@ -3894,7 +3894,7 @@ body.edit-mode .header-controls .btn-alertas.active {
     border-radius: 12px;
     padding: 0.875rem 0.75rem 0.75rem;
     display: grid;
-    grid-template-rows: auto auto minmax(min-content, 1fr) auto auto;
+    grid-template-rows: auto auto auto minmax(min-content, 1fr) auto auto;
     gap: 0.5rem;
     min-height: 0;
     min-width: 0;
@@ -3986,6 +3986,52 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 .moega-item--vazia .moega-cultura {
     color: var(--muted);
+}
+
+
+
+/* estado da moega, sem porcentagem: cheia (nao recebe mais carga) ou
+   disponivel. Faixa inteira com a luz acesa, vermelha ou verde, para
+   ser lida de longe no videowall. */
+.moega-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4375rem;
+    padding: 0.3rem 0.5rem;
+    border-radius: 8px;
+    border: 1px solid;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+
+
+.moega-status-luz {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 0.4rem currentColor;
+}
+
+
+
+.moega-status[data-estado="cheia"] {
+    color: var(--danger);
+    background: rgba(231, 76, 60, 0.16);
+    border-color: rgba(231, 76, 60, 0.5);
+}
+
+
+
+.moega-status[data-estado="disponivel"] {
+    color: var(--ok);
+    background: rgba(46, 204, 113, 0.12);
+    border-color: rgba(46, 204, 113, 0.4);
 }
 
 
@@ -10083,8 +10129,7 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 .sa-temp-ponto--fim {
     left: var(--x-agora, 65%);
     top: var(--y-fim, 80%);
-    /* puxado um pouco para a esquerda, para nao encostar na projecao */
-    transform: translate(-62%, calc(-100% - 0.3rem));
+    transform: translate(-50%, calc(-100% - 0.3rem));
 }
 
 
@@ -10099,24 +10144,8 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 
 
 
-/* quando o valor projetado nao cabe ao lado do atual ele sai; bem perto
-   do fim do bloco o atual ainda encosta na direita */
-.sa-spark-wrap[data-sem-proj="1"] .sa-temp-ponto--proj {
-    display: none;
-}
-
-
-
-.sa-spark-wrap[data-fim-bloco="1"] .sa-temp-ponto--fim {
-    left: auto;
-    right: 0;
-    transform: translateY(calc(-100% - 0.3rem));
-}
-
-
-
-/* horario embaixo do eixo, nas tres marcas dos blocos de 12h: inicio do
-   bloco anterior, virada e fim do bloco atual (este ainda projetado) */
+/* horario embaixo do eixo, nas tres marcas dos blocos de 12h: inicio e
+   fechamento da ultima contagem, e fim da projecao */
 .sa-spark-horas {
     position: relative;
     height: 0.7rem;
