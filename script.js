@@ -87,6 +87,16 @@ function syncMenuGroups() {
     menuGroups.forEach((g) => {
         g.classList.toggle('is-current', !!g.querySelector('.menu-item.active'));
     });
+    syncUnidadeNoCabecalho();
+}
+
+// O menu tem duas seções (Avaré e demais unidades): o subtítulo do
+// cabeçalho diz de qual delas é a tela no ar.
+function syncUnidadeNoCabecalho() {
+    const sub = document.querySelector('.brand-sub');
+    const ativo = document.querySelector('.menu-item.active');
+    const secao = ativo ? ativo.closest('[data-unidade]') : null;
+    if (sub && secao) sub.textContent = 'Cooperativa Holambra · ' + secao.getAttribute('data-unidade');
 }
 
 document.querySelectorAll('.menu-parent').forEach((parent) => {
@@ -1551,6 +1561,428 @@ function mountCameras(root) {
 mountCameras(document);
 
 // ============================================
+// MAPA DAS DEMAIS UNIDADES
+// Mapa real (Leaflet, base cinza da Esri) montado por cima do
+// SVG esquemático, que continua no HTML como reserva: sem internet, sem
+// Leaflet ou sem os blocos do mapa, é ele que aparece. Pinos, rótulos e
+// desvio saem do próprio SVG (data-latlng, data-lado, data-de/data-para),
+// então os dados ficam num lugar só. O mapa é artefato como o vídeo das
+// câmeras: limparArtefatos o tira do HTML salvo e remontar() o põe de volta.
+// ============================================
+// Esri Canvas: fundo cinza (represas, rodovias) e, por cima, só os nomes
+// das cidades. Não pede chave, nem com a página aberta direto do disco — o
+// CARTO passou a exigir chave e marca os blocos com "API KEY REQUIRED".
+const MAPA_CAMADAS = {
+    escuro: ['Canvas/World_Dark_Gray_Base', 'Canvas/World_Dark_Gray_Reference'],
+    claro: ['Canvas/World_Light_Gray_Base', 'Canvas/World_Light_Gray_Reference']
+};
+const MAPA_CREDITO = 'Esri, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+
+function urlCamadaMapa(nome) {
+    return 'https://services.arcgisonline.com/arcgis/rest/services/' + nome + '/MapServer/tile/{z}/{y}/{x}';
+}
+let mapasUnidades = [];
+
+function temaDoMapa() {
+    return document.body.classList.contains('theme-light') ? 'claro' : 'escuro';
+}
+
+function latLngDe(el, atributo) {
+    const v = (el.getAttribute(atributo) || '').split(',').map(Number);
+    return v.length === 2 && v.every(Number.isFinite) ? L.latLng(v[0], v[1]) : null;
+}
+
+// medidas do mapa em rem, para acompanhar o --fit como o resto da tela
+function remPx() {
+    return parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+}
+
+function rotuloMapa(principal, apoio) {
+    const el = document.createElement('div');
+    const b = document.createElement('b');
+    const span = document.createElement('span');
+    b.textContent = principal;
+    span.textContent = apoio;
+    el.append(b, span);
+    return el;
+}
+
+function mountMapaUnidades(root) {
+    // mapas de um palco trocado inteiro (layout salvo, desfazer) saem da memória
+    mapasUnidades = mapasUnidades.filter((item) => {
+        if (item.el.isConnected) return true;
+        item.observador.disconnect();
+        item.mapa.remove();
+        return false;
+    });
+    if (!window.L) return;
+    const escopo = root || document;
+    const secoes = escopo.matches && escopo.matches('.du-mapa')
+        ? [escopo]
+        : escopo.querySelectorAll('.du-mapa');
+    secoes.forEach((secao) => {
+        const svg = secao.querySelector('.du-mapa-svg');
+        if (svg && !secao.querySelector('.du-mapa-real')) criarMapaUnidades(secao, svg);
+    });
+}
+
+function criarMapaUnidades(secao, svg) {
+    const el = document.createElement('div');
+    el.className = 'du-mapa-real';
+    svg.before(el);
+    secao.classList.add('has-mapa');
+
+    // videowall: mapa parado, sempre enquadrado nas unidades. Sem animações:
+    // o esmaecer dos blocos depende de requestAnimationFrame e fica preso
+    // (blocos invisíveis) quando o navegador não desenha quadros.
+    const mapa = L.map(el, {
+        fadeAnimation: false,
+        zoomAnimation: false,
+        markerZoomAnimation: false,
+        zoomControl: false,
+        dragging: false,
+        touchZoom: false,
+        scrollWheelZoom: false,
+        doubleClickZoom: false,
+        boxZoom: false,
+        keyboard: false,
+        zoomSnap: 0.25
+    });
+    mapa.attributionControl.setPrefix(false);
+    L.control.scale({ imperial: false, position: 'bottomleft' }).addTo(mapa);
+
+    const item = { el, secao, mapa, limites: null, desvio: null, observador: null, tema: '', camadas: [] };
+    montarCamadasMapa(item);
+
+    const pontos = [];
+    svg.querySelectorAll('.du-pin[data-latlng]').forEach((pin) => {
+        const pos = latLngDe(pin, 'data-latlng');
+        if (!pos) return;
+        const ehBase = pin.classList.contains('du-pin--base');
+        const status = Array.from(pin.classList).find((c) => c.startsWith('du-st--')) || '';
+        const nome = pin.querySelector('.du-pin-nome');
+        const info = pin.querySelector('.du-pin-info');
+        const marca = L.marker(pos, {
+            icon: L.divIcon({
+                className: 'du-lf-pino ' + (ehBase ? 'du-lf-pino--base' : status),
+                html: '<i class="du-lf-halo"></i><i class="du-lf-ponto"></i>',
+                iconSize: null
+            }),
+            interactive: ehBase,
+            keyboard: false
+        });
+        marca.bindTooltip(rotuloMapa(nome ? nome.textContent : '', info ? info.textContent : ''), {
+            permanent: true,
+            direction: pin.getAttribute('data-lado') || 'right',
+            className: 'du-lf-rotulo ' + (ehBase ? 'du-lf-rotulo--base' : status),
+            opacity: 1
+        });
+        // Avaré leva às telas dela pelo mesmo clique delegado da visão geral.
+        // O ícone só nasce quando o mapa ganha posição: marca no evento add.
+        const destino = pin.getAttribute('data-goto');
+        if (destino) {
+            marca.on('add', () => {
+                const icone = marca.getElement();
+                icone.setAttribute('data-goto', destino);
+                icone.title = 'Abrir as telas de Avaré';
+            });
+        }
+        marca.addTo(mapa);
+        pontos.push(pos);
+    });
+    if (!pontos.length) {
+        desmontarMapaUnidades(item);
+        return;
+    }
+    item.limites = L.latLngBounds(pontos);
+
+    const desvio = svg.querySelector('.du-desvio[data-de][data-para]');
+    const de = desvio ? latLngDe(desvio, 'data-de') : null;
+    const para = desvio ? latLngDe(desvio, 'data-para') : null;
+    if (de && para) {
+        const textos = desvio.querySelectorAll('text');
+        const rotulo = rotuloMapa(textos[1] ? textos[1].textContent : '', textos[0] ? textos[0].textContent : '');
+        rotulo.prepend(rotulo.lastChild); // "desvio sugerido" em cima, "≈ 50 km" embaixo
+        item.desvio = {
+            de,
+            para,
+            linha: L.polyline([de, para], { className: 'du-lf-desvio', interactive: false }).addTo(mapa),
+            seta: L.marker(para, {
+                icon: L.divIcon({
+                    className: 'du-lf-seta',
+                    html: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 3 L12 10 L2 17 Z"></path></svg>',
+                    iconSize: null
+                }),
+                interactive: false,
+                keyboard: false
+            }).addTo(mapa),
+            rotulo: L.tooltip({ permanent: true, direction: 'left', className: 'du-lf-rotulo du-lf-rotulo--desvio', opacity: 1 })
+                .setLatLng(de)
+                .setContent(rotulo)
+        };
+        mapa.openTooltip(item.desvio.rotulo);
+    }
+
+    // o bloco muda de tamanho com o --fit e começa escondido (tela fora do
+    // ar): a cada mudança o mapa se reenquadra nas unidades. Temporizador, e
+    // não requestAnimationFrame: reenquadrar dentro de um quadro deixava os
+    // blocos do mapa sem pintar quando o navegador não desenha quadros.
+    let pendente = 0;
+    item.observador = new ResizeObserver(() => {
+        clearTimeout(pendente);
+        pendente = setTimeout(() => enquadrarMapaUnidades(item), 50);
+    });
+    item.observador.observe(el);
+    mapasUnidades.push(item);
+    enquadrarMapaUnidades(item);
+}
+
+// Fundo e nomes do tema atual. Trocar de tema recria as camadas em vez de
+// usar setUrl: com zoom fracionado o setUrl do Leaflet pede blocos com zoom
+// quebrado ("8.75") e o mapa fica vazio.
+function montarCamadasMapa(item) {
+    item.camadas.forEach((camada) => camada.remove());
+    item.tema = temaDoMapa();
+    item.camadas = MAPA_CAMADAS[item.tema].map((nome, i) => L.tileLayer(urlCamadaMapa(nome), {
+        maxNativeZoom: 16,
+        maxZoom: 19,
+        className: i ? 'du-lf-nomes' : 'du-lf-fundo',
+        attribution: i ? '' : MAPA_CREDITO
+    }).addTo(item.mapa));
+    // sem internet os blocos falham: volta para o SVG em vez de um fundo vazio
+    let carregados = 0;
+    let falhas = 0;
+    item.camadas[0].on('tileload', () => { carregados++; });
+    item.camadas[0].on('tileerror', () => {
+        if (++falhas >= 6 && !carregados) desmontarMapaUnidades(item);
+    });
+}
+
+function enquadrarMapaUnidades(item) {
+    if (!item.el.isConnected || !item.el.clientWidth || !item.el.clientHeight) return;
+    const rem = remPx();
+    item.mapa.invalidateSize(false);
+    item.mapa.fitBounds(item.limites, {
+        paddingTopLeft: [rem * 1.5, rem * 1.8],
+        paddingBottomRight: [rem * 1.5, rem * 2.6],
+        animate: false
+    });
+    tracarDesvio(item, rem);
+}
+
+// Curva do desvio em pixels (bojo para oeste, longe da unidade de origem
+// e sem encostar nos pinos) e seta apontando para o destino.
+function tracarDesvio(item, rem) {
+    const d = item.desvio;
+    if (!d) return;
+    const mapa = item.mapa;
+    const a = mapa.latLngToLayerPoint(d.de);
+    const b = mapa.latLngToLayerPoint(d.para);
+    const vet = b.subtract(a);
+    const comp = Math.hypot(vet.x, vet.y);
+    if (!comp) return;
+    const u = L.point(vet.x / comp, vet.y / comp);
+    const ini = a.add(u.multiplyBy(rem * 1.1));
+    const fim = b.subtract(u.multiplyBy(rem * 1.2));
+    const ctrl = ini.add(fim).divideBy(2).add(L.point(-u.y, u.x).multiplyBy(comp * 0.3));
+    const pts = [];
+    for (let i = 0; i <= 24; i++) {
+        const t = i / 24;
+        const s = 1 - t;
+        pts.push(mapa.layerPointToLatLng(L.point(
+            s * s * ini.x + 2 * s * t * ctrl.x + t * t * fim.x,
+            s * s * ini.y + 2 * s * t * ctrl.y + t * t * fim.y
+        )));
+    }
+    d.linha.setLatLngs(pts);
+    d.rotulo.setLatLng(pts[12]);
+    d.seta.setLatLng(pts[24]);
+    const tan = fim.subtract(ctrl);
+    const icone = d.seta.getElement();
+    if (icone && icone.firstChild) {
+        icone.firstChild.style.transform = 'rotate(' + (Math.atan2(tan.y, tan.x) * 180 / Math.PI) + 'deg)';
+    }
+}
+
+function desmontarMapaUnidades(item) {
+    if (item.observador) item.observador.disconnect();
+    item.mapa.remove();
+    item.el.remove();
+    item.secao.classList.remove('has-mapa');
+    mapasUnidades = mapasUnidades.filter((m) => m !== item);
+}
+
+// modo claro/escuro troca a base do mapa junto com o resto da interface
+// (a classe do body também muda com edição e menu: só troca se o tema mudou)
+new MutationObserver(() => {
+    const tema = temaDoMapa();
+    mapasUnidades.forEach((item) => {
+        if (item.tema !== tema) montarCamadasMapa(item);
+    });
+}).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+mountMapaUnidades(document);
+
+// ============================================
+// DU 02 · EVOLUÇÃO DA OCUPAÇÃO
+// Últimos 30 dias e a projeção até encher, da rede ou da unidade escolhida
+// no menu. Os números ficam nas opções do menu (ver o comentário no HTML);
+// a rede é a soma das unidades, dia a dia.
+// ============================================
+const PROJ_COLHEITA = -12; // início da colheita do trigo, em dias antes de hoje
+
+function serieDaOpcao(op) {
+    return {
+        cap: Number(op.dataset.cap) || 0,
+        ritmo: Number(op.dataset.ritmo) || 0,
+        hist: (op.dataset.hist || '').split(',').map(Number),
+        off: op.dataset.off || ''
+    };
+}
+
+function serieDaRede(select) {
+    const soma = { cap: 0, ritmo: 0, hist: [], off: '' };
+    Array.prototype.forEach.call(select.options, (op) => {
+        if (!op.dataset.hist) return;
+        const s = serieDaOpcao(op);
+        soma.cap += s.cap;
+        soma.ritmo += s.ritmo;
+        s.hist.forEach((v, i) => { soma.hist[i] = (soma.hist[i] || 0) + v; });
+    });
+    return soma;
+}
+
+function elSvg(tag, attrs) {
+    const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    Object.keys(attrs).forEach((k) => el.setAttribute(k, attrs[k]));
+    return el;
+}
+
+// marca: ponto em (left, top) do gráfico, com rótulo opcional em HTML
+function marcaProj(classe, left, top, titulo, rotulo) {
+    const m = novo('span', 'du-proj-marca ' + classe);
+    m.style.left = left.toFixed(2) + '%';
+    m.style.top = top.toFixed(2) + '%';
+    m.title = titulo;
+    if (rotulo) {
+        const r = novo('span');
+        r.append(novo('b', null, rotulo[0]), ' ' + rotulo[1]);
+        m.appendChild(r);
+    }
+    return m;
+}
+
+function desenharProjecao(secao) {
+    const select = secao.querySelector('.du-proj-sel select');
+    const graf = secao.querySelector('.du-proj-graf');
+    const plot = secao.querySelector('.du-proj-plot');
+    const svg = secao.querySelector('.du-proj-svg');
+    const eixo = secao.querySelector('.du-proj-eixo');
+    if (!select || !graf || !plot || !svg || !eixo) return;
+
+    const op = select.options[select.selectedIndex];
+    const s = op && op.dataset.hist ? serieDaOpcao(op) : serieDaRede(select);
+    if (!s.cap || s.hist.length < 2) return;
+    const nome = op ? op.textContent.trim() : 'Rede';
+
+    const ini = -(s.hist.length - 1);
+    const occ = s.hist.map((t) => t / s.cap * 100);
+    const agora = occ[occ.length - 1];
+    const naColheita = occ[PROJ_COLHEITA - ini];
+    const projeta = !s.off && s.ritmo > 0;
+    const dias = projeta ? (s.cap - s.hist[s.hist.length - 1]) / s.ritmo : 0;
+    // meio dia arredonda para baixo, como a coluna "Enche em" da tabela
+    const diasTxt = Math.ceil(dias - 0.5);
+
+    // x vai até um pouco depois de encher (no mínimo 15 dias à frente);
+    // y de 10 em 10 pontos, do múltiplo de 10 abaixo do menor valor até 100%
+    const fim = projeta ? Math.max(15, Math.ceil((dias + 2) / 5) * 5) : 15;
+    const base = Math.max(0, Math.floor((Math.min.apply(null, occ) - 2) / 10) * 10);
+    const x = (d) => (d - ini) / (fim - ini) * 300;
+    const y = (p) => (100 - p) / (100 - base) * 100;
+    const yRotulo = Math.max(8, y(naColheita) - 26);
+
+    // ---- SVG: fundo da previsão, grade, guias, área, linhas ----
+    svg.textContent = '';
+    svg.appendChild(elSvg('rect', { class: 'du-proj-futuro', x: x(0), y: 0, width: 300 - x(0), height: 100 }));
+    let grade = '';
+    for (let p = base; p < 100; p += 10) grade += 'M0 ' + y(p).toFixed(2) + ' H300 ';
+    svg.appendChild(elSvg('path', { class: 'du-proj-grade', d: grade }));
+    svg.appendChild(elSvg('path', { class: 'du-proj-cap', d: 'M0 0 H300' }));
+    svg.appendChild(elSvg('path', {
+        class: 'du-proj-guia',
+        d: 'M' + x(0) + ' 0 V100 M' + x(PROJ_COLHEITA) + ' ' + y(naColheita).toFixed(2) + ' V' + yRotulo.toFixed(2)
+    }));
+    const pontos = occ.map((p, i) => x(ini + i).toFixed(1) + ',' + y(p).toFixed(2)).join(' ');
+    svg.appendChild(elSvg('polygon', { class: 'du-proj-area', points: x(ini) + ',100 ' + pontos + ' ' + x(0) + ',100' }));
+    if (projeta) {
+        svg.appendChild(elSvg('polyline', {
+            class: 'du-proj-linha du-proj-linha--proj',
+            points: x(0) + ',' + y(agora).toFixed(2) + ' ' + x(dias).toFixed(1) + ',0'
+        }));
+    }
+    svg.appendChild(elSvg('polyline', { class: 'du-proj-linha', points: pontos }));
+
+    // ---- HTML por cima: escala, rótulos e marcas (left/top em % do gráfico) ----
+    plot.querySelectorAll(':scope > :not(svg)').forEach((el) => el.remove());
+    for (let p = base; p <= 100; p += 10) {
+        const r = novo('span', 'du-proj-y', p + '%');
+        r.style.top = y(p).toFixed(2) + '%';
+        plot.appendChild(r);
+    }
+    const canto = novo('div', 'du-proj-nome');
+    canto.append(novo('b', null, nome), novo('span', null, 'capacidade · ' + fmtNum(s.cap) + ' t'));
+    plot.appendChild(canto);
+
+    const evento = novo('span', 'du-proj-evento', 'início da colheita do trigo');
+    evento.style.left = (x(PROJ_COLHEITA) / 3).toFixed(2) + '%';
+    evento.style.top = yRotulo.toFixed(2) + '%';
+    plot.appendChild(evento);
+    plot.appendChild(marcaProj('du-proj-marca--colheita', x(PROJ_COLHEITA) / 3, y(naColheita),
+        'Há ' + (-PROJ_COLHEITA) + ' dias: ' + Math.round(naColheita) + '% (começa a colheita do trigo)'));
+
+    plot.appendChild(marcaProj('du-proj-marca--hoje', x(0) / 3, y(agora),
+        (s.off ? 'Última leitura, às ' + s.off : 'Hoje') + ': ' + fmtNum(s.hist[s.hist.length - 1]) + ' t de ' + fmtNum(s.cap) + ' t',
+        [Math.round(agora) + '%', s.off ? 'às ' + s.off : 'hoje']));
+
+    if (projeta) {
+        const faixa = diasTxt < 3 ? ' is-alerta' : (diasTxt <= 7 ? ' is-atencao' : '');
+        plot.appendChild(marcaProj('du-proj-marca--cheia' + faixa, x(dias) / 3, 0,
+            'No ritmo dos últimos 3 dias (+' + fmtNum(s.ritmo) + ' t/dia), 100% em cerca de ' + diasTxt + ' dias',
+            ['cheia', 'em ≈ ' + diasTxt + (diasTxt === 1 ? ' dia' : ' dias')]));
+    }
+
+    // ---- eixo X de 10 em 10 dias ----
+    eixo.textContent = '';
+    for (let d = ini; d <= fim; d += 10) {
+        const t = d === ini ? '−' + (-d) + ' dias' : (d === 0 ? 'hoje' : (d > 0 ? '+' + d : '−' + (-d)));
+        const r = novo('span', d === 0 ? 'is-hoje' : null, t);
+        r.style.left = (x(d) / 3).toFixed(2) + '%';
+        eixo.appendChild(r);
+    }
+
+    const ritmo = secao.querySelector('.du-proj-ritmo');
+    if (ritmo) {
+        ritmo.textContent = projeta
+            ? 'projeção no ritmo dos últimos 3 dias: +' + fmtNum(s.ritmo) + ' t/dia'
+            : 'sem comunicação desde ' + s.off + ': sem projeção';
+    }
+    graf.setAttribute('aria-label', nome + ': ocupação de ' + Math.round(occ[0]) + '% há ' + (-ini) + ' dias e '
+        + Math.round(agora) + '% ' + (s.off ? 'na última leitura, às ' + s.off : 'hoje')
+        + (projeta ? '; no ritmo atual, 100% em cerca de ' + diasTxt + ' dias.' : '; sem projeção.'));
+}
+
+function desenharProjecoes(raiz) {
+    (raiz || document).querySelectorAll('.du-proj').forEach(desenharProjecao);
+}
+
+document.addEventListener('change', (e) => {
+    if (!(e.target instanceof Element) || !e.target.closest('.du-proj-sel')) return;
+    const secao = e.target.closest('.du-proj');
+    if (secao) desenharProjecao(secao);
+});
+
+// ============================================
 // PRINT DA TELA ATIVA
 // O @media print deixa só a tela em foco na folha.
 // ============================================
@@ -1810,8 +2242,11 @@ function aviso(texto) {
 // LIMPEZA: o layout salvo não leva as alças da edição
 // ============================================
 function limparArtefatos(raiz) {
-    raiz.querySelectorAll('.block-actions, .drag-handle, .resize-handle, .camera-stream')
+    raiz.querySelectorAll('.block-actions, .drag-handle, .resize-handle, .camera-stream, .du-mapa-real')
         .forEach((el) => el.remove());
+    // sem o mapa real, o SVG de reserva volta a aparecer no HTML salvo
+    if (raiz.classList && raiz.classList.contains('has-mapa')) raiz.classList.remove('has-mapa');
+    raiz.querySelectorAll('.has-mapa').forEach((el) => el.classList.remove('has-mapa'));
     raiz.querySelectorAll('[data-editable]').forEach((el) => {
         el.removeAttribute('data-editable');
         el.removeAttribute('contenteditable');
@@ -2087,9 +2522,11 @@ function remontar() {
     alertsPage = document.getElementById('alertsPage');
     selecionar(null);
     mountCameras(palco);
+    mountMapaUnidades(palco);
     refreshAlertsBadge();
     sincronizarMenuComTela();
     desenharRoscas(palco);
+    desenharProjecoes(palco);
     applyEditMode(isEditing());
     scheduleFit();
 }
@@ -2141,7 +2578,9 @@ document.addEventListener('click', (e) => {
         if (bloco.parentElement) bloco.parentElement.insertBefore(copia, bloco.nextSibling);
         applyEditMode(true);
         mountCameras(copia);
+        mountMapaUnidades(copia);
         desenharRoscas(copia);
+        desenharProjecoes(copia);
         selecionar(copia);
         scheduleFit();
         aviso('Bloco duplicado.');
@@ -3058,6 +3497,7 @@ function confirmarPainel() {
     fecharPainel();
     applyEditMode(true);
     desenharRoscas(palco);
+    desenharProjecoes(palco);
     selecionar(el.closest('[data-drag-group]') || el);
     scheduleFit();
     el.scrollIntoView({ block: 'nearest' });
@@ -4195,6 +4635,7 @@ if (palco) {
     limparSelosPorQue(palco);
     garantirFiltroGrao(palco);
     desenharRoscas(palco);
+    desenharProjecoes(palco);
     sincronizarEditor(isEditing());
 }
 
