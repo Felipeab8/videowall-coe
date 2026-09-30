@@ -12498,7 +12498,7 @@ body.edit-mode .fluxo-etapa[data-fluxo-filtro] {
     grid-template-columns: 5.2rem minmax(0, 1fr) auto;
     grid-template-areas:
         'label track value'
-        'sub   ref   ref';
+        'sub   sub   ref';
     column-gap: 0.5rem;
     row-gap: 0.1rem;
     align-items: center;
@@ -16577,9 +16577,8 @@ body.theme-dark {
     --du-danger: var(--danger);
     /* contorno dos textos do mapa: a cor do fundo do bloco */
     --du-halo-texto: #0d1b2d;
-    /* chuva por hora: canais do azul da interface para o alfa variar */
+    /* chuva do dia: canais do azul da interface para o alfa variar */
     --du-chuva-rgb: 59 130 246;
-    --du-chuva-max: 0.9;
 }
 
 
@@ -16591,7 +16590,6 @@ body.theme-light {
     --du-danger: #b3261e;
     --du-halo-texto: #f3f4f6;
     --du-chuva-rgb: 61 111 165;
-    --du-chuva-max: 0.75;
 }
 
 
@@ -16603,7 +16601,7 @@ body.theme-light {
 
 
 
-/* ---- base comum das cinco telas ---- */
+/* ---- base comum das seis telas ---- */
 .du-screen .screen-header {
     flex-wrap: wrap;
 }
@@ -16635,18 +16633,89 @@ body.theme-light {
 
 
 
+/* grãos no card: barra fina partida por grão, na ordem fixa da paleta, com
+   2px de fundo entre as fatias (as larguras somam 100 e o flex encolhe os
+   vãos na proporção), e embaixo a legenda com a fatia de cada um */
+.du-kpi-grao {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    width: 100%;
+}
+
+
+
+.du-kpi-grao-barra {
+    display: flex;
+    gap: 2px;
+    height: 0.4rem;
+}
+
+
+
+.du-kpi-grao-barra i {
+    display: block;
+    flex: 0 1 auto;
+    min-width: 0;
+    background: var(--c);
+}
+
+
+
+.du-kpi-grao-barra i:first-child {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+
+
+.du-kpi-grao-barra i:last-child {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+
+
+.du-kpi-grao-leg {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 0.4rem;
+    font-size: 0.65rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--muted);
+}
+
+
+
+.du-kpi-grao-leg > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    white-space: nowrap;
+}
+
+
+
+.du-kpi-grao-leg b {
+    font-weight: 800;
+    color: var(--text);
+}
+
+
+
+.du-kpi-grao-leg .du-kpi-grao-cap {
+    color: var(--faint);
+}
+
+
+
 .du-split {
     display: grid;
     grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr);
     gap: 0.75rem;
     flex: 1 1 auto;
     min-height: 0;
-}
-
-
-
-.du-split--meio {
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
 }
 
 
@@ -16718,7 +16787,8 @@ body.theme-light {
 
 /* espaço livre: hachurado, para não parecer mais um grão */
 .du-dot--livre,
-.du-estoque .du-estoque-livre {
+.du-estoque .du-estoque-livre,
+.du-mix--off {
     background-color: var(--row-bg);
     background-image: repeating-linear-gradient(135deg, var(--row-line) 0 2px, transparent 2px 7px);
 }
@@ -16740,17 +16810,15 @@ body.theme-light {
 
 
 
-/* textos coloridos por faixa (célula, número do semáforo) */
-.du-screen td.is-atencao,
-.du-uni-kpis dd.is-atencao {
+/* textos coloridos por faixa */
+.du-screen td.is-atencao {
     color: var(--du-warn);
     font-weight: 700;
 }
 
 
 
-.du-screen td.is-alerta,
-.du-uni-kpis dd.is-alerta {
+.du-screen td.is-alerta {
     color: var(--du-danger);
     font-weight: 700;
 }
@@ -16788,6 +16856,18 @@ body.theme-light {
 
 .du-tabela thead tr {
     height: 1px;
+}
+
+
+
+/* unidade da coluna numa linha própria, embaixo do nome (m³/dia) */
+.du-tabela th small {
+    display: block;
+    font-size: 0.95em;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--faint);
 }
 
 
@@ -17046,7 +17126,7 @@ body.theme-light .du-screen .pv-tag--alerta {
 .du-geral {
     display: grid;
     grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
-    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr);
     gap: 0.75rem;
     flex: 1 1 auto;
     min-height: 0;
@@ -17109,20 +17189,6 @@ body.theme-light .du-screen .pv-tag--alerta {
 
 
 
-.du-desvio path {
-    fill: none;
-    stroke: var(--accent);
-    stroke-width: 3.5;
-    stroke-dasharray: 10 8;
-    animation: du-fluxo 1.2s linear infinite;
-}
-
-
-
-.du-seta-ponta { fill: var(--accent); }
-
-
-
 .du-mapa-svg text {
     paint-order: stroke;
     stroke: var(--du-halo-texto);
@@ -17133,21 +17199,6 @@ body.theme-light .du-screen .pv-tag--alerta {
 
 
 .du-grade text { stroke-width: 0; }
-
-
-
-.du-desvio text {
-    fill: var(--accent);
-    font-size: 18px;
-    font-weight: 700;
-}
-
-
-
-.du-desvio .du-desvio-km {
-    font-size: 21px;
-    font-weight: 800;
-}
 
 
 
@@ -17196,7 +17247,8 @@ body.theme-light .du-screen .pv-tag--alerta {
 
 
 /* Avaré: só referência, anel vazado; leva às telas de Avaré */
-.du-pin--base { cursor: pointer; }
+.du-pin--base,
+.du-pin[data-goto] { cursor: pointer; }
 
 
 
@@ -17226,15 +17278,8 @@ body.theme-light .du-screen .pv-tag--alerta {
 
 
 
-@keyframes du-fluxo {
-    to { stroke-dashoffset: -18; }
-}
-
-
-
 @media (prefers-reduced-motion: reduce) {
-    .du-pin.du-st--alerta .du-pin-halo,
-    .du-desvio path {
+    .du-pin.du-st--alerta .du-pin-halo {
         animation: none;
     }
 }
@@ -17250,7 +17295,19 @@ body.theme-light .du-screen .pv-tag--alerta {
 
 
 
+/* o mapa do Google é claro nos dois temas: dentro dele, pinos, rótulos,
+   escala e crédito usam sempre as cores do tema claro (texto escuro,
+   contorno branco), senão o texto claro do tema escuro some no fundo */
 .du-mapa-real {
+    --text: #24292f;
+    --muted: #5c646d;
+    --faint: #838b94;
+    --accent: #3d6fa5;
+    --section-bg: #f3f4f6;
+    --du-ok: #1e8449;
+    --du-warn: #b9770e;
+    --du-danger: #b3261e;
+    --du-halo-texto: #ffffff;
     flex: 1 1 0;
     width: 100%;
     min-height: 0;
@@ -17261,15 +17318,9 @@ body.theme-light .du-screen .pv-tag--alerta {
 
 
 .du-mapa-real.leaflet-container {
-    background: #0e1624;
+    background: #e9ecef;
     font-family: var(--font-ui);
     font-size: 0.75rem;
-}
-
-
-
-body.theme-light .du-mapa-real.leaflet-container {
-    background: #e9ecef;
 }
 
 
@@ -17278,13 +17329,6 @@ body.theme-light .du-mapa-real.leaflet-container {
    na impressão (PDF) e em navegador sem aceleração gráfica */
 .du-mapa-real img.leaflet-tile {
     mix-blend-mode: normal;
-}
-
-
-
-/* nomes das cidades da base ficam atrás dos rótulos das unidades */
-.du-lf-nomes {
-    opacity: 0.55;
 }
 
 
@@ -17421,48 +17465,6 @@ body.theme-light .du-mapa-real.leaflet-container {
 
 
 
-.du-lf-rotulo--desvio b,
-.du-lf-rotulo--desvio span {
-    color: var(--accent);
-}
-
-
-
-.du-lf-rotulo--desvio b {
-    font-size: 1rem;
-}
-
-
-
-/* desvio sugerido: tracejado correndo na direção do destino */
-.du-lf-desvio {
-    fill: none;
-    stroke: var(--accent);
-    stroke-width: 3.5;
-    stroke-dasharray: 9 7;
-    stroke-linecap: round;
-    animation: du-fluxo 1.2s linear infinite;
-}
-
-
-
-.du-lf-seta {
-    width: 1.3rem;
-    height: 1.3rem;
-    margin: -0.65rem 0 0 -0.65rem;
-}
-
-
-
-.du-lf-seta svg {
-    display: block;
-    width: 100%;
-    height: 100%;
-    fill: var(--accent);
-}
-
-
-
 .du-mapa-real .leaflet-control-scale-line {
     border-color: var(--muted);
     background: color-mix(in srgb, var(--section-bg) 80%, transparent);
@@ -17487,104 +17489,78 @@ body.theme-light .du-mapa-real.leaflet-container {
 
 
 @media (prefers-reduced-motion: reduce) {
-    .du-lf-pino.du-st--alerta .du-lf-halo,
-    .du-lf-desvio {
+    .du-lf-pino.du-st--alerta .du-lf-halo {
         animation: none;
     }
 }
 
 
 
-/* ---- decisões ---- */
-.du-dec-lista {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    flex: 1 1 auto;
-    min-height: 0;
-    list-style: none;
-}
-
-
-
-.du-dec-lista li {
-    display: flex;
-    flex: 1 1 auto;
-}
-
-
-
-.du-dec {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    width: 100%;
-    padding: 0.32rem 0.8rem;
-    background: var(--row-bg);
-    border: 1px solid var(--row-line);
-    border-left: 4px solid var(--du-c);
-    border-radius: 8px;
-    color: var(--text);
-    font-family: inherit;
-    text-align: left;
+/* ---- alertas: histórico do dia na tabela padrão das telas ---- */
+.du-tabela--alertas tbody tr[data-goto] {
     cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 
 
-.du-dec:hover,
-.du-dec:focus-visible {
+.du-tabela--alertas tbody tr[data-goto]:hover td {
     background: var(--hover);
-    border-color: var(--accent);
-    border-left-color: var(--du-c);
-    outline: none;
 }
 
 
 
-.du-dec-num,
-.du-destino-rank {
-    display: grid;
-    place-items: center;
-    flex: 0 0 auto;
-    width: 1.7rem;
-    height: 1.7rem;
-    border-radius: 50%;
-    background: color-mix(in srgb, var(--du-c) 18%, transparent);
-    color: var(--du-c);
-    font-size: 0.85rem;
-    font-weight: 800;
+/* horário e situação podem quebrar ("ontem" / "15:00", "resolvido" / "12:45")
+   para a tabela caber na coluna sem rolar de lado */
+.du-tabela--alertas td.du-alerta-hora,
+.du-tabela--alertas td.du-alerta-sit {
+    white-space: normal;
+    line-height: 1.25;
 }
 
 
 
-.du-dec-corpo {
-    display: flex;
-    flex-direction: column;
-    gap: 0.06rem;
-    min-width: 0;
+.du-tabela--alertas td.du-alerta-hora {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--muted);
 }
 
 
 
-.du-dec-topo {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+/* a descrição quebra linha; o resto da linha fica numa linha só */
+.du-tabela--alertas td.du-alerta-txt {
+    width: 100%;
+    min-width: 8rem;
+    white-space: normal;
+    font-size: 0.84rem;
+    line-height: 1.3;
 }
 
 
 
-.du-dec-topo b {
-    font-size: 1rem;
-    font-weight: 800;
-}
-
-
-
-.du-dec .kpi-flag {
+.du-tabela--alertas .kpi-flag {
     font-size: 0.6rem;
+}
+
+
+
+.du-tabela--alertas td.du-alerta-sit {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--du-c);
+}
+
+
+
+/* resolvido: sem a barra da situação, esmaecido */
+.du-tabela--alertas tr.is-resolvido td {
+    color: var(--faint);
+}
+
+
+
+.du-tabela--alertas tr.is-resolvido .kpi-flag {
+    opacity: 0.5;
 }
 
 
@@ -17597,392 +17573,106 @@ body.theme-light .du-mapa-real.leaflet-container {
 
 
 
-.du-dec-fato {
-    font-size: 0.8rem;
-    line-height: 1.3;
-    color: var(--muted);
-}
-
-
-
-/* ---- semáforo por unidade ---- */
-.du-semaforo {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    gap: 0.6rem;
-}
-
-
-
-.du-uni {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    min-width: 0;
-    padding: 0.5rem 0.7rem 0.6rem;
-    background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
-    border: 1px solid var(--card-border);
-    border-top: 3px solid var(--du-c);
-    border-radius: 10px;
-}
-
-
-
-.du-uni.du-st--atencao,
-.du-uni.du-st--alerta {
-    border-color: color-mix(in srgb, var(--du-c) 45%, transparent);
-    border-top-color: var(--du-c);
-    background: linear-gradient(180deg, color-mix(in srgb, var(--du-c) 15%, transparent) 0%, color-mix(in srgb, var(--du-c) 4%, transparent) 100%);
-}
-
-
-
-.du-uni-head {
+/* ============================================
+   DU 01 · RECEBIMENTO — recebido por cultura
+   ============================================ */
+/* nome da unidade e total na linha de cima, a barra dos grãos embaixo */
+.du-mix-topo {
     display: flex;
     align-items: baseline;
-    gap: 0.35rem;
-    min-width: 0;
-    white-space: nowrap;
-    overflow: hidden;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.35rem;
 }
 
 
 
-.du-uni-nome {
-    overflow: hidden;
-    text-overflow: ellipsis;
+.du-mix-topo b {
     font-size: 0.95rem;
     font-weight: 800;
 }
 
 
 
-.du-uni-sub {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 0.66rem;
+.du-mix-topo span {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+
+
+.du-st--off .du-mix-topo b {
+    color: var(--muted);
+}
+
+
+
+.du-st--off .du-mix-topo span {
+    font-style: italic;
     font-weight: 600;
     color: var(--faint);
 }
 
 
 
-.du-uni-kpis {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.3rem 0.5rem;
-    margin: 0;
-}
-
-
-
-.du-uni-kpis div {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-}
-
-
-
-.du-uni-kpis dt {
-    font-size: 0.58rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--faint);
-    white-space: nowrap;
-}
-
-
-
-.du-uni-kpis dd {
-    margin: 0;
-    font-size: 0.92rem;
-    font-weight: 800;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-}
-
-
-
-.du-uni-off {
-    margin: 0;
-    font-size: 0.72rem;
-    line-height: 1.35;
-    color: var(--muted);
-}
-
-
-
-.du-uni-off b {
-    display: block;
-    font-size: 0.82rem;
-    color: var(--text);
-}
-
-
-
-/* ============================================
-   DU 01 · RECEBIMENTO — desvio sugerido
-   ============================================ */
-/* o que sobra: número grande e a barra do que chega, partida no que cabe */
-.du-sobra {
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
-}
-
-
-
-.du-sobra-topo {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-}
-
-
-
-.du-sobra-valor {
-    font-size: 2.3rem;
-    font-weight: 800;
-    line-height: 1;
-    color: var(--du-danger);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-}
-
-
-
-.du-sobra-valor small {
-    font-size: 0.5em;
-}
-
-
-
-.du-sobra-txt {
-    display: flex;
-    flex-direction: column;
-    font-size: 0.76rem;
-    line-height: 1.3;
-    color: var(--muted);
-}
-
-
-
-.du-sobra-txt b {
-    font-size: 1rem;
-    font-weight: 800;
-    color: var(--text);
-}
-
-
-
-.du-sobra-barra {
+/* fatias separadas por 2px de fundo: as larguras em % somam 100 e o
+   encolhimento do flex tira os vãos de cada uma na proporção, sem
+   distorcer. Milho e trigo encostados são parecidos (ΔE 10,6), por isso
+   cada fatia leva o nome escrito, não só a cor. */
+.du-mix {
     display: flex;
     gap: 2px;
-    height: 2.2rem;
+    min-width: 16rem;
+    height: 2.5rem;
 }
 
 
 
-.du-sobra-barra span {
-    display: flex;
-    align-items: center;
-    padding: 0 0.65rem;
-    border-radius: 5px;
-    font-size: 0.76rem;
-    font-weight: 800;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-
-
-.du-sobra-barra .is-cabe {
-    color: var(--text);
-    background: color-mix(in srgb, var(--du-ok) 20%, transparent);
-    border: 1px solid color-mix(in srgb, var(--du-ok) 45%, transparent);
-}
-
-
-
-/* o que sobra leva o tracejado de "fora", na cor do alerta */
-.du-sobra-barra .is-sobra {
-    justify-content: flex-end;
-    color: var(--du-danger);
-    background-color: color-mix(in srgb, var(--du-danger) 12%, transparent);
-    background-image: repeating-linear-gradient(135deg, color-mix(in srgb, var(--du-danger) 30%, transparent) 0 2px, transparent 2px 7px);
-    border: 1px solid color-mix(in srgb, var(--du-danger) 55%, transparent);
-}
-
-
-
-.du-sobra-nota {
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: var(--muted);
-}
-
-
-
-.du-fatos {
+.du-mix i {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
-    list-style: none;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--muted);
-}
-
-
-
-.du-fatos li::before {
-    content: "•";
-    margin-right: 0.4rem;
-    color: var(--faint);
-}
-
-
-
-.du-fatos li.is-alerta { color: var(--du-danger); }
-.du-fatos li.is-alerta::before { color: inherit; }
-
-
-
-/* destinos como minitabela: cabeçalho e linhas com as mesmas colunas
-   (posição, nome, distância, fila, livre hoje) e o porquê embaixo */
-.du-destinos-cab,
-.du-destino {
-    display: grid;
-    grid-template-columns: 2rem minmax(0, 1fr) 3.9rem 3.6rem 4.6rem;
-    column-gap: 0.6rem;
-    align-items: center;
-}
-
-
-
-.du-destinos-cab {
-    padding: 0 0.75rem 0 calc(0.75rem + 4px);
-    margin-top: 0.2rem;
-    font-size: 0.64rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--faint);
-}
-
-
-
-.du-destinos-cab span:first-child {
-    grid-column: 1 / 3;
-}
-
-
-
-.du-destinos-cab span:not(:first-child) {
-    text-align: right;
-    white-space: nowrap;
-}
-
-
-
-.du-destinos {
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
-    flex: 1 1 auto;
-    min-height: 0;
-    list-style: none;
-}
-
-
-
-.du-destino {
-    flex: 1 1 auto;
-    align-content: center;
-    row-gap: 0.3rem;
-    padding: 0.55rem 0.75rem;
-    border-radius: 8px;
-    background: var(--row-bg);
-    border: 1px solid var(--row-line);
-    border-left: 4px solid var(--du-c);
-}
-
-
-
-.du-destino.is-recomendado {
-    background: color-mix(in srgb, var(--du-ok) 9%, transparent);
-    border-color: color-mix(in srgb, var(--du-ok) 35%, transparent);
-    border-left-color: var(--du-c);
-}
-
-
-
-.du-destino-nome {
+    justify-content: center;
+    flex: 0 1 auto;
     min-width: 0;
-    font-size: 1.2rem;
+    padding: 0 0.45rem;
+    background: var(--c);
+    color: var(--grao-texto);
+    font-style: normal;
+    font-size: 0.95rem;
     font-weight: 800;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-
-
-.du-destino .pv-tag {
-    flex: 0 0 auto;
-    width: auto;
-    white-space: nowrap;
-}
-
-
-
-.du-destino-num {
-    text-align: right;
-    font-size: 1.2rem;
-    font-weight: 800;
+    line-height: 1.1;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
 }
 
 
 
-.du-destino-num small {
-    font-size: 0.72em;
-    font-weight: 600;
-    color: var(--muted);
+.du-mix i:first-child {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
 }
 
 
 
-/* embaixo do nome: a etiqueta e o porquê, na cor da situação quando há
-   restrição */
-.du-destino-porque {
-    grid-column: 2 / -1;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    min-width: 0;
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--muted);
+.du-mix i:last-child {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
 }
 
 
 
-.du-destino.du-st--atencao .du-destino-porque,
-.du-destino.du-st--alerta .du-destino-porque {
-    color: var(--du-c);
+.du-mix i small {
+    font-size: 0.64rem;
+    font-weight: 700;
 }
 
 
 
-.du-nota {
-    margin: 0;
-    font-size: 0.7rem;
-    color: var(--faint);
+/* sem comunicação: a barra fica vazia, com o hachurado do espaço livre */
+.du-mix--off {
+    border: 1px solid var(--card-border);
+    border-radius: 4px;
 }
 
 
@@ -17990,9 +17680,10 @@ body.theme-light .du-mapa-real.leaflet-container {
 /* ============================================
    DU 02 · ARMAZENAGEM
    ============================================ */
+/* 10rem: com entrada e saída lado a lado, 12rem já passava da largura do bloco */
 .du-estoque {
     display: flex;
-    min-width: 12rem;
+    min-width: 10rem;
     height: 1.1rem;
     border-radius: 4px;
     overflow: hidden;
@@ -18117,6 +17808,13 @@ body.theme-light .du-proj-sel option {
 
 
 
+/* a legenda da projeção leva as duas taxas e pode quebrar em duas linhas */
+.du-proj-legenda > span {
+    white-space: normal;
+}
+
+
+
 .du-proj-leg {
     display: inline-block;
     width: 1.1rem;
@@ -18236,16 +17934,6 @@ body.theme-light .du-proj-sel option {
 
 
 
-.du-proj-evento {
-    position: absolute;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: var(--muted);
-    white-space: nowrap;
-}
-
-
-
 /* canto com a unidade escolhida: no telão o menu é pequeno para ler de
    longe. Fica no alto à esquerda, onde a curva ainda está baixa. */
 .du-proj-nome {
@@ -18274,13 +17962,6 @@ body.theme-light .du-proj-sel option {
     font-size: 0.7rem;
     font-weight: 600;
     color: var(--muted);
-}
-
-
-
-/* rótulo em cima da guia tracejada que sai do ponto */
-.du-proj-evento {
-    transform: translate(-50%, -115%);
 }
 
 
@@ -18334,8 +18015,9 @@ body.theme-light .du-proj-sel option {
 
 
 
-/* cheia: acima da linha de 100%, terminando no ponto */
-.du-proj-marca--cheia::before {
+/* pico da projeção: ponto vazado, rótulo acima e à direita (o topo da curva
+   é largo, então ao lado ele encostaria nela) */
+.du-proj-marca--pico::before {
     background: var(--du-halo-texto);
     border: 2px solid var(--viz-real);
     box-sizing: border-box;
@@ -18343,25 +18025,42 @@ body.theme-light .du-proj-sel option {
 
 
 
-.du-proj-marca--cheia > span {
-    right: -0.3rem;
-    bottom: 0.4rem;
+.du-proj-marca--pico > span {
+    left: 0.4rem;
+    bottom: 0.35rem;
 }
 
 
 
-/* mesmas faixas da coluna "Enche em": alerta < 3 dias, atenção 3–7 */
-.du-proj-marca--cheia.is-alerta b { color: var(--du-danger); }
-.du-proj-marca--cheia.is-atencao b { color: var(--du-warn); }
-
-
-
-.du-proj-marca--colheita::before {
-    width: 0.5rem;
-    height: 0.5rem;
+/* fim da projeção: na borda direita, rótulo à esquerda e abaixo do ponto;
+   perto do rodapé fica na altura do ponto */
+.du-proj-marca--fim::before {
     left: -0.25rem;
     top: -0.25rem;
+    width: 0.5rem;
+    height: 0.5rem;
 }
+
+
+
+.du-proj-marca--fim > span {
+    right: 0.45rem;
+    top: 0.3rem;
+}
+
+
+
+.du-proj-marca--fim.is-baixo > span {
+    top: 0;
+    right: 0.6rem;
+    transform: translateY(-50%);
+}
+
+
+
+/* pico perto da capacidade: atenção a partir de 93%, alerta a partir de 97% */
+.du-proj-marca--pico.is-alerta b { color: var(--du-danger); }
+.du-proj-marca--pico.is-atencao b { color: var(--du-warn); }
 
 
 
@@ -18390,6 +18089,13 @@ body.theme-light .du-proj-sel option {
 
 
 
+/* a última marca fica no fim do eixo: termina nele em vez de centrar */
+.du-proj-eixo span:last-child:not(:first-child) {
+    transform: translateX(-100%);
+}
+
+
+
 .du-proj-eixo .is-hoje {
     color: var(--text);
 }
@@ -18397,13 +18103,12 @@ body.theme-light .du-proj-sel option {
 
 
 /* ============================================
-   DU 03 · TERMOMETRIA E SECAGEM
+   DU 03 · TERMOMETRIA
    ============================================ */
 .du-silos {
     display: inline-flex;
     flex-wrap: wrap;
-    gap: 0.22rem;
-    max-width: 14rem;
+    gap: 0.3rem;
     vertical-align: middle;
 }
 
@@ -18417,6 +18122,132 @@ body.theme-light .du-proj-sel option {
     border-radius: 3px;
     background: color-mix(in srgb, var(--du-ok) 22%, transparent);
     border: 1px solid color-mix(in srgb, var(--du-ok) 45%, transparent);
+}
+
+
+
+/* cada estrutura é um selo com a própria leitura: no videowall não há dica
+   de mouse, então a temperatura e a faixa de alerta ficam à vista. A forma
+   diz o tipo, como nas telas de Avaré: silo redondo, armazém retangular e
+   pulmão redondo com a moldura tracejada de trânsito. */
+.du-silos {
+    align-items: center;
+    gap: 0.45rem 0.9rem;
+}
+
+
+
+/* dois grupos (silos | armazéns e pulmões): quando não cabe, o segundo
+   grupo desce inteiro, em vez de a linha quebrar no meio dos armazéns */
+.du-grupo {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+
+
+.du-silos i {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 3.1rem;
+    height: 3.1rem;
+    padding: 0;
+    border-radius: 50%;
+    font-style: normal;
+    font-size: 0.86rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+    color: var(--text);
+}
+
+
+
+.du-silos i small {
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+
+
+.du-silos i.du-arm {
+    width: 4.9rem;
+    height: 2.6rem;
+    border-radius: 5px;
+}
+
+
+
+/* anel tracejado por fora, afastado do círculo para não brigar com a
+   cor da faixa (nem com o halo do alerta) */
+.du-silos i.du-pulmao {
+    outline: 2px dashed var(--accent);
+    outline-offset: 3px;
+}
+
+
+
+/* respiro entre armazéns e pulmões (entre os grupos é o gap) */
+.du-silos i.du-arm + i.du-pulmao {
+    margin-left: 0.6rem;
+}
+
+
+
+.du-silos i.du-pulmao + i.du-pulmao {
+    margin-left: 0.5rem;
+}
+
+
+
+/* legenda das formas: só o contorno, a cor fica na legenda das faixas */
+.du-forma {
+    display: inline-block;
+    width: 0.9rem;
+    height: 0.9rem;
+    border: 1.5px solid var(--muted);
+    border-radius: 50%;
+}
+
+
+
+.du-forma--arm {
+    width: 1.3rem;
+    height: 0.75rem;
+    border-radius: 2px;
+}
+
+
+
+.du-forma--pulmao {
+    border-color: var(--accent);
+    border-style: dashed;
+}
+
+
+
+/* fora da faixa normal o selo vira alerta de verdade: cor cheia */
+.du-silos i.is-atencao {
+    color: #1a1204;
+}
+
+
+
+.du-silos i.is-alerta {
+    color: #fff;
+}
+
+
+
+.du-silos i.is-atencao small,
+.du-silos i.is-alerta small {
+    color: inherit;
+    opacity: 0.85;
 }
 
 
@@ -18456,6 +18287,9 @@ body.theme-light .du-proj-sel option {
 
 
 
+/* ============================================
+   DU 04 · SECAGEM
+   ============================================ */
 .du-secs {
     display: inline-flex;
     flex-wrap: wrap;
@@ -18515,6 +18349,60 @@ body.theme-light .du-proj-sel option {
 
 
 
+/* tabela por secador: os dois secadores da unidade ficam colados (sem a
+   linha entre eles) e a barra de situação corre pelas duas linhas */
+.du-tabela--sec tr.du-sec-par td {
+    border-bottom-color: transparent;
+}
+
+
+
+.du-tabela--sec td.du-sec-cult {
+    white-space: nowrap;
+}
+
+
+
+.du-tabela--sec td.du-sec-cult .legend-dot {
+    margin-right: 0.35rem;
+}
+
+
+
+/* na massa, a temperatura vai miúda e a umidade é o número que decide */
+.du-tabela--sec .du-umi {
+    font-weight: 700;
+}
+
+
+
+.du-tabela--sec .du-umi.is-atencao {
+    color: var(--du-warn);
+}
+
+
+
+.du-tabela--sec .du-umi.is-alerta {
+    color: var(--du-danger);
+}
+
+
+
+/* secador desarmado por segurança (ar de saída acima de 50 °C) */
+.du-sec.is-alerta {
+    border-color: color-mix(in srgb, var(--du-danger) 45%, transparent);
+    background: color-mix(in srgb, var(--du-danger) 14%, transparent);
+    color: var(--du-danger);
+}
+
+
+
+.du-sec.is-alerta::before {
+    background: var(--du-danger);
+}
+
+
+
 .du-sec.is-parado {
     border-color: var(--card-border);
     background: var(--row-bg);
@@ -18530,141 +18418,119 @@ body.theme-light .du-proj-sel option {
 
 
 /* ============================================
-   DU 04 · CLIMA
+   DU 05 · CLIMA
    ============================================ */
-.du-chuva {
-    width: 100%;
-    height: 100%;
-    border-collapse: separate;
-    border-spacing: 3px;
+/* uma célula por dia: ícone e máx./mín. em cima, chuva e vento embaixo.
+   O fundo ganha o azul da chuva conforme a chance do dia (--p). */
+.du-tabela--clima {
     table-layout: fixed;
-    font-size: 0.82rem;
 }
 
 
 
-.du-chuva thead th {
-    padding: 0 0 0.2rem;
-    font-size: 0.66rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+.du-tabela--clima th:first-child {
+    width: 9rem;
+}
+
+
+
+.du-tabela--clima th:last-child {
+    width: 13rem;
+}
+
+
+
+.du-tabela--clima th.du-dia-th {
     text-align: center;
-    color: var(--muted);
 }
 
 
 
-.du-chuva thead tr {
-    height: 1px;
+.du-tabela--clima td.du-dia {
+    padding: 0.3rem;
+    border-left: 3px solid var(--card-bg, transparent);
+    background: rgb(var(--du-chuva-rgb) / calc(var(--p) * 0.32));
+    text-align: center;
 }
 
 
 
-.du-chuva thead th:first-child {
-    width: 13.5rem;
-    text-align: left;
+.du-dia-cel {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: center;
+    align-items: center;
+    column-gap: 0.45rem;
+    row-gap: 0.1rem;
 }
 
 
 
-.du-chuva thead th.num {
-    width: 5.5rem;
-    text-align: right;
+.du-dia-cel .pv-icon {
+    width: 1.6rem;
+    height: 1.6rem;
 }
 
 
 
-.du-chuva tbody th {
-    padding-right: 0.5rem;
-    font-size: 0.86rem;
-    font-weight: 700;
-    text-align: left;
+.du-dia-temp b {
+    font-size: 1.05rem;
+    font-weight: 800;
     color: var(--text);
-    white-space: nowrap;
 }
 
 
 
-.du-chuva tbody th small {
-    margin-left: 0.35rem;
-    font-size: 0.68rem;
-    font-weight: 500;
+.du-dia-temp small {
+    margin-left: 0.3rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #38bdf8;
+}
+
+
+
+.du-dia--agora .du-dia-temp small {
     color: var(--muted);
 }
 
 
 
-.du-chuva td {
-    border-radius: 4px;
-    background: rgb(var(--du-chuva-rgb) / calc(var(--p) * var(--du-chuva-max)));
+.du-dia-chuva,
+.du-dia-vento {
+    grid-column: 1 / -1;
+    font-size: 0.74rem;
     font-weight: 600;
-    text-align: center;
     color: var(--muted);
+    white-space: nowrap;
     font-variant-numeric: tabular-nums;
 }
 
 
 
-.du-chuva td.is-forte {
+.du-dia-chuva.is-chuva {
     font-weight: 800;
-    color: #fff;
-}
-
-
-
-body.theme-light .du-chuva td.is-forte {
     color: var(--text);
 }
 
 
 
-.du-chuva td.du-chuva-inicio {
-    background: none;
+.du-dia-vento.is-alerta {
     font-weight: 800;
-    text-align: right;
-    color: var(--muted);
-    white-space: nowrap;
+    color: var(--du-danger);
 }
 
 
 
-.du-chuva td.du-chuva-inicio.is-atencao { color: var(--du-warn); }
-.du-chuva td.du-chuva-inicio.is-alerta { color: var(--du-danger); }
-
-
-
-.du-chuva-escala {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    margin-left: 0.8rem;
+/* dia com chuva que atrapalha: contorno na cor da faixa */
+.du-tabela--clima td.du-dia.is-atencao {
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--du-warn) 55%, transparent);
 }
 
 
 
-.du-chuva-escala i {
-    width: 3rem;
-    height: 0.55rem;
-    border-radius: 3px;
-    border: 1px solid var(--row-line);
-    background: linear-gradient(90deg, transparent, rgb(var(--du-chuva-rgb) / var(--du-chuva-max)));
-}
-
-
-
-.du-tabela--clima .pv-tabela-cond b {
-    color: var(--text);
-    font-weight: 800;
-}
-
-
-
-/* ---- larguras menores ---- */
-@media screen and (max-width: 1024px) {
-    .du-semaforo {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
+.du-tabela--clima td.du-dia.is-alerta {
+    box-shadow: inset 0 0 0 2px var(--du-danger);
 }
 
 
@@ -18673,14 +18539,9 @@ body.theme-light .du-chuva td.is-forte {
    rolam de lado dentro do próprio bloco */
 @media screen and (max-width: 768px) {
     .du-geral,
-    .du-split,
-    .du-split--meio {
+    .du-split {
         grid-template-columns: minmax(0, 1fr);
         grid-template-rows: none;
-    }
-
-    .du-semaforo {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .du-mapa-svg,
@@ -18698,13 +18559,12 @@ body.theme-light .du-chuva td.is-forte {
         overflow-x: auto;
     }
 
-    .du-tabela,
-    .du-chuva {
+    .du-tabela {
         height: auto;
     }
 
-    .du-chuva {
-        min-width: 44rem;
+    .du-tabela--clima {
+        min-width: 52rem;
     }
 
     .du-section .section-head {

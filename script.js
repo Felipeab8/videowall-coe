@@ -1562,30 +1562,22 @@ mountCameras(document);
 
 // ============================================
 // MAPA DAS DEMAIS UNIDADES
-// Mapa real (Leaflet, base cinza da Esri) montado por cima do
+// Mapa real (Leaflet, fundo de ruas do Google) montado por cima do
 // SVG esquemático, que continua no HTML como reserva: sem internet, sem
-// Leaflet ou sem os blocos do mapa, é ele que aparece. Pinos, rótulos e
-// desvio saem do próprio SVG (data-latlng, data-lado, data-de/data-para),
-// então os dados ficam num lugar só. O mapa é artefato como o vídeo das
+// Leaflet ou sem os blocos do mapa, é ele que aparece. Pinos e rótulos
+// saem do próprio SVG (data-latlng, data-lado), então os dados ficam num
+// lugar só. O mapa é artefato como o vídeo das
 // câmeras: limparArtefatos o tira do HTML salvo e remontar() o põe de volta.
 // ============================================
-// Esri Canvas: fundo cinza (represas, rodovias) e, por cima, só os nomes
-// das cidades. Não pede chave, nem com a página aberta direto do disco — o
-// CARTO passou a exigir chave e marca os blocos com "API KEY REQUIRED".
-const MAPA_CAMADAS = {
-    escuro: ['Canvas/World_Dark_Gray_Base', 'Canvas/World_Dark_Gray_Reference'],
-    claro: ['Canvas/World_Light_Gray_Base', 'Canvas/World_Light_Gray_Reference']
-};
-const MAPA_CREDITO = 'Esri, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+// Mapa de ruas do Google, em português, o mesmo nos dois temas. Os blocos
+// vêm direto dos servidores do Google, fora da API oficial: não pede chave,
+// mas os termos do Google não preveem esse uso e ele pode parar sem aviso
+// (aí os blocos falham e volta o SVG). Com chave, o caminho oficial é a
+// Maps JavaScript API.
+const MAPA_URL = 'https://mt{s}.google.com/vt/lyrs=m&hl=pt-BR&x={x}&y={y}&z={z}';
+const MAPA_CREDITO = 'Mapa &copy; Google';
 
-function urlCamadaMapa(nome) {
-    return 'https://services.arcgisonline.com/arcgis/rest/services/' + nome + '/MapServer/tile/{z}/{y}/{x}';
-}
 let mapasUnidades = [];
-
-function temaDoMapa() {
-    return document.body.classList.contains('theme-light') ? 'claro' : 'escuro';
-}
 
 function latLngDe(el, atributo) {
     const v = (el.getAttribute(atributo) || '').split(',').map(Number);
@@ -1600,10 +1592,14 @@ function remPx() {
 function rotuloMapa(principal, apoio) {
     const el = document.createElement('div');
     const b = document.createElement('b');
-    const span = document.createElement('span');
     b.textContent = principal;
-    span.textContent = apoio;
-    el.append(b, span);
+    el.appendChild(b);
+    // a segunda linha só existe quando há alerta estratégico
+    if (apoio) {
+        const span = document.createElement('span');
+        span.textContent = apoio;
+        el.appendChild(span);
+    }
     return el;
 }
 
@@ -1651,8 +1647,8 @@ function criarMapaUnidades(secao, svg) {
     mapa.attributionControl.setPrefix(false);
     L.control.scale({ imperial: false, position: 'bottomleft' }).addTo(mapa);
 
-    const item = { el, secao, mapa, limites: null, desvio: null, observador: null, tema: '', camadas: [] };
-    montarCamadasMapa(item);
+    const item = { el, secao, mapa, limites: null, observador: null };
+    montarCamadaMapa(item);
 
     const pontos = [];
     svg.querySelectorAll('.du-pin[data-latlng]').forEach((pin) => {
@@ -1662,13 +1658,14 @@ function criarMapaUnidades(secao, svg) {
         const status = Array.from(pin.classList).find((c) => c.startsWith('du-st--')) || '';
         const nome = pin.querySelector('.du-pin-nome');
         const info = pin.querySelector('.du-pin-info');
+        const destino = pin.getAttribute('data-goto');
         const marca = L.marker(pos, {
             icon: L.divIcon({
                 className: 'du-lf-pino ' + (ehBase ? 'du-lf-pino--base' : status),
                 html: '<i class="du-lf-halo"></i><i class="du-lf-ponto"></i>',
                 iconSize: null
             }),
-            interactive: ehBase,
+            interactive: ehBase || !!destino,
             keyboard: false
         });
         marca.bindTooltip(rotuloMapa(nome ? nome.textContent : '', info ? info.textContent : ''), {
@@ -1679,7 +1676,6 @@ function criarMapaUnidades(secao, svg) {
         });
         // Avaré leva às telas dela pelo mesmo clique delegado da visão geral.
         // O ícone só nasce quando o mapa ganha posição: marca no evento add.
-        const destino = pin.getAttribute('data-goto');
         if (destino) {
             marca.on('add', () => {
                 const icone = marca.getElement();
@@ -1696,33 +1692,6 @@ function criarMapaUnidades(secao, svg) {
     }
     item.limites = L.latLngBounds(pontos);
 
-    const desvio = svg.querySelector('.du-desvio[data-de][data-para]');
-    const de = desvio ? latLngDe(desvio, 'data-de') : null;
-    const para = desvio ? latLngDe(desvio, 'data-para') : null;
-    if (de && para) {
-        const textos = desvio.querySelectorAll('text');
-        const rotulo = rotuloMapa(textos[1] ? textos[1].textContent : '', textos[0] ? textos[0].textContent : '');
-        rotulo.prepend(rotulo.lastChild); // "desvio sugerido" em cima, "≈ 50 km" embaixo
-        item.desvio = {
-            de,
-            para,
-            linha: L.polyline([de, para], { className: 'du-lf-desvio', interactive: false }).addTo(mapa),
-            seta: L.marker(para, {
-                icon: L.divIcon({
-                    className: 'du-lf-seta',
-                    html: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 3 L12 10 L2 17 Z"></path></svg>',
-                    iconSize: null
-                }),
-                interactive: false,
-                keyboard: false
-            }).addTo(mapa),
-            rotulo: L.tooltip({ permanent: true, direction: 'left', className: 'du-lf-rotulo du-lf-rotulo--desvio', opacity: 1 })
-                .setLatLng(de)
-                .setContent(rotulo)
-        };
-        mapa.openTooltip(item.desvio.rotulo);
-    }
-
     // o bloco muda de tamanho com o --fit e começa escondido (tela fora do
     // ar): a cada mudança o mapa se reenquadra nas unidades. Temporizador, e
     // não requestAnimationFrame: reenquadrar dentro de um quadro deixava os
@@ -1737,23 +1706,19 @@ function criarMapaUnidades(secao, svg) {
     enquadrarMapaUnidades(item);
 }
 
-// Fundo e nomes do tema atual. Trocar de tema recria as camadas em vez de
-// usar setUrl: com zoom fracionado o setUrl do Leaflet pede blocos com zoom
-// quebrado ("8.75") e o mapa fica vazio.
-function montarCamadasMapa(item) {
-    item.camadas.forEach((camada) => camada.remove());
-    item.tema = temaDoMapa();
-    item.camadas = MAPA_CAMADAS[item.tema].map((nome, i) => L.tileLayer(urlCamadaMapa(nome), {
-        maxNativeZoom: 16,
-        maxZoom: 19,
-        className: i ? 'du-lf-nomes' : 'du-lf-fundo',
-        attribution: i ? '' : MAPA_CREDITO
-    }).addTo(item.mapa));
-    // sem internet os blocos falham: volta para o SVG em vez de um fundo vazio
+function montarCamadaMapa(item) {
+    const camada = L.tileLayer(MAPA_URL, {
+        subdomains: '0123',
+        maxZoom: 20,
+        className: 'du-lf-fundo',
+        attribution: MAPA_CREDITO
+    }).addTo(item.mapa);
+    // sem internet (ou com o Google recusando) os blocos falham: volta para
+    // o SVG em vez de um fundo vazio
     let carregados = 0;
     let falhas = 0;
-    item.camadas[0].on('tileload', () => { carregados++; });
-    item.camadas[0].on('tileerror', () => {
+    camada.on('tileload', () => { carregados++; });
+    camada.on('tileerror', () => {
         if (++falhas >= 6 && !carregados) desmontarMapaUnidades(item);
     });
 }
@@ -1767,41 +1732,6 @@ function enquadrarMapaUnidades(item) {
         paddingBottomRight: [rem * 1.5, rem * 2.6],
         animate: false
     });
-    tracarDesvio(item, rem);
-}
-
-// Curva do desvio em pixels (bojo para oeste, longe da unidade de origem
-// e sem encostar nos pinos) e seta apontando para o destino.
-function tracarDesvio(item, rem) {
-    const d = item.desvio;
-    if (!d) return;
-    const mapa = item.mapa;
-    const a = mapa.latLngToLayerPoint(d.de);
-    const b = mapa.latLngToLayerPoint(d.para);
-    const vet = b.subtract(a);
-    const comp = Math.hypot(vet.x, vet.y);
-    if (!comp) return;
-    const u = L.point(vet.x / comp, vet.y / comp);
-    const ini = a.add(u.multiplyBy(rem * 1.1));
-    const fim = b.subtract(u.multiplyBy(rem * 1.2));
-    const ctrl = ini.add(fim).divideBy(2).add(L.point(-u.y, u.x).multiplyBy(comp * 0.3));
-    const pts = [];
-    for (let i = 0; i <= 24; i++) {
-        const t = i / 24;
-        const s = 1 - t;
-        pts.push(mapa.layerPointToLatLng(L.point(
-            s * s * ini.x + 2 * s * t * ctrl.x + t * t * fim.x,
-            s * s * ini.y + 2 * s * t * ctrl.y + t * t * fim.y
-        )));
-    }
-    d.linha.setLatLngs(pts);
-    d.rotulo.setLatLng(pts[12]);
-    d.seta.setLatLng(pts[24]);
-    const tan = fim.subtract(ctrl);
-    const icone = d.seta.getElement();
-    if (icone && icone.firstChild) {
-        icone.firstChild.style.transform = 'rotate(' + (Math.atan2(tan.y, tan.x) * 180 / Math.PI) + 'deg)';
-    }
 }
 
 function desmontarMapaUnidades(item) {
@@ -1812,44 +1742,71 @@ function desmontarMapaUnidades(item) {
     mapasUnidades = mapasUnidades.filter((m) => m !== item);
 }
 
-// modo claro/escuro troca a base do mapa junto com o resto da interface
-// (a classe do body também muda com edição e menu: só troca se o tema mudou)
-new MutationObserver(() => {
-    const tema = temaDoMapa();
-    mapasUnidades.forEach((item) => {
-        if (item.tema !== tema) montarCamadasMapa(item);
-    });
-}).observe(document.body, { attributes: true, attributeFilter: ['class'] });
-
 mountMapaUnidades(document);
 
 // ============================================
 // DU 02 · EVOLUÇÃO DA OCUPAÇÃO
-// Últimos 30 dias e a projeção até encher, da rede ou da unidade escolhida
-// no menu. Os números ficam nas opções do menu (ver o comentário no HTML);
-// a rede é a soma das unidades, dia a dia.
+// Últimos 90 dias e a projeção nos 90 seguintes, da rede ou da unidade
+// escolhida no menu. Os números ficam nas opções do menu (ver o comentário
+// no HTML); a rede é a soma das unidades, dia a dia.
 // ============================================
-const PROJ_COLHEITA = -12; // início da colheita do trigo, em dias antes de hoje
+const PROJ_HORIZONTE = 90; // dias de projeção depois de hoje
+const PROJ_EIXO_PASSO = 30; // marcas do eixo X, em dias
 
 function serieDaOpcao(op) {
+    const entrada = Number(op.dataset.entrada) || 0;
+    const saida = Number(op.dataset.saida) || 0;
     return {
         cap: Number(op.dataset.cap) || 0,
-        ritmo: Number(op.dataset.ritmo) || 0,
+        entrada: entrada,
+        saida: saida,
+        ritmo: entrada - saida,
+        entressafra: Number(op.dataset.entressafra) || 0,
         hist: (op.dataset.hist || '').split(',').map(Number),
         off: op.dataset.off || ''
     };
 }
 
 function serieDaRede(select) {
-    const soma = { cap: 0, ritmo: 0, hist: [], off: '' };
+    const soma = { cap: 0, entrada: 0, saida: 0, ritmo: 0, entressafra: 0, hist: [], off: '' };
     Array.prototype.forEach.call(select.options, (op) => {
         if (!op.dataset.hist) return;
         const s = serieDaOpcao(op);
-        soma.cap += s.cap;
-        soma.ritmo += s.ritmo;
+        ['cap', 'entrada', 'saida', 'ritmo', 'entressafra'].forEach((k) => { soma[k] += s[k]; });
         s.hist.forEach((v, i) => { soma.hist[i] = (soma.hist[i] || 0) + v; });
     });
     return soma;
+}
+
+const PROJ_TOPO = 90; // % a partir do qual a unidade começa a desviar caminhões
+const PROJ_ALIVIO = 0.3; // quanto a expedição desacelera na entressafra (30%)
+const PROJ_ALIVIO_DIAS = 30; // em quantos dias ela desacelera (constante)
+
+// estoque projetado dia a dia, de hoje (0) até `fim`, sem quinas:
+// - a colheita vai acabando entre colheita.de e colheita.ate: a entrada cai
+//   em curva (cosseno) do ritmo dos últimos 3 dias até a da entressafra;
+// - perto do topo a unidade desvia caminhões: acima de PROJ_TOPO a entrada
+//   recebida cai até zero em 100%, então a curva arredonda em vez de travar;
+// - depois da colheita a saída continua e desacelera aos poucos.
+function projetar(s, colheita, fim) {
+    const v = [s.hist[s.hist.length - 1]];
+    for (let d = 1; d <= fim; d++) {
+        const t = d - 0.5;
+        const safra = t <= colheita.de ? 1 : (t >= colheita.ate ? 0
+            : 0.5 * (1 + Math.cos(Math.PI * (t - colheita.de) / (colheita.ate - colheita.de))));
+        const occ = v[d - 1] / s.cap * 100;
+        const aceita = occ <= PROJ_TOPO ? 1 : Math.max(0, (100 - occ) / (100 - PROJ_TOPO));
+        const entrada = (s.entressafra + (s.entrada - s.entressafra) * safra) * aceita;
+        const saida = d <= colheita.ate ? s.saida
+            : s.saida * (1 - PROJ_ALIVIO * (1 - Math.exp(-(d - colheita.ate) / PROJ_ALIVIO_DIAS)));
+        v.push(Math.min(s.cap, Math.max(0, v[d - 1] + entrada - saida)));
+    }
+    return v;
+}
+
+// saldo com sinal: +4.350 / −1.040
+function saldoTxt(v) {
+    return (v < 0 ? '−' : '+') + fmtNum(Math.abs(v));
 }
 
 function elSvg(tag, attrs) {
@@ -1888,19 +1845,18 @@ function desenharProjecao(secao) {
     const ini = -(s.hist.length - 1);
     const occ = s.hist.map((t) => t / s.cap * 100);
     const agora = occ[occ.length - 1];
-    const naColheita = occ[PROJ_COLHEITA - ini];
-    const projeta = !s.off && s.ritmo > 0;
-    const dias = projeta ? (s.cap - s.hist[s.hist.length - 1]) / s.ritmo : 0;
-    // meio dia arredonda para baixo, como a coluna "Enche em" da tabela
-    const diasTxt = Math.ceil(dias - 0.5);
+    const janela = (select.dataset.colheita || '').split(':').map(Number);
+    const colheita = { de: janela[0] || 0, ate: janela[1] || 0 };
+    const projeta = !s.off;
 
-    // x vai até um pouco depois de encher (no mínimo 15 dias à frente);
+    // x vai de ini até PROJ_HORIZONTE dias à frente;
     // y de 10 em 10 pontos, do múltiplo de 10 abaixo do menor valor até 100%
-    const fim = projeta ? Math.max(15, Math.ceil((dias + 2) / 5) * 5) : 15;
-    const base = Math.max(0, Math.floor((Math.min.apply(null, occ) - 2) / 10) * 10);
+    const fim = PROJ_HORIZONTE;
+    const proj = projeta ? projetar(s, colheita, fim).map((t) => t / s.cap * 100) : [];
+    const iPico = projeta ? proj.indexOf(Math.max.apply(null, proj)) : 0;
+    const base = Math.max(0, Math.floor((Math.min.apply(null, occ.concat(proj)) - 2) / 10) * 10);
     const x = (d) => (d - ini) / (fim - ini) * 300;
     const y = (p) => (100 - p) / (100 - base) * 100;
-    const yRotulo = Math.max(8, y(naColheita) - 26);
 
     // ---- SVG: fundo da previsão, grade, guias, área, linhas ----
     svg.textContent = '';
@@ -1909,16 +1865,13 @@ function desenharProjecao(secao) {
     for (let p = base; p < 100; p += 10) grade += 'M0 ' + y(p).toFixed(2) + ' H300 ';
     svg.appendChild(elSvg('path', { class: 'du-proj-grade', d: grade }));
     svg.appendChild(elSvg('path', { class: 'du-proj-cap', d: 'M0 0 H300' }));
-    svg.appendChild(elSvg('path', {
-        class: 'du-proj-guia',
-        d: 'M' + x(0) + ' 0 V100 M' + x(PROJ_COLHEITA) + ' ' + y(naColheita).toFixed(2) + ' V' + yRotulo.toFixed(2)
-    }));
+    svg.appendChild(elSvg('path', { class: 'du-proj-guia', d: 'M' + x(0) + ' 0 V100' }));
     const pontos = occ.map((p, i) => x(ini + i).toFixed(1) + ',' + y(p).toFixed(2)).join(' ');
     svg.appendChild(elSvg('polygon', { class: 'du-proj-area', points: x(ini) + ',100 ' + pontos + ' ' + x(0) + ',100' }));
     if (projeta) {
         svg.appendChild(elSvg('polyline', {
             class: 'du-proj-linha du-proj-linha--proj',
-            points: x(0) + ',' + y(agora).toFixed(2) + ' ' + x(dias).toFixed(1) + ',0'
+            points: proj.map((p, d) => x(d).toFixed(1) + ',' + y(p).toFixed(2)).join(' ')
         }));
     }
     svg.appendChild(elSvg('polyline', { class: 'du-proj-linha', points: pontos }));
@@ -1931,30 +1884,35 @@ function desenharProjecao(secao) {
         plot.appendChild(r);
     }
     const canto = novo('div', 'du-proj-nome');
-    canto.append(novo('b', null, nome), novo('span', null, 'capacidade · ' + fmtNum(s.cap) + ' t'));
+    canto.append(novo('b', null, nome), novo('span', null, 'capacidade · ' + fmtNum(s.cap) + ' m³'));
     plot.appendChild(canto);
 
-    const evento = novo('span', 'du-proj-evento', 'início da colheita do trigo');
-    evento.style.left = (x(PROJ_COLHEITA) / 3).toFixed(2) + '%';
-    evento.style.top = yRotulo.toFixed(2) + '%';
-    plot.appendChild(evento);
-    plot.appendChild(marcaProj('du-proj-marca--colheita', x(PROJ_COLHEITA) / 3, y(naColheita),
-        'Há ' + (-PROJ_COLHEITA) + ' dias: ' + Math.round(naColheita) + '% (começa a colheita do trigo)'));
-
     plot.appendChild(marcaProj('du-proj-marca--hoje', x(0) / 3, y(agora),
-        (s.off ? 'Última leitura, às ' + s.off : 'Hoje') + ': ' + fmtNum(s.hist[s.hist.length - 1]) + ' t de ' + fmtNum(s.cap) + ' t',
+        (s.off ? 'Última leitura, às ' + s.off : 'Hoje') + ': ' + fmtNum(s.hist[s.hist.length - 1]) + ' m³ de ' + fmtNum(s.cap) + ' m³',
         [Math.round(agora) + '%', s.off ? 'às ' + s.off : 'hoje']));
 
+    const colheitaTxt = 'a colheita do trigo vai acabando entre +' + colheita.de + ' e +' + colheita.ate + ' dias';
+    if (projeta && iPico > 0) {
+        // pico da projeção: mesmas faixas de cor da ocupação na tabela
+        const pico = proj[iPico];
+        const faixa = pico >= 97 ? ' is-alerta' : (pico >= 93 ? ' is-atencao' : '');
+        plot.appendChild(marcaProj('du-proj-marca--pico' + faixa, x(iPico) / 3, y(pico),
+            'Pico de ' + Math.round(pico) + '% em ' + iPico + ' dias: o saldo hoje é ' + saldoTxt(s.ritmo) + ' m³/dia, '
+            + colheitaTxt + ' e, acima de ' + PROJ_TOPO + '%, começa o desvio de caminhões',
+            [Math.round(pico) + '%', 'pico em +' + iPico]));
+    }
     if (projeta) {
-        const faixa = diasTxt < 3 ? ' is-alerta' : (diasTxt <= 7 ? ' is-atencao' : '');
-        plot.appendChild(marcaProj('du-proj-marca--cheia' + faixa, x(dias) / 3, 0,
-            'No ritmo dos últimos 3 dias (+' + fmtNum(s.ritmo) + ' t/dia), 100% em cerca de ' + diasTxt + ' dias',
-            ['cheia', 'em ≈ ' + diasTxt + (diasTxt === 1 ? ' dia' : ' dias')]));
+        // onde a projeção termina; perto do rodapé o rótulo fica na altura do ponto
+        const fimProj = proj[proj.length - 1];
+        plot.appendChild(marcaProj('du-proj-marca--fim' + (y(fimProj) > 85 ? ' is-baixo' : ''), x(fim) / 3, y(fimProj),
+            'Em +' + fim + ' dias: ' + fmtNum(Math.round(fimProj * s.cap / 1000) * 10) + ' m³. Depois da colheita entram '
+            + fmtNum(s.entressafra) + ' m³/dia e a saída (' + fmtNum(s.saida) + ' m³/dia hoje) desacelera aos poucos.',
+            [Math.round(fimProj) + '%', 'em +' + fim + ' dias']));
     }
 
-    // ---- eixo X de 10 em 10 dias ----
+    // ---- eixo X de PROJ_EIXO_PASSO em PROJ_EIXO_PASSO dias ----
     eixo.textContent = '';
-    for (let d = ini; d <= fim; d += 10) {
+    for (let d = ini; d <= fim; d += PROJ_EIXO_PASSO) {
         const t = d === ini ? '−' + (-d) + ' dias' : (d === 0 ? 'hoje' : (d > 0 ? '+' + d : '−' + (-d)));
         const r = novo('span', d === 0 ? 'is-hoje' : null, t);
         r.style.left = (x(d) / 3).toFixed(2) + '%';
@@ -1964,12 +1922,13 @@ function desenharProjecao(secao) {
     const ritmo = secao.querySelector('.du-proj-ritmo');
     if (ritmo) {
         ritmo.textContent = projeta
-            ? 'projeção no ritmo dos últimos 3 dias: +' + fmtNum(s.ritmo) + ' t/dia'
+            ? 'projeção: ' + saldoTxt(s.ritmo) + ' m³/dia hoje; ' + colheitaTxt + ' e a saída continua'
             : 'sem comunicação desde ' + s.off + ': sem projeção';
     }
     graf.setAttribute('aria-label', nome + ': ocupação de ' + Math.round(occ[0]) + '% há ' + (-ini) + ' dias e '
         + Math.round(agora) + '% ' + (s.off ? 'na última leitura, às ' + s.off : 'hoje')
-        + (projeta ? '; no ritmo atual, 100% em cerca de ' + diasTxt + ' dias.' : '; sem projeção.'));
+        + (projeta ? '; projeção com pico de ' + Math.round(proj[iPico]) + '% em ' + iPico + ' dias e '
+            + Math.round(proj[proj.length - 1]) + '% em ' + fim + ' dias.' : '; sem projeção.'));
 }
 
 function desenharProjecoes(raiz) {

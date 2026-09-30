@@ -10,7 +10,7 @@
     <!-- Leaflet: mapa real da tela Demais Unidades · Visão geral. Sem internet
          não carrega e a tela usa o mapa esquemático em SVG. -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
-    <link rel="stylesheet" href="style.css?v=20260929c">
+    <link rel="stylesheet" href="style.css?v=20260930j">
 </head>
 <body class="theme-dark">
 
@@ -196,7 +196,8 @@
                     <button class="menu-item menu-item--geral" data-screen="du-geral"><span class="menu-text">Visão geral</span></button>
                     <button class="menu-item menu-item--solo" data-screen="du-recebimento"><span class="menu-text">Recebimento e filas</span></button>
                     <button class="menu-item menu-item--solo" data-screen="du-armazenagem"><span class="menu-text">Armazenagem</span></button>
-                    <button class="menu-item menu-item--solo" data-screen="du-termometria"><span class="menu-text">Termometria e secagem</span></button>
+                    <button class="menu-item menu-item--solo" data-screen="du-termometria"><span class="menu-text">Termometria</span></button>
+                    <button class="menu-item menu-item--solo" data-screen="du-secagem"><span class="menu-text">Secagem</span></button>
                     <button class="menu-item menu-item--solo" data-screen="du-clima"><span class="menu-text">Clima das unidades</span></button>
                 </nav>
             </div>
@@ -333,42 +334,48 @@
                         </div>
                     </button>
 
-                    <!-- 04 Secagem: produção do dia contra ontem e projeção, mais os dois secadores -->
-                    <button class="geral-card atencao" type="button" data-goto="3" title="Abrir tela da secagem">
+                    <!-- 04 Secagem: o turno 07h–17h contra a meta, os dois limites de
+                         temperatura estourados agora e cada secador contra a própria meta.
+                         Os números são os das telas da secagem e da produtividade às 14h50;
+                         vazão fica por secador (t/h de secadores diferentes não se somam). -->
+                    <button class="geral-card alert" type="button" data-goto="3" title="Abrir tela da secagem">
                         <div class="geral-card-head">
                             <span class="geral-card-num">04</span>
                             <span class="geral-card-name">Secagem</span>
-                            <span class="kpi-flag kpi-flag--atencao">Atenção</span>
+                            <span class="kpi-flag kpi-flag--alerta">Alerta</span>
                         </div>
                         <div class="gv-hero">
                             <div class="gv-big">
-                                <span class="gv-big-value">1.120<small>t</small></span>
-                                <span class="gv-big-label">Secado hoje</span>
-                                <span class="gv-big-ref">até 14:35</span>
+                                <span class="gv-big-value">1.000<small>t</small></span>
+                                <span class="gv-big-label">Secado no turno</span>
+                                <span class="gv-big-ref">até 14:50</span>
                             </div>
+                            <!-- escala até 120 °C (ar) e 60 °C (saída); a marca é o limite -->
                             <div class="gv-meters gv-meters--stack">
-                                <div class="gv-meter" style="--p: 0.96"><span class="gv-meter-label">Vazão</span><span class="gv-meter-track"><span class="gv-meter-fill"></span></span><span class="gv-meter-value">135 t/h</span><span class="gv-meter-lim">96% do nominal</span></div>
-                                <div class="gv-meter gv-meter--ruim" style="--p: 0.987"><span class="gv-meter-label">Fornalha</span><span class="gv-meter-track"><span class="gv-meter-fill"></span></span><span class="gv-meter-value">148°C</span><span class="gv-meter-lim">desejada 150°C</span></div>
+                                <div class="gv-meter gv-meter--ruim" style="--p: 0.842"><span class="gv-meter-label">Ar · S1</span><span class="gv-meter-track"><span class="gv-meter-fill"></span><span class="gv-meter-mark" style="--m: 0.833"></span></span><span class="gv-meter-value">101°C</span><span class="gv-meter-lim">máx. 100°C no milho</span></div>
+                                <div class="gv-meter gv-meter--ruim" style="--p: 0.867"><span class="gv-meter-label">Saída do ar · S2</span><span class="gv-meter-track"><span class="gv-meter-fill"></span><span class="gv-meter-mark" style="--m: 0.833"></span></span><span class="gv-meter-value">52°C</span><span class="gv-meter-lim">limite 50°C · incêndio</span></div>
                             </div>
                         </div>
-                        <div class="gv-progress" style="--p: 0.737; --m1: 0.691; --m2: 0.908" role="img" aria-label="Hoje 1.120 t; ontem no mesmo horário 1.050 t; projeção 17h 1.520 t">
+                        <!-- escala até 1.400 t: marca branca na meta, verde na projeção -->
+                        <div class="gv-progress" style="--p: 0.714; --m1: 0.857; --m2: 0.914" role="img" aria-label="Secado no turno 1.000 t, 83% da meta de 1.200 t; projeção para 17h 1.280 t">
                             <span class="gv-progress-track"><span class="gv-progress-fill"></span><span class="gv-progress-mark gv-progress-mark--1"></span><span class="gv-progress-mark gv-progress-mark--2"></span></span>
-                            <span class="gv-progress-legend"><span>ontem, mesma hora <b>1.050 t</b></span><span>projeção 17h <b class="is-ok">1.520 t</b></span><span>ontem <b>1.380 t</b></span></span>
+                            <span class="gv-progress-legend"><span><b>83%</b> da meta</span><span>meta <b>1.200 t</b></span><span>projeção 17h <b class="is-ok">1.280 t</b></span></span>
                         </div>
+                        <!-- cada barra: secado no turno contra a meta do próprio secador -->
                         <div class="gv-list">
-                            <div class="gv-bar" style="--p: 0.589; --c: var(--grao-milho)">
-                                <span class="gv-bar-label"><i class="legend-dot legend-dot--sec1"></i>Pré-limpeza 1 → Secador 1</span>
+                            <div class="gv-bar" style="--p: 0.853; --c: var(--grao-milho)">
+                                <span class="gv-bar-label"><i class="legend-dot legend-dot--milho"></i>Secador 1</span>
                                 <span class="gv-bar-track"><span class="gv-bar-fill"></span></span>
-                                <span class="gv-bar-value">660 t</span>
+                                <span class="gv-bar-value">597 t</span>
                                 <span class="gv-bar-ref">78 t/h</span>
-                                <span class="gv-bar-sub"><i class="legend-dot legend-dot--milho"></i>Milho · <em class="is-atencao">secando, fornalha alta</em></span>
+                                <span class="gv-bar-sub">Milho · secando · 85% de 700 t</span>
                             </div>
-                            <div class="gv-bar" style="--p: 0.411; --c: var(--grao-sorgo)">
-                                <span class="gv-bar-label"><i class="legend-dot legend-dot--sec2"></i>Pré-limpeza 3 → Secador 2</span>
+                            <div class="gv-bar" style="--p: 0.806; --c: var(--grao-sorgo)">
+                                <span class="gv-bar-label"><i class="legend-dot legend-dot--sorgo"></i>Secador 2</span>
                                 <span class="gv-bar-track"><span class="gv-bar-fill"></span></span>
-                                <span class="gv-bar-value">460 t</span>
+                                <span class="gv-bar-value">403 t</span>
                                 <span class="gv-bar-ref">56 t/h</span>
-                                <span class="gv-bar-sub"><i class="legend-dot legend-dot--sorgo"></i>Sorgo · <em class="is-ok">descarregando</em></span>
+                                <span class="gv-bar-sub">Sorgo · descarregando · 81% de 500 t</span>
                             </div>
                         </div>
                     </button>
@@ -4068,32 +4075,33 @@
 
             <!-- ============================================================
                  DEMAIS UNIDADES
-                 Telas das outras unidades (Avaré tem a seção própria), sempre
-                 comparando as unidades lado a lado: as decisões daqui (desviar
-                 caminhão, transferir grão, ligar aeração) dependem de ver uma
-                 contra a outra. Valores estáticos até ligar os sistemas de cada
+                 Telas das outras unidades, sempre comparando as unidades lado a
+                 lado: as decisões daqui (desviar caminhão, transferir grão, ligar
+                 aeração) dependem de ver uma contra a outra. Avaré tem a seção
+                 própria, mas entra aqui também como régua: os números dela são os
+                 das telas de Avaré. Valores estáticos até ligar os sistemas de cada
                  unidade; hora de referência das leituras: 14:35.
-                 Ordem fixa das unidades em todas as telas (a mesma do cadastro):
-                 Matriz, Itaberá, São Manuel, Takaoka, Taquarituba, Taquarivaí.
-                 Faixas de status usadas nas cinco telas:
+                 Ordem fixa das unidades em todas as telas: Avaré primeiro, depois
+                 as demais na ordem do cadastro (Matriz, Itaberá, São Manuel,
+                 Takaoka, Taquarituba, Taquarivaí). Os totais da rede somam as 7.
+                 Faixas de status usadas nas seis telas:
                    espera na fila   ok < 20 min · atenção 20–40 · alerta > 40
                    enche em         ok > 7 dias · atenção 3–7   · alerta < 3
                    silo (máx.)      ok < 28 °C  · atenção 28–32 · alerta ≥ 32 ou +1 °C/dia
                    fila do secador  ok < 4 h    · atenção 4–8   · alerta > 8
                  ============================================================ -->
 
-            <!-- DU 00 Visão geral: onde está o problema (mapa), o que fazer agora
-                 (lista em ordem de urgência) e o semáforo curto de cada unidade.
-                 Cada decisão leva à tela do assunto (data-goto). -->
+            <!-- DU 00 Visão geral: onde está o problema (mapa) e o histórico de
+                 alertas do dia. Cada alerta leva à tela do assunto (data-goto). -->
             <section class="screen du-screen" id="screen-du-geral">
                 <div class="screen-header">
                     <div class="screen-badge">00</div>
                     <div class="screen-title-section">
                         <h2>Visão Geral das Unidades</h2>
-                        <div class="screen-meta"><span class="live-dot"></span>LIVE • 6 UNIDADES • ATUALIZADO HÁ <span class="time-update">5</span>s</div>
+                        <div class="screen-meta"><span class="live-dot"></span>LIVE • 7 UNIDADES • ATUALIZADO HÁ <span class="time-update">5</span>s</div>
                     </div>
-                    <div class="du-resumo" role="img" aria-label="Unidades: 2 em alerta, 2 em atenção, 1 ok, 1 sem dados">
-                        <span class="du-resumo-item du-st--alerta"><b>2</b>alerta</span>
+                    <div class="du-resumo" role="img" aria-label="Unidades: 3 em alerta, 2 em atenção, 1 ok, 1 sem dados">
+                        <span class="du-resumo-item du-st--alerta"><b>3</b>alerta</span>
                         <span class="du-resumo-item du-st--atencao"><b>2</b>atenção</span>
                         <span class="du-resumo-item du-st--ok"><b>1</b>ok</span>
                         <span class="du-resumo-item du-st--off"><b>1</b>sem dados</span>
@@ -4103,10 +4111,13 @@
                 <div class="du-geral">
                     <!-- Mapa: com internet, o script monta um mapa real (Leaflet) por
                          cima deste SVG, lendo data-latlng, data-lado e os textos de
-                         cada pino e o data-de/data-para do desvio. Sem internet fica
+                         cada pino. Embaixo do nome, só o alerta estratégico (armazém
+                         enchendo, silo aquecendo, sem comunicação); os operacionais
+                         ficam na lista de decisões e a cor do pino segue a situação
+                         geral da unidade. Sem internet fica
                          o SVG: as mesmas posições projetadas (4,52 px por km), por
-                         isso a barra de escala vale. Avaré aparece só como
-                         referência e leva às telas dela. -->
+                         isso a barra de escala vale. Avaré tem a cor da situação
+                         como as outras e o clique leva às telas dela (data-goto). -->
                     <div class="content-section du-mapa">
                         <div class="section-head">
                             <h3>MAPA DAS UNIDADES</h3>
@@ -4115,15 +4126,9 @@
                                 <span><i class="du-dot du-st--atencao"></i>atenção</span>
                                 <span><i class="du-dot du-st--ok"></i>ok</span>
                                 <span><i class="du-dot du-st--off"></i>sem dados</span>
-                                <span><i class="du-dot du-dot--base"></i>Avaré</span>
                             </span>
                         </div>
-                        <svg class="du-mapa-svg" viewBox="0 0 1000 720" role="img" aria-label="Mapa das unidades: Taquarituba e Takaoka em alerta; Matriz e Taquarivaí em atenção; Itaberá ok; São Manuel sem dados. Desvio sugerido de Taquarituba para Itaberá, cerca de 50 km.">
-                            <defs>
-                                <marker id="du-seta" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-                                    <path class="du-seta-ponta" d="M0 0 L10 5 L0 10 Z"></path>
-                                </marker>
-                            </defs>
+                        <svg class="du-mapa-svg" viewBox="0 0 1000 720" role="img" aria-label="Mapa das unidades: Avaré em alerta, silo 5 subindo 2,5 °C por dia; Taquarituba em alerta, armazém enche em 2 dias; Takaoka em alerta, silo 3 a 34,1 °C; Matriz e Taquarivaí em atenção; Itaberá ok; São Manuel sem dados desde 13:48.">
                             <!-- grade de meio em meio grau -->
                             <g class="du-grade" aria-hidden="true">
                                 <path d="M227.0 0 V720 M457.6 0 V720 M688.1 0 V720 M0 195.0 H1000 M0 446.2 H1000 M0 697.3 H1000"></path>
@@ -4139,38 +4144,29 @@
                                 <text x="136" y="686">25 km</text>
                             </g>
 
-                            <!-- desvio sugerido: Taquarituba (fila crítica) → Itaberá (fila curta) -->
-                            <g class="du-desvio" aria-hidden="true" data-de="-23.5337,-49.2453" data-para="-23.8621,-49.1399">
-                                <path d="M350 480 Q319 559 387 609" marker-end="url(#du-seta)"></path>
-                                <text x="332" y="546" text-anchor="end">desvio sugerido</text>
-                                <text class="du-desvio-km" x="332" y="570" text-anchor="end">≈ 50 km</text>
-                            </g>
-
                             <g class="du-pin du-st--off" transform="translate(655.5 60.0)" data-latlng="-22.7311,-48.5706" data-lado="right">
                                 <circle class="du-pin-halo" r="24"></circle><circle class="du-pin-dot" r="11"></circle>
                                 <text class="du-pin-nome" x="22" y="-3">São Manuel</text>
                                 <text class="du-pin-info" x="22" y="21">sem dados desde 13:48</text>
                             </g>
-                            <g class="du-pin du-pin--base" transform="translate(491.8 244.6)" data-goto="geral" data-latlng="-23.0986,-48.9258" data-lado="left">
+                            <g class="du-pin du-st--alerta" transform="translate(491.8 244.6)" data-goto="geral" data-latlng="-23.0986,-48.9258" data-lado="left">
                                 <title>Abrir as telas de Avaré</title>
-                                <circle class="du-pin-dot" r="11"></circle>
+                                <circle class="du-pin-halo" r="24"></circle><circle class="du-pin-dot" r="11"></circle>
                                 <text class="du-pin-nome" x="-22" y="-3" text-anchor="end">Avaré</text>
-                                <text class="du-pin-info" x="-22" y="21" text-anchor="end">telas Avaré</text>
+                                <text class="du-pin-info" x="-22" y="21" text-anchor="end">silo 5 subindo 2,5 °C/dia</text>
                             </g>
                             <g class="du-pin du-st--atencao" transform="translate(513.9 415.8)" data-latlng="-23.4396,-48.8777" data-lado="right">
                                 <circle class="du-pin-halo" r="24"></circle><circle class="du-pin-dot" r="11"></circle>
-                                <text class="du-pin-nome" x="22" y="-3">Matriz · Paranapanema</text>
-                                <text class="du-pin-info" x="22" y="21">secador 1 parado</text>
+                                <text class="du-pin-nome" x="22" y="8">Matriz · Paranapanema</text>
                             </g>
                             <g class="du-pin du-st--alerta" transform="translate(344.5 463.1)" data-latlng="-23.5337,-49.2453" data-lado="left">
                                 <circle class="du-pin-halo" r="24"></circle><circle class="du-pin-dot" r="11"></circle>
                                 <text class="du-pin-nome" x="-22" y="-3" text-anchor="end">Taquarituba</text>
-                                <text class="du-pin-info" x="-22" y="21" text-anchor="end">fila 52 min · 14 cam.</text>
+                                <text class="du-pin-info" x="-22" y="21" text-anchor="end">armazém enche em 2 dias</text>
                             </g>
                             <g class="du-pin du-st--ok" transform="translate(393.1 628.0)" data-latlng="-23.8621,-49.1399" data-lado="left">
                                 <circle class="du-pin-halo" r="24"></circle><circle class="du-pin-dot" r="11"></circle>
-                                <text class="du-pin-nome" x="-22" y="-3" text-anchor="end">Itaberá</text>
-                                <text class="du-pin-info" x="-22" y="21" text-anchor="end">fila 8 min · 45% livre</text>
+                                <text class="du-pin-nome" x="-22" y="8" text-anchor="end">Itaberá</text>
                             </g>
                             <g class="du-pin du-st--alerta" transform="translate(480.1 511.6)" data-latlng="-23.6303,-48.9512" data-lado="right">
                                 <circle class="du-pin-halo" r="24"></circle><circle class="du-pin-dot" r="11"></circle>
@@ -4179,117 +4175,106 @@
                             </g>
                             <g class="du-pin du-st--atencao" transform="translate(595.7 660.0)" data-latlng="-23.9258,-48.7005" data-lado="right">
                                 <circle class="du-pin-halo" r="24"></circle><circle class="du-pin-dot" r="11"></circle>
-                                <text class="du-pin-nome" x="22" y="-3">Taquarivaí</text>
-                                <text class="du-pin-info" x="22" y="21">umidade 17,8%</text>
+                                <text class="du-pin-nome" x="22" y="8">Taquarivaí</text>
                             </g>
                         </svg>
                     </div>
 
-                    <!-- Decisões: uma por problema, com o fato que pede a decisão -->
-                    <div class="content-section du-decisoes">
+                    <!-- Alertas: os abertos e os resolvidos do dia, os mais recentes
+                         primeiro. Os abertos levam a barra da situação; clicar na linha
+                         abre a tela do assunto (data-goto). Faixas iguais às das telas:
+                         espera atenção 20–40 min, alerta > 40; silo atenção 28–32 °C,
+                         alerta ≥ 32; enche em alerta < 3 dias. -->
+                    <div class="content-section du-alertas">
                         <div class="section-head">
-                            <h3>DECISÕES AGORA</h3>
-                            <span class="du-legenda">em ordem de urgência</span>
+                            <h3>ALERTAS</h3>
+                            <span class="du-legenda">mais recentes primeiro</span>
                         </div>
-                        <ol class="du-dec-lista">
-                            <li>
-                                <button class="du-dec du-st--alerta" type="button" data-goto="du-termometria" title="Abrir termometria e secagem">
-                                    <span class="du-dec-num">1</span>
-                                    <span class="du-dec-corpo">
-                                        <span class="du-dec-topo"><b>Takaoka</b><span class="kpi-flag kpi-flag--alerta">Alerta</span></span>
-                                        <span class="du-dec-fato">Silo 3 (trigo) a 34,1 °C, subindo 2,1 °C por dia, com a aeração desligada</span>
-                                    </span>
-                                </button>
-                            </li>
-                            <li>
-                                <button class="du-dec du-st--alerta" type="button" data-goto="du-recebimento" title="Abrir recebimento e filas">
-                                    <span class="du-dec-num">2</span>
-                                    <span class="du-dec-corpo">
-                                        <span class="du-dec-topo"><b>Taquarituba</b><span class="kpi-flag kpi-flag--alerta">Alerta</span></span>
-                                        <span class="du-dec-fato">Fila de 14 caminhões, 52 min de espera; chove às 16h e o armazém enche em 2 dias</span>
-                                    </span>
-                                </button>
-                            </li>
-                            <li>
-                                <button class="du-dec du-st--off" type="button" data-goto="du-recebimento" title="Abrir recebimento e filas">
-                                    <span class="du-dec-num">3</span>
-                                    <span class="du-dec-corpo">
-                                        <span class="du-dec-topo"><b>São Manuel</b><span class="kpi-flag du-flag--off">Sem dados</span></span>
-                                        <span class="du-dec-fato">Sem comunicação desde 13:48 (47 min): os números da unidade estão parados</span>
-                                    </span>
-                                </button>
-                            </li>
-                            <li>
-                                <button class="du-dec du-st--atencao" type="button" data-goto="du-termometria" title="Abrir termometria e secagem">
-                                    <span class="du-dec-num">4</span>
-                                    <span class="du-dec-corpo">
-                                        <span class="du-dec-topo"><b>Matriz</b><span class="kpi-flag kpi-flag--atencao">Atenção</span></span>
-                                        <span class="du-dec-fato">Secador 1 em manutenção desde 10:20; fila de secagem em 6,6 h</span>
-                                    </span>
-                                </button>
-                            </li>
-                            <li>
-                                <button class="du-dec du-st--atencao" type="button" data-goto="du-termometria" title="Abrir termometria e secagem">
-                                    <span class="du-dec-num">5</span>
-                                    <span class="du-dec-corpo">
-                                        <span class="du-dec-topo"><b>Taquarivaí</b><span class="kpi-flag kpi-flag--atencao">Atenção</span></span>
-                                        <span class="du-dec-fato">Grão chegando com 17,8% de umidade; fila do secador em 6 h</span>
-                                    </span>
-                                </button>
-                            </li>
-                        </ol>
-                    </div>
-
-                    <!-- Semáforo: os quatro números que mais decidem, por unidade -->
-                    <div class="du-semaforo">
-                        <div class="du-uni du-st--atencao" title="Matriz · Paranapanema">
-                            <div class="du-uni-head"><span class="du-uni-nome">Matriz</span><span class="du-uni-sub">Paranapanema</span></div>
-                            <dl class="du-uni-kpis">
-                                <div><dt>Fila</dt><dd class="is-atencao">24 min</dd></div>
-                                <div><dt>Ocupação</dt><dd>69%</dd></div>
-                                <div><dt>Silo máx.</dt><dd>24,6 °C</dd></div>
-                                <div><dt>Secador</dt><dd class="is-atencao">6,6 h</dd></div>
-                            </dl>
-                        </div>
-                        <div class="du-uni du-st--ok" title="Itaberá">
-                            <div class="du-uni-head"><span class="du-uni-nome">Itaberá</span></div>
-                            <dl class="du-uni-kpis">
-                                <div><dt>Fila</dt><dd>8 min</dd></div>
-                                <div><dt>Ocupação</dt><dd>55%</dd></div>
-                                <div><dt>Silo máx.</dt><dd>23,1 °C</dd></div>
-                                <div><dt>Secador</dt><dd>1,0 h</dd></div>
-                            </dl>
-                        </div>
-                        <div class="du-uni du-st--off" title="São Manuel">
-                            <div class="du-uni-head"><span class="du-uni-nome">São Manuel</span></div>
-                            <p class="du-uni-off"><b>Sem comunicação</b>desde 13:48 · última leitura: fila 15 min, ocupação 65%</p>
-                        </div>
-                        <div class="du-uni du-st--alerta" title="Takaoka · Itapeva">
-                            <div class="du-uni-head"><span class="du-uni-nome">Takaoka</span><span class="du-uni-sub">Itapeva</span></div>
-                            <dl class="du-uni-kpis">
-                                <div><dt>Fila</dt><dd>14 min</dd></div>
-                                <div><dt>Ocupação</dt><dd>76%</dd></div>
-                                <div><dt>Silo máx.</dt><dd class="is-alerta">34,1 °C</dd></div>
-                                <div><dt>Secador</dt><dd>1,3 h</dd></div>
-                            </dl>
-                        </div>
-                        <div class="du-uni du-st--alerta" title="Taquarituba">
-                            <div class="du-uni-head"><span class="du-uni-nome">Taquarituba</span></div>
-                            <dl class="du-uni-kpis">
-                                <div><dt>Fila</dt><dd class="is-alerta">52 min</dd></div>
-                                <div><dt>Ocupação</dt><dd class="is-alerta">91%</dd></div>
-                                <div><dt>Silo máx.</dt><dd>27,5 °C</dd></div>
-                                <div><dt>Secador</dt><dd>2,5 h</dd></div>
-                            </dl>
-                        </div>
-                        <div class="du-uni du-st--atencao" title="Taquarivaí">
-                            <div class="du-uni-head"><span class="du-uni-nome">Taquarivaí</span></div>
-                            <dl class="du-uni-kpis">
-                                <div><dt>Fila</dt><dd class="is-atencao">21 min</dd></div>
-                                <div><dt>Ocupação</dt><dd>75%</dd></div>
-                                <div><dt>Silo máx.</dt><dd>26,2 °C</dd></div>
-                                <div><dt>Secador</dt><dd class="is-atencao">6,0 h</dd></div>
-                            </dl>
+                        <div class="du-tabela-wrap">
+                            <table class="pv-tabela du-tabela du-tabela--alertas">
+                                <thead>
+                                    <tr><th>Início</th><th>Unidade</th><th>Alerta</th><th>Nível</th><th>Situação</th></tr>
+                                </thead>
+                                <tbody>
+                                <tr class="du-st--alerta" data-goto="du-secagem" title="Abrir secagem">
+                                    <td class="du-alerta-hora">14:49</td>
+                                    <td class="pv-tabela-nome">Avaré</td>
+                                    <td class="du-alerta-txt">Secador 2 com ar de saída a 52 °C: risco de incêndio, ventiladores desarmados</td>
+                                    <td><span class="kpi-flag kpi-flag--alerta">Alerta</span></td>
+                                    <td class="du-alerta-sit">aberto</td>
+                                </tr>
+                                <tr class="du-st--alerta" data-goto="du-recebimento" title="Abrir recebimento e filas">
+                                    <td class="du-alerta-hora">14:35</td>
+                                    <td class="pv-tabela-nome">Avaré</td>
+                                    <td class="du-alerta-txt">Fila de 15 caminhões, acima do limite de 8</td>
+                                    <td><span class="kpi-flag kpi-flag--alerta">Alerta</span></td>
+                                    <td class="du-alerta-sit">aberto</td>
+                                </tr>
+                                <tr class="du-st--alerta" data-goto="du-termometria" title="Abrir termometria">
+                                    <td class="du-alerta-hora">14:00</td>
+                                    <td class="pv-tabela-nome">Avaré</td>
+                                    <td class="du-alerta-txt">Silo 5 (milho) a 24,3 °C, subindo 0,4 °C por hora com a aeração ligada</td>
+                                    <td><span class="kpi-flag kpi-flag--alerta">Alerta</span></td>
+                                    <td class="du-alerta-sit">aberto</td>
+                                </tr>
+                                <tr class="du-st--off" data-goto="du-recebimento" title="Abrir recebimento e filas">
+                                    <td class="du-alerta-hora">13:48</td>
+                                    <td class="pv-tabela-nome">São Manuel</td>
+                                    <td class="du-alerta-txt">Sem comunicação: os números da unidade estão parados</td>
+                                    <td><span class="kpi-flag du-flag--off">Sem dados</span></td>
+                                    <td class="du-alerta-sit">aberto</td>
+                                </tr>
+                                <tr class="du-st--alerta" data-goto="du-recebimento" title="Abrir recebimento e filas">
+                                    <td class="du-alerta-hora">13:20</td>
+                                    <td class="pv-tabela-nome">Taquarituba</td>
+                                    <td class="du-alerta-txt">Fila de 14 caminhões, 52 min de espera</td>
+                                    <td><span class="kpi-flag kpi-flag--alerta">Alerta</span></td>
+                                    <td class="du-alerta-sit">aberto</td>
+                                </tr>
+                                <tr class="is-resolvido" data-goto="du-recebimento" title="Abrir recebimento e filas">
+                                    <td class="du-alerta-hora">12:10</td>
+                                    <td class="pv-tabela-nome">Itaberá</td>
+                                    <td class="du-alerta-txt">Espera na fila chegou a 26 min</td>
+                                    <td><span class="kpi-flag kpi-flag--atencao">Atenção</span></td>
+                                    <td class="du-alerta-sit">resolvido 12:45</td>
+                                </tr>
+                                <tr class="du-st--atencao" data-goto="du-secagem" title="Abrir secagem">
+                                    <td class="du-alerta-hora">11:30</td>
+                                    <td class="pv-tabela-nome">Taquarivaí</td>
+                                    <td class="du-alerta-txt">Grão chegando com 17,8% de umidade; fila do secador em 3 h</td>
+                                    <td><span class="kpi-flag kpi-flag--atencao">Atenção</span></td>
+                                    <td class="du-alerta-sit">aberto</td>
+                                </tr>
+                                <tr class="du-st--atencao" data-goto="du-secagem" title="Abrir secagem">
+                                    <td class="du-alerta-hora">10:20</td>
+                                    <td class="pv-tabela-nome">Matriz</td>
+                                    <td class="du-alerta-txt">Secador 1 em manutenção; fila de secagem em 6,6 h</td>
+                                    <td><span class="kpi-flag kpi-flag--atencao">Atenção</span></td>
+                                    <td class="du-alerta-sit">aberto</td>
+                                </tr>
+                                <tr class="du-st--alerta" data-goto="du-armazenagem" title="Abrir armazenagem">
+                                    <td class="du-alerta-hora">08:00</td>
+                                    <td class="pv-tabela-nome">Taquarituba</td>
+                                    <td class="du-alerta-txt">Armazém enche em 2 dias (91% ocupado)</td>
+                                    <td><span class="kpi-flag kpi-flag--alerta">Alerta</span></td>
+                                    <td class="du-alerta-sit">aberto</td>
+                                </tr>
+                                <tr class="is-resolvido" data-goto="du-termometria" title="Abrir termometria">
+                                    <td class="du-alerta-hora">07:15</td>
+                                    <td class="pv-tabela-nome">Matriz</td>
+                                    <td class="du-alerta-txt">Silo 2 (milho) a 28,6 °C; aeração ligada</td>
+                                    <td><span class="kpi-flag kpi-flag--atencao">Atenção</span></td>
+                                    <td class="du-alerta-sit">resolvido 09:05</td>
+                                </tr>
+                                <tr class="du-st--alerta" data-goto="du-termometria" title="Abrir termometria">
+                                    <td class="du-alerta-hora">ontem 15:00</td>
+                                    <td class="pv-tabela-nome">Takaoka</td>
+                                    <td class="du-alerta-txt">Silo 3 (trigo) a 34,1 °C, subindo 2,1 °C por dia, com a aeração desligada</td>
+                                    <td><span class="kpi-flag kpi-flag--alerta">Alerta</span></td>
+                                    <td class="du-alerta-sit">aberto</td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -4298,7 +4283,7 @@
             <!-- DU 01 Recebimento e filas: a fila de cada unidade contra as outras,
                  para decidir desvio de caminhão. "Zerar fila" = toneladas na fila
                  (30 t por carga) ÷ ritmo atual; ok < 2 h · atenção 2–4 · alerta > 4.
-                 À direita, o desvio calculado para a unidade em alerta. -->
+                 À direita, o recebido hoje de cada unidade separado por cultura. -->
             <section class="screen du-screen" id="screen-du-recebimento">
                 <div class="screen-header">
                     <div class="screen-badge">01</div>
@@ -4308,22 +4293,19 @@
                     </div>
                 </div>
 
-                <div class="kpi-grid kpi-grid--four">
+                <div class="kpi-grid kpi-grid--three">
                     <div class="kpi-card">
                         <div class="kpi-label">CAMINHÕES NA FILA</div>
-                        <div class="kpi-value">31 <span class="kpi-value-unit">caminhões</span></div>
+                        <div class="kpi-value">46 <span class="kpi-value-unit">caminhões</span></div>
                     </div>
+                    <!-- média ponderada pelos caminhões na fila de cada unidade -->
                     <div class="kpi-card atencao">
                         <div class="kpi-label">ESPERA MÉDIA</div>
-                        <div class="kpi-value">34 <span class="kpi-value-unit">min</span></div>
+                        <div class="kpi-value">25 <span class="kpi-value-unit">min</span></div>
                     </div>
                     <div class="kpi-card">
                         <div class="kpi-label">RECEBIDO HOJE</div>
-                        <div class="kpi-value">6.540 <span class="kpi-value-ref">/ 10.200 t</span></div>
-                    </div>
-                    <div class="kpi-card alert">
-                        <div class="kpi-label">FILA CRÍTICA</div>
-                        <div class="kpi-value">Taquarituba</div>
+                        <div class="kpi-value">7.780 <span class="kpi-value-ref">/ 11.700 t</span></div>
                     </div>
                 </div>
 
@@ -4336,17 +4318,24 @@
                         <div class="du-tabela-wrap">
                             <table class="pv-tabela du-tabela">
                                 <thead>
-                                    <tr><th>Unidade</th><th class="num">Fila</th><th>Espera</th><th class="num">Zerar fila · ritmo</th><th>Recebido hoje</th><th class="num">Agend. 2h</th><th>Situação</th></tr>
+                                    <tr><th>Unidade</th><th class="num">Fila</th><th>Espera</th><th class="num">Zerar fila · ritmo</th><th>Recebido hoje</th></tr>
                                 </thead>
                                 <tbody>
+                                    <!-- Avaré: 15 caminhões (12 com tag + 3 sem), espera da portaria
+                                         à 1ª pesagem, ritmo contra a meta de 95 t/h e o programado -->
+                                    <tr class="du-st--alerta">
+                                        <td class="pv-tabela-nome">Avaré</td>
+                                        <td class="num is-alerta">15 <small>cam.</small></td>
+                                        <td><div class="du-medidor du-medidor--espera" style="--p: 0.133"><span class="du-medidor-trilho"><i></i></span><b>8 min</b></div></td>
+                                        <td class="num is-alerta">5,5 h<small class="du-sub">82 / 95 t/h</small></td>
+                                        <td><div class="du-medidor" style="--p: 0.827"><span class="du-medidor-trilho"><i></i></span><b>1.240 <small>/ 1.500 t</small></b></div></td>
+                                    </tr>
                                     <tr class="du-st--atencao">
-                                        <td class="pv-tabela-nome">Matriz<small>Paranapanema</small></td>
+                                        <td class="pv-tabela-nome">Matriz</td>
                                         <td class="num">5 <small>cam.</small></td>
                                         <td><div class="du-medidor du-medidor--espera is-atencao" style="--p: 0.4"><span class="du-medidor-trilho"><i></i></span><b>24 min</b></div></td>
                                         <td class="num is-atencao">2,5 h<small class="du-sub is-atencao">60 / 120 t/h</small></td>
                                         <td><div class="du-medidor" style="--p: 0.592"><span class="du-medidor-trilho"><i></i></span><b>1.420 <small>/ 2.400 t</small></b></div></td>
-                                        <td class="num">8</td>
-                                        <td><span class="pv-tag pv-tag--atencao">Secador limitando</span></td>
                                     </tr>
                                     <tr class="du-st--ok">
                                         <td class="pv-tabela-nome">Itaberá</td>
@@ -4354,22 +4343,17 @@
                                         <td><div class="du-medidor du-medidor--espera" style="--p: 0.133"><span class="du-medidor-trilho"><i></i></span><b>8 min</b></div></td>
                                         <td class="num">0,6 h<small class="du-sub">95 / 110 t/h</small></td>
                                         <td><div class="du-medidor" style="--p: 0.59"><span class="du-medidor-trilho"><i></i></span><b>1.180 <small>/ 2.000 t</small></b></div></td>
-                                        <td class="num">3</td>
-                                        <td><span class="pv-tag pv-tag--ok">Recebe desvio</span></td>
                                     </tr>
                                     <tr class="du-st--off">
                                         <td class="pv-tabela-nome">São Manuel</td>
-                                        <td class="du-off-cel" colspan="5">Sem comunicação desde 13:48 · última leitura: 4 caminhões, 15 min de espera</td>
-                                        <td><span class="pv-tag du-tag--off">Sem dados</span></td>
+                                        <td class="du-off-cel" colspan="4">Sem comunicação desde 13:48 · última leitura: 4 caminhões, 15 min de espera</td>
                                     </tr>
                                     <tr class="du-st--ok">
-                                        <td class="pv-tabela-nome">Takaoka<small>Itapeva</small></td>
+                                        <td class="pv-tabela-nome">Takaoka</td>
                                         <td class="num">4 <small>cam.</small></td>
                                         <td><div class="du-medidor du-medidor--espera" style="--p: 0.233"><span class="du-medidor-trilho"><i></i></span><b>14 min</b></div></td>
                                         <td class="num">1,4 h<small class="du-sub">85 / 100 t/h</small></td>
                                         <td><div class="du-medidor" style="--p: 0.595"><span class="du-medidor-trilho"><i></i></span><b>1.310 <small>/ 2.200 t</small></b></div></td>
-                                        <td class="num">5</td>
-                                        <td><span class="pv-tag pv-tag--ok">Normal</span></td>
                                     </tr>
                                     <tr class="du-st--alerta">
                                         <td class="pv-tabela-nome">Taquarituba</td>
@@ -4377,8 +4361,6 @@
                                         <td><div class="du-medidor du-medidor--espera is-alerta" style="--p: 0.867"><span class="du-medidor-trilho"><i></i></span><b>52 min</b></div></td>
                                         <td class="num is-alerta">4,8 h<small class="du-sub">88 / 100 t/h</small></td>
                                         <td><div class="du-medidor is-atencao" style="--p: 0.825"><span class="du-medidor-trilho"><i></i></span><b>1.650 <small>/ 2.000 t</small></b></div></td>
-                                        <td class="num">9</td>
-                                        <td><span class="pv-tag pv-tag--alerta">Desviar agora</span></td>
                                     </tr>
                                     <tr class="du-st--atencao">
                                         <td class="pv-tabela-nome">Taquarivaí</td>
@@ -4386,76 +4368,85 @@
                                         <td><div class="du-medidor du-medidor--espera is-atencao" style="--p: 0.35"><span class="du-medidor-trilho"><i></i></span><b>21 min</b></div></td>
                                         <td class="num is-atencao">3,3 h<small class="du-sub is-atencao">55 / 80 t/h</small></td>
                                         <td><div class="du-medidor" style="--p: 0.613"><span class="du-medidor-trilho"><i></i></span><b>980 <small>/ 1.600 t</small></b></div></td>
-                                        <td class="num">4</td>
-                                        <td><span class="pv-tag pv-tag--atencao">Secador limitando</span></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
-                    <!-- Desvio: chegam 690 t hoje (fila 420 t + agendados 270 t) e cabem
-                         350 t (o que resta da capacidade do dia): sobram ≈ 340 t, 11
-                         cargas de 30 t. Na barra, 350 ÷ 690 = 50,7% cabem e o resto sobra.
-                         Destinos em ordem de preferência, cada um com o porquê: Takaoka é
-                         a mais perto, mas está com silo em alerta. Livre hoje = capacidade
-                         do dia − recebido (tabela ao lado). -->
-                    <div class="content-section du-section du-desvio-painel">
+                    <!-- Culturas: uma barra por unidade com o recebido hoje partido por
+                         grão, na ordem fixa da paleta (milho · sorgo · trigo). Largura
+                         de cada fatia = t do grão ÷ recebido da unidade (Matriz: 820 ÷
+                         1.420 = 57,7%). O total no canto é o "Recebido hoje" da tabela
+                         ao lado; mesmas unidades, na mesma ordem. -->
+                    <div class="content-section du-section">
                         <div class="section-head">
-                            <h3>DESVIO SUGERIDO · TAQUARITUBA</h3>
+                            <h3>RECEBIDO HOJE POR CULTURA</h3>
+                            <span class="du-legenda">
+                                <span><i class="legend-dot legend-dot--milho"></i>Milho</span>
+                                <span><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
+                                <span><i class="legend-dot legend-dot--trigo"></i>Trigo</span>
+                            </span>
                         </div>
-                        <div class="du-sobra">
-                            <div class="du-sobra-topo">
-                                <span class="du-sobra-valor">≈ 340 <small>t</small></span>
-                                <span class="du-sobra-txt"><b>não cabem hoje</b>11 cargas para desviar</span>
-                            </div>
-                            <div class="du-sobra-barra" role="img" aria-label="Chegam 690 t hoje: cabem 350 t e sobram 340 t">
-                                <span class="is-cabe" style="width: 50.7%">cabem 350 t</span>
-                                <span class="is-sobra" style="width: 49.3%">sobram 340 t</span>
-                            </div>
-                            <span class="du-sobra-nota">chegam 690 t hoje: fila 420 t + agendados 270 t</span>
+                        <div class="du-tabela-wrap">
+                            <table class="pv-tabela du-tabela du-tabela--cultura">
+                                <thead>
+                                    <tr><th>Unidade · toneladas por cultura</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="du-mix-cel">
+                                            <div class="du-mix-topo"><b>Avaré</b><span>1.240 t</span></div>
+                                            <div class="du-mix" role="img" aria-label="Avaré: milho 860 t, sorgo 380 t"><i style="width: 69.4%; --c: var(--grao-milho)" title="Milho · 860 t · 69%"><small>Milho</small>860</i><i style="width: 30.6%; --c: var(--grao-sorgo)" title="Sorgo · 380 t · 31%"><small>Sorgo</small>380</i></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="du-mix-cel">
+                                            <div class="du-mix-topo"><b>Matriz</b><span>1.420 t</span></div>
+                                            <div class="du-mix" role="img" aria-label="Matriz: milho 820 t, sorgo 200 t, trigo 400 t"><i style="width: 57.7%; --c: var(--grao-milho)" title="Milho · 820 t · 58%"><small>Milho</small>820</i><i style="width: 14.1%; --c: var(--grao-sorgo)" title="Sorgo · 200 t · 14%"><small>Sorgo</small>200</i><i style="width: 28.2%; --c: var(--grao-trigo)" title="Trigo · 400 t · 28%"><small>Trigo</small>400</i></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="du-mix-cel">
+                                            <div class="du-mix-topo"><b>Itaberá</b><span>1.180 t</span></div>
+                                            <div class="du-mix" role="img" aria-label="Itaberá: milho 420 t, trigo 760 t"><i style="width: 35.6%; --c: var(--grao-milho)" title="Milho · 420 t · 36%"><small>Milho</small>420</i><i style="width: 64.4%; --c: var(--grao-trigo)" title="Trigo · 760 t · 64%"><small>Trigo</small>760</i></div>
+                                        </td>
+                                    </tr>
+                                    <tr class="du-st--off">
+                                        <td class="du-mix-cel">
+                                            <div class="du-mix-topo"><b>São Manuel</b><span>sem dados desde 13:48</span></div>
+                                            <div class="du-mix du-mix--off" role="img" aria-label="São Manuel: sem dados"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="du-mix-cel">
+                                            <div class="du-mix-topo"><b>Takaoka</b><span>1.310 t</span></div>
+                                            <div class="du-mix" role="img" aria-label="Takaoka: milho 460 t, sorgo 160 t, trigo 690 t"><i style="width: 35.1%; --c: var(--grao-milho)" title="Milho · 460 t · 35%"><small>Milho</small>460</i><i style="width: 12.2%; --c: var(--grao-sorgo)" title="Sorgo · 160 t · 12%"><small>Sorgo</small>160</i><i style="width: 52.7%; --c: var(--grao-trigo)" title="Trigo · 690 t · 53%"><small>Trigo</small>690</i></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="du-mix-cel">
+                                            <div class="du-mix-topo"><b>Taquarituba</b><span>1.650 t</span></div>
+                                            <div class="du-mix" role="img" aria-label="Taquarituba: milho 1.050 t, trigo 600 t"><i style="width: 63.6%; --c: var(--grao-milho)" title="Milho · 1.050 t · 64%"><small>Milho</small>1.050</i><i style="width: 36.4%; --c: var(--grao-trigo)" title="Trigo · 600 t · 36%"><small>Trigo</small>600</i></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="du-mix-cel">
+                                            <div class="du-mix-topo"><b>Taquarivaí</b><span>980 t</span></div>
+                                            <div class="du-mix" role="img" aria-label="Taquarivaí: milho 620 t, sorgo 360 t"><i style="width: 63.3%; --c: var(--grao-milho)" title="Milho · 620 t · 63%"><small>Milho</small>620</i><i style="width: 36.7%; --c: var(--grao-sorgo)" title="Sorgo · 360 t · 37%"><small>Sorgo</small>360</i></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <ul class="du-fatos">
-                            <li class="is-alerta">Chuva a partir das 16h</li>
-                            <li>Capacidade acaba por volta das 18h30</li>
-                        </ul>
-                        <div class="du-destinos-cab" aria-hidden="true">
-                            <span>Para onde desviar</span><span>distância</span><span>fila</span><span>livre hoje</span>
-                        </div>
-                        <ol class="du-destinos">
-                            <li class="du-destino du-st--ok is-recomendado">
-                                <span class="du-destino-rank">1</span>
-                                <span class="du-destino-nome">Itaberá</span>
-                                <span class="du-destino-num">50 <small>km</small></span>
-                                <span class="du-destino-num">8 <small>min</small></span>
-                                <span class="du-destino-num">820 <small>t</small></span>
-                                <span class="du-destino-porque"><span class="pv-tag pv-tag--ok">Recomendado</span>Fila curta e armazém 45% livre</span>
-                            </li>
-                            <li class="du-destino du-st--atencao">
-                                <span class="du-destino-rank">2</span>
-                                <span class="du-destino-nome">Matriz</span>
-                                <span class="du-destino-num">50 <small>km</small></span>
-                                <span class="du-destino-num">24 <small>min</small></span>
-                                <span class="du-destino-num">980 <small>t</small></span>
-                                <span class="du-destino-porque"><span class="pv-tag pv-tag--atencao">Com ressalva</span>Secador 1 parado até 16h</span>
-                            </li>
-                            <li class="du-destino du-st--alerta">
-                                <span class="du-destino-rank">3</span>
-                                <span class="du-destino-nome">Takaoka</span>
-                                <span class="du-destino-num">40 <small>km</small></span>
-                                <span class="du-destino-num">14 <small>min</small></span>
-                                <span class="du-destino-num">890 <small>t</small></span>
-                                <span class="du-destino-porque"><span class="pv-tag pv-tag--alerta">Evitar</span>Silo 3 em alerta de temperatura</span>
-                            </li>
-                        </ol>
-                        <p class="du-nota">Distâncias aproximadas por estrada.</p>
                     </div>
                 </div>
             </section>
 
             <!-- DU 02 Armazenagem: estoque por grão contra a capacidade estática de
                  cada unidade e quantos dias faltam para encher no ritmo atual
-                 (espaço livre ÷ entrada líquida dos últimos 3 dias). A barra de
+                 (espaço livre ÷ saldo dos últimos 3 dias, entrada − saída; o
+                 saldo vai embaixo dos dias). A barra de
                  cada unidade vai até a capacidade dela: o tamanho real está na
                  coluna Capacidade. -->
             <section class="screen du-screen" id="screen-du-armazenagem">
@@ -4470,23 +4461,40 @@
                 <div class="kpi-grid kpi-grid--four">
                     <div class="kpi-card">
                         <div class="kpi-label">CAPACIDADE ESTÁTICA</div>
-                        <div class="kpi-value">191.000 <span class="kpi-value-unit">t</span></div>
-                        <div class="du-kpi-sub">6 unidades</div>
+                        <div class="kpi-value">258.000 <span class="kpi-value-unit">m³</span></div>
+                        <div class="du-kpi-sub">7 unidades</div>
                     </div>
+                    <!-- Grãos nos cards (barra na ordem fixa da paleta, legenda com a
+                         fatia): o estoque vem da linha Total da tabela; o que entra é o
+                         recebido hoje por cultura da tela Recebimento e filas (em t).
+                         Rede: milho 4.230, sorgo 1.100, trigo 2.450 de 7.780 t;
+                         Taquarituba: milho 1.050, trigo 600 de 1.650 t. -->
                     <div class="kpi-card">
                         <div class="kpi-label">EM ESTOQUE</div>
-                        <div class="kpi-value">136.300 <span class="kpi-value-unit">t</span></div>
-                        <div class="du-kpi-sub">71% da capacidade</div>
+                        <div class="kpi-value">178.440 <span class="kpi-value-unit">m³</span></div>
+                        <div class="du-kpi-sub">69% da capacidade</div>
+                        <div class="du-kpi-grao" role="img" aria-label="Estoque por grão: milho 79.660 m³ (45%), sorgo 28.480 m³ (16%), trigo 55.360 m³ (31%), soja 14.940 m³ (8%)">
+                            <div class="du-kpi-grao-barra"><i style="width: 44.6%; --c: var(--grao-milho)" title="Milho · 79.660 m³"></i><i style="width: 16%; --c: var(--grao-sorgo)" title="Sorgo · 28.480 m³"></i><i style="width: 31%; --c: var(--grao-trigo)" title="Trigo · 55.360 m³"></i><i style="width: 8.4%; --c: var(--grao-soja)" title="Soja · 14.940 m³"></i></div>
+                            <div class="du-kpi-grao-leg"><span><i class="legend-dot legend-dot--milho"></i>Milho <b>45%</b></span><span><i class="legend-dot legend-dot--sorgo"></i>Sorgo <b>16%</b></span><span><i class="legend-dot legend-dot--trigo"></i>Trigo <b>31%</b></span><span><i class="legend-dot legend-dot--soja"></i>Soja <b>8%</b></span></div>
+                        </div>
                     </div>
                     <div class="kpi-card">
                         <div class="kpi-label">ESPAÇO LIVRE</div>
-                        <div class="kpi-value">54.700 <span class="kpi-value-unit">t</span></div>
-                        <div class="du-kpi-sub">≈ 13 dias no ritmo atual (+4.350 t/dia)</div>
+                        <div class="kpi-value">79.560 <span class="kpi-value-unit">m³</span></div>
+                        <div class="du-kpi-sub">≈ 16 dias no ritmo atual (+4.870 m³/dia)</div>
+                        <div class="du-kpi-grao" role="img" aria-label="Entrando hoje na rede: milho 4.230 t (54%), sorgo 1.100 t (14%), trigo 2.450 t (32%)">
+                            <div class="du-kpi-grao-barra"><i style="width: 54.4%; --c: var(--grao-milho)" title="Milho · 4.230 t hoje"></i><i style="width: 14.1%; --c: var(--grao-sorgo)" title="Sorgo · 1.100 t hoje"></i><i style="width: 31.5%; --c: var(--grao-trigo)" title="Trigo · 2.450 t hoje"></i></div>
+                            <div class="du-kpi-grao-leg"><span class="du-kpi-grao-cap">entra hoje</span><span><i class="legend-dot legend-dot--milho"></i>Milho <b>54%</b></span><span><i class="legend-dot legend-dot--sorgo"></i>Sorgo <b>14%</b></span><span><i class="legend-dot legend-dot--trigo"></i>Trigo <b>32%</b></span></div>
+                        </div>
                     </div>
                     <div class="kpi-card alert">
                         <div class="kpi-label">ENCHEM EM MENOS DE 7 DIAS</div>
                         <div class="kpi-value">1 <span class="kpi-value-unit">unidade</span></div>
                         <div class="du-kpi-sub">Taquarituba · 2 dias</div>
+                        <div class="du-kpi-grao" role="img" aria-label="Entrando hoje em Taquarituba: milho 1.050 t (64%), trigo 600 t (36%)">
+                            <div class="du-kpi-grao-barra"><i style="width: 63.6%; --c: var(--grao-milho)" title="Milho · 1.050 t hoje"></i><i style="width: 36.4%; --c: var(--grao-trigo)" title="Trigo · 600 t hoje"></i></div>
+                            <div class="du-kpi-grao-leg"><span class="du-kpi-grao-cap">entra hoje</span><span><i class="legend-dot legend-dot--milho"></i>Milho <b>64%</b></span><span><i class="legend-dot legend-dot--trigo"></i>Trigo <b>36%</b></span></div>
+                        </div>
                     </div>
                 </div>
 
@@ -4505,99 +4513,136 @@
                         <div class="du-tabela-wrap">
                             <table class="pv-tabela du-tabela du-tabela--arm">
                                 <thead>
-                                    <tr><th>Unidade</th><th>Estoque por grão</th><th class="num">Capacidade</th><th class="num">Ocupação</th><th class="num">Livre</th><th class="num">Entrada</th><th class="num">Enche em</th></tr>
+                                    <tr><th>Unidade</th><th>Estoque por grão</th><th class="num">Capacidade</th><th class="num">Ocupação</th><th class="num">Livre</th><th class="num">Entrada<small>m³/dia</small></th><th class="num">Saída<small>m³/dia</small></th><th class="num">Enche em</th></tr>
                                 </thead>
                                 <tbody>
+                                    <!-- Avaré: 8 silos (32.000 m³) + 2 armazéns graneleiros
+                                         (35.000 m³); entrada e saída do dia são as dos silos -->
                                     <tr class="du-st--ok">
-                                        <td class="pv-tabela-nome">Matriz<small>Paranapanema</small></td>
-                                        <td><div class="du-estoque" role="img" aria-label="Milho 18.000 t, sorgo 6.200 t, trigo 12.800 t, soja 4.400 t, livre 18.600 t"><i style="width: 30%; --c: var(--grao-milho)" title="Milho · 18.000 t"></i><i style="width: 10.3%; --c: var(--grao-sorgo)" title="Sorgo · 6.200 t"></i><i style="width: 21.3%; --c: var(--grao-trigo)" title="Trigo · 12.800 t"></i><i style="width: 7.3%; --c: var(--grao-soja)" title="Soja · 4.400 t"></i><i class="du-estoque-livre" style="width: 31.1%" title="Livre · 18.600 t"></i></div></td>
-                                        <td class="num">60.000 t</td>
+                                        <td class="pv-tabela-nome">Avaré<small>8 silos + 2 armazéns</small></td>
+                                        <td><div class="du-estoque" role="img" aria-label="Milho 24.760 m³, sorgo 10.380 m³, trigo 5.560 m³, soja 1.440 m³, livre 24.860 m³"><i style="width: 37%; --c: var(--grao-milho)" title="Milho · 24.760 m³"></i><i style="width: 15.5%; --c: var(--grao-sorgo)" title="Sorgo · 10.380 m³"></i><i style="width: 8.3%; --c: var(--grao-trigo)" title="Trigo · 5.560 m³"></i><i style="width: 2.1%; --c: var(--grao-soja)" title="Soja · 1.440 m³"></i><i class="du-estoque-livre" style="width: 37.1%" title="Livre · 24.860 m³"></i></div></td>
+                                        <td class="num">67.000 m³</td>
+                                        <td class="num">63%</td>
+                                        <td class="num">24.860 m³</td>
+                                        <td class="num">+1.640</td>
+                                        <td class="num">−1.120</td>
+                                        <td class="num du-dias">48 <small>dias</small><small class="du-sub">saldo +520</small></td>
+                                    </tr>
+                                    <tr class="du-st--ok">
+                                        <td class="pv-tabela-nome">Matriz</td>
+                                        <td><div class="du-estoque" role="img" aria-label="Milho 18.000 m³, sorgo 6.200 m³, trigo 12.800 m³, soja 4.400 m³, livre 18.600 m³"><i style="width: 30%; --c: var(--grao-milho)" title="Milho · 18.000 m³"></i><i style="width: 10.3%; --c: var(--grao-sorgo)" title="Sorgo · 6.200 m³"></i><i style="width: 21.3%; --c: var(--grao-trigo)" title="Trigo · 12.800 m³"></i><i style="width: 7.3%; --c: var(--grao-soja)" title="Soja · 4.400 m³"></i><i class="du-estoque-livre" style="width: 31.1%" title="Livre · 18.600 m³"></i></div></td>
+                                        <td class="num">60.000 m³</td>
                                         <td class="num">69%</td>
-                                        <td class="num">18.600 t</td>
-                                        <td class="num">+900 <small>t/dia</small></td>
-                                        <td class="num du-dias">21 <small>dias</small></td>
+                                        <td class="num">18.600 m³</td>
+                                        <td class="num">+1.500</td>
+                                        <td class="num">−600</td>
+                                        <td class="num du-dias">21 <small>dias</small><small class="du-sub">saldo +900</small></td>
                                     </tr>
                                     <tr class="du-st--ok">
                                         <td class="pv-tabela-nome">Itaberá</td>
-                                        <td><div class="du-estoque" role="img" aria-label="Milho 7.200 t, sorgo 2.100 t, trigo 5.400 t, soja 1.800 t, livre 13.500 t"><i style="width: 24%; --c: var(--grao-milho)" title="Milho · 7.200 t"></i><i style="width: 7%; --c: var(--grao-sorgo)" title="Sorgo · 2.100 t"></i><i style="width: 18%; --c: var(--grao-trigo)" title="Trigo · 5.400 t"></i><i style="width: 6%; --c: var(--grao-soja)" title="Soja · 1.800 t"></i><i class="du-estoque-livre" style="width: 45%" title="Livre · 13.500 t"></i></div></td>
-                                        <td class="num">30.000 t</td>
+                                        <td><div class="du-estoque" role="img" aria-label="Milho 7.200 m³, sorgo 2.100 m³, trigo 5.400 m³, soja 1.800 m³, livre 13.500 m³"><i style="width: 24%; --c: var(--grao-milho)" title="Milho · 7.200 m³"></i><i style="width: 7%; --c: var(--grao-sorgo)" title="Sorgo · 2.100 m³"></i><i style="width: 18%; --c: var(--grao-trigo)" title="Trigo · 5.400 m³"></i><i style="width: 6%; --c: var(--grao-soja)" title="Soja · 1.800 m³"></i><i class="du-estoque-livre" style="width: 45%" title="Livre · 13.500 m³"></i></div></td>
+                                        <td class="num">30.000 m³</td>
                                         <td class="num">55%</td>
-                                        <td class="num">13.500 t</td>
-                                        <td class="num">+600 <small>t/dia</small></td>
-                                        <td class="num du-dias">22 <small>dias</small></td>
+                                        <td class="num">13.500 m³</td>
+                                        <td class="num">+950</td>
+                                        <td class="num">−350</td>
+                                        <td class="num du-dias">22 <small>dias</small><small class="du-sub">saldo +600</small></td>
                                     </tr>
                                     <tr class="du-st--off">
                                         <td class="pv-tabela-nome">São Manuel<small>leitura de 13:48</small></td>
-                                        <td><div class="du-estoque is-off" role="img" aria-label="Última leitura: milho 6.400 t, sorgo 1.800 t, trigo 4.700 t, soja 1.400 t, livre 7.700 t"><i style="width: 29.1%; --c: var(--grao-milho)" title="Milho · 6.400 t"></i><i style="width: 8.2%; --c: var(--grao-sorgo)" title="Sorgo · 1.800 t"></i><i style="width: 21.4%; --c: var(--grao-trigo)" title="Trigo · 4.700 t"></i><i style="width: 6.4%; --c: var(--grao-soja)" title="Soja · 1.400 t"></i><i class="du-estoque-livre" style="width: 34.9%" title="Livre · 7.700 t"></i></div></td>
-                                        <td class="num">22.000 t</td>
+                                        <td><div class="du-estoque is-off" role="img" aria-label="Última leitura: milho 6.400 m³, sorgo 1.800 m³, trigo 4.700 m³, soja 1.400 m³, livre 7.700 m³"><i style="width: 29.1%; --c: var(--grao-milho)" title="Milho · 6.400 m³"></i><i style="width: 8.2%; --c: var(--grao-sorgo)" title="Sorgo · 1.800 m³"></i><i style="width: 21.4%; --c: var(--grao-trigo)" title="Trigo · 4.700 m³"></i><i style="width: 6.4%; --c: var(--grao-soja)" title="Soja · 1.400 m³"></i><i class="du-estoque-livre" style="width: 34.9%" title="Livre · 7.700 m³"></i></div></td>
+                                        <td class="num">22.000 m³</td>
                                         <td class="num du-off-cel">65%</td>
-                                        <td class="num du-off-cel">7.700 t</td>
+                                        <td class="num du-off-cel">7.700 m³</td>
+                                        <td class="num du-off-cel">—</td>
                                         <td class="num du-off-cel">—</td>
                                         <td class="num du-off-cel">sem dados</td>
                                     </tr>
                                     <tr class="du-st--ok">
-                                        <td class="pv-tabela-nome">Takaoka<small>Itapeva</small></td>
-                                        <td><div class="du-estoque" role="img" aria-label="Milho 9.800 t, sorgo 3.900 t, trigo 10.400 t, soja 2.500 t, livre 8.400 t"><i style="width: 28%; --c: var(--grao-milho)" title="Milho · 9.800 t"></i><i style="width: 11.1%; --c: var(--grao-sorgo)" title="Sorgo · 3.900 t"></i><i style="width: 29.7%; --c: var(--grao-trigo)" title="Trigo · 10.400 t"></i><i style="width: 7.1%; --c: var(--grao-soja)" title="Soja · 2.500 t"></i><i class="du-estoque-livre" style="width: 24.1%" title="Livre · 8.400 t"></i></div></td>
-                                        <td class="num">35.000 t</td>
+                                        <td class="pv-tabela-nome">Takaoka</td>
+                                        <td><div class="du-estoque" role="img" aria-label="Milho 9.800 m³, sorgo 3.900 m³, trigo 10.400 m³, soja 2.500 m³, livre 8.400 m³"><i style="width: 28%; --c: var(--grao-milho)" title="Milho · 9.800 m³"></i><i style="width: 11.1%; --c: var(--grao-sorgo)" title="Sorgo · 3.900 m³"></i><i style="width: 29.7%; --c: var(--grao-trigo)" title="Trigo · 10.400 m³"></i><i style="width: 7.1%; --c: var(--grao-soja)" title="Soja · 2.500 m³"></i><i class="du-estoque-livre" style="width: 24.1%" title="Livre · 8.400 m³"></i></div></td>
+                                        <td class="num">35.000 m³</td>
                                         <td class="num">76%</td>
-                                        <td class="num">8.400 t</td>
-                                        <td class="num">+700 <small>t/dia</small></td>
-                                        <td class="num du-dias">12 <small>dias</small></td>
+                                        <td class="num">8.400 m³</td>
+                                        <td class="num">+1.150</td>
+                                        <td class="num">−450</td>
+                                        <td class="num du-dias">12 <small>dias</small><small class="du-sub">saldo +700</small></td>
                                     </tr>
                                     <tr class="du-st--alerta">
                                         <td class="pv-tabela-nome">Taquarituba</td>
-                                        <td><div class="du-estoque" role="img" aria-label="Milho 8.900 t, sorgo 2.600 t, trigo 11.800 t, soja 2.200 t, livre 2.500 t"><i style="width: 31.8%; --c: var(--grao-milho)" title="Milho · 8.900 t"></i><i style="width: 9.3%; --c: var(--grao-sorgo)" title="Sorgo · 2.600 t"></i><i style="width: 42.1%; --c: var(--grao-trigo)" title="Trigo · 11.800 t"></i><i style="width: 7.9%; --c: var(--grao-soja)" title="Soja · 2.200 t"></i><i class="du-estoque-livre" style="width: 8.9%" title="Livre · 2.500 t"></i></div></td>
-                                        <td class="num">28.000 t</td>
+                                        <td><div class="du-estoque" role="img" aria-label="Milho 8.900 m³, sorgo 2.600 m³, trigo 11.800 m³, soja 2.200 m³, livre 2.500 m³"><i style="width: 31.8%; --c: var(--grao-milho)" title="Milho · 8.900 m³"></i><i style="width: 9.3%; --c: var(--grao-sorgo)" title="Sorgo · 2.600 m³"></i><i style="width: 42.1%; --c: var(--grao-trigo)" title="Trigo · 11.800 m³"></i><i style="width: 7.9%; --c: var(--grao-soja)" title="Soja · 2.200 m³"></i><i class="du-estoque-livre" style="width: 8.9%" title="Livre · 2.500 m³"></i></div></td>
+                                        <td class="num">28.000 m³</td>
                                         <td class="num is-alerta">91%</td>
-                                        <td class="num">2.500 t</td>
-                                        <td class="num">+1.100 <small>t/dia</small></td>
-                                        <td class="num du-dias is-alerta">2 <small>dias</small></td>
+                                        <td class="num">2.500 m³</td>
+                                        <td class="num">+1.400</td>
+                                        <td class="num">−300</td>
+                                        <td class="num du-dias is-alerta">2 <small>dias</small><small class="du-sub">saldo +1.100</small></td>
                                     </tr>
                                     <tr class="du-st--ok">
                                         <td class="pv-tabela-nome">Taquarivaí</td>
-                                        <td><div class="du-estoque" role="img" aria-label="Milho 4.600 t, sorgo 1.500 t, trigo 4.700 t, soja 1.200 t, livre 4.000 t"><i style="width: 28.7%; --c: var(--grao-milho)" title="Milho · 4.600 t"></i><i style="width: 9.4%; --c: var(--grao-sorgo)" title="Sorgo · 1.500 t"></i><i style="width: 29.4%; --c: var(--grao-trigo)" title="Trigo · 4.700 t"></i><i style="width: 7.5%; --c: var(--grao-soja)" title="Soja · 1.200 t"></i><i class="du-estoque-livre" style="width: 25%" title="Livre · 4.000 t"></i></div></td>
-                                        <td class="num">16.000 t</td>
+                                        <td><div class="du-estoque" role="img" aria-label="Milho 4.600 m³, sorgo 1.500 m³, trigo 4.700 m³, soja 1.200 m³, livre 4.000 m³"><i style="width: 28.7%; --c: var(--grao-milho)" title="Milho · 4.600 m³"></i><i style="width: 9.4%; --c: var(--grao-sorgo)" title="Sorgo · 1.500 m³"></i><i style="width: 29.4%; --c: var(--grao-trigo)" title="Trigo · 4.700 m³"></i><i style="width: 7.5%; --c: var(--grao-soja)" title="Soja · 1.200 m³"></i><i class="du-estoque-livre" style="width: 25%" title="Livre · 4.000 m³"></i></div></td>
+                                        <td class="num">16.000 m³</td>
                                         <td class="num">75%</td>
-                                        <td class="num">4.000 t</td>
-                                        <td class="num">+500 <small>t/dia</small></td>
-                                        <td class="num du-dias">8 <small>dias</small></td>
+                                        <td class="num">4.000 m³</td>
+                                        <td class="num">+750</td>
+                                        <td class="num">−250</td>
+                                        <td class="num du-dias">8 <small>dias</small><small class="du-sub">saldo +500</small></td>
                                     </tr>
                                     <tr class="du-linha-total">
                                         <td class="pv-tabela-nome">Total</td>
-                                        <td><div class="du-estoque" role="img" aria-label="Total: milho 54.900 t, sorgo 18.100 t, trigo 49.800 t, soja 13.500 t, livre 54.700 t"><i style="width: 28.7%; --c: var(--grao-milho)" title="Milho · 54.900 t"></i><i style="width: 9.5%; --c: var(--grao-sorgo)" title="Sorgo · 18.100 t"></i><i style="width: 26.1%; --c: var(--grao-trigo)" title="Trigo · 49.800 t"></i><i style="width: 7.1%; --c: var(--grao-soja)" title="Soja · 13.500 t"></i><i class="du-estoque-livre" style="width: 28.6%" title="Livre · 54.700 t"></i></div></td>
-                                        <td class="num">191.000 t</td>
-                                        <td class="num">71%</td>
-                                        <td class="num">54.700 t</td>
-                                        <td class="num">+4.350 <small>t/dia</small></td>
-                                        <td class="num du-dias">13 <small>dias</small></td>
+                                        <td><div class="du-estoque" role="img" aria-label="Total: milho 79.660 m³, sorgo 28.480 m³, trigo 55.360 m³, soja 14.940 m³, livre 79.560 m³"><i style="width: 30.9%; --c: var(--grao-milho)" title="Milho · 79.660 m³"></i><i style="width: 11%; --c: var(--grao-sorgo)" title="Sorgo · 28.480 m³"></i><i style="width: 21.5%; --c: var(--grao-trigo)" title="Trigo · 55.360 m³"></i><i style="width: 5.8%; --c: var(--grao-soja)" title="Soja · 14.940 m³"></i><i class="du-estoque-livre" style="width: 30.8%" title="Livre · 79.560 m³"></i></div></td>
+                                        <td class="num">258.000 m³</td>
+                                        <td class="num">69%</td>
+                                        <td class="num">79.560 m³</td>
+                                        <td class="num">+8.190</td>
+                                        <td class="num">−3.320</td>
+                                        <td class="num du-dias">16 <small>dias</small><small class="du-sub">saldo +4.870</small></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
-                    <!-- Evolução da ocupação: os últimos 30 dias (real) e a projeção até
-                         encher, da rede ou de uma unidade escolhida no menu. O script
-                         desenha a partir das opções do menu (desenharProjecoes):
-                           data-cap    capacidade estática (t)
-                           data-ritmo  entrada líquida dos últimos 3 dias (t/dia)
-                           data-hist   estoque (t) de 30 dias atrás até hoje, um por dia
-                           data-off    sem comunicação desde esse horário: sem projeção
+                    <!-- Evolução da ocupação: os últimos 90 dias (real) e a projeção nos
+                         90 seguintes, da rede ou de uma unidade escolhida no menu. O
+                         script desenha a partir das opções do menu (desenharProjecoes):
+                           data-cap          capacidade estática (m³)
+                           data-entrada      entrada dos últimos 3 dias (m³/dia, tabela)
+                           data-saida        saída dos últimos 3 dias (m³/dia, tabela)
+                           data-entressafra  entrada depois da colheita do trigo (m³/dia)
+                           data-hist         estoque (m³) de 90 dias atrás até hoje, um por dia
+                           data-off          sem comunicação desde esse horário: sem projeção
+                         No select, data-colheita="de:até" = a janela em dias em que a
+                         colheita do trigo vai acabando. A projeção muda aos poucos, sem
+                         quinas: a entrada cai em curva do ritmo atual até a entressafra
+                         nessa janela; acima de 90% a unidade desvia caminhões, então a
+                         curva arredonda antes de 100%; depois da colheita a saída segue e
+                         desacelera aos poucos (ver projetar no script).
                          A rede é a soma das unidades (São Manuel pela última leitura).
-                         Estável com a expedição de milho, o estoque sobe desde o início
-                         da colheita do trigo, há 12 dias. -->
+                         Avaré (silos + armazéns) sobe com a safrinha, esvazia pela
+                         expedição e fica parada até o trigo; os 4 últimos dias somam
+                         +520 m³/dia, o saldo dos silos hoje.
+                         De 90 a 30 dias atrás a colheita do milho safrinha enche os
+                         armazéns e a expedição esvazia (Takaoka começa parada, Taquarivaí
+                         só sobe devagar). Nos últimos 30 cada unidade tem o próprio
+                         desenho: Matriz e Takaoka têm uma queda (expedição maior que a
+                         entrada), Itaberá e Taquarituba um período de estagnação (entrada
+                         e saída empatadas), São Manuel e Taquarivaí sobem sem parar.
+                         Todas aceleram no fim com a colheita do trigo; os 4 últimos dias
+                         seguem entrada − saída e o último é o estoque da tabela. -->
                     <div class="content-section du-section du-proj">
                         <div class="section-head">
                             <h3>EVOLUÇÃO DA OCUPAÇÃO</h3>
                             <label class="du-proj-sel">
-                                <select aria-label="Unidade">
-                                    <option value="rede">Rede · 6 unidades</option>
-                                    <option value="matriz" data-cap="60000" data-ritmo="900" data-hist="36450,36310,36170,36190,35950,35960,35820,35640,35650,35440,35430,35250,35150,35130,35130,34860,34780,34780,34650,34700,34850,35100,35450,35900,36450,37100,37850,38700,39600,40500,41400">Matriz</option>
-                                    <option value="itabera" data-cap="30000" data-ritmo="600" data-hist="12720,12720,12650,12590,12610,12480,12510,12420,12370,12320,12300,12310,12210,12210,12170,12110,12080,12000,12000,12030,12130,12300,12530,12830,13200,13630,14130,14700,15300,15900,16500">Itaberá</option>
-                                    <option value="sao-manuel" data-cap="22000" data-ritmo="550" data-off="13:48" data-hist="10480,10450,10440,10440,10410,10390,10380,10360,10340,10340,10320,10280,10280,10260,10260,10240,10200,10210,10180,10210,10300,10450,10660,10940,11280,11670,12130,12650,13200,13750,14300">São Manuel</option>
-                                    <option value="takaoka" data-cap="35000" data-ritmo="700" data-hist="22430,22320,22300,22290,22140,22130,22000,22030,21990,21900,21880,21740,21740,21660,21600,21520,21520,21470,21350,21390,21510,21700,21970,22320,22750,23260,23840,24500,25200,25900,26600">Takaoka</option>
-                                    <option value="taquarituba" data-cap="28000" data-ritmo="1100" data-hist="17790,17760,17740,17670,17680,17650,17650,17600,17530,17510,17500,17430,17430,17380,17340,17310,17330,17250,17250,17310,17490,17800,18230,18780,19450,20240,21160,22200,23300,24400,25500">Taquarituba</option>
-                                    <option value="taquarivai" data-cap="16000" data-ritmo="500" data-hist="8610,8580,8560,8570,8510,8510,8490,8490,8470,8450,8400,8390,8360,8370,8350,8290,8270,8260,8250,8280,8360,8500,8690,8940,9250,9610,10030,10500,11000,11500,12000">Taquarivaí</option>
+                                <select aria-label="Unidade" data-colheita="10:30">
+                                    <option value="rede">Rede · 7 unidades</option>
+                                    <option value="avare" data-cap="67000" data-entrada="1640" data-saida="1120" data-entressafra="600" data-hist="26000,26650,27320,27860,28530,29220,29860,30370,31180,31700,32230,32750,33420,33910,34250,34840,35220,35760,36020,36500,36820,37050,37300,37780,38010,37980,38210,38460,38350,38460,38510,38540,38420,38370,38550,38370,38270,38290,38170,38060,38150,37960,37870,37720,37850,37580,37660,37470,37320,37330,37200,37220,37120,36920,36890,36900,36770,36720,36800,36850,36840,36930,36780,36820,36850,36840,36960,36870,36880,36850,36850,37000,36850,36900,37040,37070,37110,37110,37110,37240,37440,37710,37920,38410,38890,39390,40060,40580,41100,41620,42140">Avaré</option>
+                                    <option value="matriz" data-cap="60000" data-entrada="1500" data-saida="600" data-entressafra="300" data-hist="30000,30090,30400,30870,31290,31580,31920,32370,33010,33480,33910,34510,35040,35230,35960,36240,36700,37250,37600,38260,38570,38980,39400,39640,39880,40160,40250,40430,40530,40800,40670,40920,40660,40300,40080,40090,39610,39240,38780,38500,37910,37570,37090,36650,36120,35950,35470,35080,34720,34450,34190,34290,34380,34190,34140,34140,34380,34220,34490,34740,34800,34720,35160,35510,35890,36680,36990,37430,37690,37790,37560,37090,36630,35670,34960,34280,33720,33120,32850,33000,33490,33910,34510,35200,35930,36820,37900,38700,39600,40500,41400">Matriz</option>
+                                    <option value="itabera" data-cap="30000" data-entrada="950" data-saida="350" data-entressafra="200" data-hist="9000,9140,9360,9500,9720,9830,10070,10220,10380,10570,10840,11020,11180,11400,11510,11630,11810,12010,12140,12200,12350,12460,12450,12600,12570,12640,12660,12600,12650,12620,12660,12590,12580,12550,12550,12640,12610,12590,12600,12580,12560,12610,12580,12630,12610,12550,12600,12560,12590,12600,12460,12360,12280,12050,12000,11880,11830,11830,11870,11940,12000,12080,12250,12460,12640,12740,12910,13050,13050,13010,13060,13090,13030,13090,13010,13070,13080,13090,13030,13020,13080,13120,13170,13320,13500,13760,14150,14700,15300,15900,16500">Itaberá</option>
+                                    <option value="sao-manuel" data-cap="22000" data-entrada="800" data-saida="250" data-entressafra="130" data-off="13:48" data-hist="7040,7190,7430,7490,7700,7860,8120,8330,8490,8730,8910,9060,9260,9450,9690,9770,9940,10090,10200,10220,10270,10330,10330,10340,10380,10340,10260,10250,10180,10110,10160,10080,9950,9950,9820,9870,9770,9680,9650,9660,9630,9500,9500,9510,9530,9520,9480,9480,9490,9500,9430,9500,9450,9400,9440,9410,9510,9520,9530,9640,9680,9770,9760,9960,10020,10030,10170,10130,10290,10400,10420,10510,10560,10680,10700,10840,10920,10920,11040,11060,11070,11100,11180,11400,11490,11780,12170,12650,13200,13750,14300">São Manuel</option>
+                                    <option value="takaoka" data-cap="35000" data-entrada="1150" data-saida="450" data-entressafra="250" data-hist="19600,19550,19530,19600,19540,19590,19610,19590,19670,19660,19620,19660,19640,19640,19650,19620,19640,19640,19580,19650,19790,19910,20050,20430,20710,20930,21350,21750,22060,22440,22760,23170,23420,23740,23960,24150,24310,24500,24570,24450,24310,24090,23810,23570,23240,22870,22610,22270,21960,21690,21500,21420,21360,21290,21420,21370,21410,21410,21490,21630,21700,21780,21950,22050,22320,22510,22840,23080,23390,23440,23830,24000,24090,24130,24120,24130,23830,23460,23050,22750,22450,22500,22470,22720,22850,23260,23960,24500,25200,25900,26600">Takaoka</option>
+                                    <option value="taquarituba" data-cap="28000" data-entrada="1400" data-saida="300" data-entressafra="150" data-hist="13440,13720,13820,14030,14360,14490,14700,15040,15240,15450,15770,16020,16180,16410,16580,16770,16980,17320,17500,17620,17840,18020,18170,18310,18350,18470,18520,18610,18780,18760,18760,18810,18760,18680,18590,18460,18300,18180,17890,17850,17620,17520,17230,17210,17050,16940,16830,16800,16820,16820,16880,16770,16800,16940,16840,16870,17000,17050,17110,17040,17080,17100,17070,17130,17110,17170,17160,17180,17190,17200,17280,17310,17280,17340,17320,17380,17350,17320,17360,17470,17720,17990,18430,18900,19550,20330,21170,22200,23300,24400,25500">Taquarituba</option>
+                                    <option value="taquarivai" data-cap="16000" data-entrada="750" data-saida="250" data-entressafra="130" data-hist="6080,6120,6150,6260,6250,6320,6340,6420,6470,6520,6530,6610,6590,6630,6640,6730,6740,6720,6810,6810,6840,6820,6850,6910,6880,6960,6970,6990,7030,6980,6980,7000,7020,7070,7130,7140,7170,7140,7120,7160,7250,7270,7250,7310,7310,7370,7360,7400,7460,7490,7510,7560,7590,7640,7660,7730,7810,7800,7850,7980,8000,8080,8080,8190,8220,8250,8310,8380,8440,8480,8510,8580,8630,8650,8750,8820,8840,8910,8930,9040,9040,9070,9190,9290,9450,9720,10100,10500,11000,11500,12000">Taquarivaí</option>
                                 </select>
                             </label>
                         </div>
@@ -4615,34 +4660,140 @@
                 </div>
             </section>
 
-            <!-- DU 03 Termometria e secagem: conservação do grão guardado (pior
-                 leitura de cada silo, um quadrado por silo) e o gargalo do secador.
-                 Os dois são decisão imediata: ponto quente perde grão, secador
-                 parado segura a recepção. -->
+            <!-- DU 03 Termometria: conservação do grão guardado, a pior leitura
+                 de cada silo (um quadrado por silo). É decisão imediata: ponto
+                 quente perde grão. -->
             <section class="screen du-screen" id="screen-du-termometria">
                 <div class="screen-header">
                     <div class="screen-badge">03</div>
                     <div class="screen-title-section">
-                        <h2>Termometria e Secagem</h2>
-                        <div class="screen-meta"><span class="live-dot"></span>LIVE • SILOS E SECADORES • ATUALIZADO HÁ <span class="time-update">6</span>s</div>
+                        <h2>Termometria</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>LIVE • SILOS • ATUALIZADO HÁ <span class="time-update">6</span>s</div>
                     </div>
                 </div>
 
-                <div class="kpi-grid kpi-grid--four">
+                <!-- Os três números que pedem ação: silo que esquenta (+1 °C/dia ou
+                     mais) mesmo com a aeração ligada, ou seja, a correção normal não
+                     está dando conta; silo já quente; e unidade sem leitura (silos
+                     que ninguém está vendo). Takaoka silo 3 também sobe, mas com a
+                     aeração desligada: entra no card de acima de 28 °C. -->
+                <div class="kpi-grid kpi-grid--three">
                     <div class="kpi-card alert">
-                        <div class="kpi-label">TEMPERATURA MÁXIMA</div>
-                        <div class="kpi-value">34,1 <span class="kpi-value-unit">°C</span></div>
-                        <div class="du-kpi-sub">Takaoka · silo 3 · trigo · +2,1 °C/dia</div>
+                        <div class="kpi-label">AQUECENDO MESMO COM AERAÇÃO</div>
+                        <div class="kpi-value">1 <span class="kpi-value-ref">/ 69 com leitura</span></div>
+                        <div class="du-kpi-sub">Avaré silo 5</div>
                     </div>
-                    <div class="kpi-card atencao">
+                    <div class="kpi-card alert">
                         <div class="kpi-label">SILOS ACIMA DE 28 °C</div>
-                        <div class="kpi-value">1 <span class="kpi-value-ref">/ 37 com leitura</span></div>
-                        <div class="du-kpi-sub">Takaoka · silo 3 (trigo)</div>
+                        <div class="kpi-value">1 <span class="kpi-value-ref">/ 69 com leitura</span></div>
+                        <div class="du-kpi-sub">Takaoka silo 3</div>
                     </div>
+                    <!-- tempo sem leitura contado até a hora de referência (14:35) -->
+                    <div class="kpi-card">
+                        <div class="kpi-label">UNIDADE SEM LEITURA</div>
+                        <div class="kpi-value">47 <span class="kpi-value-unit">min</span></div>
+                        <div class="du-kpi-sub">São Manuel</div>
+                    </div>
+                </div>
+
+                <div class="content-section du-section">
+                    <div class="section-head">
+                        <h3>TERMOMETRIA · PIOR LEITURA DE CADA SILO</h3>
+                        <!-- forma = tipo de estrutura (como nas telas de Avaré);
+                             cor = faixa da temperatura -->
+                        <span class="du-legenda">
+                            <span><i class="du-forma du-forma--silo"></i>silo</span>
+                            <span><i class="du-forma du-forma--arm"></i>armazém</span>
+                            <span><i class="du-forma du-forma--pulmao"></i>pulmão</span>
+                            <span><i class="du-silo-leg"></i>&lt; 28 °C</span>
+                            <span><i class="du-silo-leg is-atencao"></i>28–32</span>
+                            <span><i class="du-silo-leg is-alerta"></i>≥ 32 ou +1 °C/dia</span>
+                        </span>
+                    </div>
+                    <div class="du-tabela-wrap">
+                        <table class="pv-tabela du-tabela du-tabela--term">
+                            <thead>
+                                <tr><th>Unidade</th><th>Silos · armazéns · pulmões</th><th class="num">Máx.</th><th class="num">Tendência</th><th>Ação</th></tr>
+                            </thead>
+                            <tbody>
+                                <!-- Avaré: leitura atual dos 8 silos (tela Silos e aeração), dos
+                                     2 armazéns graneleiros (tela Armazém, áreas 1 e 2) e dos 2
+                                     silos pulmão (tela Moegas). O silo 5 está em 24,3 °C, mas sobe
+                                     0,4 °C/h (+2,5 °C em 24 h) com a aeração ligada: alerta pela
+                                     regra do +1 °C/dia. Armazéns e pulmões estão estáveis.
+                                     Nas demais unidades, 2 armazéns e 2 pulmões em cada uma, com
+                                     leituras de exemplo abaixo da máxima dos silos da unidade
+                                     (até ligar a termometria delas); São Manuel sem leitura. -->
+                                <tr class="du-st--alerta">
+                                    <td class="pv-tabela-nome">Avaré</td>
+                                    <td><span class="du-silos" role="img" aria-label="8 silos, 2 armazéns e 2 pulmões: silo 5 subindo 2,5 °C por dia"><span class="du-grupo"><i title="Silo 1 · 22,4 °C"><small>silo 1</small>22,4°</i><i title="Silo 2 · 21,0 °C"><small>silo 2</small>21,0°</i><i title="Silo 3 · 23,1 °C"><small>silo 3</small>23,1°</i><i title="Silo 4 · 22,2 °C"><small>silo 4</small>22,2°</i><i class="is-alerta" title="Silo 5 · 24,3 °C · subindo 0,4 °C/h"><small>silo 5</small>24,3°</i><i title="Silo 6 · 20,2 °C"><small>silo 6</small>20,2°</i><i title="Silo 7 · 23,0 °C"><small>silo 7</small>23,0°</i><i title="Silo 8 · 21,2 °C"><small>silo 8</small>21,2°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 (área 1, milho) · 22,0 °C"><small>armazém 1</small>22,0°</i><i class="du-arm" title="Armazém 2 (área 2, sorgo) · 21,5 °C"><small>armazém 2</small>21,5°</i><i class="du-pulmao" title="Pulmão 1 · 23,0 °C"><small>pulmão 1</small>23,0°</i><i class="du-pulmao" title="Pulmão 2 · 22,0 °C"><small>pulmão 2</small>22,0°</i></span></span></td>
+                                    <td class="num"><b>24,3 °C</b><small>silo 5 · milho</small></td>
+                                    <td class="num is-alerta">+2,5 <small>°C/dia</small></td>
+                                    <td><span class="pv-tag pv-tag--alerta">Checar silo 5</span></td>
+                                </tr>
+                                <tr class="du-st--ok">
+                                    <td class="pv-tabela-nome">Matriz</td>
+                                    <td><span class="du-silos" role="img" aria-label="12 silos, 2 armazéns e 2 pulmões, todos abaixo de 28 °C"><span class="du-grupo"><i title="Silo 1 · 22,8 °C"><small>silo 1</small>22,8°</i><i title="Silo 2 · 23,5 °C"><small>silo 2</small>23,5°</i><i title="Silo 3 · 24,1 °C"><small>silo 3</small>24,1°</i><i title="Silo 4 · 22,9 °C"><small>silo 4</small>22,9°</i><i title="Silo 5 · 23,7 °C"><small>silo 5</small>23,7°</i><i title="Silo 6 · 24,6 °C"><small>silo 6</small>24,6°</i><i title="Silo 7 · 23,2 °C"><small>silo 7</small>23,2°</i><i title="Silo 8 · 22,4 °C"><small>silo 8</small>22,4°</i><i title="Silo 9 · 23,9 °C"><small>silo 9</small>23,9°</i><i title="Silo 10 · 24,0 °C"><small>silo 10</small>24,0°</i><i title="Silo 11 · 23,1 °C"><small>silo 11</small>23,1°</i><i title="Silo 12 · 22,7 °C"><small>silo 12</small>22,7°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 · 23,4 °C"><small>armazém 1</small>23,4°</i><i class="du-arm" title="Armazém 2 · 22,9 °C"><small>armazém 2</small>22,9°</i><i class="du-pulmao" title="Pulmão 1 · 24,1 °C"><small>pulmão 1</small>24,1°</i><i class="du-pulmao" title="Pulmão 2 · 23,6 °C"><small>pulmão 2</small>23,6°</i></span></span></td>
+                                    <td class="num"><b>24,6 °C</b><small>silo 6</small></td>
+                                    <td class="num">+0,2 <small>°C/dia</small></td>
+                                    <td><span class="pv-tag pv-tag--ok">Normal</span></td>
+                                </tr>
+                                <tr class="du-st--ok">
+                                    <td class="pv-tabela-nome">Itaberá</td>
+                                    <td><span class="du-silos" role="img" aria-label="6 silos, 2 armazéns e 2 pulmões, todos abaixo de 28 °C"><span class="du-grupo"><i title="Silo 1 · 22,1 °C"><small>silo 1</small>22,1°</i><i title="Silo 2 · 23,1 °C"><small>silo 2</small>23,1°</i><i title="Silo 3 · 21,8 °C"><small>silo 3</small>21,8°</i><i title="Silo 4 · 22,6 °C"><small>silo 4</small>22,6°</i><i title="Silo 5 · 22,9 °C"><small>silo 5</small>22,9°</i><i title="Silo 6 · 21,5 °C"><small>silo 6</small>21,5°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 · 22,4 °C"><small>armazém 1</small>22,4°</i><i class="du-arm" title="Armazém 2 · 21,9 °C"><small>armazém 2</small>21,9°</i><i class="du-pulmao" title="Pulmão 1 · 22,8 °C"><small>pulmão 1</small>22,8°</i><i class="du-pulmao" title="Pulmão 2 · 22,0 °C"><small>pulmão 2</small>22,0°</i></span></span></td>
+                                    <td class="num"><b>23,1 °C</b><small>silo 2</small></td>
+                                    <td class="num">+0,1 <small>°C/dia</small></td>
+                                    <td><span class="pv-tag pv-tag--ok">Normal</span></td>
+                                </tr>
+                                <tr class="du-st--off">
+                                    <td class="pv-tabela-nome">São Manuel</td>
+                                    <td class="du-off-cel" colspan="3">Sem comunicação desde 13:48 · última máxima 24,9 °C</td>
+                                    <td><span class="pv-tag du-tag--off">Sem dados</span></td>
+                                </tr>
+                                <tr class="du-st--alerta">
+                                    <td class="pv-tabela-nome">Takaoka</td>
+                                    <td><span class="du-silos" role="img" aria-label="8 silos, 2 armazéns e 2 pulmões: silo 3 acima de 32 °C"><span class="du-grupo"><i title="Silo 1 · 23,4 °C"><small>silo 1</small>23,4°</i><i title="Silo 2 · 24,8 °C"><small>silo 2</small>24,8°</i><i class="is-alerta" title="Silo 3 · 34,1 °C"><small>silo 3</small>34,1°</i><i title="Silo 4 · 26,2 °C"><small>silo 4</small>26,2°</i><i title="Silo 5 · 23,9 °C"><small>silo 5</small>23,9°</i><i title="Silo 6 · 24,4 °C"><small>silo 6</small>24,4°</i><i title="Silo 7 · 25,1 °C"><small>silo 7</small>25,1°</i><i title="Silo 8 · 23,7 °C"><small>silo 8</small>23,7°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 · 24,6 °C"><small>armazém 1</small>24,6°</i><i class="du-arm" title="Armazém 2 · 23,8 °C"><small>armazém 2</small>23,8°</i><i class="du-pulmao" title="Pulmão 1 · 25,0 °C"><small>pulmão 1</small>25,0°</i><i class="du-pulmao" title="Pulmão 2 · 24,2 °C"><small>pulmão 2</small>24,2°</i></span></span></td>
+                                    <td class="num is-alerta"><b>34,1 °C</b><small>silo 3 · trigo</small></td>
+                                    <td class="num is-alerta">+2,1 <small>°C/dia</small></td>
+                                    <td><span class="pv-tag pv-tag--alerta">Ligar aeração</span></td>
+                                </tr>
+                                <tr class="du-st--ok">
+                                    <td class="pv-tabela-nome">Taquarituba</td>
+                                    <td><span class="du-silos" role="img" aria-label="7 silos, 2 armazéns e 2 pulmões, todos abaixo de 28 °C"><span class="du-grupo"><i title="Silo 1 · 25,1 °C"><small>silo 1</small>25,1°</i><i title="Silo 2 · 26,4 °C"><small>silo 2</small>26,4°</i><i title="Silo 3 · 27,5 °C"><small>silo 3</small>27,5°</i><i title="Silo 4 · 26,8 °C"><small>silo 4</small>26,8°</i><i title="Silo 5 · 25,6 °C"><small>silo 5</small>25,6°</i><i title="Silo 6 · 24,9 °C"><small>silo 6</small>24,9°</i><i title="Silo 7 · 26,1 °C"><small>silo 7</small>26,1°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 · 26,3 °C"><small>armazém 1</small>26,3°</i><i class="du-arm" title="Armazém 2 · 25,7 °C"><small>armazém 2</small>25,7°</i><i class="du-pulmao" title="Pulmão 1 · 26,9 °C"><small>pulmão 1</small>26,9°</i><i class="du-pulmao" title="Pulmão 2 · 26,0 °C"><small>pulmão 2</small>26,0°</i></span></span></td>
+                                    <td class="num"><b>27,5 °C</b><small>silo 3</small></td>
+                                    <td class="num">+0,3 <small>°C/dia</small></td>
+                                    <td><span class="pv-tag pv-tag--ok">Normal</span></td>
+                                </tr>
+                                <tr class="du-st--ok">
+                                    <td class="pv-tabela-nome">Taquarivaí</td>
+                                    <td><span class="du-silos" role="img" aria-label="4 silos, 2 armazéns e 2 pulmões, todos abaixo de 28 °C"><span class="du-grupo"><i title="Silo 1 · 25,3 °C"><small>silo 1</small>25,3°</i><i title="Silo 2 · 26,2 °C"><small>silo 2</small>26,2°</i><i title="Silo 3 · 24,8 °C"><small>silo 3</small>24,8°</i><i title="Silo 4 · 25,9 °C"><small>silo 4</small>25,9°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 · 25,1 °C"><small>armazém 1</small>25,1°</i><i class="du-arm" title="Armazém 2 · 24,6 °C"><small>armazém 2</small>24,6°</i><i class="du-pulmao" title="Pulmão 1 · 25,8 °C"><small>pulmão 1</small>25,8°</i><i class="du-pulmao" title="Pulmão 2 · 25,2 °C"><small>pulmão 2</small>25,2°</i></span></span></td>
+                                    <td class="num"><b>26,2 °C</b><small>silo 2</small></td>
+                                    <td class="num">+0,2 <small>°C/dia</small></td>
+                                    <td><span class="pv-tag pv-tag--ok">Normal</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DU 04 Secagem: o gargalo do secador em cada unidade, um selo por
+                 secador (vazão ou estado), umidade de entrada e o tamanho da fila
+                 em horas. É decisão imediata: secador parado segura a recepção. -->
+            <section class="screen du-screen" id="screen-du-secagem">
+                <div class="screen-header">
+                    <div class="screen-badge">04</div>
+                    <div class="screen-title-section">
+                        <h2>Secagem</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>LIVE • SECADORES • ATUALIZADO HÁ <span class="time-update">6</span>s</div>
+                    </div>
+                </div>
+
+                <div class="kpi-grid kpi-grid--two">
                     <div class="kpi-card">
                         <div class="kpi-label">SECADORES OPERANDO</div>
-                        <div class="kpi-value">7 <span class="kpi-value-ref">/ 9 com leitura</span></div>
-                        <div class="du-kpi-sub">1 em manutenção (Matriz) · 1 sem carga (Takaoka)</div>
+                        <div class="kpi-value">9 <span class="kpi-value-ref">/ 12 com leitura</span></div>
+                        <div class="du-kpi-sub">1 desarmado (Avaré) · 1 em manutenção (Matriz) · 1 sem carga (Takaoka)</div>
                     </div>
                     <div class="kpi-card atencao">
                         <div class="kpi-label">MAIOR FILA DE SECAGEM</div>
@@ -4651,237 +4802,245 @@
                     </div>
                 </div>
 
-                <div class="du-split du-split--meio">
-                    <div class="content-section du-section">
-                        <div class="section-head">
-                            <h3>TERMOMETRIA · PIOR LEITURA DE CADA SILO</h3>
-                            <span class="du-legenda">
-                                <span><i class="du-silo-leg"></i>&lt; 28 °C</span>
-                                <span><i class="du-silo-leg is-atencao"></i>28–32</span>
-                                <span><i class="du-silo-leg is-alerta"></i>≥ 32</span>
-                            </span>
-                        </div>
-                        <div class="du-tabela-wrap">
-                            <table class="pv-tabela du-tabela du-tabela--term">
-                                <thead>
-                                    <tr><th>Unidade</th><th>Silos</th><th class="num">Máx.</th><th class="num">Tendência</th><th>Ação</th></tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="du-st--ok">
-                                        <td class="pv-tabela-nome">Matriz<small>Paranapanema</small></td>
-                                        <td><span class="du-silos" role="img" aria-label="12 silos, todos abaixo de 28 °C"><i title="Silo 1 · 22,8 °C"></i><i title="Silo 2 · 23,5 °C"></i><i title="Silo 3 · 24,1 °C"></i><i title="Silo 4 · 22,9 °C"></i><i title="Silo 5 · 23,7 °C"></i><i title="Silo 6 · 24,6 °C"></i><i title="Silo 7 · 23,2 °C"></i><i title="Silo 8 · 22,4 °C"></i><i title="Silo 9 · 23,9 °C"></i><i title="Silo 10 · 24,0 °C"></i><i title="Silo 11 · 23,1 °C"></i><i title="Silo 12 · 22,7 °C"></i></span></td>
-                                        <td class="num"><b>24,6 °C</b><small>silo 6</small></td>
-                                        <td class="num">+0,2 <small>°C/dia</small></td>
-                                        <td><span class="pv-tag pv-tag--ok">Normal</span></td>
-                                    </tr>
-                                    <tr class="du-st--ok">
-                                        <td class="pv-tabela-nome">Itaberá</td>
-                                        <td><span class="du-silos" role="img" aria-label="6 silos, todos abaixo de 28 °C"><i title="Silo 1 · 22,1 °C"></i><i title="Silo 2 · 23,1 °C"></i><i title="Silo 3 · 21,8 °C"></i><i title="Silo 4 · 22,6 °C"></i><i title="Silo 5 · 22,9 °C"></i><i title="Silo 6 · 21,5 °C"></i></span></td>
-                                        <td class="num"><b>23,1 °C</b><small>silo 2</small></td>
-                                        <td class="num">+0,1 <small>°C/dia</small></td>
-                                        <td><span class="pv-tag pv-tag--ok">Normal</span></td>
-                                    </tr>
-                                    <tr class="du-st--off">
-                                        <td class="pv-tabela-nome">São Manuel</td>
-                                        <td class="du-off-cel" colspan="3">Sem comunicação desde 13:48 · última máxima 24,9 °C</td>
-                                        <td><span class="pv-tag du-tag--off">Sem dados</span></td>
-                                    </tr>
-                                    <tr class="du-st--alerta">
-                                        <td class="pv-tabela-nome">Takaoka<small>Itapeva</small></td>
-                                        <td><span class="du-silos" role="img" aria-label="8 silos: silo 3 acima de 32 °C"><i title="Silo 1 · 23,4 °C"></i><i title="Silo 2 · 24,8 °C"></i><i class="is-alerta" title="Silo 3 · 34,1 °C"></i><i title="Silo 4 · 26,2 °C"></i><i title="Silo 5 · 23,9 °C"></i><i title="Silo 6 · 24,4 °C"></i><i title="Silo 7 · 25,1 °C"></i><i title="Silo 8 · 23,7 °C"></i></span></td>
-                                        <td class="num is-alerta"><b>34,1 °C</b><small>silo 3 · trigo</small></td>
-                                        <td class="num is-alerta">+2,1 <small>°C/dia</small></td>
-                                        <td><span class="pv-tag pv-tag--alerta">Ligar aeração</span></td>
-                                    </tr>
-                                    <tr class="du-st--ok">
-                                        <td class="pv-tabela-nome">Taquarituba</td>
-                                        <td><span class="du-silos" role="img" aria-label="7 silos, todos abaixo de 28 °C"><i title="Silo 1 · 25,1 °C"></i><i title="Silo 2 · 26,4 °C"></i><i title="Silo 3 · 27,5 °C"></i><i title="Silo 4 · 26,8 °C"></i><i title="Silo 5 · 25,6 °C"></i><i title="Silo 6 · 24,9 °C"></i><i title="Silo 7 · 26,1 °C"></i></span></td>
-                                        <td class="num"><b>27,5 °C</b><small>silo 3</small></td>
-                                        <td class="num">+0,3 <small>°C/dia</small></td>
-                                        <td><span class="pv-tag pv-tag--ok">Normal</span></td>
-                                    </tr>
-                                    <tr class="du-st--ok">
-                                        <td class="pv-tabela-nome">Taquarivaí</td>
-                                        <td><span class="du-silos" role="img" aria-label="4 silos, todos abaixo de 28 °C"><i title="Silo 1 · 25,3 °C"></i><i title="Silo 2 · 26,2 °C"></i><i title="Silo 3 · 24,8 °C"></i><i title="Silo 4 · 25,9 °C"></i></span></td>
-                                        <td class="num"><b>26,2 °C</b><small>silo 2</small></td>
-                                        <td class="num">+0,2 <small>°C/dia</small></td>
-                                        <td><span class="pv-tag pv-tag--ok">Normal</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                <div class="content-section du-section">
+                    <div class="section-head">
+                        <h3>SECAGEM · SECADORES</h3>
+                        <span class="du-legenda">máx. do ar: milho 100 · sorgo 90 · trigo 80 °C · saída do ar até 50 °C</span>
                     </div>
-
-                    <!-- Secagem: um selo por secador (vazão ou estado), umidade de
-                         entrada e o tamanho da fila do secador em horas -->
-                    <div class="content-section du-section">
-                        <div class="section-head">
-                            <h3>SECAGEM · FILA E SECADORES</h3>
-                            <span class="du-legenda"><span><i class="du-marca"></i>faixas da fila: 4 e 8 h</span></span>
-                        </div>
-                        <div class="du-tabela-wrap">
-                            <table class="pv-tabela du-tabela du-tabela--sec">
-                                <thead>
-                                    <tr><th>Unidade</th><th>Secadores</th><th class="num">Umidade</th><th>Fila do secador</th><th>Ação</th></tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="du-st--atencao">
-                                        <td class="pv-tabela-nome">Matriz<small>Paranapanema</small></td>
-                                        <td><span class="du-secs"><span class="du-sec is-manut">S1 manutenção</span><span class="du-sec">S2 <b>58</b> t/h</span></span></td>
-                                        <td class="num">16,4%</td>
-                                        <td><div class="du-medidor du-medidor--fila is-atencao" style="--p: 0.66" title="380 t aguardando secagem"><span class="du-medidor-trilho"><i></i></span><b>6,6 h</b></div></td>
-                                        <td><span class="pv-tag pv-tag--atencao">Cobrar manutenção</span></td>
-                                    </tr>
-                                    <tr class="du-st--ok">
-                                        <td class="pv-tabela-nome">Itaberá</td>
-                                        <td><span class="du-secs"><span class="du-sec">S1 <b>44</b> t/h</span><span class="du-sec">S2 <b>47</b> t/h</span></span></td>
-                                        <td class="num">14,8%</td>
-                                        <td><div class="du-medidor du-medidor--fila" style="--p: 0.1" title="90 t aguardando secagem"><span class="du-medidor-trilho"><i></i></span><b>1,0 h</b></div></td>
-                                        <td><span class="pv-tag pv-tag--ok">Normal</span></td>
-                                    </tr>
-                                    <tr class="du-st--off">
-                                        <td class="pv-tabela-nome">São Manuel</td>
-                                        <td class="du-off-cel" colspan="3">Sem comunicação desde 13:48</td>
-                                        <td><span class="pv-tag du-tag--off">Sem dados</span></td>
-                                    </tr>
-                                    <tr class="du-st--ok">
-                                        <td class="pv-tabela-nome">Takaoka<small>Itapeva</small></td>
-                                        <td><span class="du-secs"><span class="du-sec">S1 <b>48</b> t/h</span><span class="du-sec is-parado">S2 sem carga</span></span></td>
-                                        <td class="num">14,9%</td>
-                                        <td><div class="du-medidor du-medidor--fila" style="--p: 0.13" title="60 t aguardando secagem"><span class="du-medidor-trilho"><i></i></span><b>1,3 h</b></div></td>
-                                        <td><span class="pv-tag pv-tag--ok">Normal</span></td>
-                                    </tr>
-                                    <tr class="du-st--ok">
-                                        <td class="pv-tabela-nome">Taquarituba</td>
-                                        <td><span class="du-secs"><span class="du-sec">S1 <b>57</b> t/h</span><span class="du-sec">S2 <b>59</b> t/h</span></span></td>
-                                        <td class="num">15,9%</td>
-                                        <td><div class="du-medidor du-medidor--fila" style="--p: 0.25" title="290 t aguardando secagem"><span class="du-medidor-trilho"><i></i></span><b>2,5 h</b></div></td>
-                                        <td><span class="pv-tag pv-tag--ok">Normal</span></td>
-                                    </tr>
-                                    <tr class="du-st--atencao">
-                                        <td class="pv-tabela-nome">Taquarivaí</td>
-                                        <td><span class="du-secs"><span class="du-sec is-baixo">S1 <b>34</b> / 40 t/h</span></span></td>
-                                        <td class="num is-atencao">17,8%</td>
-                                        <td><div class="du-medidor du-medidor--fila is-atencao" style="--p: 0.6" title="205 t aguardando secagem"><span class="du-medidor-trilho"><i></i></span><b>6,0 h</b></div></td>
-                                        <td><span class="pv-tag pv-tag--atencao">Limitar grão úmido</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <!-- Uma linha por secador; os dois da unidade ficam juntos (a unidade só
+                         na primeira linha). Fornalha = real / setada; ar do secador = real /
+                         máximo da cultura; saída do ar acima de 50 °C é risco de incêndio.
+                         Massa = temperatura · umidade na entrada e na saída do secador;
+                         umidade laranja = entrada acima de 17,5% ou saída acima do alvo
+                         (milho 13,5 · sorgo 12,5 · trigo 13%). Avaré vem das telas da
+                         secagem às 14h50; nas demais, só vazão e umidade de entrada são
+                         medidas hoje, as outras leituras são de exemplo. -->
+                    <div class="du-tabela-wrap">
+                        <table class="pv-tabela du-tabela du-tabela--sec">
+                            <thead>
+                                <tr><th>Unidade</th><th>Secador · status</th><th class="num">Prod.<small>t/h</small></th><th>Cultura</th><th class="num">Fornalha<small>real / setada</small></th><th class="num">Ar do secador<small>real / máx.</small></th><th class="num">Saída do ar</th><th class="num">Massa entrada<small>temp. · umidade</small></th><th class="num">Massa saída<small>temp. · umidade</small></th></tr>
+                            </thead>
+                            <tbody>
+                                <tr class="du-st--alerta du-sec-par">
+                                    <td class="pv-tabela-nome">Avaré</td>
+                                    <td><span class="du-sec">S1 · Operando</span></td>
+                                    <td class="num">78</td>
+                                    <td class="du-sec-cult"><i class="legend-dot legend-dot--milho"></i>Milho</td>
+                                    <td class="num">148° <small>/ 150</small></td>
+                                    <td class="num is-alerta">101° <small>/ 100</small></td>
+                                    <td class="num">46°</td>
+                                    <td class="num"><small>28° ·</small> <span class="du-umi is-atencao">18,4%</span></td>
+                                    <td class="num"><small>92° ·</small> <span class="du-umi">13,4%</span></td>
+                                </tr>
+                                <tr class="du-st--alerta">
+                                    <td class="pv-tabela-nome"></td>
+                                    <td><span class="du-sec is-alerta">S2 · Desarmado</span></td>
+                                    <td class="num">—</td>
+                                    <td class="du-sec-cult"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td>
+                                    <td class="num">138° <small>/ 140</small></td>
+                                    <td class="num">85° <small>/ 90</small></td>
+                                    <td class="num is-alerta">52°</td>
+                                    <td class="num"><small>27° ·</small> <span class="du-umi is-atencao">18,8%</span></td>
+                                    <td class="num"><small>83° ·</small> <span class="du-umi is-atencao">13,6%</span></td>
+                                </tr>
+                                <tr class="du-st--atencao du-sec-par">
+                                    <td class="pv-tabela-nome">Matriz</td>
+                                    <td><span class="du-sec is-manut">S1 · Manutenção</span></td>
+                                    <td class="du-off-cel" colspan="7">Parado para manutenção desde 10:20</td>
+                                </tr>
+                                <tr class="du-st--atencao">
+                                    <td class="pv-tabela-nome"></td>
+                                    <td><span class="du-sec">S2 · Operando</span></td>
+                                    <td class="num">58</td>
+                                    <td class="du-sec-cult"><i class="legend-dot legend-dot--milho"></i>Milho</td>
+                                    <td class="num">146° <small>/ 150</small></td>
+                                    <td class="num">96° <small>/ 100</small></td>
+                                    <td class="num">44°</td>
+                                    <td class="num"><small>27° ·</small> <span class="du-umi">16,4%</span></td>
+                                    <td class="num"><small>88° ·</small> <span class="du-umi">13,3%</span></td>
+                                </tr>
+                                <tr class="du-st--ok du-sec-par">
+                                    <td class="pv-tabela-nome">Itaberá</td>
+                                    <td><span class="du-sec">S1 · Operando</span></td>
+                                    <td class="num">44</td>
+                                    <td class="du-sec-cult"><i class="legend-dot legend-dot--milho"></i>Milho</td>
+                                    <td class="num">145° <small>/ 150</small></td>
+                                    <td class="num">94° <small>/ 100</small></td>
+                                    <td class="num">42°</td>
+                                    <td class="num"><small>26° ·</small> <span class="du-umi">14,6%</span></td>
+                                    <td class="num"><small>86° ·</small> <span class="du-umi">13,2%</span></td>
+                                </tr>
+                                <tr class="du-st--ok">
+                                    <td class="pv-tabela-nome"></td>
+                                    <td><span class="du-sec">S2 · Operando</span></td>
+                                    <td class="num">47</td>
+                                    <td class="du-sec-cult"><i class="legend-dot legend-dot--trigo"></i>Trigo</td>
+                                    <td class="num">118° <small>/ 120</small></td>
+                                    <td class="num">76° <small>/ 80</small></td>
+                                    <td class="num">40°</td>
+                                    <td class="num"><small>25° ·</small> <span class="du-umi">15,0%</span></td>
+                                    <td class="num"><small>72° ·</small> <span class="du-umi">12,9%</span></td>
+                                </tr>
+                                <tr class="du-st--off">
+                                    <td class="pv-tabela-nome">São Manuel</td>
+                                    <td class="du-off-cel" colspan="8">Sem comunicação desde 13:48</td>
+                                </tr>
+                                <tr class="du-st--ok du-sec-par">
+                                    <td class="pv-tabela-nome">Takaoka</td>
+                                    <td><span class="du-sec">S1 · Operando</span></td>
+                                    <td class="num">48</td>
+                                    <td class="du-sec-cult"><i class="legend-dot legend-dot--trigo"></i>Trigo</td>
+                                    <td class="num">119° <small>/ 120</small></td>
+                                    <td class="num">77° <small>/ 80</small></td>
+                                    <td class="num">41°</td>
+                                    <td class="num"><small>25° ·</small> <span class="du-umi">14,9%</span></td>
+                                    <td class="num"><small>73° ·</small> <span class="du-umi">13,0%</span></td>
+                                </tr>
+                                <tr class="du-st--ok">
+                                    <td class="pv-tabela-nome"></td>
+                                    <td><span class="du-sec is-parado">S2 · Sem carga</span></td>
+                                    <td class="du-off-cel" colspan="7">Sem carga: aguardando grão úmido</td>
+                                </tr>
+                                <tr class="du-st--ok du-sec-par">
+                                    <td class="pv-tabela-nome">Taquarituba</td>
+                                    <td><span class="du-sec">S1 · Operando</span></td>
+                                    <td class="num">57</td>
+                                    <td class="du-sec-cult"><i class="legend-dot legend-dot--milho"></i>Milho</td>
+                                    <td class="num">147° <small>/ 150</small></td>
+                                    <td class="num">97° <small>/ 100</small></td>
+                                    <td class="num">45°</td>
+                                    <td class="num"><small>27° ·</small> <span class="du-umi">15,7%</span></td>
+                                    <td class="num"><small>89° ·</small> <span class="du-umi">13,4%</span></td>
+                                </tr>
+                                <tr class="du-st--ok">
+                                    <td class="pv-tabela-nome"></td>
+                                    <td><span class="du-sec">S2 · Operando</span></td>
+                                    <td class="num">59</td>
+                                    <td class="du-sec-cult"><i class="legend-dot legend-dot--milho"></i>Milho</td>
+                                    <td class="num">149° <small>/ 150</small></td>
+                                    <td class="num">98° <small>/ 100</small></td>
+                                    <td class="num">46°</td>
+                                    <td class="num"><small>27° ·</small> <span class="du-umi">16,1%</span></td>
+                                    <td class="num"><small>90° ·</small> <span class="du-umi">13,5%</span></td>
+                                </tr>
+                                <tr class="du-st--atencao du-sec-par">
+                                    <td class="pv-tabela-nome">Taquarivaí</td>
+                                    <td><span class="du-sec is-baixo">S1 · Operando</span></td>
+                                    <td class="num is-atencao">34 <small>/ 40</small></td>
+                                    <td class="du-sec-cult"><i class="legend-dot legend-dot--milho"></i>Milho</td>
+                                    <td class="num">150° <small>/ 150</small></td>
+                                    <td class="num">99° <small>/ 100</small></td>
+                                    <td class="num">47°</td>
+                                    <td class="num"><small>28° ·</small> <span class="du-umi is-atencao">17,8%</span></td>
+                                    <td class="num"><small>91° ·</small> <span class="du-umi is-atencao">14,1%</span></td>
+                                </tr>
+                                <tr class="du-st--atencao">
+                                    <td class="pv-tabela-nome"></td>
+                                    <td><span class="du-sec">S2 · Operando</span></td>
+                                    <td class="num">36</td>
+                                    <td class="du-sec-cult"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td>
+                                    <td class="num">139° <small>/ 140</small></td>
+                                    <td class="num">86° <small>/ 90</small></td>
+                                    <td class="num">44°</td>
+                                    <td class="num"><small>27° ·</small> <span class="du-umi is-atencao">17,6%</span></td>
+                                    <td class="num"><small>84° ·</small> <span class="du-umi">12,5%</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </section>
 
-            <!-- DU 04 Clima das unidades: quando a chuva chega em cada unidade
-                 (chance por hora, próximas 12h) e o resumo de agora e de amanhã.
+            <!-- DU 05 Clima das unidades: agora (com as próximas 6 h) e os 4 dias
+                 seguintes de cada unidade, com o que isso muda na operação hoje.
+                 Avaré segue a tela Previsão do tempo (amanhã = qua 23, como no
+                 card da visão geral e na tabela de cooperados); as demais são
+                 valores de exemplo até ligar a API meteorológica. Fundo do dia
+                 = chance de chuva; laranja com 40% ou 4 mm, vermelho com 15 mm;
+                 rajada a partir de 36 km/h em vermelho.
                  A previsão vem do serviço meteorológico, não do link da unidade:
                  por isso São Manuel aparece mesmo sem comunicação. -->
             <section class="screen du-screen" id="screen-du-clima">
                 <div class="screen-header">
-                    <div class="screen-badge">04</div>
+                    <div class="screen-badge">05</div>
                     <div class="screen-title-section">
                         <h2>Clima das Unidades</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • PREVISÃO POR UNIDADE • ATUALIZADO HÁ <span class="time-update">2</span>s</div>
                     </div>
                 </div>
 
-                <div class="content-section du-section du-chuva-sec">
-                    <div class="section-head">
-                        <h3>CHUVA NAS PRÓXIMAS 12 HORAS · CHANCE POR HORA (%)</h3>
-                        <span class="du-legenda">frente de chuva avançando de sudoeste para nordeste<span class="du-chuva-escala" aria-hidden="true"><i></i>0 → 100%</span></span>
-                    </div>
-                    <div class="du-tabela-wrap">
-                        <table class="du-chuva">
-                            <thead>
-                                <tr><th>Unidade</th><th>15h</th><th>16h</th><th>17h</th><th>18h</th><th>19h</th><th>20h</th><th>21h</th><th>22h</th><th>23h</th><th>00h</th><th>01h</th><th>02h</th><th class="num">Começa</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr><th scope="row">Matriz<small>Paranapanema</small></th><td style="--p: 0.1">10</td><td style="--p: 0.2">20</td><td style="--p: 0.45">45</td><td class="is-forte" style="--p: 0.6">60</td><td class="is-forte" style="--p: 0.6">60</td><td class="is-forte" style="--p: 0.5">50</td><td style="--p: 0.4">40</td><td style="--p: 0.3">30</td><td style="--p: 0.2">20</td><td style="--p: 0.15">15</td><td style="--p: 0.1">10</td><td style="--p: 0.1">10</td><td class="du-chuva-inicio is-atencao">~17h30</td></tr>
-                                <tr><th scope="row">Itaberá</th><td style="--p: 0.2">20</td><td style="--p: 0.45">45</td><td class="is-forte" style="--p: 0.7">70</td><td class="is-forte" style="--p: 0.8">80</td><td class="is-forte" style="--p: 0.75">75</td><td class="is-forte" style="--p: 0.6">60</td><td style="--p: 0.45">45</td><td style="--p: 0.3">30</td><td style="--p: 0.2">20</td><td style="--p: 0.15">15</td><td style="--p: 0.1">10</td><td style="--p: 0.1">10</td><td class="du-chuva-inicio is-atencao">~16h30</td></tr>
-                                <tr><th scope="row">São Manuel</th><td style="--p: 0.05">5</td><td style="--p: 0.1">10</td><td style="--p: 0.1">10</td><td style="--p: 0.15">15</td><td style="--p: 0.2">20</td><td style="--p: 0.3">30</td><td style="--p: 0.3">30</td><td style="--p: 0.25">25</td><td style="--p: 0.2">20</td><td style="--p: 0.15">15</td><td style="--p: 0.1">10</td><td style="--p: 0.05">5</td><td class="du-chuva-inicio">fraca</td></tr>
-                                <tr><th scope="row">Takaoka<small>Itapeva</small></th><td style="--p: 0.15">15</td><td style="--p: 0.3">30</td><td class="is-forte" style="--p: 0.6">60</td><td class="is-forte" style="--p: 0.7">70</td><td class="is-forte" style="--p: 0.7">70</td><td class="is-forte" style="--p: 0.6">60</td><td style="--p: 0.45">45</td><td style="--p: 0.35">35</td><td style="--p: 0.25">25</td><td style="--p: 0.2">20</td><td style="--p: 0.15">15</td><td style="--p: 0.1">10</td><td class="du-chuva-inicio is-atencao">~17h</td></tr>
-                                <tr><th scope="row">Taquarituba</th><td style="--p: 0.25">25</td><td class="is-forte" style="--p: 0.6">60</td><td class="is-forte" style="--p: 0.8">80</td><td class="is-forte" style="--p: 0.85">85</td><td class="is-forte" style="--p: 0.75">75</td><td class="is-forte" style="--p: 0.55">55</td><td style="--p: 0.4">40</td><td style="--p: 0.3">30</td><td style="--p: 0.2">20</td><td style="--p: 0.15">15</td><td style="--p: 0.1">10</td><td style="--p: 0.1">10</td><td class="du-chuva-inicio is-alerta">~16h</td></tr>
-                                <tr><th scope="row">Taquarivaí</th><td style="--p: 0.1">10</td><td style="--p: 0.2">20</td><td style="--p: 0.4">40</td><td class="is-forte" style="--p: 0.55">55</td><td class="is-forte" style="--p: 0.6">60</td><td class="is-forte" style="--p: 0.55">55</td><td style="--p: 0.45">45</td><td style="--p: 0.35">35</td><td style="--p: 0.25">25</td><td style="--p: 0.2">20</td><td style="--p: 0.15">15</td><td style="--p: 0.1">10</td><td class="du-chuva-inicio is-atencao">~18h</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
                 <div class="content-section du-section du-clima-sec">
                     <div class="section-head">
-                        <h3>AGORA, PRÓXIMAS 6 HORAS E AMANHÃ</h3>
-                        <span class="du-legenda">vento → rajada em km/h</span>
+                        <h3>AGORA E PRÓXIMOS 4 DIAS</h3>
+                        <span class="du-legenda">máx. / mín. · chuva e mm do dia · vento → rajada · sexta: frente fria em todas as unidades</span>
                     </div>
                     <div class="du-tabela-wrap">
                         <table class="pv-tabela du-tabela du-tabela--clima">
                             <thead>
-                                <tr><th>Unidade</th><th>Agora</th><th class="num">Umidade</th><th class="num">Chuva 6h</th><th class="num">mm 6h</th><th class="num">Vento</th><th>Amanhã</th><th class="num">Chuva amanhã</th><th>Impacto</th></tr>
+                                <tr><th>Unidade</th><th class="du-dia-th">Agora<small>próximas 6 h</small></th><th class="du-dia-th">Qua<small>23 set.</small></th><th class="du-dia-th">Qui<small>24 set.</small></th><th class="du-dia-th">Sex<small>25 set.</small></th><th class="du-dia-th">Sáb<small>26 set.</small></th><th>Impacto hoje</th></tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="pv-tabela-nome">Matriz<small>Paranapanema</small></td>
-                                    <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><b>28°</b></td>
-                                    <td class="num">55%</td>
-                                    <td class="num is-chuva">60%</td>
-                                    <td class="num">4</td>
-                                    <td class="num">14 → 26</td>
-                                    <td class="pv-tabela-temp"><b>28°</b><small>16°</small></td>
-                                    <td class="num">25% · 1 mm</td>
+                                    <td class="pv-tabela-nome">Avaré</td>
+                                    <td class="du-dia du-dia--agora" style="--p: 0.6"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>27°</b><small>UR 58%</small></span><span class="du-dia-chuva is-chuva">6 h: 60% · 4 mm</span><span class="du-dia-vento">12 → 26 km/h</span></span></td>
+                                    <td class="du-dia" style="--p: 0.1"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg><span class="du-dia-temp"><b>29°</b><small>18°</small></span><span class="du-dia-chuva">10% · 0 mm</span><span class="du-dia-vento">10 → 18 km/h</span></span></td>
+                                    <td class="du-dia" style="--p: 0.2"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>28°</b><small>19°</small></span><span class="du-dia-chuva">20% · 1 mm</span><span class="du-dia-vento">14 → 24 km/h</span></span></td>
+                                    <td class="du-dia is-alerta" style="--p: 0.7"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg><span class="du-dia-temp"><b>24°</b><small>17°</small></span><span class="du-dia-chuva is-chuva">70% · 18 mm</span><span class="du-dia-vento is-alerta">22 → 38 km/h</span></span></td>
+                                    <td class="du-dia is-atencao" style="--p: 0.4"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg><span class="du-dia-temp"><b>26°</b><small>17°</small></span><span class="du-dia-chuva">40% · 4 mm</span><span class="du-dia-vento">16 → 28 km/h</span></span></td>
+                                    <td><span class="pv-tag pv-tag--atencao">Chuva às 18h30</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="pv-tabela-nome">Matriz</td>
+                                    <td class="du-dia du-dia--agora" style="--p: 0.6"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>28°</b><small>UR 55%</small></span><span class="du-dia-chuva is-chuva">6 h: 60% · 4 mm</span><span class="du-dia-vento">14 → 26 km/h</span></span></td>
+                                    <td class="du-dia" style="--p: 0.25"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>28°</b><small>16°</small></span><span class="du-dia-chuva">25% · 1 mm</span><span class="du-dia-vento">12 → 22 km/h</span></span></td>
+                                    <td class="du-dia" style="--p: 0.25"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>27°</b><small>18°</small></span><span class="du-dia-chuva">25% · 1 mm</span><span class="du-dia-vento">14 → 24 km/h</span></span></td>
+                                    <td class="du-dia is-alerta" style="--p: 0.75"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg><span class="du-dia-temp"><b>23°</b><small>16°</small></span><span class="du-dia-chuva is-chuva">75% · 20 mm</span><span class="du-dia-vento is-alerta">22 → 36 km/h</span></span></td>
+                                    <td class="du-dia is-atencao" style="--p: 0.45"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg><span class="du-dia-temp"><b>25°</b><small>16°</small></span><span class="du-dia-chuva">45% · 5 mm</span><span class="du-dia-vento">16 → 28 km/h</span></span></td>
                                     <td><span class="pv-tag pv-tag--atencao">Chuva às 17h30</span></td>
                                 </tr>
                                 <tr>
                                     <td class="pv-tabela-nome">Itaberá</td>
-                                    <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><b>27°</b></td>
-                                    <td class="num">57%</td>
-                                    <td class="num is-chuva">80%</td>
-                                    <td class="num">6</td>
-                                    <td class="num">14 → 28</td>
-                                    <td class="pv-tabela-temp"><b>27°</b><small>16°</small></td>
-                                    <td class="num">40% · 2 mm</td>
+                                    <td class="du-dia du-dia--agora" style="--p: 0.8"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>27°</b><small>UR 57%</small></span><span class="du-dia-chuva is-chuva">6 h: 80% · 6 mm</span><span class="du-dia-vento">14 → 28 km/h</span></span></td>
+                                    <td class="du-dia is-atencao" style="--p: 0.4"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg><span class="du-dia-temp"><b>27°</b><small>16°</small></span><span class="du-dia-chuva">40% · 2 mm</span><span class="du-dia-vento">14 → 24 km/h</span></span></td>
+                                    <td class="du-dia" style="--p: 0.3"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>26°</b><small>17°</small></span><span class="du-dia-chuva">30% · 2 mm</span><span class="du-dia-vento">14 → 26 km/h</span></span></td>
+                                    <td class="du-dia is-alerta" style="--p: 0.8"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg><span class="du-dia-temp"><b>22°</b><small>15°</small></span><span class="du-dia-chuva is-chuva">80% · 24 mm</span><span class="du-dia-vento is-alerta">24 → 40 km/h</span></span></td>
+                                    <td class="du-dia is-atencao" style="--p: 0.5"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg><span class="du-dia-temp"><b>24°</b><small>15°</small></span><span class="du-dia-chuva is-chuva">50% · 6 mm</span><span class="du-dia-vento">18 → 30 km/h</span></span></td>
                                     <td><span class="pv-tag pv-tag--atencao">Chuva às 16h30</span></td>
                                 </tr>
                                 <tr>
                                     <td class="pv-tabela-nome">São Manuel</td>
-                                    <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg><b>30°</b></td>
-                                    <td class="num">45%</td>
-                                    <td class="num">30%</td>
-                                    <td class="num">1</td>
-                                    <td class="num">10 → 20</td>
-                                    <td class="pv-tabela-temp"><b>30°</b><small>18°</small></td>
-                                    <td class="num">15% · 0 mm</td>
+                                    <td class="du-dia du-dia--agora" style="--p: 0.3"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg><span class="du-dia-temp"><b>30°</b><small>UR 45%</small></span><span class="du-dia-chuva">6 h: 30% · 1 mm</span><span class="du-dia-vento">10 → 20 km/h</span></span></td>
+                                    <td class="du-dia" style="--p: 0.15"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg><span class="du-dia-temp"><b>30°</b><small>18°</small></span><span class="du-dia-chuva">15% · 0 mm</span><span class="du-dia-vento">10 → 18 km/h</span></span></td>
+                                    <td class="du-dia" style="--p: 0.15"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg><span class="du-dia-temp"><b>30°</b><small>19°</small></span><span class="du-dia-chuva">15% · 0 mm</span><span class="du-dia-vento">12 → 20 km/h</span></span></td>
+                                    <td class="du-dia is-atencao" style="--p: 0.6"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg><span class="du-dia-temp"><b>27°</b><small>18°</small></span><span class="du-dia-chuva is-chuva">60% · 10 mm</span><span class="du-dia-vento">18 → 30 km/h</span></span></td>
+                                    <td class="du-dia" style="--p: 0.3"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>28°</b><small>18°</small></span><span class="du-dia-chuva">30% · 2 mm</span><span class="du-dia-vento">14 → 24 km/h</span></span></td>
                                     <td><span class="pv-tag pv-tag--ok">Colheita liberada</span></td>
                                 </tr>
                                 <tr>
-                                    <td class="pv-tabela-nome">Takaoka<small>Itapeva</small></td>
-                                    <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><b>26°</b></td>
-                                    <td class="num">58%</td>
-                                    <td class="num is-chuva">70%</td>
-                                    <td class="num">5</td>
-                                    <td class="num">12 → 24</td>
-                                    <td class="pv-tabela-temp"><b>26°</b><small>15°</small></td>
-                                    <td class="num">35% · 2 mm</td>
+                                    <td class="pv-tabela-nome">Takaoka</td>
+                                    <td class="du-dia du-dia--agora" style="--p: 0.7"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>26°</b><small>UR 58%</small></span><span class="du-dia-chuva is-chuva">6 h: 70% · 5 mm</span><span class="du-dia-vento">12 → 24 km/h</span></span></td>
+                                    <td class="du-dia" style="--p: 0.35"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>26°</b><small>15°</small></span><span class="du-dia-chuva">35% · 2 mm</span><span class="du-dia-vento">12 → 22 km/h</span></span></td>
+                                    <td class="du-dia" style="--p: 0.25"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>26°</b><small>17°</small></span><span class="du-dia-chuva">25% · 1 mm</span><span class="du-dia-vento">14 → 24 km/h</span></span></td>
+                                    <td class="du-dia is-alerta" style="--p: 0.75"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg><span class="du-dia-temp"><b>22°</b><small>15°</small></span><span class="du-dia-chuva is-chuva">75% · 22 mm</span><span class="du-dia-vento is-alerta">22 → 38 km/h</span></span></td>
+                                    <td class="du-dia is-atencao" style="--p: 0.45"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg><span class="du-dia-temp"><b>24°</b><small>15°</small></span><span class="du-dia-chuva">45% · 5 mm</span><span class="du-dia-vento">16 → 28 km/h</span></span></td>
                                     <td><span class="pv-tag pv-tag--atencao">Chuva às 17h</span></td>
                                 </tr>
                                 <tr class="is-alerta">
                                     <td class="pv-tabela-nome">Taquarituba</td>
-                                    <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg><b>27°</b></td>
-                                    <td class="num">60%</td>
-                                    <td class="num is-chuva">85%</td>
-                                    <td class="num is-chuva">7</td>
-                                    <td class="num is-alerta">16 → 30</td>
-                                    <td class="pv-tabela-temp"><b>27°</b><small>17°</small></td>
-                                    <td class="num is-chuva">45% · 3 mm</td>
+                                    <td class="du-dia du-dia--agora" style="--p: 0.85"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg><span class="du-dia-temp"><b>27°</b><small>UR 60%</small></span><span class="du-dia-chuva is-chuva">6 h: 85% · 7 mm</span><span class="du-dia-vento">16 → 30 km/h</span></span></td>
+                                    <td class="du-dia is-atencao" style="--p: 0.45"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg><span class="du-dia-temp"><b>27°</b><small>17°</small></span><span class="du-dia-chuva">45% · 3 mm</span><span class="du-dia-vento">14 → 26 km/h</span></span></td>
+                                    <td class="du-dia" style="--p: 0.3"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>26°</b><small>17°</small></span><span class="du-dia-chuva">30% · 2 mm</span><span class="du-dia-vento">14 → 26 km/h</span></span></td>
+                                    <td class="du-dia is-alerta" style="--p: 0.8"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg><span class="du-dia-temp"><b>22°</b><small>16°</small></span><span class="du-dia-chuva is-chuva">80% · 25 mm</span><span class="du-dia-vento is-alerta">24 → 42 km/h</span></span></td>
+                                    <td class="du-dia is-atencao" style="--p: 0.5"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg><span class="du-dia-temp"><b>24°</b><small>16°</small></span><span class="du-dia-chuva is-chuva">50% · 6 mm</span><span class="du-dia-vento">18 → 30 km/h</span></span></td>
                                     <td><span class="pv-tag pv-tag--alerta">Chuva às 16h · desviar já</span></td>
                                 </tr>
                                 <tr>
                                     <td class="pv-tabela-nome">Taquarivaí</td>
-                                    <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><b>27°</b></td>
-                                    <td class="num">56%</td>
-                                    <td class="num is-chuva">60%</td>
-                                    <td class="num">3</td>
-                                    <td class="num">12 → 22</td>
-                                    <td class="pv-tabela-temp"><b>27°</b><small>15°</small></td>
-                                    <td class="num">30% · 1 mm</td>
+                                    <td class="du-dia du-dia--agora" style="--p: 0.6"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>27°</b><small>UR 56%</small></span><span class="du-dia-chuva is-chuva">6 h: 60% · 3 mm</span><span class="du-dia-vento">12 → 22 km/h</span></span></td>
+                                    <td class="du-dia" style="--p: 0.3"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>27°</b><small>15°</small></span><span class="du-dia-chuva">30% · 1 mm</span><span class="du-dia-vento">12 → 22 km/h</span></span></td>
+                                    <td class="du-dia" style="--p: 0.25"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>27°</b><small>17°</small></span><span class="du-dia-chuva">25% · 1 mm</span><span class="du-dia-vento">14 → 24 km/h</span></span></td>
+                                    <td class="du-dia is-alerta" style="--p: 0.75"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg><span class="du-dia-temp"><b>23°</b><small>15°</small></span><span class="du-dia-chuva is-chuva">75% · 20 mm</span><span class="du-dia-vento is-alerta">22 → 36 km/h</span></span></td>
+                                    <td class="du-dia is-atencao" style="--p: 0.45"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg><span class="du-dia-temp"><b>25°</b><small>15°</small></span><span class="du-dia-chuva">45% · 5 mm</span><span class="du-dia-vento">16 → 28 km/h</span></span></td>
                                     <td><span class="pv-tag pv-tag--atencao">Chuva às 18h</span></td>
                                 </tr>
                             </tbody>
@@ -4975,6 +5134,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="script.js?v=20260929c"></script>
+    <script src="script.js?v=20260930d"></script>
 </body>
 </html>
