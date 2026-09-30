@@ -17295,19 +17295,11 @@ body.theme-light .du-screen .pv-tag--alerta {
 
 
 
-/* o mapa do Google é claro nos dois temas: dentro dele, pinos, rótulos,
-   escala e crédito usam sempre as cores do tema claro (texto escuro,
-   contorno branco), senão o texto claro do tema escuro some no fundo */
+/* o fundo acompanha o tema (Dark Matter no escuro, Voyager no claro), então
+   pinos, rótulos, escala e crédito usam as cores do próprio tema; só o
+   contorno dos textos segue a cor do fundo do mapa */
 .du-mapa-real {
-    --text: #24292f;
-    --muted: #5c646d;
-    --faint: #838b94;
-    --accent: #3d6fa5;
-    --section-bg: #f3f4f6;
-    --du-ok: #1e8449;
-    --du-warn: #b9770e;
-    --du-danger: #b3261e;
-    --du-halo-texto: #ffffff;
+    --du-halo-texto: #0b0f14;
     flex: 1 1 0;
     width: 100%;
     min-height: 0;
@@ -17318,9 +17310,21 @@ body.theme-light .du-screen .pv-tag--alerta {
 
 
 .du-mapa-real.leaflet-container {
-    background: #e9ecef;
+    background: #0e1116;
     font-family: var(--font-ui);
     font-size: 0.75rem;
+}
+
+
+
+body.theme-light .du-mapa-real {
+    --du-halo-texto: #ffffff;
+}
+
+
+
+body.theme-light .du-mapa-real.leaflet-container {
+    background: #e9ecef;
 }
 
 
@@ -18188,6 +18192,42 @@ body.theme-light .du-proj-sel option {
 .du-silos i.du-pulmao {
     outline: 2px dashed var(--accent);
     outline-offset: 3px;
+}
+
+
+
+/* a cor do selo é só a faixa da temperatura; subir +1 °C/dia ou mais é
+   outro aviso: seta vermelha no canto e contorno vermelho, sem pintar o
+   selo (um silo a 24 °C subindo não é um silo quente) */
+.du-silos i.is-subindo {
+    position: relative;
+    border-color: var(--du-danger);
+    box-shadow: 0 0 0 2px var(--du-danger);
+}
+
+
+
+.du-silos i.is-subindo::after,
+.du-subindo-leg {
+    content: "▲";
+    display: inline-grid;
+    place-items: center;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background: var(--du-danger);
+    font-size: 0.55rem;
+    font-style: normal;
+    line-height: 1;
+    color: #fff;
+}
+
+
+
+.du-silos i.is-subindo::after {
+    position: absolute;
+    top: -0.3rem;
+    right: -0.3rem;
 }
 
 

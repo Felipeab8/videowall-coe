@@ -7,10 +7,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-    <!-- Leaflet: mapa real da tela Demais Unidades · Visão geral. Sem internet
+    <!-- Leaflet + MapLibre: mapa real da tela Demais Unidades · Visão geral,
+         com o fundo vetorial gratuito do OpenFreeMap (sem chave). Sem internet
          não carrega e a tela usa o mapa esquemático em SVG. -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
-    <link rel="stylesheet" href="style.css?v=20260930j">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css">
+    <link rel="stylesheet" href="style.css?v=20260930l">
 </head>
 <body class="theme-dark">
 
@@ -4707,7 +4709,8 @@
                             <span><i class="du-forma du-forma--pulmao"></i>pulmão</span>
                             <span><i class="du-silo-leg"></i>&lt; 28 °C</span>
                             <span><i class="du-silo-leg is-atencao"></i>28–32</span>
-                            <span><i class="du-silo-leg is-alerta"></i>≥ 32 ou +1 °C/dia</span>
+                            <span><i class="du-silo-leg is-alerta"></i>≥ 32</span>
+                            <span><i class="du-subindo-leg">▲</i>subindo +1 °C/dia</span>
                         </span>
                     </div>
                     <div class="du-tabela-wrap">
@@ -4726,7 +4729,7 @@
                                      (até ligar a termometria delas); São Manuel sem leitura. -->
                                 <tr class="du-st--alerta">
                                     <td class="pv-tabela-nome">Avaré</td>
-                                    <td><span class="du-silos" role="img" aria-label="8 silos, 2 armazéns e 2 pulmões: silo 5 subindo 2,5 °C por dia"><span class="du-grupo"><i title="Silo 1 · 22,4 °C"><small>silo 1</small>22,4°</i><i title="Silo 2 · 21,0 °C"><small>silo 2</small>21,0°</i><i title="Silo 3 · 23,1 °C"><small>silo 3</small>23,1°</i><i title="Silo 4 · 22,2 °C"><small>silo 4</small>22,2°</i><i class="is-alerta" title="Silo 5 · 24,3 °C · subindo 0,4 °C/h"><small>silo 5</small>24,3°</i><i title="Silo 6 · 20,2 °C"><small>silo 6</small>20,2°</i><i title="Silo 7 · 23,0 °C"><small>silo 7</small>23,0°</i><i title="Silo 8 · 21,2 °C"><small>silo 8</small>21,2°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 (área 1, milho) · 22,0 °C"><small>armazém 1</small>22,0°</i><i class="du-arm" title="Armazém 2 (área 2, sorgo) · 21,5 °C"><small>armazém 2</small>21,5°</i><i class="du-pulmao" title="Pulmão 1 · 23,0 °C"><small>pulmão 1</small>23,0°</i><i class="du-pulmao" title="Pulmão 2 · 22,0 °C"><small>pulmão 2</small>22,0°</i></span></span></td>
+                                    <td><span class="du-silos" role="img" aria-label="8 silos, 2 armazéns e 2 pulmões: silo 5 subindo 2,5 °C por dia"><span class="du-grupo"><i title="Silo 1 · 22,4 °C"><small>silo 1</small>22,4°</i><i title="Silo 2 · 21,0 °C"><small>silo 2</small>21,0°</i><i title="Silo 3 · 23,1 °C"><small>silo 3</small>23,1°</i><i title="Silo 4 · 22,2 °C"><small>silo 4</small>22,2°</i><i class="is-subindo" title="Silo 5 · 24,3 °C · subindo 0,4 °C/h"><small>silo 5</small>24,3°</i><i title="Silo 6 · 20,2 °C"><small>silo 6</small>20,2°</i><i title="Silo 7 · 23,0 °C"><small>silo 7</small>23,0°</i><i title="Silo 8 · 21,2 °C"><small>silo 8</small>21,2°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 (área 1, milho) · 22,0 °C"><small>armazém 1</small>22,0°</i><i class="du-arm" title="Armazém 2 (área 2, sorgo) · 21,5 °C"><small>armazém 2</small>21,5°</i><i class="du-pulmao" title="Pulmão 1 · 23,0 °C"><small>pulmão 1</small>23,0°</i><i class="du-pulmao" title="Pulmão 2 · 22,0 °C"><small>pulmão 2</small>22,0°</i></span></span></td>
                                     <td class="num"><b>24,3 °C</b><small>silo 5 · milho</small></td>
                                     <td class="num is-alerta">+2,5 <small>°C/dia</small></td>
                                     <td><span class="pv-tag pv-tag--alerta">Checar silo 5</span></td>
@@ -4752,7 +4755,7 @@
                                 </tr>
                                 <tr class="du-st--alerta">
                                     <td class="pv-tabela-nome">Takaoka</td>
-                                    <td><span class="du-silos" role="img" aria-label="8 silos, 2 armazéns e 2 pulmões: silo 3 acima de 32 °C"><span class="du-grupo"><i title="Silo 1 · 23,4 °C"><small>silo 1</small>23,4°</i><i title="Silo 2 · 24,8 °C"><small>silo 2</small>24,8°</i><i class="is-alerta" title="Silo 3 · 34,1 °C"><small>silo 3</small>34,1°</i><i title="Silo 4 · 26,2 °C"><small>silo 4</small>26,2°</i><i title="Silo 5 · 23,9 °C"><small>silo 5</small>23,9°</i><i title="Silo 6 · 24,4 °C"><small>silo 6</small>24,4°</i><i title="Silo 7 · 25,1 °C"><small>silo 7</small>25,1°</i><i title="Silo 8 · 23,7 °C"><small>silo 8</small>23,7°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 · 24,6 °C"><small>armazém 1</small>24,6°</i><i class="du-arm" title="Armazém 2 · 23,8 °C"><small>armazém 2</small>23,8°</i><i class="du-pulmao" title="Pulmão 1 · 25,0 °C"><small>pulmão 1</small>25,0°</i><i class="du-pulmao" title="Pulmão 2 · 24,2 °C"><small>pulmão 2</small>24,2°</i></span></span></td>
+                                    <td><span class="du-silos" role="img" aria-label="8 silos, 2 armazéns e 2 pulmões: silo 3 acima de 32 °C"><span class="du-grupo"><i title="Silo 1 · 23,4 °C"><small>silo 1</small>23,4°</i><i title="Silo 2 · 24,8 °C"><small>silo 2</small>24,8°</i><i class="is-alerta is-subindo" title="Silo 3 · 34,1 °C · subindo 2,1 °C/dia"><small>silo 3</small>34,1°</i><i title="Silo 4 · 26,2 °C"><small>silo 4</small>26,2°</i><i title="Silo 5 · 23,9 °C"><small>silo 5</small>23,9°</i><i title="Silo 6 · 24,4 °C"><small>silo 6</small>24,4°</i><i title="Silo 7 · 25,1 °C"><small>silo 7</small>25,1°</i><i title="Silo 8 · 23,7 °C"><small>silo 8</small>23,7°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 · 24,6 °C"><small>armazém 1</small>24,6°</i><i class="du-arm" title="Armazém 2 · 23,8 °C"><small>armazém 2</small>23,8°</i><i class="du-pulmao" title="Pulmão 1 · 25,0 °C"><small>pulmão 1</small>25,0°</i><i class="du-pulmao" title="Pulmão 2 · 24,2 °C"><small>pulmão 2</small>24,2°</i></span></span></td>
                                     <td class="num is-alerta"><b>34,1 °C</b><small>silo 3 · trigo</small></td>
                                     <td class="num is-alerta">+2,1 <small>°C/dia</small></td>
                                     <td><span class="pv-tag pv-tag--alerta">Ligar aeração</span></td>
@@ -5134,6 +5137,8 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="script.js?v=20260930d"></script>
+    <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.1.4/leaflet-maplibre-gl.js"></script>
+    <script src="script.js?v=20260930n"></script>
 </body>
 </html>

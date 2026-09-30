@@ -1562,20 +1562,54 @@ mountCameras(document);
 
 // ============================================
 // MAPA DAS DEMAIS UNIDADES
-// Mapa real (Leaflet, fundo de ruas do Google) montado por cima do
+// Mapa real (Leaflet, fundo vetorial do OpenFreeMap) montado por cima do
 // SVG esquemático, que continua no HTML como reserva: sem internet, sem
-// Leaflet ou sem os blocos do mapa, é ele que aparece. Pinos e rótulos
+// Leaflet ou sem o fundo do mapa, é ele que aparece. Pinos e rótulos
 // saem do próprio SVG (data-latlng, data-lado), então os dados ficam num
 // lugar só. O mapa é artefato como o vídeo das
 // câmeras: limparArtefatos o tira do HTML salvo e remontar() o põe de volta.
 // ============================================
-// Mapa de ruas do Google, em português, o mesmo nos dois temas. Os blocos
-// vêm direto dos servidores do Google, fora da API oficial: não pede chave,
-// mas os termos do Google não preveem esse uso e ele pode parar sem aviso
-// (aí os blocos falham e volta o SVG). Com chave, o caminho oficial é a
-// Maps JavaScript API.
-const MAPA_URL = 'https://mt{s}.google.com/vt/lyrs=m&hl=pt-BR&x={x}&y={y}&z={z}';
-const MAPA_CREDITO = 'Mapa &copy; Google';
+// Fundos gratuitos e sem chave. A página abre direto do disco (file://,
+// sem domínio), e por isso CARTO e o servidor do OpenStreetMap recusam os
+// blocos; estes dois aceitam:
+//   1. OpenFreeMap: mapa vetorial (dados do OpenStreetMap) desenhado pelo
+//      MapLibre em WebGL, nítido em qualquer zoom. Livre inclusive para uso
+//      comercial, sem cadastro nem limite. "Liberty" no tema claro e
+//      "Fiord" (azul-escuro, o tom do painel) no escuro.
+//   2. Esri (ArcGIS): blocos de imagem, se faltar WebGL ou o OpenFreeMap
+//      não responder.
+// Sem nenhum dos dois (sem internet), volta o SVG. Ambos pedem só o crédito
+// visível no canto, que o Leaflet mostra.
+const MAPA_CREDITO_OSM = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+const MAPA_ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/';
+const MAPA_FUNDOS = [
+    {
+        vetor: true,
+        claro: 'https://tiles.openfreemap.org/styles/liberty',
+        escuro: 'https://tiles.openfreemap.org/styles/fiord',
+        credito: '<a href="https://openfreemap.org">OpenFreeMap</a> &copy; <a href="https://www.openmaptiles.org/">OpenMapTiles</a> ' + MAPA_CREDITO_OSM
+    },
+    {
+        claro: MAPA_ESRI + 'World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+        escuro: MAPA_ESRI + 'Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+        maxZoom: 16,
+        credito: 'Mapa &copy; <a href="https://www.esri.com/">Esri</a>, HERE, Garmin, ' + MAPA_CREDITO_OSM
+    }
+];
+
+// WebGL existe? Sem ele o MapLibre nem começa: vai direto para os blocos.
+function temWebGL() {
+    try {
+        const c = document.createElement('canvas');
+        return !!(c.getContext('webgl2') || c.getContext('webgl'));
+    } catch (err) {
+        return false;
+    }
+}
+
+function temaClaro() {
+    return document.body.classList.contains('theme-light');
+}
 
 let mapasUnidades = [];
 
@@ -1648,7 +1682,6 @@ function criarMapaUnidades(secao, svg) {
     L.control.scale({ imperial: false, position: 'bottomleft' }).addTo(mapa);
 
     const item = { el, secao, mapa, limites: null, observador: null };
-    montarCamadaMapa(item);
 
     const pontos = [];
     svg.querySelectorAll('.du-pin[data-latlng]').forEach((pin) => {
@@ -1691,6 +1724,10 @@ function criarMapaUnidades(secao, svg) {
         return;
     }
     item.limites = L.latLngBounds(pontos);
+    // o fundo vetorial nasce já posicionado: sem centro e zoom o MapLibre
+    // não tem por onde começar (o enquadramento fino vem logo abaixo)
+    mapa.setView(item.limites.getCenter(), 9, { animate: false });
+    montarCamadaMapa(item);
 
     // o bloco muda de tamanho com o --fit e começa escondido (tela fora do
     // ar): a cada mudança o mapa se reenquadra nas unidades. Temporizador, e
@@ -1706,22 +1743,82 @@ function criarMapaUnidades(secao, svg) {
     enquadrarMapaUnidades(item);
 }
 
-function montarCamadaMapa(item) {
-    const camada = L.tileLayer(MAPA_URL, {
-        subdomains: '0123',
-        maxZoom: 20,
+function montarCamadaMapa(item, indice = 0) {
+    const fundo = MAPA_FUNDOS[indice];
+    // fundo que não serve: tenta o próximo e, sem nenhum, volta para o SVG
+    // em vez de deixar um fundo vazio
+    const proximo = (camada) => {
+        if (item.camada !== camada) return;
+        item.camada = null;
+        if (camada) item.mapa.removeLayer(camada);
+        if (indice + 1 < MAPA_FUNDOS.length) montarCamadaMapa(item, indice + 1);
+        else desmontarMapaUnidades(item);
+    };
+    item.fundo = fundo;
+    item.indiceFundo = indice;
+    item.urlFundo = temaClaro() ? fundo.claro : fundo.escuro;
+
+    if (fundo.vetor) {
+        if (!L.maplibreGL || !window.maplibregl || !temWebGL()) {
+            item.camada = null;
+            proximo(null);
+            return;
+        }
+        const camada = L.maplibreGL({
+            style: item.urlFundo,
+            attribution: fundo.credito,
+            interactive: false,
+            // o botão PDF imprime a tela: sem isso o canvas do mapa sai em branco
+            canvasContextAttributes: { preserveDrawingBuffer: true },
+            preserveDrawingBuffer: true
+        });
+        item.camada = camada;
+        camada.addTo(item.mapa);
+        const gl = camada.getMaplibreMap();
+        let estiloOk = false;
+        gl.once('styledata', () => { estiloOk = true; });
+        // erro antes de o estilo chegar = servidor fora; depois disso são
+        // blocos avulsos, que o MapLibre tenta de novo sozinho
+        gl.on('error', () => { if (!estiloOk) proximo(camada); });
+        gl.on('webglcontextlost', () => proximo(camada));
+        return;
+    }
+
+    const camada = L.tileLayer(item.urlFundo, {
+        maxZoom: fundo.maxZoom,
+        maxNativeZoom: fundo.maxZoom,
         className: 'du-lf-fundo',
-        attribution: MAPA_CREDITO
+        attribution: fundo.credito
     }).addTo(item.mapa);
-    // sem internet (ou com o Google recusando) os blocos falham: volta para
-    // o SVG em vez de um fundo vazio
+    item.camada = camada;
     let carregados = 0;
     let falhas = 0;
     camada.on('tileload', () => { carregados++; });
     camada.on('tileerror', () => {
-        if (++falhas >= 6 && !carregados) desmontarMapaUnidades(item);
+        if (++falhas >= 6 && !carregados) proximo(camada);
     });
 }
+
+// o botão claro/escuro troca a classe do body: o fundo acompanha
+new MutationObserver(() => {
+    mapasUnidades.forEach((item) => {
+        if (!item.camada || !item.fundo) return;
+        const url = temaClaro() ? item.fundo.claro : item.fundo.escuro;
+        if (item.urlFundo === url) return;
+        item.urlFundo = url;
+        if (item.fundo.vetor) {
+            item.camada.getMaplibreMap().setStyle(url);
+            return;
+        }
+        // blocos: camada nova em vez de setUrl — o redraw() do Leaflet 1.9.4
+        // não arredonda o zoom fracionado (zoomSnap 0.25) e pede blocos que
+        // não existem, como .../9.5/409/263
+        const antiga = item.camada;
+        item.camada = null;
+        item.mapa.removeLayer(antiga);
+        montarCamadaMapa(item, item.indiceFundo);
+    });
+}).observe(document.body, { attributes: true, attributeFilter: ['class'] });
 
 function enquadrarMapaUnidades(item) {
     if (!item.el.isConnected || !item.el.clientWidth || !item.el.clientHeight) return;
