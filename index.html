@@ -166,6 +166,7 @@
                     </button>
                     <div class="submenu" id="submenu-5" hidden>
                         <button class="menu-item" data-screen="5"><span class="menu-text">Silos e aeração</span></button>
+                        <button class="menu-item" data-screen="cam-5"><span class="menu-text">Câmera dos silos</span></button>
                     </div>
                 </div>
                 <div class="menu-group" data-group="6">
@@ -175,6 +176,7 @@
                     </button>
                     <div class="submenu" id="submenu-6" hidden>
                         <button class="menu-item" data-screen="6"><span class="menu-text">Tela do armazém</span></button>
+                        <button class="menu-item" data-screen="cam-6"><span class="menu-text">Câmera do armazém</span></button>
                     </div>
                 </div>
                 <div class="menu-group" data-group="7">
@@ -1187,7 +1189,7 @@
                      o que foi descontado depois da ultima ainda esta "em aberto" e entra
                      na proxima pesagem. Segue o periodo do cabecalho (b[data-periodo] e
                      linhas com data-janela), mas nao a cultura: a caçamba junta o residuo
-                     de todas. Diferenca = pesado - descontado, em % do descontado:
+                     de todas. Diferenca = descontado - pesado, em % do descontado:
                      ate 5% conciliado, ate 10% atencao, acima disso fora. -->
                 <div class="content-section conc-section">
                     <div class="section-head section-head--top">
@@ -1201,18 +1203,18 @@
                         <div class="conc-resumo">
                             <div class="conc-num">
                                 <span class="conc-num-label">Descontado na classificação</span>
-                                <span class="conc-num-valor"><b data-periodo="hoje">17,5</b><b data-periodo="7d">136,8</b><b data-periodo="30d">669,2</b><small>t</small></span>
+                                <span class="conc-num-valor"><b data-periodo="hoje">19,4</b><b data-periodo="7d">141,5</b><b data-periodo="30d">688,0</b><small>t</small></span>
                                 <span class="conc-num-sub">impureza das cargas</span>
                             </div>
                             <div class="conc-num">
                                 <span class="conc-num-label">Resíduo pesado</span>
-                                <span class="conc-num-valor"><b data-periodo="hoje">19,4</b><b data-periodo="7d">141,5</b><b data-periodo="30d">688,0</b><small>t</small></span>
+                                <span class="conc-num-valor"><b data-periodo="hoje">17,5</b><b data-periodo="7d">136,8</b><b data-periodo="30d">669,2</b><small>t</small></span>
                                 <span class="conc-num-sub"><b data-periodo="hoje">2 caçambas</b><b data-periodo="7d">14 caçambas</b><b data-periodo="30d">67 caçambas</b> na balança</span>
                             </div>
                             <div class="conc-num conc-num--dif">
-                                <span class="conc-num-label">Diferença · pesado − descontado</span>
-                                <span class="conc-num-valor"><b data-periodo="hoje" class="conc-dif--fora">+1,9</b><b data-periodo="7d" class="conc-dif--ok">+4,7</b><b data-periodo="30d" class="conc-dif--ok">+18,8</b><small>t</small></span>
-                                <span class="conc-num-sub"><b data-periodo="hoje"><span class="class-status class-status--fora">+11% · fora</span></b><b data-periodo="7d"><span class="class-status class-status--ok">+3,4% · conciliado</span></b><b data-periodo="30d"><span class="class-status class-status--ok">+2,8% · conciliado</span></b></span>
+                                <span class="conc-num-label">Diferença · descontado − pesado</span>
+                                <span class="conc-num-valor"><b data-periodo="hoje" class="conc-dif--atencao">+1,9</b><b data-periodo="7d" class="conc-dif--ok">+4,7</b><b data-periodo="30d" class="conc-dif--ok">+18,8</b><small>t</small></span>
+                                <span class="conc-num-sub"><b data-periodo="hoje"><span class="class-status class-status--atencao">+10% · atenção</span></b><b data-periodo="7d"><span class="class-status class-status--ok">+3,3% · conciliado</span></b><b data-periodo="30d"><span class="class-status class-status--ok">+2,7% · conciliado</span></b></span>
                             </div>
                         </div>
                         <div class="table-scroll table-scroll--livre conc-scroll">
@@ -1228,15 +1230,15 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr data-janela="hoje"><td>CÇ-232</td><td>25/09 13:05</td><td>Pré-limpeza 3</td><td>9,4 t</td><td>8,9 t</td><td><span class="class-status class-status--atencao conc-pill">+0,5 t · +6%</span></td></tr>
-                                    <tr data-janela="hoje"><td>CÇ-231</td><td>25/09 08:20</td><td>Pré-limpeza 1</td><td>10,0 t</td><td>8,6 t</td><td><span class="class-status class-status--fora conc-pill">+1,4 t · +16%</span></td></tr>
-                                    <tr data-janela="7d"><td>CÇ-230</td><td>24/09 17:40</td><td>Pré-limpeza 1</td><td>10,2 t</td><td>10,1 t</td><td><span class="class-status class-status--ok conc-pill">+0,1 t · +1%</span></td></tr>
-                                    <tr data-janela="7d"><td>CÇ-229</td><td>24/09 09:15</td><td>Pré-limpeza 3</td><td>9,8 t</td><td>10,3 t</td><td><span class="class-status class-status--ok conc-pill">−0,5 t · −5%</span></td></tr>
-                                    <tr data-janela="7d"><td>CÇ-228</td><td>23/09 15:30</td><td>Pré-limpeza 1</td><td>10,5 t</td><td>9,7 t</td><td><span class="class-status class-status--atencao conc-pill">+0,8 t · +8%</span></td></tr>
-                                    <tr data-janela="7d"><td>CÇ-227</td><td>22/09 11:00</td><td>Pré-limpeza 3</td><td>9,6 t</td><td>9,9 t</td><td><span class="class-status class-status--ok conc-pill">−0,3 t · −3%</span></td></tr>
-                                    <tr data-janela="30d"><td>CÇ-214</td><td>12/09 16:50</td><td>Pré-limpeza 1</td><td>11,8 t</td><td>9,6 t</td><td><span class="class-status class-status--fora conc-pill">+2,2 t · +23%</span></td></tr>
-                                    <tr data-janela="30d"><td>CÇ-209</td><td>08/09 10:25</td><td>Pré-limpeza 3</td><td>9,1 t</td><td>9,5 t</td><td><span class="class-status class-status--ok conc-pill">−0,4 t · −4%</span></td></tr>
-                                    <tr data-janela="30d"><td>CÇ-203</td><td>02/09 14:10</td><td>Pré-limpeza 1</td><td>10,4 t</td><td>10,0 t</td><td><span class="class-status class-status--ok conc-pill">+0,4 t · +4%</span></td></tr>
+                                    <tr data-janela="hoje"><td>CÇ-232</td><td>25/09 13:05</td><td>Pré-limpeza 3</td><td>8,9 t</td><td>9,4 t</td><td><span class="class-status class-status--ok conc-pill">+0,5 t · +5%</span></td></tr>
+                                    <tr data-janela="hoje"><td>CÇ-231</td><td>25/09 08:20</td><td>Pré-limpeza 1</td><td>8,6 t</td><td>10,0 t</td><td><span class="class-status class-status--fora conc-pill">+1,4 t · +14%</span></td></tr>
+                                    <tr data-janela="7d"><td>CÇ-230</td><td>24/09 17:40</td><td>Pré-limpeza 1</td><td>10,1 t</td><td>10,2 t</td><td><span class="class-status class-status--ok conc-pill">+0,1 t · +1%</span></td></tr>
+                                    <tr data-janela="7d"><td>CÇ-229</td><td>24/09 09:15</td><td>Pré-limpeza 3</td><td>10,3 t</td><td>9,8 t</td><td><span class="class-status class-status--ok conc-pill">−0,5 t · −5%</span></td></tr>
+                                    <tr data-janela="7d"><td>CÇ-228</td><td>23/09 15:30</td><td>Pré-limpeza 1</td><td>9,7 t</td><td>10,5 t</td><td><span class="class-status class-status--atencao conc-pill">+0,8 t · +8%</span></td></tr>
+                                    <tr data-janela="7d"><td>CÇ-227</td><td>22/09 11:00</td><td>Pré-limpeza 3</td><td>9,9 t</td><td>9,6 t</td><td><span class="class-status class-status--ok conc-pill">−0,3 t · −3%</span></td></tr>
+                                    <tr data-janela="30d"><td>CÇ-214</td><td>12/09 16:50</td><td>Pré-limpeza 1</td><td>9,6 t</td><td>11,8 t</td><td><span class="class-status class-status--fora conc-pill">+2,2 t · +19%</span></td></tr>
+                                    <tr data-janela="30d"><td>CÇ-209</td><td>08/09 10:25</td><td>Pré-limpeza 3</td><td>9,5 t</td><td>9,1 t</td><td><span class="class-status class-status--ok conc-pill">−0,4 t · −4%</span></td></tr>
+                                    <tr data-janela="30d"><td>CÇ-203</td><td>02/09 14:10</td><td>Pré-limpeza 1</td><td>10,0 t</td><td>10,4 t</td><td><span class="class-status class-status--ok conc-pill">+0,4 t · +4%</span></td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -1250,12 +1252,12 @@
                      na secao diz qual linha aparece. O periodo do cabecalho nao vale
                      aqui — este bloco e' historico de janelas fixas. Em cada celula:
                      barra do ano passado, linha dos ultimos 7 dias e barras sem/mes/ano,
-                     todas na mesma escala vertical; o tracejado e a meta. -->
+                     todas na mesma escala vertical; o tracejado e o limite. -->
                 <div class="content-section hist-section" data-hist-cultura="milho">
                     <div class="section-head section-head--top">
                         <div class="section-head-text">
                             <h3>HISTÓRICO DE CLASSIFICAÇÃO <span class="fluxo-periodo-atual">· <span data-hist-cultura-nome>milho</span></span></h3>
-                            <p class="section-sub">tracejado = meta</p>
+                            <p class="section-sub">tracejado = limite</p>
                         </div>
                         <div class="hist-tools">
                             <div class="chart-legend chart-legend--inline hist-legend">
@@ -1286,7 +1288,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,21.0 16.7,16.0 33.3,23.0 50.0,19.0 66.7,14.0 83.3,26.0 100.0,24.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl">14,0</em>
+                                    <em class="hist-meta-lbl">limite 14,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:47.5%">12,9</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:60.0%">13,4</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:42.5%">12,7</b>
@@ -1309,7 +1311,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,20.0 16.7,10.0 33.3,15.0 50.0,25.0 66.7,5.0 83.3,20.0 100.0,15.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl">1,0</em>
+                                    <em class="hist-meta-lbl">limite 1,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:50.0%">0,8</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:75.0%">1,0</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:62.5%">0,9</b>
@@ -1332,7 +1334,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,22.7 16.7,18.7 33.3,20.7 50.0,17.3 66.7,22.0 83.3,19.3 100.0,20.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl">6,0</em>
+                                    <em class="hist-meta-lbl">limite 6,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:43.2%">3,6</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:53.2%">4,2</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:48.2%">3,9</b>
@@ -1357,7 +1359,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,24.0 16.7,27.0 33.3,22.0 50.0,30.0 66.7,26.0 83.3,31.0 100.0,29.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl">14,0</em>
+                                    <em class="hist-meta-lbl">limite 14,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:40.0%">12,6</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:32.5%">12,3</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:45.0%">12,8</b>
@@ -1380,7 +1382,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,30.0 16.7,20.0 33.3,25.0 50.0,15.0 66.7,30.0 83.3,25.0 100.0,25.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl">1,0</em>
+                                    <em class="hist-meta-lbl">limite 1,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:25.0%">0,6</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:50.0%">0,8</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:37.5%">0,7</b>
@@ -1403,7 +1405,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,26.0 16.7,29.3 33.3,27.3 50.0,24.7 66.7,28.7 83.3,26.7 100.0,28.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl">6,0</em>
+                                    <em class="hist-meta-lbl">limite 6,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:35.0%">3,1</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:26.8%">2,6</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:31.8%">2,9</b>
@@ -1428,7 +1430,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,28.0 16.7,33.0 33.3,26.0 50.0,32.0 66.7,29.0 83.3,27.0 100.0,31.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl">14,0</em>
+                                    <em class="hist-meta-lbl">limite 14,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:30.0%">12,2</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:17.5%">11,7</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:35.0%">12,4</b>
@@ -1451,7 +1453,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,35.0 16.7,25.0 33.3,30.0 50.0,20.0 66.7,35.0 83.3,30.0 100.0,30.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl">1,0</em>
+                                    <em class="hist-meta-lbl">limite 1,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:12.5%">0,5</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:37.5%">0,7</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:25.0%">0,6</b>
@@ -1474,7 +1476,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,30.7 16.7,34.0 33.3,31.3 50.0,29.3 66.7,33.3 83.3,32.0 100.0,32.7"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl">6,0</em>
+                                    <em class="hist-meta-lbl">limite 6,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:23.2%">2,4</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:15.0%">1,9</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:21.8%">2,3</b>
@@ -1499,7 +1501,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,19.0 16.7,24.0 33.3,17.0 50.0,21.0 66.7,26.0 83.3,20.0 100.0,22.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl">14,0</em>
+                                    <em class="hist-meta-lbl">limite 14,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:52.5%">13,1</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:40.0%">12,6</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:57.5%">13,3</b>
@@ -1522,7 +1524,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,10.0 16.7,20.0 33.3,25.0 50.0,5.0 66.7,15.0 83.3,20.0 100.0,15.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl">1,0</em>
+                                    <em class="hist-meta-lbl">limite 1,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:75.0%">1,0</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:50.0%">0,8</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:37.5%">0,7</b>
@@ -1545,7 +1547,7 @@
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,26.7 16.7,22.7 33.3,25.3 50.0,21.3 66.7,23.3 83.3,26.0 100.0,24.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl">6,0</em>
+                                    <em class="hist-meta-lbl">limite 6,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:33.2%">3,0</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:43.2%">3,6</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:36.8%">3,2</b>
@@ -1601,9 +1603,9 @@
                             <div class="moega-cultura"><i class="legend-dot legend-dot--milho"></i>Milho <b>20%</b></div>
                             <div class="moega-status" data-estado="cheia"><i class="moega-status-luz"></i>Cheia</div>
                             <div class="moega-cargas">
-                                <div class="moega-cargas-head"><span class="moega-dado-label">Hoje · 9 cargas</span><span class="moega-cargas-total"><b>363,4 t</b></span></div>
+                                <div class="moega-cargas-head"><span class="moega-dado-label">Hoje · 9 cargas</span><span class="moega-cargas-total"><b>363,4 ton</b></span></div>
                                 <table class="moega-cargas-tabela">
-                                    <thead><tr><th>Placa</th><th>t</th><th>Umid</th><th>Imp</th><th>Avar</th></tr></thead>
+                                    <thead><tr><th>Placa</th><th>ton</th><th>Umid</th><th>Imp</th><th>Avar</th></tr></thead>
                                     <tbody>
                                         <tr><td title="descarga 14h36"><i class="legend-dot legend-dot--milho"></i>QPB4954</td><td>40,6</td><td>20,4</td><td>0,9</td><td>3,1</td></tr>
                                         <tr><td title="descarga 14h25"><i class="legend-dot legend-dot--milho"></i>AWW1460</td><td>39,8</td><td>19,8</td><td class="is-atencao">1,1</td><td>2,8</td></tr>
@@ -1653,9 +1655,9 @@
                             <div class="moega-cultura"><i class="legend-dot legend-dot--milho"></i>Milho <b>17%</b></div>
                             <div class="moega-status" data-estado="disponivel"><i class="moega-status-luz"></i>Disponível</div>
                             <div class="moega-cargas">
-                                <div class="moega-cargas-head"><span class="moega-dado-label">Hoje · 8 cargas</span><span class="moega-cargas-total"><b>318,2 t</b></span></div>
+                                <div class="moega-cargas-head"><span class="moega-dado-label">Hoje · 8 cargas</span><span class="moega-cargas-total"><b>318,2 ton</b></span></div>
                                 <table class="moega-cargas-tabela">
-                                    <thead><tr><th>Placa</th><th>t</th><th>Umid</th><th>Imp</th><th>Avar</th></tr></thead>
+                                    <thead><tr><th>Placa</th><th>ton</th><th>Umid</th><th>Imp</th><th>Avar</th></tr></thead>
                                     <tbody>
                                         <tr><td title="descarga 14h35"><i class="legend-dot legend-dot--milho"></i>FOT5D69</td><td>38,9</td><td>17,2</td><td>0,8</td><td>3,0</td></tr>
                                         <tr><td title="descarga 14h19"><i class="legend-dot legend-dot--milho"></i>BWI2J88</td><td>40,3</td><td>16,8</td><td>1,0</td><td>3,3</td></tr>
@@ -1701,9 +1703,9 @@
                             <div class="moega-cultura"><i class="legend-dot legend-dot--milho"></i>Milho <b>14%</b></div>
                             <div class="moega-status" data-estado="cheia"><i class="moega-status-luz"></i>Cheia</div>
                             <div class="moega-cargas">
-                                <div class="moega-cargas-head"><span class="moega-dado-label">Hoje · 6 cargas</span><span class="moega-cargas-total"><b>236,5 t</b></span></div>
+                                <div class="moega-cargas-head"><span class="moega-dado-label">Hoje · 6 cargas</span><span class="moega-cargas-total"><b>236,5 ton</b></span></div>
                                 <table class="moega-cargas-tabela">
-                                    <thead><tr><th>Placa</th><th>t</th><th>Umid</th><th>Imp</th><th>Avar</th></tr></thead>
+                                    <thead><tr><th>Placa</th><th>ton</th><th>Umid</th><th>Imp</th><th>Avar</th></tr></thead>
                                     <tbody>
                                         <tr><td title="descarga 11h48"><i class="legend-dot legend-dot--milho"></i>LPO7A54</td><td>41,0</td><td>14,2</td><td>0,9</td><td>2,6</td></tr>
                                         <tr><td title="descarga 10h52"><i class="legend-dot legend-dot--milho"></i>KTR4E17</td><td>38,7</td><td>13,8</td><td>0,7</td><td>2,4</td></tr>
@@ -1753,9 +1755,9 @@
                             <div class="moega-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo <b>15%</b></div>
                             <div class="moega-status" data-estado="disponivel"><i class="moega-status-luz"></i>Disponível</div>
                             <div class="moega-cargas">
-                                <div class="moega-cargas-head"><span class="moega-dado-label">Hoje · 7 cargas</span><span class="moega-cargas-total"><b>271,8 t</b></span></div>
+                                <div class="moega-cargas-head"><span class="moega-dado-label">Hoje · 7 cargas</span><span class="moega-cargas-total"><b>271,8 ton</b></span></div>
                                 <table class="moega-cargas-tabela">
-                                    <thead><tr><th>Placa</th><th>t</th><th>Umid</th><th>Imp</th><th>Avar</th></tr></thead>
+                                    <thead><tr><th>Placa</th><th>ton</th><th>Umid</th><th>Imp</th><th>Avar</th></tr></thead>
                                     <tbody>
                                         <tr><td title="descarga 14h41"><i class="legend-dot legend-dot--sorgo"></i>ACA4652</td><td>39,4</td><td>15,3</td><td class="is-atencao">1,1</td><td>2,7</td></tr>
                                         <tr><td title="descarga 14h22"><i class="legend-dot legend-dot--sorgo"></i>AMC8B09</td><td>38,1</td><td>14,8</td><td>0,9</td><td>2,4</td></tr>
@@ -1801,9 +1803,9 @@
                             <div class="moega-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo <b>13%</b></div>
                             <div class="moega-status" data-estado="disponivel"><i class="moega-status-luz"></i>Disponível</div>
                             <div class="moega-cargas">
-                                <div class="moega-cargas-head"><span class="moega-dado-label">Hoje · 6 cargas</span><span class="moega-cargas-total"><b>232,9 t</b></span></div>
+                                <div class="moega-cargas-head"><span class="moega-dado-label">Hoje · 6 cargas</span><span class="moega-cargas-total"><b>232,9 ton</b></span></div>
                                 <table class="moega-cargas-tabela">
-                                    <thead><tr><th>Placa</th><th>t</th><th>Umid</th><th>Imp</th><th>Avar</th></tr></thead>
+                                    <thead><tr><th>Placa</th><th>ton</th><th>Umid</th><th>Imp</th><th>Avar</th></tr></thead>
                                     <tbody>
                                         <tr><td title="descarga 14h38"><i class="legend-dot legend-dot--sorgo"></i>SSS8G95</td><td>38,6</td><td>13,2</td><td>0,9</td><td>2,3</td></tr>
                                         <tr><td title="descarga 12h10"><i class="legend-dot legend-dot--sorgo"></i>GTR2D83</td><td>39,2</td><td>12,8</td><td>1,0</td><td>2,6</td></tr>
@@ -1853,9 +1855,9 @@
                             <div class="moega-cultura"><i class="legend-dot legend-dot--vazia"></i>Vazia</div>
                             <div class="moega-status" data-estado="disponivel"><i class="moega-status-luz"></i>Disponível</div>
                             <div class="moega-cargas">
-                                <div class="moega-cargas-head"><span class="moega-dado-label">Hoje · 2 cargas</span><span class="moega-cargas-total"><b>77,4 t</b></span></div>
+                                <div class="moega-cargas-head"><span class="moega-dado-label">Hoje · 2 cargas</span><span class="moega-cargas-total"><b>77,4 ton</b></span></div>
                                 <table class="moega-cargas-tabela">
-                                    <thead><tr><th>Placa</th><th>t</th><th>Umid</th><th>Imp</th><th>Avar</th></tr></thead>
+                                    <thead><tr><th>Placa</th><th>ton</th><th>Umid</th><th>Imp</th><th>Avar</th></tr></thead>
                                     <tbody>
                                         <tr><td title="descarga 10h05"><i class="legend-dot legend-dot--milho"></i>PRT3F28</td><td>38,1</td><td>18,6</td><td>0,9</td><td>3,0</td></tr>
                                         <tr><td title="descarga 08h47"><i class="legend-dot legend-dot--milho"></i>LZN7A93</td><td>39,3</td><td>18,2</td><td>1,0</td><td>3,3</td></tr>
@@ -2453,8 +2455,8 @@
                                     <div class="hora-col is-futuro" tabindex="0" data-dia="16h · projeção" data-recebido="124 t" data-nome-recebido="Projetado" data-milho="74 t" data-nome-milho="Secador 1 · Milho" data-sorgo="50 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack is-projecao" data-serie="milho" style="height: 74.0%"><span class="forecast-cap">~74</span><i class="forecast-seg forecast-seg--sec1" style="height: 100%"></i></div><div class="forecast-bar forecast-bar--hora is-stack is-projecao" data-serie="sorgo" style="height: 50.0%"><span class="forecast-cap">~50</span><i class="forecast-seg forecast-seg--sec2" style="height: 100%"></i></div></div>
                                 </div>
                                 <!-- meta horaria de cada secador: 700 t e 500 t no turno de 10h -->
-                                <div class="forecast-meta-line forecast-meta-line--sec1" style="bottom: 70%" aria-hidden="true"><span>META S1<br>70 t/h</span></div>
-                                <div class="forecast-meta-line forecast-meta-line--sec2" style="bottom: 50%" aria-hidden="true"><span>META S2<br>50 t/h</span></div>
+                                <div class="forecast-meta-line forecast-meta-line--sec1" style="bottom: 70%" aria-hidden="true"><span>META<br>SECADOR&nbsp;1<br>70 t/h</span></div>
+                                <div class="forecast-meta-line forecast-meta-line--sec2" style="bottom: 50%" aria-hidden="true"><span>META<br>SECADOR&nbsp;2<br>50 t/h</span></div>
                             </div>
                             <div class="forecast-xaxis">
                                 <span class="forecast-day">07H</span>
@@ -3421,16 +3423,15 @@
                                     <th>AVAR.</th>
                                     <th>DOSADO</th>
                                     <th>POR CARGA</th>
-                                    <th>AINDA CABIA</th>
                                     <th>USO</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr data-cultura="milho"><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>620 t</td><td>15</td><td class="class-val class-val--atencao">13,1%</td><td>0,8%</td><td>3,4%</td><td class="dos-col">10,4 t</td><td>693 kg</td><td>1,2 t</td><td class="dos-val--atencao">89%</td></tr>
-                                <tr data-cultura="sorgo"><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>260 t</td><td>7</td><td>12,4%</td><td class="class-val class-val--atencao">0,9%</td><td>2,9%</td><td class="dos-col">4,8 t</td><td>686 kg</td><td>0,3 t</td><td class="dos-val--ok">95%</td></tr>
-                                <tr data-cultura="trigo"><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>140 t</td><td>3</td><td>12,0%</td><td>0,6%</td><td>2,1%</td><td class="dos-col">2,1 t</td><td>700 kg</td><td>0,6 t</td><td class="dos-val--atencao">79%</td></tr>
-                                <tr data-cultura="soja"><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>100 t</td><td>3</td><td>12,7%</td><td>0,8%</td><td class="class-val class-val--atencao">3,6%</td><td class="dos-col">2,2 t</td><td>733 kg</td><td>0,2 t</td><td class="dos-val--ok">92%</td></tr>
-                                <tr class="exp-qual-geral"><td><i class="legend-dot legend-dot--geral"></i>Geral</td><td>1.120 t</td><td>28</td><td>12,8%</td><td>0,8%</td><td>3,1%</td><td class="dos-col">19,5 t</td><td>696 kg</td><td>2,3 t</td><td class="dos-val--ok">90%</td></tr>
+                                <tr data-cultura="milho"><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>620 t</td><td>15</td><td class="class-val class-val--atencao">13,1%</td><td>0,8%</td><td>3,4%</td><td class="dos-col">10,4 t</td><td>693 kg</td><td class="dos-val--atencao">89%</td></tr>
+                                <tr data-cultura="sorgo"><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>260 t</td><td>7</td><td>12,4%</td><td class="class-val class-val--atencao">0,9%</td><td>2,9%</td><td class="dos-col">4,8 t</td><td>686 kg</td><td class="dos-val--ok">95%</td></tr>
+                                <tr data-cultura="trigo"><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>140 t</td><td>3</td><td>12,0%</td><td>0,6%</td><td>2,1%</td><td class="dos-col">2,1 t</td><td>700 kg</td><td class="dos-val--atencao">79%</td></tr>
+                                <tr data-cultura="soja"><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>100 t</td><td>3</td><td>12,7%</td><td>0,8%</td><td class="class-val class-val--atencao">3,6%</td><td class="dos-col">2,2 t</td><td>733 kg</td><td class="dos-val--ok">92%</td></tr>
+                                <tr class="exp-qual-geral"><td><i class="legend-dot legend-dot--geral"></i>Geral</td><td>1.120 t</td><td>28</td><td>12,8%</td><td>0,8%</td><td>3,1%</td><td class="dos-col">19,5 t</td><td>696 kg</td><td class="dos-val--ok">90%</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -3451,16 +3452,15 @@
                                     <th>AVAR.</th>
                                     <th>DOSADO</th>
                                     <th>POR CARGA</th>
-                                    <th>AINDA CABIA</th>
                                     <th>USO</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr data-cultura="milho"><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>3.560 t</td><td>89</td><td class="class-val class-val--atencao">13,0%</td><td>0,8%</td><td>3,2%</td><td class="dos-col">61,4 t</td><td>690 kg</td><td>7,1 t</td><td class="dos-val--ok">90%</td></tr>
-                                <tr data-cultura="sorgo"><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>1.520 t</td><td>38</td><td>12,5%</td><td class="class-val class-val--atencao">0,9%</td><td>3,0%</td><td class="dos-col">26,0 t</td><td>684 kg</td><td>1,5 t</td><td class="dos-val--ok">94%</td></tr>
-                                <tr data-cultura="trigo"><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>820 t</td><td>21</td><td>12,1%</td><td>0,6%</td><td>2,3%</td><td class="dos-col">14,6 t</td><td>695 kg</td><td>3,3 t</td><td class="dos-val--atencao">82%</td></tr>
-                                <tr data-cultura="soja"><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>580 t</td><td>14</td><td>12,6%</td><td>0,7%</td><td>3,4%</td><td class="dos-col">10,2 t</td><td>729 kg</td><td>1,7 t</td><td class="dos-val--atencao">85%</td></tr>
-                                <tr class="exp-qual-geral"><td><i class="legend-dot legend-dot--geral"></i>Geral</td><td>6.480 t</td><td>162</td><td>12,8%</td><td>0,8%</td><td>3,1%</td><td class="dos-col">112,2 t</td><td>693 kg</td><td>13,7 t</td><td class="dos-val--atencao">89%</td></tr>
+                                <tr data-cultura="milho"><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>3.560 t</td><td>89</td><td class="class-val class-val--atencao">13,0%</td><td>0,8%</td><td>3,2%</td><td class="dos-col">61,4 t</td><td>690 kg</td><td class="dos-val--ok">90%</td></tr>
+                                <tr data-cultura="sorgo"><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>1.520 t</td><td>38</td><td>12,5%</td><td class="class-val class-val--atencao">0,9%</td><td>3,0%</td><td class="dos-col">26,0 t</td><td>684 kg</td><td class="dos-val--ok">94%</td></tr>
+                                <tr data-cultura="trigo"><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>820 t</td><td>21</td><td>12,1%</td><td>0,6%</td><td>2,3%</td><td class="dos-col">14,6 t</td><td>695 kg</td><td class="dos-val--atencao">82%</td></tr>
+                                <tr data-cultura="soja"><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>580 t</td><td>14</td><td>12,6%</td><td>0,7%</td><td>3,4%</td><td class="dos-col">10,2 t</td><td>729 kg</td><td class="dos-val--atencao">85%</td></tr>
+                                <tr class="exp-qual-geral"><td><i class="legend-dot legend-dot--geral"></i>Geral</td><td>6.480 t</td><td>162</td><td>12,8%</td><td>0,8%</td><td>3,1%</td><td class="dos-col">112,2 t</td><td>693 kg</td><td class="dos-val--atencao">89%</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -3481,16 +3481,15 @@
                                     <th>AVAR.</th>
                                     <th>DOSADO</th>
                                     <th>POR CARGA</th>
-                                    <th>AINDA CABIA</th>
                                     <th>USO</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr data-cultura="milho"><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>14.520 t</td><td>363</td><td class="class-val class-val--atencao">13,2%</td><td>0,9%</td><td>3,3%</td><td class="dos-col">249,7 t</td><td>688 kg</td><td>14,5 t</td><td class="dos-val--ok">95%</td></tr>
-                                <tr data-cultura="sorgo"><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>6.160 t</td><td>154</td><td>12,6%</td><td class="class-val class-val--atencao">0,9%</td><td>3,1%</td><td class="dos-col">106,1 t</td><td>689 kg</td><td>6,2 t</td><td class="dos-val--ok">95%</td></tr>
-                                <tr data-cultura="trigo"><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>3.300 t</td><td>83</td><td>12,2%</td><td>0,7%</td><td>2,4%</td><td class="dos-col">57,4 t</td><td>692 kg</td><td>9,9 t</td><td class="dos-val--atencao">85%</td></tr>
-                                <tr data-cultura="soja"><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>2.420 t</td><td>60</td><td>12,5%</td><td>0,8%</td><td>3,5%</td><td class="dos-col">43,5 t</td><td>725 kg</td><td>4,8 t</td><td class="dos-val--ok">90%</td></tr>
-                                <tr class="exp-qual-geral"><td><i class="legend-dot legend-dot--geral"></i>Geral</td><td>26.400 t</td><td>660</td><td>12,9%</td><td>0,8%</td><td>3,2%</td><td class="dos-col">456,8 t</td><td>692 kg</td><td>35,4 t</td><td class="dos-val--ok">93%</td></tr>
+                                <tr data-cultura="milho"><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>14.520 t</td><td>363</td><td class="class-val class-val--atencao">13,2%</td><td>0,9%</td><td>3,3%</td><td class="dos-col">249,7 t</td><td>688 kg</td><td class="dos-val--ok">95%</td></tr>
+                                <tr data-cultura="sorgo"><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>6.160 t</td><td>154</td><td>12,6%</td><td class="class-val class-val--atencao">0,9%</td><td>3,1%</td><td class="dos-col">106,1 t</td><td>689 kg</td><td class="dos-val--ok">95%</td></tr>
+                                <tr data-cultura="trigo"><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>3.300 t</td><td>83</td><td>12,2%</td><td>0,7%</td><td>2,4%</td><td class="dos-col">57,4 t</td><td>692 kg</td><td class="dos-val--atencao">85%</td></tr>
+                                <tr data-cultura="soja"><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>2.420 t</td><td>60</td><td>12,5%</td><td>0,8%</td><td>3,5%</td><td class="dos-col">43,5 t</td><td>725 kg</td><td class="dos-val--ok">90%</td></tr>
+                                <tr class="exp-qual-geral"><td><i class="legend-dot legend-dot--geral"></i>Geral</td><td>26.400 t</td><td>660</td><td>12,9%</td><td>0,8%</td><td>3,2%</td><td class="dos-col">456,8 t</td><td>692 kg</td><td class="dos-val--ok">93%</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -3511,16 +3510,15 @@
                                     <th>AVAR.</th>
                                     <th>DOSADO</th>
                                     <th>POR CARGA</th>
-                                    <th>AINDA CABIA</th>
                                     <th>USO</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr data-cultura="milho"><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>118.000 t</td><td>2.948</td><td class="class-val class-val--atencao">13,1%</td><td>0,8%</td><td>3,3%</td><td class="dos-col">2.037 t</td><td>691 kg</td><td>236,0 t</td><td class="dos-val--ok">90%</td></tr>
-                                <tr data-cultura="sorgo"><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>50.100 t</td><td>1.252</td><td>12,5%</td><td class="class-val class-val--atencao">0,9%</td><td>3,0%</td><td class="dos-col">860,1 t</td><td>687 kg</td><td>50,1 t</td><td class="dos-val--ok">94%</td></tr>
-                                <tr data-cultura="trigo"><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>26.800 t</td><td>670</td><td>12,1%</td><td>0,6%</td><td>2,3%</td><td class="dos-col">465,0 t</td><td>694 kg</td><td>107,2 t</td><td class="dos-val--atencao">81%</td></tr>
-                                <tr data-cultura="soja"><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>19.600 t</td><td>490</td><td>12,6%</td><td>0,8%</td><td>3,4%</td><td class="dos-col">356,2 t</td><td>727 kg</td><td>39,2 t</td><td class="dos-val--ok">90%</td></tr>
-                                <tr class="exp-qual-geral"><td><i class="legend-dot legend-dot--geral"></i>Geral</td><td>214.500 t</td><td>5.360</td><td>12,8%</td><td>0,8%</td><td>3,2%</td><td class="dos-col">3.718 t</td><td>694 kg</td><td>432,5 t</td><td class="dos-val--ok">90%</td></tr>
+                                <tr data-cultura="milho"><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>118.000 t</td><td>2.948</td><td class="class-val class-val--atencao">13,1%</td><td>0,8%</td><td>3,3%</td><td class="dos-col">2.037 t</td><td>691 kg</td><td class="dos-val--ok">90%</td></tr>
+                                <tr data-cultura="sorgo"><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>50.100 t</td><td>1.252</td><td>12,5%</td><td class="class-val class-val--atencao">0,9%</td><td>3,0%</td><td class="dos-col">860,1 t</td><td>687 kg</td><td class="dos-val--ok">94%</td></tr>
+                                <tr data-cultura="trigo"><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>26.800 t</td><td>670</td><td>12,1%</td><td>0,6%</td><td>2,3%</td><td class="dos-col">465,0 t</td><td>694 kg</td><td class="dos-val--atencao">81%</td></tr>
+                                <tr data-cultura="soja"><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>19.600 t</td><td>490</td><td>12,6%</td><td>0,8%</td><td>3,4%</td><td class="dos-col">356,2 t</td><td>727 kg</td><td class="dos-val--ok">90%</td></tr>
+                                <tr class="exp-qual-geral"><td><i class="legend-dot legend-dot--geral"></i>Geral</td><td>214.500 t</td><td>5.360</td><td>12,8%</td><td>0,8%</td><td>3,2%</td><td class="dos-col">3.718 t</td><td>694 kg</td><td class="dos-val--ok">90%</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -3800,14 +3798,14 @@
                         <!-- Próximos 6 dias em tabela: uma linha por dia, faixa térmica na escala 14–32 °C. -->
                         <div class="content-section pv-section pv-dias">
                             <div class="section-head">
-                                <h3>PRÓXIMOS 6 DIAS · AVARÉ</h3>
+                                <h3>PRÓXIMOS 6 DIAS · <span data-pv-dias-cidade>AVARÉ</span></h3>
                                 <span class="pv-legenda"><i class="pv-legenda-faixa"></i>mín – máx na escala 14–32 °C · vento → rajada em km/h</span>
                             </div>
                             <table class="pv-tabela pv-tabela--dias">
                                 <thead>
                                     <tr><th>Dia</th><th>Tempo</th><th>Máx / mín</th><th></th><th class="num">Chuva</th><th class="num">mm</th><th class="num">Vento</th><th class="num">UV</th><th>Leitura operacional</th></tr>
                                 </thead>
-                                <tbody>
+                                <tbody data-pv-cidade="Avaré">
                                     <tr>
                                         <td class="pv-tabela-nome"><b>Seg</b><small>21 set.</small></td>
                                         <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>Pancadas</td>
@@ -3875,6 +3873,414 @@
                                         <td class="pv-tabela-tag"><span class="pv-tag pv-tag--atencao">Pátio úmido</span></td>
                                     </tr>
                                 </tbody>
+                                <tbody data-pv-cidade="Itaí" hidden>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Seg</b><small>21 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>Pancadas</td>
+                                        <td class="pv-tabela-temp"><b>27°</b><small>17°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 17; --max: 27"><i></i></span></td>
+                                        <td class="num is-chuva">50%</td>
+                                        <td class="num is-chuva">5</td>
+                                        <td class="num">14 → 28</td>
+                                        <td class="num">7 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--atencao">Colheita arriscada</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Ter</b><small>22 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>Parc. nublado</td>
+                                        <td class="pv-tabela-temp"><b>28°</b><small>17°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 17; --max: 28"><i></i></span></td>
+                                        <td class="num">25%</td>
+                                        <td class="num">0</td>
+                                        <td class="num">12 → 22</td>
+                                        <td class="num">8 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--ok">Colheita liberada</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Qua</b><small>23 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg>Ensolarado</td>
+                                        <td class="pv-tabela-temp"><b>30°</b><small>18°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 18; --max: 30"><i></i></span></td>
+                                        <td class="num">10%</td>
+                                        <td class="num">0</td>
+                                        <td class="num">10 → 18</td>
+                                        <td class="num">9 muito alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--ok">Colheita ideal</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Qui</b><small>24 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>Parc. nublado</td>
+                                        <td class="pv-tabela-temp"><b>29°</b><small>19°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 19; --max: 29"><i></i></span></td>
+                                        <td class="num">20%</td>
+                                        <td class="num">1</td>
+                                        <td class="num">12 → 22</td>
+                                        <td class="num">8 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--ok">Colheita liberada</span></td>
+                                    </tr>
+                                    <tr class="is-alerta">
+                                        <td class="pv-tabela-nome"><b>Sex</b><small>25 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>Chuva</td>
+                                        <td class="pv-tabela-temp"><b>25°</b><small>17°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 17; --max: 25"><i></i></span></td>
+                                        <td class="num is-chuva">65%</td>
+                                        <td class="num is-chuva">15</td>
+                                        <td class="num is-alerta">20 → 36</td>
+                                        <td class="num">5 moderado</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--alerta">Colheita parada</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Sáb</b><small>26 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg>Nublado</td>
+                                        <td class="pv-tabela-temp"><b>26°</b><small>17°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 17; --max: 26"><i></i></span></td>
+                                        <td class="num">35%</td>
+                                        <td class="num">3</td>
+                                        <td class="num">14 → 26</td>
+                                        <td class="num">6 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--atencao">Grão úmido</span></td>
+                                    </tr>
+                                </tbody>
+                                <tbody data-pv-cidade="Paranapanema" hidden>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Seg</b><small>21 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>Pancadas</td>
+                                        <td class="pv-tabela-temp"><b>25°</b><small>16°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 16; --max: 25"><i></i></span></td>
+                                        <td class="num is-chuva">60%</td>
+                                        <td class="num is-chuva">8</td>
+                                        <td class="num">16 → 30</td>
+                                        <td class="num">6 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--atencao">Colheita arriscada</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Ter</b><small>22 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg>Nublado</td>
+                                        <td class="pv-tabela-temp"><b>26°</b><small>16°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 16; --max: 26"><i></i></span></td>
+                                        <td class="num">40%</td>
+                                        <td class="num">2</td>
+                                        <td class="num">12 → 24</td>
+                                        <td class="num">6 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--atencao">Grão úmido</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Qua</b><small>23 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>Parc. nublado</td>
+                                        <td class="pv-tabela-temp"><b>28°</b><small>16°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 16; --max: 28"><i></i></span></td>
+                                        <td class="num">25%</td>
+                                        <td class="num">1</td>
+                                        <td class="num">14 → 24</td>
+                                        <td class="num">8 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--ok">Colheita liberada</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Qui</b><small>24 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg>Ensolarado</td>
+                                        <td class="pv-tabela-temp"><b>29°</b><small>17°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 17; --max: 29"><i></i></span></td>
+                                        <td class="num">10%</td>
+                                        <td class="num">0</td>
+                                        <td class="num">12 → 20</td>
+                                        <td class="num">9 muito alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--ok">Colheita ideal</span></td>
+                                    </tr>
+                                    <tr class="is-alerta">
+                                        <td class="pv-tabela-nome"><b>Sex</b><small>25 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>Chuva</td>
+                                        <td class="pv-tabela-temp"><b>23°</b><small>16°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 16; --max: 23"><i></i></span></td>
+                                        <td class="num is-chuva">75%</td>
+                                        <td class="num is-chuva">22</td>
+                                        <td class="num is-alerta">24 → 40</td>
+                                        <td class="num">5 moderado</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--alerta">Colheita parada</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Sáb</b><small>26 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>Pancadas</td>
+                                        <td class="pv-tabela-temp"><b>24°</b><small>15°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 15; --max: 24"><i></i></span></td>
+                                        <td class="num is-chuva">55%</td>
+                                        <td class="num is-chuva">6</td>
+                                        <td class="num">16 → 30</td>
+                                        <td class="num">5 moderado</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--atencao">Colheita arriscada</span></td>
+                                    </tr>
+                                </tbody>
+                                <tbody data-pv-cidade="Cerqueira César" hidden>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Seg</b><small>21 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>Pancadas</td>
+                                        <td class="pv-tabela-temp"><b>26°</b><small>17°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 17; --max: 26"><i></i></span></td>
+                                        <td class="num is-chuva">55%</td>
+                                        <td class="num is-chuva">7</td>
+                                        <td class="num">14 → 28</td>
+                                        <td class="num">7 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--atencao">Colheita arriscada</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Ter</b><small>22 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>Parc. nublado</td>
+                                        <td class="pv-tabela-temp"><b>27°</b><small>17°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 17; --max: 27"><i></i></span></td>
+                                        <td class="num">30%</td>
+                                        <td class="num">1</td>
+                                        <td class="num">12 → 22</td>
+                                        <td class="num">8 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--ok">Colheita liberada</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Qua</b><small>23 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>Parc. nublado</td>
+                                        <td class="pv-tabela-temp"><b>29°</b><small>18°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 18; --max: 29"><i></i></span></td>
+                                        <td class="num">20%</td>
+                                        <td class="num">0</td>
+                                        <td class="num">12 → 20</td>
+                                        <td class="num">8 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--ok">Colheita liberada</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Qui</b><small>24 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg>Ensolarado</td>
+                                        <td class="pv-tabela-temp"><b>30°</b><small>19°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 19; --max: 30"><i></i></span></td>
+                                        <td class="num">10%</td>
+                                        <td class="num">0</td>
+                                        <td class="num">10 → 18</td>
+                                        <td class="num">9 muito alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--ok">Colheita ideal</span></td>
+                                    </tr>
+                                    <tr class="is-alerta">
+                                        <td class="pv-tabela-nome"><b>Sex</b><small>25 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>Chuva</td>
+                                        <td class="pv-tabela-temp"><b>24°</b><small>17°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 17; --max: 24"><i></i></span></td>
+                                        <td class="num is-chuva">70%</td>
+                                        <td class="num is-chuva">16</td>
+                                        <td class="num is-alerta">22 → 36</td>
+                                        <td class="num">5 moderado</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--alerta">Colheita parada</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Sáb</b><small>26 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg>Nublado</td>
+                                        <td class="pv-tabela-temp"><b>26°</b><small>17°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 17; --max: 26"><i></i></span></td>
+                                        <td class="num">35%</td>
+                                        <td class="num">3</td>
+                                        <td class="num">14 → 26</td>
+                                        <td class="num">6 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--atencao">Grão úmido</span></td>
+                                    </tr>
+                                </tbody>
+                                <tbody data-pv-cidade="Taquarituba" hidden>
+                                    <tr class="is-alerta">
+                                        <td class="pv-tabela-nome"><b>Seg</b><small>21 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>Chuva</td>
+                                        <td class="pv-tabela-temp"><b>24°</b><small>16°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 16; --max: 24"><i></i></span></td>
+                                        <td class="num is-chuva">70%</td>
+                                        <td class="num is-chuva">14</td>
+                                        <td class="num is-alerta">18 → 34</td>
+                                        <td class="num">5 moderado</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--alerta">Colheita parada</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Ter</b><small>22 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>Pancadas</td>
+                                        <td class="pv-tabela-temp"><b>25°</b><small>16°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 16; --max: 25"><i></i></span></td>
+                                        <td class="num is-chuva">55%</td>
+                                        <td class="num is-chuva">6</td>
+                                        <td class="num">16 → 28</td>
+                                        <td class="num">6 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--atencao">Colheita arriscada</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Qua</b><small>23 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg>Nublado</td>
+                                        <td class="pv-tabela-temp"><b>27°</b><small>17°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 17; --max: 27"><i></i></span></td>
+                                        <td class="num">45%</td>
+                                        <td class="num">3</td>
+                                        <td class="num">16 → 26</td>
+                                        <td class="num">6 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--atencao">Grão úmido</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Qui</b><small>24 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>Parc. nublado</td>
+                                        <td class="pv-tabela-temp"><b>28°</b><small>18°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 18; --max: 28"><i></i></span></td>
+                                        <td class="num">25%</td>
+                                        <td class="num">1</td>
+                                        <td class="num">14 → 22</td>
+                                        <td class="num">8 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--ok">Colheita liberada</span></td>
+                                    </tr>
+                                    <tr class="is-alerta">
+                                        <td class="pv-tabela-nome"><b>Sex</b><small>25 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>Chuva</td>
+                                        <td class="pv-tabela-temp"><b>23°</b><small>16°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 16; --max: 23"><i></i></span></td>
+                                        <td class="num is-chuva">80%</td>
+                                        <td class="num is-chuva">24</td>
+                                        <td class="num is-alerta">24 → 42</td>
+                                        <td class="num">4 moderado</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--alerta">Colheita parada</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Sáb</b><small>26 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg>Nublado</td>
+                                        <td class="pv-tabela-temp"><b>25°</b><small>16°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 16; --max: 25"><i></i></span></td>
+                                        <td class="num">40%</td>
+                                        <td class="num">4</td>
+                                        <td class="num">16 → 26</td>
+                                        <td class="num">6 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--atencao">Grão úmido</span></td>
+                                    </tr>
+                                </tbody>
+                                <tbody data-pv-cidade="Itatinga" hidden>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Seg</b><small>21 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>Parc. nublado</td>
+                                        <td class="pv-tabela-temp"><b>27°</b><small>17°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 17; --max: 27"><i></i></span></td>
+                                        <td class="num">30%</td>
+                                        <td class="num">1</td>
+                                        <td class="num">12 → 22</td>
+                                        <td class="num">8 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--ok">Colheita liberada</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Ter</b><small>22 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg>Nublado</td>
+                                        <td class="pv-tabela-temp"><b>26°</b><small>17°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 17; --max: 26"><i></i></span></td>
+                                        <td class="num">45%</td>
+                                        <td class="num">3</td>
+                                        <td class="num">14 → 26</td>
+                                        <td class="num">6 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--atencao">Grão úmido</span></td>
+                                    </tr>
+                                    <tr class="is-alerta">
+                                        <td class="pv-tabela-nome"><b>Qua</b><small>23 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>Chuva</td>
+                                        <td class="pv-tabela-temp"><b>25°</b><small>16°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 16; --max: 25"><i></i></span></td>
+                                        <td class="num is-chuva">65%</td>
+                                        <td class="num is-chuva">12</td>
+                                        <td class="num is-alerta">20 → 34</td>
+                                        <td class="num">5 moderado</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--alerta">Colheita parada</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Qui</b><small>24 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>Pancadas</td>
+                                        <td class="pv-tabela-temp"><b>24°</b><small>16°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 16; --max: 24"><i></i></span></td>
+                                        <td class="num is-chuva">55%</td>
+                                        <td class="num is-chuva">7</td>
+                                        <td class="num">16 → 30</td>
+                                        <td class="num">6 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--atencao">Colheita arriscada</span></td>
+                                    </tr>
+                                    <tr class="is-alerta">
+                                        <td class="pv-tabela-nome"><b>Sex</b><small>25 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>Chuva</td>
+                                        <td class="pv-tabela-temp"><b>22°</b><small>15°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 15; --max: 22"><i></i></span></td>
+                                        <td class="num is-chuva">75%</td>
+                                        <td class="num is-chuva">20</td>
+                                        <td class="num is-alerta">22 → 38</td>
+                                        <td class="num">4 moderado</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--alerta">Colheita parada</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Sáb</b><small>26 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg>Nublado</td>
+                                        <td class="pv-tabela-temp"><b>24°</b><small>15°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 15; --max: 24"><i></i></span></td>
+                                        <td class="num">35%</td>
+                                        <td class="num">2</td>
+                                        <td class="num">14 → 24</td>
+                                        <td class="num">6 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--atencao">Grão úmido</span></td>
+                                    </tr>
+                                </tbody>
+                                <tbody data-pv-cidade="Manduri" hidden>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Seg</b><small>21 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>Pancadas</td>
+                                        <td class="pv-tabela-temp"><b>27°</b><small>18°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 18; --max: 27"><i></i></span></td>
+                                        <td class="num">45%</td>
+                                        <td class="num">4</td>
+                                        <td class="num">14 → 26</td>
+                                        <td class="num">7 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--atencao">Colheita arriscada</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Ter</b><small>22 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>Parc. nublado</td>
+                                        <td class="pv-tabela-temp"><b>28°</b><small>18°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 18; --max: 28"><i></i></span></td>
+                                        <td class="num">25%</td>
+                                        <td class="num">0</td>
+                                        <td class="num">10 → 20</td>
+                                        <td class="num">8 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--ok">Colheita liberada</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Qua</b><small>23 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg>Ensolarado</td>
+                                        <td class="pv-tabela-temp"><b>30°</b><small>19°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 19; --max: 30"><i></i></span></td>
+                                        <td class="num">15%</td>
+                                        <td class="num">0</td>
+                                        <td class="num">9 → 16</td>
+                                        <td class="num">9 muito alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--ok">Colheita ideal</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Qui</b><small>24 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg>Ensolarado</td>
+                                        <td class="pv-tabela-temp"><b>31°</b><small>19°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 19; --max: 31"><i></i></span></td>
+                                        <td class="num">10%</td>
+                                        <td class="num">0</td>
+                                        <td class="num">10 → 18</td>
+                                        <td class="num">10 muito alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--ok">Colheita ideal</span></td>
+                                    </tr>
+                                    <tr class="is-alerta">
+                                        <td class="pv-tabela-nome"><b>Sex</b><small>25 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg>Chuva</td>
+                                        <td class="pv-tabela-temp"><b>25°</b><small>18°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 18; --max: 25"><i></i></span></td>
+                                        <td class="num is-chuva">65%</td>
+                                        <td class="num is-chuva">14</td>
+                                        <td class="num is-alerta">20 → 36</td>
+                                        <td class="num">5 moderado</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--alerta">Colheita parada</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pv-tabela-nome"><b>Sáb</b><small>26 set.</small></td>
+                                        <td class="pv-tabela-cond"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>Parc. nublado</td>
+                                        <td class="pv-tabela-temp"><b>27°</b><small>17°</small></td>
+                                        <td class="pv-tabela-faixa"><span class="pv-faixa" style="--min: 17; --max: 27"><i></i></span></td>
+                                        <td class="num">30%</td>
+                                        <td class="num">2</td>
+                                        <td class="num">12 → 22</td>
+                                        <td class="num">7 alto</td>
+                                        <td class="pv-tabela-tag"><span class="pv-tag pv-tag--ok">Colheita liberada</span></td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -3887,18 +4293,18 @@
                                 <h3>AVARÉ E COOPERADOS · AMANHÃ</h3>
                                 <span class="pv-legenda">a unidade + 6 cooperados</span>
                             </div>
-                            <table class="pv-tabela">
+                            <table class="pv-tabela pv-tabela--filtro">
                                 <thead>
                                     <tr><th>Localidade</th><th></th><th>Máx / mín</th><th class="num">Chuva</th><th class="num">mm</th><th class="num">Vento</th></tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="is-unidade"><td class="pv-tabela-nome">Avaré<span class="pv-unidade-tag">unidade</span></td><td><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg></td><td class="pv-tabela-temp"><b>29°</b><small>18°</small></td><td class="num">10%</td><td class="num">0</td><td class="num">10 km/h</td></tr>
-                                    <tr><td class="pv-tabela-nome">Itaí</td><td><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg></td><td class="pv-tabela-temp"><b>30°</b><small>18°</small></td><td class="num">10%</td><td class="num">0</td><td class="num">10 km/h</td></tr>
-                                    <tr><td class="pv-tabela-nome">Paranapanema</td><td><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg></td><td class="pv-tabela-temp"><b>28°</b><small>16°</small></td><td class="num">25%</td><td class="num">1</td><td class="num">14 km/h</td></tr>
-                                    <tr><td class="pv-tabela-nome">Cerqueira César</td><td><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg></td><td class="pv-tabela-temp"><b>29°</b><small>18°</small></td><td class="num">20%</td><td class="num">0</td><td class="num">12 km/h</td></tr>
-                                    <tr><td class="pv-tabela-nome">Taquarituba</td><td><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg></td><td class="pv-tabela-temp"><b>27°</b><small>17°</small></td><td class="num">45%</td><td class="num">3</td><td class="num">16 km/h</td></tr>
-                                    <tr><td class="pv-tabela-nome">Itatinga</td><td><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg></td><td class="pv-tabela-temp"><b>25°</b><small>16°</small></td><td class="num">65%</td><td class="num">12</td><td class="num">20 km/h</td></tr>
-                                    <tr><td class="pv-tabela-nome">Manduri</td><td><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg></td><td class="pv-tabela-temp"><b>30°</b><small>19°</small></td><td class="num">15%</td><td class="num">0</td><td class="num">9 km/h</td></tr>
+                                    <tr class="is-unidade is-sel" data-pv-cidade="Avaré"><td class="pv-tabela-nome">Avaré<span class="pv-unidade-tag">unidade</span></td><td><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg></td><td class="pv-tabela-temp"><b>29°</b><small>18°</small></td><td class="num">10%</td><td class="num">0</td><td class="num">10 km/h</td></tr>
+                                    <tr data-pv-cidade="Itaí"><td class="pv-tabela-nome">Itaí</td><td><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg></td><td class="pv-tabela-temp"><b>30°</b><small>18°</small></td><td class="num">10%</td><td class="num">0</td><td class="num">10 km/h</td></tr>
+                                    <tr data-pv-cidade="Paranapanema"><td class="pv-tabela-nome">Paranapanema</td><td><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg></td><td class="pv-tabela-temp"><b>28°</b><small>16°</small></td><td class="num">25%</td><td class="num">1</td><td class="num">14 km/h</td></tr>
+                                    <tr data-pv-cidade="Cerqueira César"><td class="pv-tabela-nome">Cerqueira César</td><td><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg></td><td class="pv-tabela-temp"><b>29°</b><small>18°</small></td><td class="num">20%</td><td class="num">0</td><td class="num">12 km/h</td></tr>
+                                    <tr data-pv-cidade="Taquarituba"><td class="pv-tabela-nome">Taquarituba</td><td><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg></td><td class="pv-tabela-temp"><b>27°</b><small>17°</small></td><td class="num">45%</td><td class="num">3</td><td class="num">16 km/h</td></tr>
+                                    <tr data-pv-cidade="Itatinga"><td class="pv-tabela-nome">Itatinga</td><td><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg></td><td class="pv-tabela-temp"><b>25°</b><small>16°</small></td><td class="num">65%</td><td class="num">12</td><td class="num">20 km/h</td></tr>
+                                    <tr data-pv-cidade="Manduri"><td class="pv-tabela-nome">Manduri</td><td><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg></td><td class="pv-tabela-temp"><b>30°</b><small>19°</small></td><td class="num">15%</td><td class="num">0</td><td class="num">9 km/h</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -3930,7 +4336,7 @@
                     <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
                     <div class="screen-title-section">
                         <h2>Câmera · Recepção</h2>
-                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-01 · PÁTIO</div>
+                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-01 · PÁTIO 1 · CAM-02 · PÁTIO 2</div>
                     </div>
                 </div>
 
@@ -3939,7 +4345,16 @@
                         <figure class="camera-frame" data-cam-src="">
                             <div class="camera-placeholder">
                                 <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
-                                <span class="camera-name">CAM-01 · PÁTIO</span>
+                                <span class="camera-name">CAM-01 · PÁTIO 1</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-02 · PÁTIO 2</span>
                                 <span class="camera-state">AGUARDANDO SINAL</span>
                             </div>
                         </figure>
@@ -4043,13 +4458,68 @@
                 </div>
             </section>
 
+            <!-- Camera 5: Câmera · Silos -->
+            <section class="screen screen--camera" id="screen-cam-5">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
+                    <div class="screen-title-section">
+                        <h2>Câmera · Silos</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-07 · TOPO DOS SILOS</div>
+                    </div>
+                </div>
+
+                <div class="camera-wall">
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-07 · TOPO DOS SILOS</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Camera 6: Câmera · Armazém -->
+            <section class="screen screen--camera" id="screen-cam-6">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
+                    <div class="screen-title-section">
+                        <h2>Câmera · Armazém</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-08 · ARMAZÉM ÁREA 1 · CAM-11 · ARMAZÉM ÁREA 2</div>
+                    </div>
+                </div>
+
+                <div class="camera-wall">
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-08 · ARMAZÉM ÁREA 1</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-11 · ARMAZÉM ÁREA 2</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
             <!-- Camera 7: Câmera · Expedição -->
             <section class="screen screen--camera" id="screen-cam-7">
                 <div class="screen-header">
                     <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
                     <div class="screen-title-section">
                         <h2>Câmera · Expedição</h2>
-                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-09 · PLATAFORMA DE CARREGAMENTO · CAM-11 · BALANÇA DE SAÍDA</div>
+                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-09 · PLATAFORMA DE CARREGAMENTO · CAM-10 · POSTO DE DOSAGEM</div>
                     </div>
                 </div>
 
@@ -4067,7 +4537,7 @@
                         <figure class="camera-frame" data-cam-src="">
                             <div class="camera-placeholder">
                                 <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
-                                <span class="camera-name">CAM-11 · BALANÇA DE SAÍDA</span>
+                                <span class="camera-name">CAM-10 · POSTO DE DOSAGEM</span>
                                 <span class="camera-state">AGUARDANDO SINAL</span>
                             </div>
                         </figure>
@@ -4380,22 +4850,24 @@
                          grão, na ordem fixa da paleta (milho · sorgo · trigo). Largura
                          de cada fatia = t do grão ÷ recebido da unidade (Matriz: 820 ÷
                          1.420 = 57,7%). O total no canto é o "Recebido hoje" da tabela
-                         ao lado; mesmas unidades, na mesma ordem. -->
+                         ao lado; mesmas unidades, na mesma ordem. Hoje / 7 / 30 dias
+                         trocam o tbody visível (data-du-periodo). -->
                     <div class="content-section du-section">
                         <div class="section-head">
-                            <h3>RECEBIDO HOJE POR CULTURA</h3>
-                            <span class="du-legenda">
-                                <span><i class="legend-dot legend-dot--milho"></i>Milho</span>
-                                <span><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
-                                <span><i class="legend-dot legend-dot--trigo"></i>Trigo</span>
-                            </span>
+                            <h3>RECEBIDO POR CULTURA · <span data-du-periodo-nome>HOJE</span></h3>
+                            <!-- período só desta seção: um tbody por período na tabela abaixo -->
+                            <div class="fluxo-periodo du-periodo" role="group" aria-label="Período do recebido por cultura">
+                                <button type="button" class="fluxo-periodo-btn is-active" data-du-periodo="hoje" aria-pressed="true">Hoje</button>
+                                <button type="button" class="fluxo-periodo-btn" data-du-periodo="7d" aria-pressed="false">7 dias</button>
+                                <button type="button" class="fluxo-periodo-btn" data-du-periodo="30d" aria-pressed="false">30 dias</button>
+                            </div>
                         </div>
                         <div class="du-tabela-wrap">
                             <table class="pv-tabela du-tabela du-tabela--cultura">
                                 <thead>
                                     <tr><th>Unidade · toneladas por cultura</th></tr>
                                 </thead>
-                                <tbody>
+                                <tbody data-du-periodo="hoje">
                                     <tr>
                                         <td class="du-mix-cel">
                                             <div class="du-mix-topo"><b>Avaré</b><span>1.240 t</span></div>
@@ -4436,6 +4908,94 @@
                                         <td class="du-mix-cel">
                                             <div class="du-mix-topo"><b>Taquarivaí</b><span>980 t</span></div>
                                             <div class="du-mix" role="img" aria-label="Taquarivaí: milho 620 t, sorgo 360 t"><i style="width: 63.3%; --c: var(--grao-milho)" title="Milho · 620 t · 63%"><small>Milho</small>620</i><i style="width: 36.7%; --c: var(--grao-sorgo)" title="Sorgo · 360 t · 37%"><small>Sorgo</small>360</i></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody data-du-periodo="7d" hidden>
+                                    <tr>
+                                        <td class="du-mix-cel">
+                                            <div class="du-mix-topo"><b>Avaré</b><span>8.350 t</span></div>
+                                            <div class="du-mix" role="img" aria-label="Avaré: milho 5.940 t, sorgo 2.410 t"><i style="width: 71.1%; --c: var(--grao-milho)" title="Milho · 5.940 t · 71%"><small>Milho</small>5.940</i><i style="width: 28.9%; --c: var(--grao-sorgo)" title="Sorgo · 2.410 t · 29%"><small>Sorgo</small>2.410</i></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="du-mix-cel">
+                                            <div class="du-mix-topo"><b>Matriz</b><span>9.200 t</span></div>
+                                            <div class="du-mix" role="img" aria-label="Matriz: milho 5.480 t, sorgo 1.390 t, trigo 2.330 t"><i style="width: 59.6%; --c: var(--grao-milho)" title="Milho · 5.480 t · 60%"><small>Milho</small>5.480</i><i style="width: 15.1%; --c: var(--grao-sorgo)" title="Sorgo · 1.390 t · 15%"><small>Sorgo</small>1.390</i><i style="width: 25.3%; --c: var(--grao-trigo)" title="Trigo · 2.330 t · 25%"><small>Trigo</small>2.330</i></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="du-mix-cel">
+                                            <div class="du-mix-topo"><b>Itaberá</b><span>7.780 t</span></div>
+                                            <div class="du-mix" role="img" aria-label="Itaberá: milho 3.120 t, trigo 4.660 t"><i style="width: 40.1%; --c: var(--grao-milho)" title="Milho · 3.120 t · 40%"><small>Milho</small>3.120</i><i style="width: 59.9%; --c: var(--grao-trigo)" title="Trigo · 4.660 t · 60%"><small>Trigo</small>4.660</i></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="du-mix-cel">
+                                            <div class="du-mix-topo"><b>São Manuel</b><span>5.400 t · até 13:48 de hoje</span></div>
+                                            <div class="du-mix" role="img" aria-label="São Manuel: milho 4.380 t, sorgo 1.020 t"><i style="width: 81.1%; --c: var(--grao-milho)" title="Milho · 4.380 t · 81%"><small>Milho</small>4.380</i><i style="width: 18.9%; --c: var(--grao-sorgo)" title="Sorgo · 1.020 t · 19%"><small>Sorgo</small>1.020</i></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="du-mix-cel">
+                                            <div class="du-mix-topo"><b>Takaoka</b><span>8.680 t</span></div>
+                                            <div class="du-mix" role="img" aria-label="Takaoka: milho 3.260 t, sorgo 1.050 t, trigo 4.370 t"><i style="width: 37.6%; --c: var(--grao-milho)" title="Milho · 3.260 t · 38%"><small>Milho</small>3.260</i><i style="width: 12.1%; --c: var(--grao-sorgo)" title="Sorgo · 1.050 t · 12%"><small>Sorgo</small>1.050</i><i style="width: 50.3%; --c: var(--grao-trigo)" title="Trigo · 4.370 t · 50%"><small>Trigo</small>4.370</i></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="du-mix-cel">
+                                            <div class="du-mix-topo"><b>Taquarituba</b><span>10.900 t</span></div>
+                                            <div class="du-mix" role="img" aria-label="Taquarituba: milho 7.140 t, trigo 3.760 t"><i style="width: 65.5%; --c: var(--grao-milho)" title="Milho · 7.140 t · 66%"><small>Milho</small>7.140</i><i style="width: 34.5%; --c: var(--grao-trigo)" title="Trigo · 3.760 t · 34%"><small>Trigo</small>3.760</i></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="du-mix-cel">
+                                            <div class="du-mix-topo"><b>Taquarivaí</b><span>6.600 t</span></div>
+                                            <div class="du-mix" role="img" aria-label="Taquarivaí: milho 4.310 t, sorgo 2.290 t"><i style="width: 65.3%; --c: var(--grao-milho)" title="Milho · 4.310 t · 65%"><small>Milho</small>4.310</i><i style="width: 34.7%; --c: var(--grao-sorgo)" title="Sorgo · 2.290 t · 35%"><small>Sorgo</small>2.290</i></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody data-du-periodo="30d" hidden>
+                                    <tr>
+                                        <td class="du-mix-cel">
+                                            <div class="du-mix-topo"><b>Avaré</b><span>35.700 t</span></div>
+                                            <div class="du-mix" role="img" aria-label="Avaré: milho 26.800 t, sorgo 8.900 t"><i style="width: 75.1%; --c: var(--grao-milho)" title="Milho · 26.800 t · 75%"><small>Milho</small>26.800</i><i style="width: 24.9%; --c: var(--grao-sorgo)" title="Sorgo · 8.900 t · 25%"><small>Sorgo</small>8.900</i></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="du-mix-cel">
+                                            <div class="du-mix-topo"><b>Matriz</b><span>40.300 t</span></div>
+                                            <div class="du-mix" role="img" aria-label="Matriz: milho 27.600 t, sorgo 5.900 t, trigo 6.800 t"><i style="width: 68.5%; --c: var(--grao-milho)" title="Milho · 27.600 t · 68%"><small>Milho</small>27.600</i><i style="width: 14.6%; --c: var(--grao-sorgo)" title="Sorgo · 5.900 t · 15%"><small>Sorgo</small>5.900</i><i style="width: 16.9%; --c: var(--grao-trigo)" title="Trigo · 6.800 t · 17%"><small>Trigo</small>6.800</i></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="du-mix-cel">
+                                            <div class="du-mix-topo"><b>Itaberá</b><span>28.700 t</span></div>
+                                            <div class="du-mix" role="img" aria-label="Itaberá: milho 16.400 t, trigo 12.300 t"><i style="width: 57.1%; --c: var(--grao-milho)" title="Milho · 16.400 t · 57%"><small>Milho</small>16.400</i><i style="width: 42.9%; --c: var(--grao-trigo)" title="Trigo · 12.300 t · 43%"><small>Trigo</small>12.300</i></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="du-mix-cel">
+                                            <div class="du-mix-topo"><b>São Manuel</b><span>25.800 t · até 13:48 de hoje</span></div>
+                                            <div class="du-mix" role="img" aria-label="São Manuel: milho 21.500 t, sorgo 4.300 t"><i style="width: 83.3%; --c: var(--grao-milho)" title="Milho · 21.500 t · 83%"><small>Milho</small>21.500</i><i style="width: 16.7%; --c: var(--grao-sorgo)" title="Sorgo · 4.300 t · 17%"><small>Sorgo</small>4.300</i></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="du-mix-cel">
+                                            <div class="du-mix-topo"><b>Takaoka</b><span>33.700 t</span></div>
+                                            <div class="du-mix" role="img" aria-label="Takaoka: milho 17.900 t, sorgo 4.600 t, trigo 11.200 t"><i style="width: 53.1%; --c: var(--grao-milho)" title="Milho · 17.900 t · 53%"><small>Milho</small>17.900</i><i style="width: 13.6%; --c: var(--grao-sorgo)" title="Sorgo · 4.600 t · 14%"><small>Sorgo</small>4.600</i><i style="width: 33.2%; --c: var(--grao-trigo)" title="Trigo · 11.200 t · 33%"><small>Trigo</small>11.200</i></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="du-mix-cel">
+                                            <div class="du-mix-topo"><b>Taquarituba</b><span>43.300 t</span></div>
+                                            <div class="du-mix" role="img" aria-label="Taquarituba: milho 33.500 t, trigo 9.800 t"><i style="width: 77.4%; --c: var(--grao-milho)" title="Milho · 33.500 t · 77%"><small>Milho</small>33.500</i><i style="width: 22.6%; --c: var(--grao-trigo)" title="Trigo · 9.800 t · 23%"><small>Trigo</small>9.800</i></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="du-mix-cel">
+                                            <div class="du-mix-topo"><b>Taquarivaí</b><span>27.300 t</span></div>
+                                            <div class="du-mix" role="img" aria-label="Taquarivaí: milho 19.700 t, sorgo 7.600 t"><i style="width: 72.2%; --c: var(--grao-milho)" title="Milho · 19.700 t · 72%"><small>Milho</small>19.700</i><i style="width: 27.8%; --c: var(--grao-sorgo)" title="Sorgo · 7.600 t · 28%"><small>Sorgo</small>7.600</i></div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -4490,7 +5050,7 @@
                         </div>
                     </div>
                     <div class="kpi-card alert">
-                        <div class="kpi-label">ENCHEM EM MENOS DE 7 DIAS</div>
+                        <div class="kpi-label">LOTAÇÃO EM MENOS DE 7 DIAS</div>
                         <div class="kpi-value">1 <span class="kpi-value-unit">unidade</span></div>
                         <div class="du-kpi-sub">Taquarituba · 2 dias</div>
                         <div class="du-kpi-grao" role="img" aria-label="Entrando hoje em Taquarituba: milho 1.050 t (64%), trigo 600 t (36%)">
@@ -4509,20 +5069,20 @@
                                 <span><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
                                 <span><i class="legend-dot legend-dot--trigo"></i>Trigo</span>
                                 <span><i class="legend-dot legend-dot--soja"></i>Soja</span>
-                                <span><i class="legend-dot du-dot--livre"></i>Livre</span>
+                                <span><i class="legend-dot du-dot--livre"></i>Disponível</span>
                             </span>
                         </div>
                         <div class="du-tabela-wrap">
                             <table class="pv-tabela du-tabela du-tabela--arm">
                                 <thead>
-                                    <tr><th>Unidade</th><th>Estoque por grão</th><th class="num">Capacidade</th><th class="num">Ocupação</th><th class="num">Livre</th><th class="num">Entrada<small>m³/dia</small></th><th class="num">Saída<small>m³/dia</small></th><th class="num">Enche em</th></tr>
+                                    <tr><th>Unidade</th><th>Estoque por grão</th><th class="num">Capacidade</th><th class="num">Ocupação</th><th class="num">Disponível</th><th class="num">Entrada<small>m³/dia</small></th><th class="num">Saída<small>m³/dia</small></th><th class="num">Lotação em</th></tr>
                                 </thead>
                                 <tbody>
                                     <!-- Avaré: 8 silos (32.000 m³) + 2 armazéns graneleiros
                                          (35.000 m³); entrada e saída do dia são as dos silos -->
                                     <tr class="du-st--ok">
                                         <td class="pv-tabela-nome">Avaré<small>8 silos + 2 armazéns</small></td>
-                                        <td><div class="du-estoque" role="img" aria-label="Milho 24.760 m³, sorgo 10.380 m³, trigo 5.560 m³, soja 1.440 m³, livre 24.860 m³"><i style="width: 37%; --c: var(--grao-milho)" title="Milho · 24.760 m³"></i><i style="width: 15.5%; --c: var(--grao-sorgo)" title="Sorgo · 10.380 m³"></i><i style="width: 8.3%; --c: var(--grao-trigo)" title="Trigo · 5.560 m³"></i><i style="width: 2.1%; --c: var(--grao-soja)" title="Soja · 1.440 m³"></i><i class="du-estoque-livre" style="width: 37.1%" title="Livre · 24.860 m³"></i></div></td>
+                                        <td><div class="du-estoque" role="img" aria-label="Milho 24.760 m³, sorgo 10.380 m³, trigo 5.560 m³, soja 1.440 m³, disponível 24.860 m³"><i style="width: 37%; --c: var(--grao-milho)" title="Milho · 24.760 m³"></i><i style="width: 15.5%; --c: var(--grao-sorgo)" title="Sorgo · 10.380 m³"></i><i style="width: 8.3%; --c: var(--grao-trigo)" title="Trigo · 5.560 m³"></i><i style="width: 2.1%; --c: var(--grao-soja)" title="Soja · 1.440 m³"></i><i class="du-estoque-livre" style="width: 37.1%" title="Disponível · 24.860 m³"></i></div></td>
                                         <td class="num">67.000 m³</td>
                                         <td class="num">63%</td>
                                         <td class="num">24.860 m³</td>
@@ -4532,7 +5092,7 @@
                                     </tr>
                                     <tr class="du-st--ok">
                                         <td class="pv-tabela-nome">Matriz</td>
-                                        <td><div class="du-estoque" role="img" aria-label="Milho 18.000 m³, sorgo 6.200 m³, trigo 12.800 m³, soja 4.400 m³, livre 18.600 m³"><i style="width: 30%; --c: var(--grao-milho)" title="Milho · 18.000 m³"></i><i style="width: 10.3%; --c: var(--grao-sorgo)" title="Sorgo · 6.200 m³"></i><i style="width: 21.3%; --c: var(--grao-trigo)" title="Trigo · 12.800 m³"></i><i style="width: 7.3%; --c: var(--grao-soja)" title="Soja · 4.400 m³"></i><i class="du-estoque-livre" style="width: 31.1%" title="Livre · 18.600 m³"></i></div></td>
+                                        <td><div class="du-estoque" role="img" aria-label="Milho 18.000 m³, sorgo 6.200 m³, trigo 12.800 m³, soja 4.400 m³, disponível 18.600 m³"><i style="width: 30%; --c: var(--grao-milho)" title="Milho · 18.000 m³"></i><i style="width: 10.3%; --c: var(--grao-sorgo)" title="Sorgo · 6.200 m³"></i><i style="width: 21.3%; --c: var(--grao-trigo)" title="Trigo · 12.800 m³"></i><i style="width: 7.3%; --c: var(--grao-soja)" title="Soja · 4.400 m³"></i><i class="du-estoque-livre" style="width: 31.1%" title="Disponível · 18.600 m³"></i></div></td>
                                         <td class="num">60.000 m³</td>
                                         <td class="num">69%</td>
                                         <td class="num">18.600 m³</td>
@@ -4542,7 +5102,7 @@
                                     </tr>
                                     <tr class="du-st--ok">
                                         <td class="pv-tabela-nome">Itaberá</td>
-                                        <td><div class="du-estoque" role="img" aria-label="Milho 7.200 m³, sorgo 2.100 m³, trigo 5.400 m³, soja 1.800 m³, livre 13.500 m³"><i style="width: 24%; --c: var(--grao-milho)" title="Milho · 7.200 m³"></i><i style="width: 7%; --c: var(--grao-sorgo)" title="Sorgo · 2.100 m³"></i><i style="width: 18%; --c: var(--grao-trigo)" title="Trigo · 5.400 m³"></i><i style="width: 6%; --c: var(--grao-soja)" title="Soja · 1.800 m³"></i><i class="du-estoque-livre" style="width: 45%" title="Livre · 13.500 m³"></i></div></td>
+                                        <td><div class="du-estoque" role="img" aria-label="Milho 7.200 m³, sorgo 2.100 m³, trigo 5.400 m³, soja 1.800 m³, disponível 13.500 m³"><i style="width: 24%; --c: var(--grao-milho)" title="Milho · 7.200 m³"></i><i style="width: 7%; --c: var(--grao-sorgo)" title="Sorgo · 2.100 m³"></i><i style="width: 18%; --c: var(--grao-trigo)" title="Trigo · 5.400 m³"></i><i style="width: 6%; --c: var(--grao-soja)" title="Soja · 1.800 m³"></i><i class="du-estoque-livre" style="width: 45%" title="Disponível · 13.500 m³"></i></div></td>
                                         <td class="num">30.000 m³</td>
                                         <td class="num">55%</td>
                                         <td class="num">13.500 m³</td>
@@ -4552,7 +5112,7 @@
                                     </tr>
                                     <tr class="du-st--off">
                                         <td class="pv-tabela-nome">São Manuel<small>leitura de 13:48</small></td>
-                                        <td><div class="du-estoque is-off" role="img" aria-label="Última leitura: milho 6.400 m³, sorgo 1.800 m³, trigo 4.700 m³, soja 1.400 m³, livre 7.700 m³"><i style="width: 29.1%; --c: var(--grao-milho)" title="Milho · 6.400 m³"></i><i style="width: 8.2%; --c: var(--grao-sorgo)" title="Sorgo · 1.800 m³"></i><i style="width: 21.4%; --c: var(--grao-trigo)" title="Trigo · 4.700 m³"></i><i style="width: 6.4%; --c: var(--grao-soja)" title="Soja · 1.400 m³"></i><i class="du-estoque-livre" style="width: 34.9%" title="Livre · 7.700 m³"></i></div></td>
+                                        <td><div class="du-estoque is-off" role="img" aria-label="Última leitura: milho 6.400 m³, sorgo 1.800 m³, trigo 4.700 m³, soja 1.400 m³, disponível 7.700 m³"><i style="width: 29.1%; --c: var(--grao-milho)" title="Milho · 6.400 m³"></i><i style="width: 8.2%; --c: var(--grao-sorgo)" title="Sorgo · 1.800 m³"></i><i style="width: 21.4%; --c: var(--grao-trigo)" title="Trigo · 4.700 m³"></i><i style="width: 6.4%; --c: var(--grao-soja)" title="Soja · 1.400 m³"></i><i class="du-estoque-livre" style="width: 34.9%" title="Disponível · 7.700 m³"></i></div></td>
                                         <td class="num">22.000 m³</td>
                                         <td class="num du-off-cel">65%</td>
                                         <td class="num du-off-cel">7.700 m³</td>
@@ -4562,7 +5122,7 @@
                                     </tr>
                                     <tr class="du-st--ok">
                                         <td class="pv-tabela-nome">Takaoka</td>
-                                        <td><div class="du-estoque" role="img" aria-label="Milho 9.800 m³, sorgo 3.900 m³, trigo 10.400 m³, soja 2.500 m³, livre 8.400 m³"><i style="width: 28%; --c: var(--grao-milho)" title="Milho · 9.800 m³"></i><i style="width: 11.1%; --c: var(--grao-sorgo)" title="Sorgo · 3.900 m³"></i><i style="width: 29.7%; --c: var(--grao-trigo)" title="Trigo · 10.400 m³"></i><i style="width: 7.1%; --c: var(--grao-soja)" title="Soja · 2.500 m³"></i><i class="du-estoque-livre" style="width: 24.1%" title="Livre · 8.400 m³"></i></div></td>
+                                        <td><div class="du-estoque" role="img" aria-label="Milho 9.800 m³, sorgo 3.900 m³, trigo 10.400 m³, soja 2.500 m³, disponível 8.400 m³"><i style="width: 28%; --c: var(--grao-milho)" title="Milho · 9.800 m³"></i><i style="width: 11.1%; --c: var(--grao-sorgo)" title="Sorgo · 3.900 m³"></i><i style="width: 29.7%; --c: var(--grao-trigo)" title="Trigo · 10.400 m³"></i><i style="width: 7.1%; --c: var(--grao-soja)" title="Soja · 2.500 m³"></i><i class="du-estoque-livre" style="width: 24.1%" title="Disponível · 8.400 m³"></i></div></td>
                                         <td class="num">35.000 m³</td>
                                         <td class="num">76%</td>
                                         <td class="num">8.400 m³</td>
@@ -4572,7 +5132,7 @@
                                     </tr>
                                     <tr class="du-st--alerta">
                                         <td class="pv-tabela-nome">Taquarituba</td>
-                                        <td><div class="du-estoque" role="img" aria-label="Milho 8.900 m³, sorgo 2.600 m³, trigo 11.800 m³, soja 2.200 m³, livre 2.500 m³"><i style="width: 31.8%; --c: var(--grao-milho)" title="Milho · 8.900 m³"></i><i style="width: 9.3%; --c: var(--grao-sorgo)" title="Sorgo · 2.600 m³"></i><i style="width: 42.1%; --c: var(--grao-trigo)" title="Trigo · 11.800 m³"></i><i style="width: 7.9%; --c: var(--grao-soja)" title="Soja · 2.200 m³"></i><i class="du-estoque-livre" style="width: 8.9%" title="Livre · 2.500 m³"></i></div></td>
+                                        <td><div class="du-estoque" role="img" aria-label="Milho 8.900 m³, sorgo 2.600 m³, trigo 11.800 m³, soja 2.200 m³, disponível 2.500 m³"><i style="width: 31.8%; --c: var(--grao-milho)" title="Milho · 8.900 m³"></i><i style="width: 9.3%; --c: var(--grao-sorgo)" title="Sorgo · 2.600 m³"></i><i style="width: 42.1%; --c: var(--grao-trigo)" title="Trigo · 11.800 m³"></i><i style="width: 7.9%; --c: var(--grao-soja)" title="Soja · 2.200 m³"></i><i class="du-estoque-livre" style="width: 8.9%" title="Disponível · 2.500 m³"></i></div></td>
                                         <td class="num">28.000 m³</td>
                                         <td class="num is-alerta">91%</td>
                                         <td class="num">2.500 m³</td>
@@ -4582,7 +5142,7 @@
                                     </tr>
                                     <tr class="du-st--ok">
                                         <td class="pv-tabela-nome">Taquarivaí</td>
-                                        <td><div class="du-estoque" role="img" aria-label="Milho 4.600 m³, sorgo 1.500 m³, trigo 4.700 m³, soja 1.200 m³, livre 4.000 m³"><i style="width: 28.7%; --c: var(--grao-milho)" title="Milho · 4.600 m³"></i><i style="width: 9.4%; --c: var(--grao-sorgo)" title="Sorgo · 1.500 m³"></i><i style="width: 29.4%; --c: var(--grao-trigo)" title="Trigo · 4.700 m³"></i><i style="width: 7.5%; --c: var(--grao-soja)" title="Soja · 1.200 m³"></i><i class="du-estoque-livre" style="width: 25%" title="Livre · 4.000 m³"></i></div></td>
+                                        <td><div class="du-estoque" role="img" aria-label="Milho 4.600 m³, sorgo 1.500 m³, trigo 4.700 m³, soja 1.200 m³, disponível 4.000 m³"><i style="width: 28.7%; --c: var(--grao-milho)" title="Milho · 4.600 m³"></i><i style="width: 9.4%; --c: var(--grao-sorgo)" title="Sorgo · 1.500 m³"></i><i style="width: 29.4%; --c: var(--grao-trigo)" title="Trigo · 4.700 m³"></i><i style="width: 7.5%; --c: var(--grao-soja)" title="Soja · 1.200 m³"></i><i class="du-estoque-livre" style="width: 25%" title="Disponível · 4.000 m³"></i></div></td>
                                         <td class="num">16.000 m³</td>
                                         <td class="num">75%</td>
                                         <td class="num">4.000 m³</td>
@@ -4592,7 +5152,7 @@
                                     </tr>
                                     <tr class="du-linha-total">
                                         <td class="pv-tabela-nome">Total</td>
-                                        <td><div class="du-estoque" role="img" aria-label="Total: milho 79.660 m³, sorgo 28.480 m³, trigo 55.360 m³, soja 14.940 m³, livre 79.560 m³"><i style="width: 30.9%; --c: var(--grao-milho)" title="Milho · 79.660 m³"></i><i style="width: 11%; --c: var(--grao-sorgo)" title="Sorgo · 28.480 m³"></i><i style="width: 21.5%; --c: var(--grao-trigo)" title="Trigo · 55.360 m³"></i><i style="width: 5.8%; --c: var(--grao-soja)" title="Soja · 14.940 m³"></i><i class="du-estoque-livre" style="width: 30.8%" title="Livre · 79.560 m³"></i></div></td>
+                                        <td><div class="du-estoque" role="img" aria-label="Total: milho 79.660 m³, sorgo 28.480 m³, trigo 55.360 m³, soja 14.940 m³, disponível 79.560 m³"><i style="width: 30.9%; --c: var(--grao-milho)" title="Milho · 79.660 m³"></i><i style="width: 11%; --c: var(--grao-sorgo)" title="Sorgo · 28.480 m³"></i><i style="width: 21.5%; --c: var(--grao-trigo)" title="Trigo · 55.360 m³"></i><i style="width: 5.8%; --c: var(--grao-soja)" title="Soja · 14.940 m³"></i><i class="du-estoque-livre" style="width: 30.8%" title="Disponível · 79.560 m³"></i></div></td>
                                         <td class="num">258.000 m³</td>
                                         <td class="num">69%</td>
                                         <td class="num">79.560 m³</td>
@@ -4705,8 +5265,8 @@
                              cor = faixa da temperatura -->
                         <span class="du-legenda">
                             <span><i class="du-forma du-forma--silo"></i>silo</span>
-                            <span><i class="du-forma du-forma--arm"></i>armazém</span>
                             <span><i class="du-forma du-forma--pulmao"></i>pulmão</span>
+                            <span><i class="du-forma du-forma--arm"></i>armazém</span>
                             <span><i class="du-silo-leg"></i>&lt; 28 °C</span>
                             <span><i class="du-silo-leg is-atencao"></i>28–32</span>
                             <span><i class="du-silo-leg is-alerta"></i>≥ 32</span>
@@ -4716,7 +5276,7 @@
                     <div class="du-tabela-wrap">
                         <table class="pv-tabela du-tabela du-tabela--term">
                             <thead>
-                                <tr><th>Unidade</th><th>Silos · armazéns · pulmões</th><th class="num">Máx.</th><th class="num">Tendência</th><th>Ação</th></tr>
+                                <tr><th>Unidade</th><th>Silos · pulmões · armazéns</th><th class="num">Máx.</th><th class="num">Tendência</th><th>Ação</th></tr>
                             </thead>
                             <tbody>
                                 <!-- Avaré: leitura atual dos 8 silos (tela Silos e aeração), dos
@@ -4729,21 +5289,21 @@
                                      (até ligar a termometria delas); São Manuel sem leitura. -->
                                 <tr class="du-st--alerta">
                                     <td class="pv-tabela-nome">Avaré</td>
-                                    <td><span class="du-silos" role="img" aria-label="8 silos, 2 armazéns e 2 pulmões: silo 5 subindo 2,5 °C por dia"><span class="du-grupo"><i title="Silo 1 · 22,4 °C"><small>silo 1</small>22,4°</i><i title="Silo 2 · 21,0 °C"><small>silo 2</small>21,0°</i><i title="Silo 3 · 23,1 °C"><small>silo 3</small>23,1°</i><i title="Silo 4 · 22,2 °C"><small>silo 4</small>22,2°</i><i class="is-subindo" title="Silo 5 · 24,3 °C · subindo 0,4 °C/h"><small>silo 5</small>24,3°</i><i title="Silo 6 · 20,2 °C"><small>silo 6</small>20,2°</i><i title="Silo 7 · 23,0 °C"><small>silo 7</small>23,0°</i><i title="Silo 8 · 21,2 °C"><small>silo 8</small>21,2°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 (área 1, milho) · 22,0 °C"><small>armazém 1</small>22,0°</i><i class="du-arm" title="Armazém 2 (área 2, sorgo) · 21,5 °C"><small>armazém 2</small>21,5°</i><i class="du-pulmao" title="Pulmão 1 · 23,0 °C"><small>pulmão 1</small>23,0°</i><i class="du-pulmao" title="Pulmão 2 · 22,0 °C"><small>pulmão 2</small>22,0°</i></span></span></td>
+                                    <td><span class="du-silos" role="img" aria-label="8 silos, 2 pulmões e 2 armazéns: silo 5 subindo 2,5 °C por dia"><span class="du-grupo"><i title="Silo 1 · 22,4 °C"><small>silo 1</small>22,4°</i><i title="Silo 2 · 21,0 °C"><small>silo 2</small>21,0°</i><i title="Silo 3 · 23,1 °C"><small>silo 3</small>23,1°</i><i title="Silo 4 · 22,2 °C"><small>silo 4</small>22,2°</i><i class="is-subindo" title="Silo 5 · 24,3 °C · subindo 0,4 °C/h"><small>silo 5</small>24,3°</i><i title="Silo 6 · 20,2 °C"><small>silo 6</small>20,2°</i><i title="Silo 7 · 23,0 °C"><small>silo 7</small>23,0°</i><i title="Silo 8 · 21,2 °C"><small>silo 8</small>21,2°</i><i class="du-pulmao" title="Pulmão 1 · 23,0 °C"><small>pulmão 1</small>23,0°</i><i class="du-pulmao" title="Pulmão 2 · 22,0 °C"><small>pulmão 2</small>22,0°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 (área 1, milho) · 22,0 °C"><small>armazém 1</small>22,0°</i><i class="du-arm" title="Armazém 2 (área 2, sorgo) · 21,5 °C"><small>armazém 2</small>21,5°</i></span></span></td>
                                     <td class="num"><b>24,3 °C</b><small>silo 5 · milho</small></td>
                                     <td class="num is-alerta">+2,5 <small>°C/dia</small></td>
                                     <td><span class="pv-tag pv-tag--alerta">Checar silo 5</span></td>
                                 </tr>
                                 <tr class="du-st--ok">
                                     <td class="pv-tabela-nome">Matriz</td>
-                                    <td><span class="du-silos" role="img" aria-label="12 silos, 2 armazéns e 2 pulmões, todos abaixo de 28 °C"><span class="du-grupo"><i title="Silo 1 · 22,8 °C"><small>silo 1</small>22,8°</i><i title="Silo 2 · 23,5 °C"><small>silo 2</small>23,5°</i><i title="Silo 3 · 24,1 °C"><small>silo 3</small>24,1°</i><i title="Silo 4 · 22,9 °C"><small>silo 4</small>22,9°</i><i title="Silo 5 · 23,7 °C"><small>silo 5</small>23,7°</i><i title="Silo 6 · 24,6 °C"><small>silo 6</small>24,6°</i><i title="Silo 7 · 23,2 °C"><small>silo 7</small>23,2°</i><i title="Silo 8 · 22,4 °C"><small>silo 8</small>22,4°</i><i title="Silo 9 · 23,9 °C"><small>silo 9</small>23,9°</i><i title="Silo 10 · 24,0 °C"><small>silo 10</small>24,0°</i><i title="Silo 11 · 23,1 °C"><small>silo 11</small>23,1°</i><i title="Silo 12 · 22,7 °C"><small>silo 12</small>22,7°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 · 23,4 °C"><small>armazém 1</small>23,4°</i><i class="du-arm" title="Armazém 2 · 22,9 °C"><small>armazém 2</small>22,9°</i><i class="du-pulmao" title="Pulmão 1 · 24,1 °C"><small>pulmão 1</small>24,1°</i><i class="du-pulmao" title="Pulmão 2 · 23,6 °C"><small>pulmão 2</small>23,6°</i></span></span></td>
+                                    <td><span class="du-silos" role="img" aria-label="12 silos, 2 pulmões e 2 armazéns, todos abaixo de 28 °C"><span class="du-grupo"><i title="Silo 1 · 22,8 °C"><small>silo 1</small>22,8°</i><i title="Silo 2 · 23,5 °C"><small>silo 2</small>23,5°</i><i title="Silo 3 · 24,1 °C"><small>silo 3</small>24,1°</i><i title="Silo 4 · 22,9 °C"><small>silo 4</small>22,9°</i><i title="Silo 5 · 23,7 °C"><small>silo 5</small>23,7°</i><i title="Silo 6 · 24,6 °C"><small>silo 6</small>24,6°</i><i title="Silo 7 · 23,2 °C"><small>silo 7</small>23,2°</i><i title="Silo 8 · 22,4 °C"><small>silo 8</small>22,4°</i><i title="Silo 9 · 23,9 °C"><small>silo 9</small>23,9°</i><i title="Silo 10 · 24,0 °C"><small>silo 10</small>24,0°</i><i title="Silo 11 · 23,1 °C"><small>silo 11</small>23,1°</i><i title="Silo 12 · 22,7 °C"><small>silo 12</small>22,7°</i><i class="du-pulmao" title="Pulmão 1 · 24,1 °C"><small>pulmão 1</small>24,1°</i><i class="du-pulmao" title="Pulmão 2 · 23,6 °C"><small>pulmão 2</small>23,6°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 · 23,4 °C"><small>armazém 1</small>23,4°</i><i class="du-arm" title="Armazém 2 · 22,9 °C"><small>armazém 2</small>22,9°</i></span></span></td>
                                     <td class="num"><b>24,6 °C</b><small>silo 6</small></td>
                                     <td class="num">+0,2 <small>°C/dia</small></td>
                                     <td><span class="pv-tag pv-tag--ok">Normal</span></td>
                                 </tr>
                                 <tr class="du-st--ok">
                                     <td class="pv-tabela-nome">Itaberá</td>
-                                    <td><span class="du-silos" role="img" aria-label="6 silos, 2 armazéns e 2 pulmões, todos abaixo de 28 °C"><span class="du-grupo"><i title="Silo 1 · 22,1 °C"><small>silo 1</small>22,1°</i><i title="Silo 2 · 23,1 °C"><small>silo 2</small>23,1°</i><i title="Silo 3 · 21,8 °C"><small>silo 3</small>21,8°</i><i title="Silo 4 · 22,6 °C"><small>silo 4</small>22,6°</i><i title="Silo 5 · 22,9 °C"><small>silo 5</small>22,9°</i><i title="Silo 6 · 21,5 °C"><small>silo 6</small>21,5°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 · 22,4 °C"><small>armazém 1</small>22,4°</i><i class="du-arm" title="Armazém 2 · 21,9 °C"><small>armazém 2</small>21,9°</i><i class="du-pulmao" title="Pulmão 1 · 22,8 °C"><small>pulmão 1</small>22,8°</i><i class="du-pulmao" title="Pulmão 2 · 22,0 °C"><small>pulmão 2</small>22,0°</i></span></span></td>
+                                    <td><span class="du-silos" role="img" aria-label="6 silos, 2 pulmões e 2 armazéns, todos abaixo de 28 °C"><span class="du-grupo"><i title="Silo 1 · 22,1 °C"><small>silo 1</small>22,1°</i><i title="Silo 2 · 23,1 °C"><small>silo 2</small>23,1°</i><i title="Silo 3 · 21,8 °C"><small>silo 3</small>21,8°</i><i title="Silo 4 · 22,6 °C"><small>silo 4</small>22,6°</i><i title="Silo 5 · 22,9 °C"><small>silo 5</small>22,9°</i><i title="Silo 6 · 21,5 °C"><small>silo 6</small>21,5°</i><i class="du-pulmao" title="Pulmão 1 · 22,8 °C"><small>pulmão 1</small>22,8°</i><i class="du-pulmao" title="Pulmão 2 · 22,0 °C"><small>pulmão 2</small>22,0°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 · 22,4 °C"><small>armazém 1</small>22,4°</i><i class="du-arm" title="Armazém 2 · 21,9 °C"><small>armazém 2</small>21,9°</i></span></span></td>
                                     <td class="num"><b>23,1 °C</b><small>silo 2</small></td>
                                     <td class="num">+0,1 <small>°C/dia</small></td>
                                     <td><span class="pv-tag pv-tag--ok">Normal</span></td>
@@ -4755,21 +5315,21 @@
                                 </tr>
                                 <tr class="du-st--alerta">
                                     <td class="pv-tabela-nome">Takaoka</td>
-                                    <td><span class="du-silos" role="img" aria-label="8 silos, 2 armazéns e 2 pulmões: silo 3 acima de 32 °C"><span class="du-grupo"><i title="Silo 1 · 23,4 °C"><small>silo 1</small>23,4°</i><i title="Silo 2 · 24,8 °C"><small>silo 2</small>24,8°</i><i class="is-alerta is-subindo" title="Silo 3 · 34,1 °C · subindo 2,1 °C/dia"><small>silo 3</small>34,1°</i><i title="Silo 4 · 26,2 °C"><small>silo 4</small>26,2°</i><i title="Silo 5 · 23,9 °C"><small>silo 5</small>23,9°</i><i title="Silo 6 · 24,4 °C"><small>silo 6</small>24,4°</i><i title="Silo 7 · 25,1 °C"><small>silo 7</small>25,1°</i><i title="Silo 8 · 23,7 °C"><small>silo 8</small>23,7°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 · 24,6 °C"><small>armazém 1</small>24,6°</i><i class="du-arm" title="Armazém 2 · 23,8 °C"><small>armazém 2</small>23,8°</i><i class="du-pulmao" title="Pulmão 1 · 25,0 °C"><small>pulmão 1</small>25,0°</i><i class="du-pulmao" title="Pulmão 2 · 24,2 °C"><small>pulmão 2</small>24,2°</i></span></span></td>
+                                    <td><span class="du-silos" role="img" aria-label="8 silos, 2 pulmões e 2 armazéns: silo 3 acima de 32 °C"><span class="du-grupo"><i title="Silo 1 · 23,4 °C"><small>silo 1</small>23,4°</i><i title="Silo 2 · 24,8 °C"><small>silo 2</small>24,8°</i><i class="is-alerta is-subindo" title="Silo 3 · 34,1 °C · subindo 2,1 °C/dia"><small>silo 3</small>34,1°</i><i title="Silo 4 · 26,2 °C"><small>silo 4</small>26,2°</i><i title="Silo 5 · 23,9 °C"><small>silo 5</small>23,9°</i><i title="Silo 6 · 24,4 °C"><small>silo 6</small>24,4°</i><i title="Silo 7 · 25,1 °C"><small>silo 7</small>25,1°</i><i title="Silo 8 · 23,7 °C"><small>silo 8</small>23,7°</i><i class="du-pulmao" title="Pulmão 1 · 25,0 °C"><small>pulmão 1</small>25,0°</i><i class="du-pulmao" title="Pulmão 2 · 24,2 °C"><small>pulmão 2</small>24,2°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 · 24,6 °C"><small>armazém 1</small>24,6°</i><i class="du-arm" title="Armazém 2 · 23,8 °C"><small>armazém 2</small>23,8°</i></span></span></td>
                                     <td class="num is-alerta"><b>34,1 °C</b><small>silo 3 · trigo</small></td>
                                     <td class="num is-alerta">+2,1 <small>°C/dia</small></td>
                                     <td><span class="pv-tag pv-tag--alerta">Ligar aeração</span></td>
                                 </tr>
                                 <tr class="du-st--ok">
                                     <td class="pv-tabela-nome">Taquarituba</td>
-                                    <td><span class="du-silos" role="img" aria-label="7 silos, 2 armazéns e 2 pulmões, todos abaixo de 28 °C"><span class="du-grupo"><i title="Silo 1 · 25,1 °C"><small>silo 1</small>25,1°</i><i title="Silo 2 · 26,4 °C"><small>silo 2</small>26,4°</i><i title="Silo 3 · 27,5 °C"><small>silo 3</small>27,5°</i><i title="Silo 4 · 26,8 °C"><small>silo 4</small>26,8°</i><i title="Silo 5 · 25,6 °C"><small>silo 5</small>25,6°</i><i title="Silo 6 · 24,9 °C"><small>silo 6</small>24,9°</i><i title="Silo 7 · 26,1 °C"><small>silo 7</small>26,1°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 · 26,3 °C"><small>armazém 1</small>26,3°</i><i class="du-arm" title="Armazém 2 · 25,7 °C"><small>armazém 2</small>25,7°</i><i class="du-pulmao" title="Pulmão 1 · 26,9 °C"><small>pulmão 1</small>26,9°</i><i class="du-pulmao" title="Pulmão 2 · 26,0 °C"><small>pulmão 2</small>26,0°</i></span></span></td>
+                                    <td><span class="du-silos" role="img" aria-label="7 silos, 2 pulmões e 2 armazéns, todos abaixo de 28 °C"><span class="du-grupo"><i title="Silo 1 · 25,1 °C"><small>silo 1</small>25,1°</i><i title="Silo 2 · 26,4 °C"><small>silo 2</small>26,4°</i><i title="Silo 3 · 27,5 °C"><small>silo 3</small>27,5°</i><i title="Silo 4 · 26,8 °C"><small>silo 4</small>26,8°</i><i title="Silo 5 · 25,6 °C"><small>silo 5</small>25,6°</i><i title="Silo 6 · 24,9 °C"><small>silo 6</small>24,9°</i><i title="Silo 7 · 26,1 °C"><small>silo 7</small>26,1°</i><i class="du-pulmao" title="Pulmão 1 · 26,9 °C"><small>pulmão 1</small>26,9°</i><i class="du-pulmao" title="Pulmão 2 · 26,0 °C"><small>pulmão 2</small>26,0°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 · 26,3 °C"><small>armazém 1</small>26,3°</i><i class="du-arm" title="Armazém 2 · 25,7 °C"><small>armazém 2</small>25,7°</i></span></span></td>
                                     <td class="num"><b>27,5 °C</b><small>silo 3</small></td>
                                     <td class="num">+0,3 <small>°C/dia</small></td>
                                     <td><span class="pv-tag pv-tag--ok">Normal</span></td>
                                 </tr>
                                 <tr class="du-st--ok">
                                     <td class="pv-tabela-nome">Taquarivaí</td>
-                                    <td><span class="du-silos" role="img" aria-label="4 silos, 2 armazéns e 2 pulmões, todos abaixo de 28 °C"><span class="du-grupo"><i title="Silo 1 · 25,3 °C"><small>silo 1</small>25,3°</i><i title="Silo 2 · 26,2 °C"><small>silo 2</small>26,2°</i><i title="Silo 3 · 24,8 °C"><small>silo 3</small>24,8°</i><i title="Silo 4 · 25,9 °C"><small>silo 4</small>25,9°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 · 25,1 °C"><small>armazém 1</small>25,1°</i><i class="du-arm" title="Armazém 2 · 24,6 °C"><small>armazém 2</small>24,6°</i><i class="du-pulmao" title="Pulmão 1 · 25,8 °C"><small>pulmão 1</small>25,8°</i><i class="du-pulmao" title="Pulmão 2 · 25,2 °C"><small>pulmão 2</small>25,2°</i></span></span></td>
+                                    <td><span class="du-silos" role="img" aria-label="4 silos, 2 pulmões e 2 armazéns, todos abaixo de 28 °C"><span class="du-grupo"><i title="Silo 1 · 25,3 °C"><small>silo 1</small>25,3°</i><i title="Silo 2 · 26,2 °C"><small>silo 2</small>26,2°</i><i title="Silo 3 · 24,8 °C"><small>silo 3</small>24,8°</i><i title="Silo 4 · 25,9 °C"><small>silo 4</small>25,9°</i><i class="du-pulmao" title="Pulmão 1 · 25,8 °C"><small>pulmão 1</small>25,8°</i><i class="du-pulmao" title="Pulmão 2 · 25,2 °C"><small>pulmão 2</small>25,2°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 · 25,1 °C"><small>armazém 1</small>25,1°</i><i class="du-arm" title="Armazém 2 · 24,6 °C"><small>armazém 2</small>24,6°</i></span></span></td>
                                     <td class="num"><b>26,2 °C</b><small>silo 2</small></td>
                                     <td class="num">+0,2 <small>°C/dia</small></td>
                                     <td><span class="pv-tag pv-tag--ok">Normal</span></td>
@@ -4955,12 +5515,11 @@
             </section>
 
             <!-- DU 05 Clima das unidades: agora (com as próximas 6 h) e os 4 dias
-                 seguintes de cada unidade, com o que isso muda na operação hoje.
+                 seguintes de cada unidade.
                  Avaré segue a tela Previsão do tempo (amanhã = qua 23, como no
                  card da visão geral e na tabela de cooperados); as demais são
                  valores de exemplo até ligar a API meteorológica. Fundo do dia
-                 = chance de chuva; laranja com 40% ou 4 mm, vermelho com 15 mm;
-                 rajada a partir de 36 km/h em vermelho.
+                 = chance de chuva; rajada a partir de 36 km/h em vermelho.
                  A previsão vem do serviço meteorológico, não do link da unidade:
                  por isso São Manuel aparece mesmo sem comunicação. -->
             <section class="screen du-screen" id="screen-du-clima">
@@ -4980,7 +5539,7 @@
                     <div class="du-tabela-wrap">
                         <table class="pv-tabela du-tabela du-tabela--clima">
                             <thead>
-                                <tr><th>Unidade</th><th class="du-dia-th">Agora<small>próximas 6 h</small></th><th class="du-dia-th">Qua<small>23 set.</small></th><th class="du-dia-th">Qui<small>24 set.</small></th><th class="du-dia-th">Sex<small>25 set.</small></th><th class="du-dia-th">Sáb<small>26 set.</small></th><th>Impacto hoje</th></tr>
+                                <tr><th>Unidade</th><th class="du-dia-th">Agora<small>próximas 6 h</small></th><th class="du-dia-th">Qua<small>23 set.</small></th><th class="du-dia-th">Qui<small>24 set.</small></th><th class="du-dia-th">Sex<small>25 set.</small></th><th class="du-dia-th">Sáb<small>26 set.</small></th></tr>
                             </thead>
                             <tbody>
                                 <tr>
@@ -4990,7 +5549,6 @@
                                     <td class="du-dia" style="--p: 0.2"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>28°</b><small>19°</small></span><span class="du-dia-chuva">20% · 1 mm</span><span class="du-dia-vento">14 → 24 km/h</span></span></td>
                                     <td class="du-dia is-alerta" style="--p: 0.7"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg><span class="du-dia-temp"><b>24°</b><small>17°</small></span><span class="du-dia-chuva is-chuva">70% · 18 mm</span><span class="du-dia-vento is-alerta">22 → 38 km/h</span></span></td>
                                     <td class="du-dia is-atencao" style="--p: 0.4"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg><span class="du-dia-temp"><b>26°</b><small>17°</small></span><span class="du-dia-chuva">40% · 4 mm</span><span class="du-dia-vento">16 → 28 km/h</span></span></td>
-                                    <td><span class="pv-tag pv-tag--atencao">Chuva às 18h30</span></td>
                                 </tr>
                                 <tr>
                                     <td class="pv-tabela-nome">Matriz</td>
@@ -4999,7 +5557,6 @@
                                     <td class="du-dia" style="--p: 0.25"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>27°</b><small>18°</small></span><span class="du-dia-chuva">25% · 1 mm</span><span class="du-dia-vento">14 → 24 km/h</span></span></td>
                                     <td class="du-dia is-alerta" style="--p: 0.75"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg><span class="du-dia-temp"><b>23°</b><small>16°</small></span><span class="du-dia-chuva is-chuva">75% · 20 mm</span><span class="du-dia-vento is-alerta">22 → 36 km/h</span></span></td>
                                     <td class="du-dia is-atencao" style="--p: 0.45"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg><span class="du-dia-temp"><b>25°</b><small>16°</small></span><span class="du-dia-chuva">45% · 5 mm</span><span class="du-dia-vento">16 → 28 km/h</span></span></td>
-                                    <td><span class="pv-tag pv-tag--atencao">Chuva às 17h30</span></td>
                                 </tr>
                                 <tr>
                                     <td class="pv-tabela-nome">Itaberá</td>
@@ -5008,7 +5565,6 @@
                                     <td class="du-dia" style="--p: 0.3"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>26°</b><small>17°</small></span><span class="du-dia-chuva">30% · 2 mm</span><span class="du-dia-vento">14 → 26 km/h</span></span></td>
                                     <td class="du-dia is-alerta" style="--p: 0.8"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg><span class="du-dia-temp"><b>22°</b><small>15°</small></span><span class="du-dia-chuva is-chuva">80% · 24 mm</span><span class="du-dia-vento is-alerta">24 → 40 km/h</span></span></td>
                                     <td class="du-dia is-atencao" style="--p: 0.5"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg><span class="du-dia-temp"><b>24°</b><small>15°</small></span><span class="du-dia-chuva is-chuva">50% · 6 mm</span><span class="du-dia-vento">18 → 30 km/h</span></span></td>
-                                    <td><span class="pv-tag pv-tag--atencao">Chuva às 16h30</span></td>
                                 </tr>
                                 <tr>
                                     <td class="pv-tabela-nome">São Manuel</td>
@@ -5017,7 +5573,6 @@
                                     <td class="du-dia" style="--p: 0.15"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg><span class="du-dia-temp"><b>30°</b><small>19°</small></span><span class="du-dia-chuva">15% · 0 mm</span><span class="du-dia-vento">12 → 20 km/h</span></span></td>
                                     <td class="du-dia is-atencao" style="--p: 0.6"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg><span class="du-dia-temp"><b>27°</b><small>18°</small></span><span class="du-dia-chuva is-chuva">60% · 10 mm</span><span class="du-dia-vento">18 → 30 km/h</span></span></td>
                                     <td class="du-dia" style="--p: 0.3"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>28°</b><small>18°</small></span><span class="du-dia-chuva">30% · 2 mm</span><span class="du-dia-vento">14 → 24 km/h</span></span></td>
-                                    <td><span class="pv-tag pv-tag--ok">Colheita liberada</span></td>
                                 </tr>
                                 <tr>
                                     <td class="pv-tabela-nome">Takaoka</td>
@@ -5026,7 +5581,6 @@
                                     <td class="du-dia" style="--p: 0.25"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>26°</b><small>17°</small></span><span class="du-dia-chuva">25% · 1 mm</span><span class="du-dia-vento">14 → 24 km/h</span></span></td>
                                     <td class="du-dia is-alerta" style="--p: 0.75"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg><span class="du-dia-temp"><b>22°</b><small>15°</small></span><span class="du-dia-chuva is-chuva">75% · 22 mm</span><span class="du-dia-vento is-alerta">22 → 38 km/h</span></span></td>
                                     <td class="du-dia is-atencao" style="--p: 0.45"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg><span class="du-dia-temp"><b>24°</b><small>15°</small></span><span class="du-dia-chuva">45% · 5 mm</span><span class="du-dia-vento">16 → 28 km/h</span></span></td>
-                                    <td><span class="pv-tag pv-tag--atencao">Chuva às 17h</span></td>
                                 </tr>
                                 <tr class="is-alerta">
                                     <td class="pv-tabela-nome">Taquarituba</td>
@@ -5035,7 +5589,6 @@
                                     <td class="du-dia" style="--p: 0.3"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>26°</b><small>17°</small></span><span class="du-dia-chuva">30% · 2 mm</span><span class="du-dia-vento">14 → 26 km/h</span></span></td>
                                     <td class="du-dia is-alerta" style="--p: 0.8"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg><span class="du-dia-temp"><b>22°</b><small>16°</small></span><span class="du-dia-chuva is-chuva">80% · 25 mm</span><span class="du-dia-vento is-alerta">24 → 42 km/h</span></span></td>
                                     <td class="du-dia is-atencao" style="--p: 0.5"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg><span class="du-dia-temp"><b>24°</b><small>16°</small></span><span class="du-dia-chuva is-chuva">50% · 6 mm</span><span class="du-dia-vento">18 → 30 km/h</span></span></td>
-                                    <td><span class="pv-tag pv-tag--alerta">Chuva às 16h · desviar já</span></td>
                                 </tr>
                                 <tr>
                                     <td class="pv-tabela-nome">Taquarivaí</td>
@@ -5044,7 +5597,6 @@
                                     <td class="du-dia" style="--p: 0.25"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--solnuvem" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="du-dia-temp"><b>27°</b><small>17°</small></span><span class="du-dia-chuva">25% · 1 mm</span><span class="du-dia-vento">14 → 24 km/h</span></span></td>
                                     <td class="du-dia is-alerta" style="--p: 0.75"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg><span class="du-dia-temp"><b>23°</b><small>15°</small></span><span class="du-dia-chuva is-chuva">75% · 20 mm</span><span class="du-dia-vento is-alerta">22 → 36 km/h</span></span></td>
                                     <td class="du-dia is-atencao" style="--p: 0.45"><span class="du-dia-cel"><svg class="pv-icon pv-icon--sm pv-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg><span class="du-dia-temp"><b>25°</b><small>15°</small></span><span class="du-dia-chuva">45% · 5 mm</span><span class="du-dia-vento">16 → 28 km/h</span></span></td>
-                                    <td><span class="pv-tag pv-tag--atencao">Chuva às 18h</span></td>
                                 </tr>
                             </tbody>
                         </table>

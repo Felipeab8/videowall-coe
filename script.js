@@ -64,6 +64,26 @@ document.addEventListener('click', (ev) => {
     if (grupo) openOnlyGroup(grupo);
 });
 
+// Previsão do tempo: cada cidade de "Avaré e cooperados" filtra a tabela
+// dos 6 dias, que traz um tbody por cidade. Delegado pelo mesmo motivo
+// acima (o editor remonta o palco).
+document.addEventListener('click', (ev) => {
+    const linha = ev.target.closest('.pv-tabela--filtro tr[data-pv-cidade]');
+    if (!linha || isEditing()) return;
+    const tela = linha.closest('.screen');
+    const cidade = linha.getAttribute('data-pv-cidade');
+    const alvo = tela && tela.querySelector('.pv-tabela--dias tbody[data-pv-cidade="' + cidade + '"]');
+    if (!alvo) return;
+    tela.querySelectorAll('.pv-tabela--filtro tr[data-pv-cidade]').forEach((tr) => {
+        tr.classList.toggle('is-sel', tr === linha);
+    });
+    tela.querySelectorAll('.pv-tabela--dias tbody[data-pv-cidade]').forEach((tb) => {
+        tb.hidden = tb !== alvo;
+    });
+    escreverTexto(tela.querySelector('[data-pv-dias-cidade]'), cidade.toUpperCase());
+    scheduleFit();
+});
+
 // ============================================
 // MENU EM GRUPOS
 // Cada área abre dois destinos: a tela de dados e a tela da câmera.
@@ -4581,8 +4601,37 @@ function escolherPeriodoProd(alvo) {
     scheduleFit();
 }
 
+// ============================================
+// DEMAIS UNIDADES · PERIODO DO RECEBIDO POR CULTURA
+// Vale so para a secao dos botoes: a tabela traz um tbody por periodo
+// (data-du-periodo) e fica visivel o do botao escolhido.
+// ============================================
+const NOME_PERIODO_DU = { hoje: 'HOJE', '7d': '7 DIAS', '30d': '30 DIAS' };
+
+function escolherPeriodoDu(alvo) {
+    const secao = alvo.closest('.du-section');
+    const periodo = alvo.dataset.duPeriodo;
+    if (!secao || !periodo) return;
+    secao.querySelectorAll('button[data-du-periodo]').forEach((btn) => {
+        const ativo = btn.dataset.duPeriodo === periodo;
+        btn.classList.toggle('is-active', ativo);
+        btn.setAttribute('aria-pressed', String(ativo));
+    });
+    secao.querySelectorAll('tbody[data-du-periodo]').forEach((tb) => {
+        tb.hidden = tb.dataset.duPeriodo !== periodo;
+    });
+    escreverTexto(secao.querySelector('[data-du-periodo-nome]'), NOME_PERIODO_DU[periodo] || periodo);
+    scheduleFit();
+}
+
 document.addEventListener('click', (e) => {
     if (!(e.target instanceof Element) || isEditing()) return;
+    const periodoDu = e.target.closest('button[data-du-periodo]');
+    if (periodoDu) {
+        e.preventDefault();
+        escolherPeriodoDu(periodoDu);
+        return;
+    }
     const culturaExp = e.target.closest('button[data-exp-cultura]');
     if (culturaExp) {
         e.preventDefault();

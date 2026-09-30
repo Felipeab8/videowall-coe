@@ -5681,22 +5681,35 @@ body.theme-light .kpi-flag--alerta {
 
 
 
-/* a unidade e a linha selecionada da tabela: barra na lateral, fundo mais
+/* Avaré e cooperados: cada linha filtra a tabela dos 6 dias */
+.pv-tabela--filtro tbody tr[data-pv-cidade] {
+    cursor: pointer;
+}
+
+
+
+.pv-tabela--filtro tbody tr[data-pv-cidade]:not(.is-sel):hover td {
+    background: var(--hover);
+}
+
+
+
+/* a linha selecionada (de início, a unidade): barra na lateral, fundo mais
    forte e o nome em caixa alta — bem diferente do azul claro da chuva */
-.pv-tabela tr.is-unidade td {
+.pv-tabela tr.is-sel td {
     background: var(--hover);
     border-bottom-color: var(--card-border);
 }
 
 
 
-.pv-tabela tr.is-unidade td:first-child {
+.pv-tabela tr.is-sel td:first-child {
     box-shadow: inset 3px 0 0 var(--accent);
 }
 
 
 
-.pv-tabela tr.is-unidade .pv-tabela-nome {
+.pv-tabela tr.is-sel .pv-tabela-nome {
     font-weight: 800;
     color: var(--accent);
     text-transform: uppercase;
@@ -7800,7 +7813,7 @@ body.theme-light .kpi-flag--atencao {
    direita guarda o rotulo da meta, fora das barras */
 .forecast-chart--turno {
     --chart-cols: 10;
-    --meta-gutter: 3rem;
+    --meta-gutter: 3.75rem;
 }
 
 
@@ -15548,10 +15561,10 @@ body.theme-light .class-val--fora {
 
 
 
-/* meta: o tracejado fica so no trecho dia a dia, onde a leitura e visual;
-   nas barras o numero ja vem escrito em cima, entao a linha so atrapalhava */
+/* limite: o tracejado atravessa o grafico inteiro (2025, dia a dia e
+   sem/mes/ano), que estao todos na mesma escala vertical */
 .hist-meta-line {
-    grid-column: 2;
+    grid-column: 1 / -1;
     grid-row: 1;
     position: relative;
     pointer-events: none;
@@ -15570,7 +15583,7 @@ body.theme-light .class-val--fora {
 
 
 
-/* rotulo da meta sai da area do grafico: fica na faixa livre acima dela,
+/* rotulo do limite sai da area do grafico: fica na faixa livre acima dela,
    alinhado ao fim do tracejado, com um tracinho para ligar um ao outro */
 .hist-meta-lbl {
     position: absolute;
@@ -16742,6 +16755,15 @@ body.theme-light {
     margin-bottom: 0;
     font-size: 0.82rem;
     white-space: nowrap;
+}
+
+
+
+/* período do recebido por cultura: botões no cabeçalho da seção, que
+   desce para a linha de baixo se o título não couber ao lado */
+.du-section .section-head:has(.du-periodo) {
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 
@@ -18141,7 +18163,7 @@ body.theme-light .du-proj-sel option {
 
 
 
-/* dois grupos (silos | armazéns e pulmões): quando não cabe, o segundo
+/* dois grupos (silos e pulmões | armazéns): quando não cabe, o segundo
    grupo desce inteiro, em vez de a linha quebrar no meio dos armazéns */
 .du-grupo {
     display: inline-flex;
@@ -18232,8 +18254,8 @@ body.theme-light .du-proj-sel option {
 
 
 
-/* respiro entre armazéns e pulmões (entre os grupos é o gap) */
-.du-silos i.du-arm + i.du-pulmao {
+/* respiro entre o último silo e os pulmões (entre os grupos é o gap) */
+.du-silos i:not(.du-pulmao) + i.du-pulmao {
     margin-left: 0.6rem;
 }
 
@@ -18474,12 +18496,6 @@ body.theme-light .du-proj-sel option {
 
 
 
-.du-tabela--clima th:last-child {
-    width: 13rem;
-}
-
-
-
 .du-tabela--clima th.du-dia-th {
     text-align: center;
 }
@@ -18558,19 +18574,6 @@ body.theme-light .du-proj-sel option {
 .du-dia-vento.is-alerta {
     font-weight: 800;
     color: var(--du-danger);
-}
-
-
-
-/* dia com chuva que atrapalha: contorno na cor da faixa */
-.du-tabela--clima td.du-dia.is-atencao {
-    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--du-warn) 55%, transparent);
-}
-
-
-
-.du-tabela--clima td.du-dia.is-alerta {
-    box-shadow: inset 0 0 0 2px var(--du-danger);
 }
 
 
