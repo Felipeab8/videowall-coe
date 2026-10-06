@@ -18619,3 +18619,59 @@ body.theme-light .du-proj-sel option {
         min-height: 20rem;
     }
 }
+
+
+
+/* ============================================
+   CÓDIGO DO CARD (ID no videowall)
+   Cada card leva o seu código em data-codigo; o selo é só CSS: uma aba
+   presa na borda de cima, no canto direito, acima do padding — assim não
+   cobre o conteúdo. Usa ::before porque alguns cards já usam o ::after
+   (as setas entre as etapas do fluxo). O :where() zera a especificidade:
+   quem já tem position própria (absolute, sticky) continua com ela.
+   ============================================ */
+:where([data-codigo]) {
+    position: relative;
+}
+
+[data-codigo]::before {
+    content: attr(data-codigo);
+    position: absolute;
+    top: 0;
+    right: 0.75rem;
+    z-index: 4;
+    padding: 0.06rem 0.34rem 0.1rem;
+    border: 1px solid var(--panel-border);
+    border-top: 0;
+    border-radius: 0 0 0.25rem 0.25rem;
+    background: var(--section-bg);
+    color: var(--faint);
+    font-family: var(--font-ui);
+    font-size: 0.5rem;
+    font-weight: 600;
+    font-style: normal;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+    text-transform: none;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+/* blocos internos cujo conteúdo começa colado na borda de cima:
+   abrem espaço para a aba não cobrir o cabeçalho */
+/* na moega o código fica na linha do nome (MOEGA N), não na borda */
+.moega-item[data-codigo]::before {
+    top: 0.875rem;
+    right: 0.75rem;
+    border-top: 1px solid var(--panel-border);
+    border-radius: 0.25rem;
+}
+
+.secador-chart[data-codigo] {
+    padding-top: 0.8rem;
+}
+
+.conc-scroll[data-codigo] {
+    max-height: 7.05rem;
+    padding-top: 0.8rem;
+}

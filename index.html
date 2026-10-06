@@ -12,7 +12,7 @@
          não carrega e a tela usa o mapa esquemático em SVG. -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css">
-    <link rel="stylesheet" href="style.css?v=20260930l">
+    <link rel="stylesheet" href="style.css?v=20261006b">
 </head>
 <body class="theme-dark">
 
@@ -232,7 +232,7 @@
 
                 <div class="geral-grid">
                     <!-- 01 Recepção: a espera é o problema, então ela é o destaque -->
-                    <button class="geral-card alert" type="button" data-goto="0" title="Abrir tela da recepção">
+                    <button data-codigo="AVR-VG-A" class="geral-card alert" type="button" data-goto="0" title="Abrir tela da recepção">
                         <div class="geral-card-head">
                             <span class="geral-card-num">01</span>
                             <span class="geral-card-name">Recepção</span>
@@ -273,7 +273,7 @@
                     </button>
 
                     <!-- 02 Classificação: três medidores contra o limite + mapa por cultura -->
-                    <button class="geral-card ok" type="button" data-goto="1" title="Abrir tela da classificação">
+                    <button data-codigo="AVR-VG-B" class="geral-card ok" type="button" data-goto="1" title="Abrir tela da classificação">
                         <div class="geral-card-head">
                             <span class="geral-card-num">02</span>
                             <span class="geral-card-name">Classificação</span>
@@ -309,7 +309,7 @@
                     </button>
 
                     <!-- 03 Moegas: anel de ocupação + colunas por moega -->
-                    <button class="geral-card ok" type="button" data-goto="2" title="Abrir tela das moegas">
+                    <button data-codigo="AVR-VG-C" class="geral-card ok" type="button" data-goto="2" title="Abrir tela das moegas">
                         <div class="geral-card-head">
                             <span class="geral-card-num">03</span>
                             <span class="geral-card-name">Moegas</span>
@@ -340,7 +340,7 @@
                          temperatura estourados agora e cada secador contra a própria meta.
                          Os números são os das telas da secagem e da produtividade às 14h50;
                          vazão fica por secador (t/h de secadores diferentes não se somam). -->
-                    <button class="geral-card alert" type="button" data-goto="3" title="Abrir tela da secagem">
+                    <button data-codigo="AVR-VG-D" class="geral-card alert" type="button" data-goto="3" title="Abrir tela da secagem">
                         <div class="geral-card-head">
                             <span class="geral-card-num">04</span>
                             <span class="geral-card-name">Secagem</span>
@@ -383,7 +383,7 @@
                     </button>
 
                     <!-- 05 Armazenagem: capacidade x estoque por cultura (mesmo gráfico da tela de silos, compacto) -->
-                    <button class="geral-card ok" type="button" data-goto="5" title="Abrir tela dos silos">
+                    <button data-codigo="AVR-VG-E" class="geral-card ok" type="button" data-goto="5" title="Abrir tela dos silos">
                         <div class="geral-card-head">
                             <span class="geral-card-num">05</span>
                             <span class="geral-card-name">Armazenagem</span>
@@ -448,7 +448,7 @@
                          24h com os períodos de aeração ativa e os riscos do horário de
                          ponta, e embaixo uma única curva do ar ambiente (temperatura e
                          umidade relativa), que vale para as duas áreas. -->
-                    <button class="geral-card ok gv-aer" type="button" data-goto="5" title="Abrir tela de silos e aeração" data-ponta-status>
+                    <button data-codigo="AVR-VG-F" class="geral-card ok gv-aer" type="button" data-goto="5" title="Abrir tela de silos e aeração" data-ponta-status>
                         <div class="geral-card-head">
                             <span class="geral-card-num">06</span>
                             <span class="geral-card-name">Aeração</span>
@@ -496,7 +496,7 @@
                     </button>
 
                     <!-- 07 Expedição: cargas do dia por cultura, qualidade média contra os limites -->
-                    <button class="geral-card atencao" type="button" data-goto="7" title="Abrir tela da expedição">
+                    <button data-codigo="AVR-VG-G" class="geral-card atencao" type="button" data-goto="7" title="Abrir tela da expedição">
                         <div class="geral-card-head">
                             <span class="geral-card-num">07</span>
                             <span class="geral-card-name">Expedição</span>
@@ -539,7 +539,7 @@
                     </button>
 
                     <!-- 08 Previsão do tempo: tempo em Avaré e nos cooperados -->
-                    <button class="geral-card" type="button" data-goto="8" title="Abrir previsão do tempo">
+                    <button data-codigo="AVR-VG-H" class="geral-card" type="button" data-goto="8" title="Abrir previsão do tempo">
                         <div class="geral-card-head">
                             <span class="geral-card-num">08</span>
                             <span class="geral-card-name">Previsão do tempo</span>
@@ -578,7 +578,7 @@
                     </div>
                 </div>
                 <div class="kpi-grid kpi-grid--four">
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                    <div data-codigo="AVR-REC-A" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Por que a fila está em 15 caminhões"
                         data-motivo-resumo="12 com tag + 3 sem tag · limite 8 · +4 desde as 13h40"
@@ -607,7 +607,7 @@
                          FILA do grafico de ciclo): 8 min na media, contra os 38 min do
                          ciclo inteiro. Os dois numeros moram lado a lado de proposito —
                          fila grande com espera dentro do limite aponta gargalo la na frente. -->
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                    <div data-codigo="AVR-REC-B" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Por que o tempo médio de espera está em 8 min"
                         data-motivo-resumo="8 min da portaria até a 1ª pesagem · limite 10 min"
@@ -622,7 +622,7 @@
                             <span class="kpi-sub-item"><i class="legend-dot legend-dot--sorgo"></i><b>Sorgo</b> 6 min</span>
                         </div>
                     </div>
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo alert" tabindex="0"
+                    <div data-codigo="AVR-REC-C" class="kpi-card kpi-card--meta kpi-card--motivo alert" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Por que o tempo médio de ciclo está em 38 min"
                         data-motivo-resumo="38 min · fora do padrão · milho 42 min · sorgo 30 min"
@@ -638,7 +638,7 @@
                             <span class="kpi-sub-item"><i class="legend-dot legend-dot--sorgo"></i><b>Sorgo</b> 30 min</span>
                         </div>
                     </div>
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                    <div data-codigo="AVR-REC-D" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Recebido hoje por cultura"
                         data-motivo-resumo="1.240 t · 48 caminhões · programado 1.500 t"
@@ -657,7 +657,7 @@
 
                 <!-- Ciclo decomposto por etapa: barra empilhada por cultura, escala 0-50 min.
                      A etapa mais longa ganha a moldura de alerta. -->
-                <div class="content-section etapa-section">
+                <div data-codigo="AVR-REC-E" class="content-section etapa-section">
                     <div class="section-head section-head--top">
                         <div class="section-head-text">
                             <h3>TEMPO MÉDIO DE CICLO POR ETAPA</h3>
@@ -715,7 +715,7 @@
 
                 <!-- Mes fechado x mes em andamento x projecao. No mes atual a marca branca
                      e o ponto onde a barra deveria estar no dia 14/30 (ritmo). -->
-                <div class="content-section mensal-section">
+                <div data-codigo="AVR-REC-F" class="content-section mensal-section">
                     <div class="section-head-text">
                         <h3>VOLUME DE RECEPÇÃO MENSAL POR CULTURA</h3>
                     </div>
@@ -842,7 +842,7 @@
                     </div>
                 </div>
 
-                <div class="content-section content-section--etapas">
+                <div data-codigo="AVR-FLX-G" class="content-section content-section--etapas">
                     <h3>ETAPAS DO PROCESSO · DA ENTRADA À LIBERAÇÃO <span class="fluxo-periodo-atual">· <span data-fluxo-periodo-nome>hoje</span></span></h3>
                     <!-- Todo numero desta tela segue o periodo escolhido no cabecalho:
                          cada valor tem uma versao por periodo (data-periodo) e o CSS
@@ -853,7 +853,7 @@
                          mostra na tabela de baixo so os caminhoes daquela etapa e
                          clicar de novo desfaz — o mesmo filtro dos selos da tabela. -->
                     <div class="fluxo-etapas fluxo-etapas--seis">
-                        <div class="fluxo-etapa" tabindex="0" role="button" aria-pressed="false" data-fluxo-filtro="fila" data-alerta="7d">
+                        <div data-codigo="AVR-FLX-A" class="fluxo-etapa" tabindex="0" role="button" aria-pressed="false" data-fluxo-filtro="fila" data-alerta="7d">
                             <span class="fluxo-etapa-num">1</span>
                             <span class="fluxo-etapa-nome">Fila</span>
                             <span class="fluxo-etapa-valor"><b data-periodo="turno">2 <small>caminhões</small></b><b data-periodo="hoje">2 <small>caminhões</small></b><b data-periodo="7d">336 <small>atendidos</small></b><b data-periodo="30d">1.440 <small>atendidos</small></b></span>
@@ -863,7 +863,7 @@
                         <!-- Capacidade fisica manda no valor: a etapa mostra quantos estao
                              sendo atendidos agora e quantos esperam a vez. Com a balanca 2
                              em afericao so um caminhao pesa por vez. -->
-                        <div class="fluxo-etapa" tabindex="0" role="button" aria-pressed="false" data-fluxo-filtro="pesagem1" data-alerta="turno hoje 7d">
+                        <div data-codigo="AVR-FLX-B" class="fluxo-etapa" tabindex="0" role="button" aria-pressed="false" data-fluxo-filtro="pesagem1" data-alerta="turno hoje 7d">
                             <span class="fluxo-etapa-num">2</span>
                             <span class="fluxo-etapa-nome">1ª Pesagem</span>
                             <span class="fluxo-etapa-valor"><b data-periodo="turno">1 <small>pesando</small></b><b data-periodo="hoje">1 <small>pesando</small></b><b data-periodo="7d">334 <small>pesados</small></b><b data-periodo="30d">1.436 <small>pesados</small></b></span>
@@ -871,7 +871,7 @@
                             <span class="fluxo-etapa-sub">tempo médio <b data-periodo="turno">12 min</b><b data-periodo="hoje">14 min</b><b data-periodo="7d">9 min</b><b data-periodo="30d">8 min</b></span>
                             <span class="fluxo-etapa-estado"><b data-periodo="turno">Balança 2 em aferição</b><b data-periodo="hoje">Balança 2 em aferição</b><b data-periodo="7d">Espera acima do limite</b><b data-periodo="30d">Dentro do limite</b></span>
                         </div>
-                        <div class="fluxo-etapa" tabindex="0" role="button" aria-pressed="false" data-fluxo-filtro="classificacao" data-alerta="turno hoje">
+                        <div data-codigo="AVR-FLX-C" class="fluxo-etapa" tabindex="0" role="button" aria-pressed="false" data-fluxo-filtro="classificacao" data-alerta="turno hoje">
                             <span class="fluxo-etapa-num">3</span>
                             <span class="fluxo-etapa-nome">Classificação</span>
                             <span class="fluxo-etapa-valor"><b data-periodo="turno">2 <small>classificando</small></b><b data-periodo="hoje">2 <small>classificando</small></b><b data-periodo="7d">331 <small>classificados</small></b><b data-periodo="30d">1.429 <small>classificados</small></b></span>
@@ -879,14 +879,14 @@
                             <span class="fluxo-etapa-sub">tempo médio <b data-periodo="turno">10 min</b><b data-periodo="hoje">11 min</b><b data-periodo="7d">8 min</b><b data-periodo="30d">8 min</b></span>
                             <span class="fluxo-etapa-estado"><b data-periodo="turno">Tempo acima do limite</b><b data-periodo="hoje">Tempo acima do limite</b><b data-periodo="7d">Dentro do limite</b><b data-periodo="30d">Dentro do limite</b></span>
                         </div>
-                        <div class="fluxo-etapa" tabindex="0" role="button" aria-pressed="false" data-fluxo-filtro="moega" data-alerta="turno hoje">
+                        <div data-codigo="AVR-FLX-D" class="fluxo-etapa" tabindex="0" role="button" aria-pressed="false" data-fluxo-filtro="moega" data-alerta="turno hoje">
                             <span class="fluxo-etapa-num">4</span>
                             <span class="fluxo-etapa-nome">Descarga</span>
                             <span class="fluxo-etapa-valor"><b data-periodo="turno">6 <small>descarregando</small></b><b data-periodo="hoje">6 <small>descarregando</small></b><b data-periodo="7d">329 <small>descarregados</small></b><b data-periodo="30d">1.424 <small>descarregados</small></b></span>
                             <span class="fluxo-etapa-sub">tempo médio <b data-periodo="turno">17 min</b><b data-periodo="hoje">18 min</b><b data-periodo="7d">15 min</b><b data-periodo="30d">16 min</b></span>
                             <span class="fluxo-etapa-estado"><b data-periodo="turno">Sem moega livre</b><b data-periodo="hoje">Sem moega livre</b><b data-periodo="7d">Operando</b><b data-periodo="30d">Operando</b></span>
                         </div>
-                        <div class="fluxo-etapa" tabindex="0" role="button" aria-pressed="false" data-fluxo-filtro="pesagem2">
+                        <div data-codigo="AVR-FLX-E" class="fluxo-etapa" tabindex="0" role="button" aria-pressed="false" data-fluxo-filtro="pesagem2">
                             <span class="fluxo-etapa-num">5</span>
                             <span class="fluxo-etapa-nome">2ª Pesagem</span>
                             <span class="fluxo-etapa-valor"><b data-periodo="turno">1 <small>pesando</small></b><b data-periodo="hoje">2 <small>pesando</small></b><b data-periodo="7d">327 <small>pesados</small></b><b data-periodo="30d">1.420 <small>pesados</small></b></span>
@@ -898,7 +898,7 @@
                              Por isso entra sem tempo medio: conta os caminhoes que
                              passaram da 2a pesagem e ja sairam da planta no periodo,
                              inclusive os que nao aparecem mais na tabela abaixo. -->
-                        <div class="fluxo-etapa fluxo-etapa--liberados" tabindex="0" role="button" aria-pressed="false" data-fluxo-filtro="liberados">
+                        <div data-codigo="AVR-FLX-F" class="fluxo-etapa fluxo-etapa--liberados" tabindex="0" role="button" aria-pressed="false" data-fluxo-filtro="liberados">
                             <span class="fluxo-etapa-num">6</span>
                             <span class="fluxo-etapa-nome">Concluídos</span>
                             <span class="fluxo-etapa-valor"><b data-periodo="turno">9 <small>caminhões</small></b><b data-periodo="hoje">25 <small>caminhões</small></b><b data-periodo="7d">325 <small>caminhões</small></b><b data-periodo="30d">1.418 <small>caminhões</small></b></span>
@@ -907,7 +907,7 @@
                     </div>
                 </div>
 
-                <div class="content-section content-section--livre">
+                <div data-codigo="AVR-FLX-H" class="content-section content-section--livre">
                     <div class="fluxo-tabela-head">
                         <h3>CAMINHÕES DO PERÍODO · ONDE CADA UM ESTÁ <span class="fluxo-periodo-atual">· <span data-fluxo-periodo-nome>hoje</span><span data-fluxo-cultura-nome></span></span></h3>
                         <!-- clique numa etapa filtra a tabela; clicar de novo (ou em Todos) volta a lista inteira.
@@ -1048,7 +1048,7 @@
                      HTML, fora do filtro). Assim a lista do balao ja sai no periodo ativo e
                      so com as culturas marcadas no cabecalho. -->
                 <div class="kpi-grid kpi-grid--six kpi-grid--class">
-                    <div class="kpi-card kpi-card--grao kpi-card--slim kpi-card--motivo ok" data-class-agg="soma"
+                    <div data-codigo="AVR-CLA-A" class="kpi-card kpi-card--grao kpi-card--slim kpi-card--motivo ok" data-class-agg="soma"
                         tabindex="0" data-motivo data-motivo-titulo="Cargas classificadas por cultura">
                         <div class="kpi-label">CARGAS CLASSIFICADAS</div>
                         <div class="kpi-value">
@@ -1059,7 +1059,7 @@
                             <span class="class-cult" data-cultura="soja"><b data-periodo="turno">5</b><b data-periodo="hoje">14</b><b data-periodo="7d">96</b><b data-periodo="30d">410</b></span>
                         </div>
                     </div>
-                    <div class="kpi-card kpi-card--grao kpi-card--slim kpi-card--motivo" data-class-agg="media"
+                    <div data-codigo="AVR-CLA-B" class="kpi-card kpi-card--grao kpi-card--slim kpi-card--motivo" data-class-agg="media"
                         tabindex="0" data-motivo data-motivo-titulo="Umidade média por cultura">
                         <div class="kpi-label">UMIDADE MÉDIA</div>
                         <div class="kpi-value">
@@ -1070,7 +1070,7 @@
                             <span class="class-cult" data-cultura="soja"><b data-periodo="turno">12,6%</b><b data-periodo="hoje">12,8%</b><b data-periodo="7d">13,0%</b><b data-periodo="30d">13,1%</b></span>
                         </div>
                     </div>
-                    <div class="kpi-card kpi-card--grao kpi-card--slim kpi-card--motivo" data-class-agg="media"
+                    <div data-codigo="AVR-CLA-C" class="kpi-card kpi-card--grao kpi-card--slim kpi-card--motivo" data-class-agg="media"
                         tabindex="0" data-motivo data-motivo-titulo="Impureza por cultura">
                         <div class="kpi-label">IMPUREZA</div>
                         <div class="kpi-value">
@@ -1085,7 +1085,7 @@
                          de baixo do mesmo cartao: le-se "3,2% avariados, dos quais 0,5%
                          queimados". Tem data-class-agg e data-motivo proprios porque a conta
                          e o balao dele sao do queimado, nao do avariado. -->
-                    <div class="kpi-card kpi-card--grao kpi-card--slim kpi-card--motivo" data-class-agg="media"
+                    <div data-codigo="AVR-CLA-D" class="kpi-card kpi-card--grao kpi-card--slim kpi-card--motivo" data-class-agg="media"
                         tabindex="0" data-motivo data-motivo-titulo="Avariados por cultura">
                         <div class="kpi-label">AVARIADOS</div>
                         <div class="kpi-value">
@@ -1107,7 +1107,7 @@
                             <span class="kpi-lim">lim. 1%</span>
                         </div>
                     </div>
-                    <div class="kpi-card kpi-card--grao kpi-card--slim kpi-card--motivo" data-class-agg="media"
+                    <div data-codigo="AVR-CLA-E" class="kpi-card kpi-card--grao kpi-card--slim kpi-card--motivo" data-class-agg="media"
                         tabindex="0" data-motivo data-motivo-titulo="PH médio por cultura">
                         <div class="kpi-label">PH MÉDIO <span class="kpi-lim">mín. 72 kg/hL · só trigo</span></div>
                         <div class="kpi-value">
@@ -1119,7 +1119,7 @@
                             <span class="kpi-value-ref">kg/hL</span>
                         </div>
                     </div>
-                    <div class="kpi-card kpi-card--grao kpi-card--slim kpi-card--motivo" data-class-agg="media"
+                    <div data-codigo="AVR-CLA-F" class="kpi-card kpi-card--grao kpi-card--slim kpi-card--motivo" data-class-agg="media"
                         tabindex="0" data-motivo data-motivo-titulo="Falling number por cultura">
                         <div class="kpi-label">FALLING NUMBER <span class="kpi-lim">mín. 220 s · só trigo</span></div>
                         <div class="kpi-value">
@@ -1136,7 +1136,7 @@
                 <!-- A tabela obedece ao filtro do cabecalho: a cultura esconde as linhas
                      cujo data-cultura nao bate e o periodo esconde as que estao fora da
                      janela (data-janela, encaixada: turno ⊂ hoje ⊂ 7 dias ⊂ 30 dias). -->
-                <div class="content-section content-section--livre class-detalhe">
+                <div data-codigo="AVR-CLA-G" class="content-section content-section--livre class-detalhe">
                     <div class="section-head section-head--top">
                         <div class="section-head-text">
                             <h3>CARGAS CLASSIFICADAS · DETALHE <span class="fluxo-periodo-atual">· <span data-class-periodo-nome>hoje</span><span data-class-cultura-nome></span></span></h3>
@@ -1189,7 +1189,7 @@
                      linhas com data-janela), mas nao a cultura: a caçamba junta o residuo
                      de todas. Diferenca = descontado - pesado, em % do descontado:
                      ate 5% conciliado, ate 10% atencao, acima disso fora. -->
-                <div class="content-section conc-section">
+                <div data-codigo="AVR-CLA-H" class="content-section conc-section">
                     <div class="section-head section-head--top">
                         <div class="section-head-text">
                             <h3>CONCILIAÇÃO DA PRÉ-LIMPEZA <span class="fluxo-periodo-atual">· <span data-class-periodo-nome>hoje</span></span></h3>
@@ -1215,7 +1215,7 @@
                                 <span class="conc-num-sub"><b data-periodo="hoje"><span class="class-status class-status--atencao">+10% · atenção</span></b><b data-periodo="7d"><span class="class-status class-status--ok">+3,3% · conciliado</span></b><b data-periodo="30d"><span class="class-status class-status--ok">+2,7% · conciliado</span></b></span>
                             </div>
                         </div>
-                        <div class="table-scroll table-scroll--livre conc-scroll">
+                        <div data-codigo="AVR-CLA-I" class="table-scroll table-scroll--livre conc-scroll">
                             <table class="data-table conc-table">
                                 <thead>
                                     <tr>
@@ -1251,7 +1251,7 @@
                      aqui — este bloco e' historico de janelas fixas. Em cada celula:
                      barra do ano passado, linha dos ultimos 7 dias e barras sem/mes/ano,
                      todas na mesma escala vertical; o tracejado e o limite. -->
-                <div class="content-section hist-section" data-hist-cultura="milho">
+                <div data-codigo="AVR-CLA-J" class="content-section hist-section" data-hist-cultura="milho">
                     <div class="section-head section-head--top">
                         <div class="section-head-text">
                             <h3>HISTÓRICO DE CLASSIFICAÇÃO <span class="fluxo-periodo-atual">· <span data-hist-cultura-nome>milho</span></span></h3>
@@ -1587,13 +1587,13 @@
                     </div>
                 </div>
 
-                <div class="content-section moegas-painel">
+                <div data-codigo="AVR-MOE-A" class="content-section moegas-painel">
                     <div class="section-head">
                         <h3>MOEGAS · CARGAS, QUALIDADE E CULTURA</h3>
                     </div>
                     <div class="moega-grid moega-grid--seis">
                         <!-- Moega 1 -->
-                        <div class="moega-item moega-item--milho moega-item--alerta" data-cultura="milho">
+                        <div data-codigo="AVR-MOE-B" class="moega-item moega-item--milho moega-item--alerta" data-cultura="milho">
                             <div class="moega-head">
                                 <span class="moega-name">MOEGA 1</span>
                                 <span class="moega-tipo">Graneleiro · Tombador</span>
@@ -1645,7 +1645,7 @@
                         </div>
 
                         <!-- Moega 2 -->
-                        <div class="moega-item moega-item--milho moega-item--alerta" data-cultura="milho">
+                        <div data-codigo="AVR-MOE-B" class="moega-item moega-item--milho moega-item--alerta" data-cultura="milho">
                             <div class="moega-head">
                                 <span class="moega-name">MOEGA 2</span>
                                 <span class="moega-tipo">Graneleiro · Tombador</span>
@@ -1693,7 +1693,7 @@
                         </div>
 
                         <!-- Moega 3 -->
-                        <div class="moega-item moega-item--milho" data-cultura="milho">
+                        <div data-codigo="AVR-MOE-B" class="moega-item moega-item--milho" data-cultura="milho">
                             <div class="moega-head">
                                 <span class="moega-name">MOEGA 3</span>
                                 <span class="moega-tipo">Basculante</span>
@@ -1745,7 +1745,7 @@
                         </div>
 
                         <!-- Moega 4 -->
-                        <div class="moega-item moega-item--sorgo" data-cultura="sorgo">
+                        <div data-codigo="AVR-MOE-B" class="moega-item moega-item--sorgo" data-cultura="sorgo">
                             <div class="moega-head">
                                 <span class="moega-name">MOEGA 4</span>
                                 <span class="moega-tipo">Basculante</span>
@@ -1793,7 +1793,7 @@
                         </div>
 
                         <!-- Moega 5 -->
-                        <div class="moega-item moega-item--sorgo" data-cultura="sorgo">
+                        <div data-codigo="AVR-MOE-B" class="moega-item moega-item--sorgo" data-cultura="sorgo">
                             <div class="moega-head">
                                 <span class="moega-name">MOEGA 5</span>
                                 <span class="moega-tipo">Basculante</span>
@@ -1845,7 +1845,7 @@
                         </div>
 
                         <!-- Moega 6 -->
-                        <div class="moega-item moega-item--vazia" data-cultura="vazia">
+                        <div data-codigo="AVR-MOE-B" class="moega-item moega-item--vazia" data-cultura="vazia">
                             <div class="moega-head">
                                 <span class="moega-name">MOEGA 6</span>
                                 <span class="moega-tipo">Basculante</span>
@@ -1898,7 +1898,7 @@
                      estatica dos silos. Fica nesta tela porque quem enche os pulmoes
                      sao as moegas; ocupa a coluna da direita, com nivel, curva de
                      temperatura em blocos de 12h (com projecao ate o fim do bloco) e aeracao de cada um. -->
-                <div class="content-section sa-section sa-section--pulmao">
+                <div data-codigo="AVR-MOE-C" class="content-section sa-section sa-section--pulmao">
                     <h3>SILOS PULMÃO · TRÂNSITO PARA SECAGEM</h3>
                     <div class="sa-grid sa-grid--2">
                         <article class="sa-card sa-card--pulmao" data-silo data-aer="on" data-aer-desde-min="31" data-pausa-ponta="1"
@@ -1973,7 +1973,7 @@
                     </div>
                 </div>
 
-                <div class="content-section">
+                <div data-codigo="AVR-SPR-A" class="content-section">
                     <div class="section-head">
                         <h3>SECADORES · FASES DO TURNO 07h–17h · TEMPERATURA x UMIDADE</h3>
                         <!-- legenda das linhas: cada traço na cor da própria série do gráfico -->
@@ -2003,7 +2003,7 @@
                                 <!-- coluna do calor: em cima o que a fornalha entrega e, depois do
                                      separador, o que o secador faz com esse ar -->
                                 <div class="secador-col secador-col--calor">
-                                    <div class="secador-bloco secador-bloco--fornalha">
+                                    <div data-codigo="AVR-SPR-B" class="secador-bloco secador-bloco--fornalha">
                                         <span class="secador-bloco-nome">Fornalha</span>
                                         <div class="secador-bloco-dados">
                                             <span class="secador-dado"><small>temperatura setada</small><b>150°C</b></span>
@@ -2011,7 +2011,7 @@
                                         </div>
                                     </div>
                                     <span class="secador-col-sep" aria-hidden="true"></span>
-                                    <div class="secador-bloco secador-bloco--ar">
+                                    <div data-codigo="AVR-SPR-C" class="secador-bloco secador-bloco--ar">
                                         <span class="secador-bloco-nome">Secador</span>
                                         <div class="secador-bloco-dados">
                                             <span class="secador-dado"><small>ar do secador</small><b>101°C</b></span>
@@ -2022,7 +2022,7 @@
                                 <!-- a massa do grão: como entra e como sai, temperatura e volume -->
                                 <div class="secador-col secador-col--massa">
                                     <span class="secador-col-titulo">Massa do grão</span>
-                                    <div class="secador-ponto secador-ponto--entra">
+                                    <div data-codigo="AVR-SPR-D" class="secador-ponto secador-ponto--entra">
                                         <span class="secador-ponto-nome">Entrada</span>
                                         <div class="secador-ponto-dados">
                                             <span class="secador-dado"><small>temperatura</small><b>28°C</b></span>
@@ -2030,7 +2030,7 @@
                                         </div>
                                     </div>
                                     <span class="secador-fluxo-seta" aria-hidden="true"></span>
-                                    <div class="secador-ponto secador-ponto--sai">
+                                    <div data-codigo="AVR-SPR-E" class="secador-ponto secador-ponto--sai">
                                         <span class="secador-ponto-nome">Saída</span>
                                         <div class="secador-ponto-dados">
                                             <span class="secador-dado"><small>temperatura</small><b>92°C</b></span>
@@ -2039,7 +2039,7 @@
                                         <span class="secador-ponto-nota">caiu <b>5,0 pontos</b> de umidade</span>
                                     </div>
                                 </div>
-                                <div class="secador-chart">
+                                <div data-codigo="AVR-SPR-F" class="secador-chart">
                                     <!-- eixo Y da esquerda: temperatura, 0 a 200 °C, escala das duas linhas de calor -->
                                     <div class="secador-eixo secador-eixo--temp" aria-hidden="true">
                                         <span style="top: 0%">200°</span>
@@ -2117,7 +2117,7 @@
                                 <!-- coluna do calor: em cima o que a fornalha entrega e, depois do
                                      separador, o que o secador faz com esse ar -->
                                 <div class="secador-col secador-col--calor">
-                                    <div class="secador-bloco secador-bloco--fornalha">
+                                    <div data-codigo="AVR-SPR-B" class="secador-bloco secador-bloco--fornalha">
                                         <span class="secador-bloco-nome">Fornalha</span>
                                         <div class="secador-bloco-dados">
                                             <span class="secador-dado"><small>temperatura setada</small><b>140°C</b></span>
@@ -2125,7 +2125,7 @@
                                         </div>
                                     </div>
                                     <span class="secador-col-sep" aria-hidden="true"></span>
-                                    <div class="secador-bloco secador-bloco--ar">
+                                    <div data-codigo="AVR-SPR-C" class="secador-bloco secador-bloco--ar">
                                         <span class="secador-bloco-nome">Secador</span>
                                         <div class="secador-bloco-dados">
                                             <span class="secador-dado"><small>ar do secador</small><b>85°C</b></span>
@@ -2136,7 +2136,7 @@
                                 <!-- a massa do grão: como entra e como sai, temperatura e volume -->
                                 <div class="secador-col secador-col--massa">
                                     <span class="secador-col-titulo">Massa do grão</span>
-                                    <div class="secador-ponto secador-ponto--entra">
+                                    <div data-codigo="AVR-SPR-D" class="secador-ponto secador-ponto--entra">
                                         <span class="secador-ponto-nome">Entrada</span>
                                         <div class="secador-ponto-dados">
                                             <span class="secador-dado"><small>temperatura</small><b>27°C</b></span>
@@ -2144,7 +2144,7 @@
                                         </div>
                                     </div>
                                     <span class="secador-fluxo-seta" aria-hidden="true"></span>
-                                    <div class="secador-ponto secador-ponto--sai">
+                                    <div data-codigo="AVR-SPR-E" class="secador-ponto secador-ponto--sai">
                                         <span class="secador-ponto-nome">Saída</span>
                                         <div class="secador-ponto-dados">
                                             <span class="secador-dado"><small>temperatura</small><b>83°C</b></span>
@@ -2153,7 +2153,7 @@
                                         <span class="secador-ponto-nota">caiu <b>5,2 pontos</b> de umidade</span>
                                     </div>
                                 </div>
-                                <div class="secador-chart">
+                                <div data-codigo="AVR-SPR-F" class="secador-chart">
                                     <!-- eixo Y da esquerda: temperatura, 0 a 200 °C, escala das duas linhas de calor -->
                                     <div class="secador-eixo secador-eixo--temp" aria-hidden="true">
                                         <span style="top: 0%">200°</span>
@@ -2241,7 +2241,7 @@
                 </div>
 
                 <div class="kpi-grid kpi-grid--tres prod-periodo-bloco" data-periodo="turno">
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                    <div data-codigo="AVR-SPD-A" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Secado por secador · turno"
                         data-motivo-resumo="1.000 t · meta 1.200 t"
@@ -2255,7 +2255,7 @@
                             <span class="kpi-meta-ref">meta do turno 1.200 t · faltam 200 t</span>
                         </div>
                     </div>
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                    <div data-codigo="AVR-SPD-B" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Como a projeção das 17h é calculada"
                         data-motivo-resumo="1.000 t secadas + 280 t previstas até 17h"
@@ -2268,7 +2268,7 @@
                         </div>
                     </div>
                     <!-- vazao por secador: t/h de equipamentos e culturas diferentes nao se somam -->
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                    <div data-codigo="AVR-SPD-C" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Ritmo atual de cada secador x sua capacidade nominal"
                         data-motivo-resumo="S1 78 t/h de 80 · S2 56 t/h de 60"
@@ -2285,7 +2285,7 @@
                     </div>
                 </div>
                 <div class="kpi-grid kpi-grid--tres prod-periodo-bloco" data-periodo="hoje">
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                    <div data-codigo="AVR-SPD-D" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Secado por secador · hoje"
                         data-motivo-resumo="1.640 t · meta 2.400 t"
@@ -2298,7 +2298,7 @@
                             <span class="kpi-meta-ref">meta do dia 2.400 t · faltam 760 t</span>
                         </div>
                     </div>
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                    <div data-codigo="AVR-SPD-E" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Como a projeção do dia é calculada"
                         data-motivo-resumo="1.640 t secadas + 710 t previstas até 24h"
@@ -2311,7 +2311,7 @@
                         </div>
                     </div>
                     <!-- vazao por secador: t/h de equipamentos e culturas diferentes nao se somam -->
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                    <div data-codigo="AVR-SPD-F" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Vazão média de cada secador hoje"
                         data-motivo-resumo="S1 77 t/h de 80 · S2 55 t/h de 60"
@@ -2418,7 +2418,7 @@
                 </div>
 
                 <div class="split-grid split-grid--prod">
-                    <div class="content-section">
+                    <div data-codigo="AVR-SPD-G" class="content-section">
                         <div class="section-head section-head--top">
                             <div class="section-head-text">
                                 <h3>SECAGEM POR HORA · POR SECADOR</h3>
@@ -2474,7 +2474,7 @@
 
                     <div class="content-section prod-col--secadores">
                         <div class="prod-secador-list prod-periodo-bloco" data-periodo="turno">
-                            <div class="prod-secador prod-secador--sec1">
+                            <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec1">
                                 <div class="prod-secador-head">
                                     <span class="secador-nome"><i class="secador-dot prod-secador-dot"></i>SECADOR 1 <em class="prod-secador-cultura">Milho</em></span>
                                     <span class="secador-tipo">Fluxo contínuo · nominal 80 t/h</span>
@@ -2490,7 +2490,7 @@
                                 </div>
                             </div>
 
-                            <div class="prod-secador prod-secador--sec2">
+                            <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec2">
                                 <div class="prod-secador-head">
                                     <span class="secador-nome"><i class="secador-dot prod-secador-dot"></i>SECADOR 2 <em class="prod-secador-cultura">Sorgo</em></span>
                                     <span class="secador-tipo">Intermitente · nominal 60 t/h</span>
@@ -2507,7 +2507,7 @@
                             </div>
                         </div>
                         <div class="prod-secador-list prod-periodo-bloco" data-periodo="hoje">
-                            <div class="prod-secador prod-secador--sec1">
+                            <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec1">
                                 <div class="prod-secador-head">
                                     <span class="secador-nome"><i class="secador-dot prod-secador-dot"></i>SECADOR 1 <em class="prod-secador-cultura">Milho</em></span>
                                     <span class="secador-tipo">Fluxo contínuo · nominal 80 t/h</span>
@@ -2523,7 +2523,7 @@
                                 </div>
                             </div>
 
-                            <div class="prod-secador prod-secador--sec2">
+                            <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec2">
                                 <div class="prod-secador-head">
                                     <span class="secador-nome"><i class="secador-dot prod-secador-dot"></i>SECADOR 2 <em class="prod-secador-cultura">Sorgo</em></span>
                                     <span class="secador-tipo">Intermitente · nominal 60 t/h</span>
@@ -2540,7 +2540,7 @@
                             </div>
                         </div>
                         <div class="prod-secador-list prod-periodo-bloco" data-periodo="7d">
-                            <div class="prod-secador prod-secador--sec1">
+                            <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec1">
                                 <div class="prod-secador-head">
                                     <span class="secador-nome"><i class="secador-dot prod-secador-dot"></i>SECADOR 1 <em class="prod-secador-cultura">Milho</em></span>
                                     <span class="secador-tipo">Fluxo contínuo · nominal 80 t/h</span>
@@ -2558,7 +2558,7 @@
                                 </div>
                             </div>
 
-                            <div class="prod-secador prod-secador--sec2">
+                            <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec2">
                                 <div class="prod-secador-head">
                                     <span class="secador-nome"><i class="secador-dot prod-secador-dot"></i>SECADOR 2 <em class="prod-secador-cultura">Sorgo</em></span>
                                     <span class="secador-tipo">Intermitente · nominal 60 t/h</span>
@@ -2577,7 +2577,7 @@
                             </div>
                         </div>
                         <div class="prod-secador-list prod-periodo-bloco" data-periodo="30d">
-                            <div class="prod-secador prod-secador--sec1">
+                            <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec1">
                                 <div class="prod-secador-head">
                                     <span class="secador-nome"><i class="secador-dot prod-secador-dot"></i>SECADOR 1 <em class="prod-secador-cultura">Milho</em></span>
                                     <span class="secador-tipo">Fluxo contínuo · nominal 80 t/h</span>
@@ -2595,7 +2595,7 @@
                                 </div>
                             </div>
 
-                            <div class="prod-secador prod-secador--sec2">
+                            <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec2">
                                 <div class="prod-secador-head">
                                     <span class="secador-nome"><i class="secador-dot prod-secador-dot"></i>SECADOR 2 <em class="prod-secador-cultura">Sorgo</em></span>
                                     <span class="secador-tipo">Intermitente · nominal 60 t/h</span>
@@ -2620,7 +2620,7 @@
                          e a leitura de cada secador. Fica na mesma grade do grafico
                          para a coluna dos secadores, a direita, ocupar a altura das
                          duas fileiras. O bloco respeita o periodo da tela. -->
-                    <div class="content-section prod-col--paradas">
+                    <div data-codigo="AVR-SPD-I" class="content-section prod-col--paradas">
                         <div class="section-head section-head--top">
                             <div class="section-head-text">
                                 <h3>PARADAS E DISPONIBILIDADE FÍSICA</h3>
@@ -2746,7 +2746,7 @@
                     </div>
                 </div>
 
-                <div class="content-section sa-section">
+                <div data-codigo="AVR-SIL-A" class="content-section sa-section">
                     <div class="section-head">
                         <h3>SILOS · OCUPAÇÃO, TEMPERATURA E AERAÇÃO</h3>
                         <span class="stack-hint">tracejado = projeção</span>
@@ -2980,7 +2980,7 @@
                 </div>
 
                 <!-- o que entrou da secagem e o que saiu para a expedicao em cada silo, hoje -->
-                <div class="content-section sa-section sa-section--mov">
+                <div data-codigo="AVR-SIL-B" class="content-section sa-section sa-section--mov">
                     <div class="section-head">
                         <h3>SILO A SILO · ENTRADAS E SAÍDAS DE HOJE</h3>
                     </div>
@@ -3027,7 +3027,7 @@
                     </div>
                 </div>
 
-                <div class="content-section sa-section">
+                <div data-codigo="AVR-ARM-A" class="content-section sa-section">
                     <div class="section-head">
                         <h3>ARMAZÉNS GRANELEIROS · OCUPAÇÃO, TEMPERATURA E AERAÇÃO</h3>
                         <span class="stack-hint">tracejado = projeção</span>
@@ -3129,7 +3129,7 @@
                 <!-- Volume, caminhoes e reprovas do periodo escolhido no filtro geral.
                      Cada cartao abre o "por que" ao clique (data-motivo), como na recepcao. -->
                 <div class="kpi-grid kpi-grid--four exp-kpis exp-periodo-bloco" data-periodo="dia">
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                    <div data-codigo="AVR-EXP-A" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Volume carregado hoje por cultura"
                         data-motivo-resumo="1.120 t · 28 caminhões · programado 1.400 t"
@@ -3145,7 +3145,7 @@
                         <div class="kpi-sub exp-cult-bloco exp-meta exp-meta--baixo" data-cultura="trigo" style="--p: 80"><span class="exp-meta-track"><span class="exp-meta-fill"></span></span><span class="kpi-sub-item"><b>Programado</b> 175 t</span><span class="kpi-sub-item"><b>Atingido</b> 80%</span></div>
                         <div class="kpi-sub exp-cult-bloco exp-meta exp-meta--baixo" data-cultura="soja" style="--p: 80"><span class="exp-meta-track"><span class="exp-meta-fill"></span></span><span class="kpi-sub-item"><b>Programado</b> 125 t</span><span class="kpi-sub-item"><b>Atingido</b> 80%</span></div>
                     </div>
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                    <div data-codigo="AVR-EXP-B" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Caminhões na expedição hoje"
                         data-motivo-resumo="28 carregados · 3 em carregamento · 6 aguardando"
@@ -3161,7 +3161,7 @@
                         <div class="kpi-sub exp-cult-bloco" data-cultura="trigo"><span class="kpi-sub-item"><b>liberados</b> 3</span><span class="kpi-sub-item"><b>reprovados</b> 0</span></div>
                         <div class="kpi-sub exp-cult-bloco" data-cultura="soja"><span class="kpi-sub-item"><b>liberados</b> 2</span><span class="kpi-sub-item"><b>reprovados</b> 1</span></div>
                     </div>
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo alert" tabindex="0"
+                    <div data-codigo="AVR-EXP-C" class="kpi-card kpi-card--meta kpi-card--motivo alert" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Cargas reprovadas hoje por cultura"
                         data-motivo-resumo="4 de 28 · 14% das cargas carregadas"
@@ -3178,7 +3178,7 @@
                         <div class="kpi-sub exp-cult-bloco" data-cultura="trigo"><span class="kpi-sub-item"><b>Umidade</b> 0</span><span class="kpi-sub-item"><b>Impureza</b> 0</span><span class="kpi-sub-item"><b>Avariados</b> 0</span></div>
                         <div class="kpi-sub exp-cult-bloco" data-cultura="soja"><span class="kpi-sub-item"><b>Umidade</b> 0</span><span class="kpi-sub-item"><b>Impureza</b> 0</span><span class="kpi-sub-item"><b>Avariados</b> 1</span></div>
                     </div>
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                    <div data-codigo="AVR-EXP-D" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Dosagem de resíduo hoje por cultura"
                         data-motivo-resumo="19,5 t dosadas · 696 kg por carga · uso da margem 90%"
@@ -3197,7 +3197,7 @@
                 </div>
 
                 <div class="kpi-grid kpi-grid--four exp-kpis exp-periodo-bloco" data-periodo="semana">
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                    <div data-codigo="AVR-EXP-A" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Volume carregado na semana por cultura"
                         data-motivo-resumo="6.480 t · 162 caminhões · programado 7.000 t"
@@ -3212,7 +3212,7 @@
                         <div class="kpi-sub exp-cult-bloco exp-meta" data-cultura="trigo" style="--p: 93"><span class="exp-meta-track"><span class="exp-meta-fill"></span></span><span class="kpi-sub-item"><b>Programado</b> 885 t</span><span class="kpi-sub-item"><b>Atingido</b> 93%</span></div>
                         <div class="kpi-sub exp-cult-bloco exp-meta" data-cultura="soja" style="--p: 93"><span class="exp-meta-track"><span class="exp-meta-fill"></span></span><span class="kpi-sub-item"><b>Programado</b> 625 t</span><span class="kpi-sub-item"><b>Atingido</b> 93%</span></div>
                     </div>
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                    <div data-codigo="AVR-EXP-B" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Caminhões na expedição na semana"
                         data-motivo-resumo="162 carregados · média de 27 por dia útil"
@@ -3228,7 +3228,7 @@
                         <div class="kpi-sub exp-cult-bloco" data-cultura="trigo"><span class="kpi-sub-item"><b>liberados</b> 21</span><span class="kpi-sub-item"><b>reprovados</b> 0</span></div>
                         <div class="kpi-sub exp-cult-bloco" data-cultura="soja"><span class="kpi-sub-item"><b>liberados</b> 10</span><span class="kpi-sub-item"><b>reprovados</b> 4</span></div>
                     </div>
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo alert" tabindex="0"
+                    <div data-codigo="AVR-EXP-C" class="kpi-card kpi-card--meta kpi-card--motivo alert" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Cargas reprovadas na semana por cultura"
                         data-motivo-resumo="19 de 162 · 12% das cargas carregadas"
@@ -3245,7 +3245,7 @@
                         <div class="kpi-sub exp-cult-bloco" data-cultura="trigo"><span class="kpi-sub-item"><b>Umidade</b> 0</span><span class="kpi-sub-item"><b>Impureza</b> 0</span><span class="kpi-sub-item"><b>Avariados</b> 0</span></div>
                         <div class="kpi-sub exp-cult-bloco" data-cultura="soja"><span class="kpi-sub-item"><b>Umidade</b> 0</span><span class="kpi-sub-item"><b>Impureza</b> 0</span><span class="kpi-sub-item"><b>Avariados</b> 4</span></div>
                     </div>
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                    <div data-codigo="AVR-EXP-D" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Dosagem de resíduo na semana por cultura"
                         data-motivo-resumo="112,2 t dosadas · 693 kg por carga · uso da margem 89%"
@@ -3264,7 +3264,7 @@
                 </div>
 
                 <div class="kpi-grid kpi-grid--four exp-kpis exp-periodo-bloco" data-periodo="mes">
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                    <div data-codigo="AVR-EXP-A" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Volume carregado no mês por cultura"
                         data-motivo-resumo="26.400 t · 660 caminhões · programado 28.000 t"
@@ -3279,7 +3279,7 @@
                         <div class="kpi-sub exp-cult-bloco exp-meta" data-cultura="trigo" style="--p: 94"><span class="exp-meta-track"><span class="exp-meta-fill"></span></span><span class="kpi-sub-item"><b>Programado</b> 3.500 t</span><span class="kpi-sub-item"><b>Atingido</b> 94%</span></div>
                         <div class="kpi-sub exp-cult-bloco exp-meta" data-cultura="soja" style="--p: 94"><span class="exp-meta-track"><span class="exp-meta-fill"></span></span><span class="kpi-sub-item"><b>Programado</b> 2.570 t</span><span class="kpi-sub-item"><b>Atingido</b> 94%</span></div>
                     </div>
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                    <div data-codigo="AVR-EXP-B" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Caminhões na expedição no mês"
                         data-motivo-resumo="660 carregados · média de 30 por dia"
@@ -3295,7 +3295,7 @@
                         <div class="kpi-sub exp-cult-bloco" data-cultura="trigo"><span class="kpi-sub-item"><b>liberados</b> 83</span><span class="kpi-sub-item"><b>reprovados</b> 0</span></div>
                         <div class="kpi-sub exp-cult-bloco" data-cultura="soja"><span class="kpi-sub-item"><b>liberados</b> 42</span><span class="kpi-sub-item"><b>reprovados</b> 18</span></div>
                     </div>
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo alert" tabindex="0"
+                    <div data-codigo="AVR-EXP-C" class="kpi-card kpi-card--meta kpi-card--motivo alert" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Cargas reprovadas no mês por cultura"
                         data-motivo-resumo="74 de 660 · 11% das cargas carregadas"
@@ -3312,7 +3312,7 @@
                         <div class="kpi-sub exp-cult-bloco" data-cultura="trigo"><span class="kpi-sub-item"><b>Umidade</b> 0</span><span class="kpi-sub-item"><b>Impureza</b> 0</span><span class="kpi-sub-item"><b>Avariados</b> 0</span></div>
                         <div class="kpi-sub exp-cult-bloco" data-cultura="soja"><span class="kpi-sub-item"><b>Umidade</b> 0</span><span class="kpi-sub-item"><b>Impureza</b> 0</span><span class="kpi-sub-item"><b>Avariados</b> 18</span></div>
                     </div>
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                    <div data-codigo="AVR-EXP-D" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Dosagem de resíduo no mês por cultura"
                         data-motivo-resumo="456,8 t dosadas · 692 kg por carga · uso da margem 93%"
@@ -3331,7 +3331,7 @@
                 </div>
 
                 <div class="kpi-grid kpi-grid--four exp-kpis exp-periodo-bloco" data-periodo="ano">
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                    <div data-codigo="AVR-EXP-A" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Volume carregado no ano por cultura"
                         data-motivo-resumo="214.500 t · 5.360 caminhões · programado 220.000 t"
@@ -3346,7 +3346,7 @@
                         <div class="kpi-sub exp-cult-bloco exp-meta" data-cultura="trigo" style="--p: 97"><span class="exp-meta-track"><span class="exp-meta-fill"></span></span><span class="kpi-sub-item"><b>Programado</b> 27.500 t</span><span class="kpi-sub-item"><b>Atingido</b> 97%</span></div>
                         <div class="kpi-sub exp-cult-bloco exp-meta" data-cultura="soja" style="--p: 98"><span class="exp-meta-track"><span class="exp-meta-fill"></span></span><span class="kpi-sub-item"><b>Programado</b> 20.100 t</span><span class="kpi-sub-item"><b>Atingido</b> 98%</span></div>
                     </div>
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                    <div data-codigo="AVR-EXP-B" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Caminhões na expedição no ano"
                         data-motivo-resumo="5.360 carregados · média de 22 por dia"
@@ -3362,7 +3362,7 @@
                         <div class="kpi-sub exp-cult-bloco" data-cultura="trigo"><span class="kpi-sub-item"><b>liberados</b> 670</span><span class="kpi-sub-item"><b>reprovados</b> 0</span></div>
                         <div class="kpi-sub exp-cult-bloco" data-cultura="soja"><span class="kpi-sub-item"><b>liberados</b> 348</span><span class="kpi-sub-item"><b>reprovados</b> 142</span></div>
                     </div>
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo alert" tabindex="0"
+                    <div data-codigo="AVR-EXP-C" class="kpi-card kpi-card--meta kpi-card--motivo alert" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Cargas reprovadas no ano por cultura"
                         data-motivo-resumo="612 de 5.360 · 11% das cargas carregadas"
@@ -3379,7 +3379,7 @@
                         <div class="kpi-sub exp-cult-bloco" data-cultura="trigo"><span class="kpi-sub-item"><b>Umidade</b> 0</span><span class="kpi-sub-item"><b>Impureza</b> 0</span><span class="kpi-sub-item"><b>Avariados</b> 0</span></div>
                         <div class="kpi-sub exp-cult-bloco" data-cultura="soja"><span class="kpi-sub-item"><b>Umidade</b> 0</span><span class="kpi-sub-item"><b>Impureza</b> 0</span><span class="kpi-sub-item"><b>Avariados</b> 142</span></div>
                     </div>
-                    <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                    <div data-codigo="AVR-EXP-D" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Dosagem de resíduo no ano por cultura"
                         data-motivo-resumo="3.718 t dosadas · 694 kg por carga · uso da margem 90%"
@@ -3405,7 +3405,7 @@
                      carregado, tratando o residuo como impureza pura; uso = dosado /
                      (dosado + ainda cabia). O total do periodo mora no 4o cartao. -->
                 <div class="split-grid split-grid--exp">
-                    <div class="content-section exp-periodo-bloco" data-periodo="dia">
+                    <div data-codigo="AVR-EXP-E" class="content-section exp-periodo-bloco" data-periodo="dia">
                         <div class="section-head-text">
                             <h3>QUALIDADE E DOSAGEM POR CULTURA</h3>
                             <p class="section-sub">limites: umidade 14% · impureza 1% · avariados 6%</p>
@@ -3434,7 +3434,7 @@
                         </table>
                     </div>
 
-                    <div class="content-section exp-periodo-bloco" data-periodo="semana">
+                    <div data-codigo="AVR-EXP-E" class="content-section exp-periodo-bloco" data-periodo="semana">
                         <div class="section-head-text">
                             <h3>QUALIDADE E DOSAGEM POR CULTURA</h3>
                             <p class="section-sub">limites: umidade 14% · impureza 1% · avariados 6%</p>
@@ -3463,7 +3463,7 @@
                         </table>
                     </div>
 
-                    <div class="content-section exp-periodo-bloco" data-periodo="mes">
+                    <div data-codigo="AVR-EXP-E" class="content-section exp-periodo-bloco" data-periodo="mes">
                         <div class="section-head-text">
                             <h3>QUALIDADE E DOSAGEM POR CULTURA</h3>
                             <p class="section-sub">limites: umidade 14% · impureza 1% · avariados 6%</p>
@@ -3492,7 +3492,7 @@
                         </table>
                     </div>
 
-                    <div class="content-section exp-periodo-bloco" data-periodo="ano">
+                    <div data-codigo="AVR-EXP-E" class="content-section exp-periodo-bloco" data-periodo="ano">
                         <div class="section-head-text">
                             <h3>QUALIDADE E DOSAGEM POR CULTURA</h3>
                             <p class="section-sub">limites: umidade 14% · impureza 1% · avariados 6%</p>
@@ -3527,7 +3527,7 @@
                          (volume da semana para o destino / 7) e o necessario e o que falta / dias
                          restantes. O entregue soma o que foi para aquele destino no mes. O menu
                          escolhe quais contratos aparecem; a cultura do filtro geral tambem vale. -->
-                    <div class="content-section exp-contratos" id="expContratos">
+                    <div data-codigo="AVR-EXP-F" class="content-section exp-contratos" id="expContratos">
                         <div class="section-head section-head--top">
                             <div class="section-head-text">
                                 <h3>RITMO POR CONTRATO</h3>
@@ -3619,7 +3619,7 @@
                 <!-- Detalhe por carga. Os dois filtros valem aqui: o periodo troca o
                      tbody (um por periodo) e a cultura esconde as linhas cujo
                      data-cultura nao bate. -->
-                <div class="content-section content-section--livre class-detalhe class-detalhe--exp">
+                <div data-codigo="AVR-EXP-G" class="content-section content-section--livre class-detalhe class-detalhe--exp">
                     <div class="section-head section-head--top">
                         <div class="section-head-text">
                             <h3><span class="exp-per" data-periodo="dia">CARGAS CARREGADAS HOJE · DETALHE</span><span class="exp-per" data-periodo="semana">ÚLTIMAS CARGAS DA SEMANA · DETALHE</span><span class="exp-per" data-periodo="mes">ÚLTIMAS CARGAS DO MÊS · DETALHE</span><span class="exp-per" data-periodo="ano">ÚLTIMAS CARGAS DO ANO · DETALHE</span></h3>
@@ -3725,7 +3725,7 @@
                     <div class="pv-col">
                         <!-- Agora em Avare: a cidade encabeca o cartao, no lugar da
                              linha miuda de referencia onde ficava antes -->
-                        <div class="content-section pv-section pv-agora">
+                        <div data-codigo="AVR-PRV-A" class="content-section pv-section pv-agora">
                             <div class="pv-agora-cidade">
                                 <svg class="pv-local-pin" aria-hidden="true"><use href="#ico-local"></use></svg>
                                 <b>Avaré</b><small>SP · agora</small>
@@ -3749,7 +3749,7 @@
                         </div>
 
                         <!-- Próximas 24h: linha de temperatura sobre barras de chuva (mm). -->
-                        <div class="content-section pv-section pv-horas">
+                        <div data-codigo="AVR-PRV-B" class="content-section pv-section pv-horas">
                             <div class="section-head">
                                 <h3>PRÓXIMAS 24 HORAS · AVARÉ</h3>
                                 <span class="pv-legenda"><i class="pv-legenda-temp"></i>temperatura<i class="pv-legenda-chuva"></i>chuva (mm)</span>
@@ -3794,7 +3794,7 @@
                         </div>
 
                         <!-- Próximos 6 dias em tabela: uma linha por dia, faixa térmica na escala 14–32 °C. -->
-                        <div class="content-section pv-section pv-dias">
+                        <div data-codigo="AVR-PRV-C" class="content-section pv-section pv-dias">
                             <div class="section-head">
                                 <h3>PRÓXIMOS 6 DIAS · <span data-pv-dias-cidade>AVARÉ</span></h3>
                                 <span class="pv-legenda"><i class="pv-legenda-faixa"></i>mín – máx na escala 14–32 °C · vento → rajada em km/h</span>
@@ -4286,7 +4286,7 @@
                     <div class="pv-col">
                         <!-- Avare (a unidade, sempre a primeira e marcada) e os cooperados.
                              So a unidade tem destaque: as demais linhas sao todas iguais. -->
-                        <div class="content-section pv-section pv-coop">
+                        <div data-codigo="AVR-PRV-D" class="content-section pv-section pv-coop">
                             <div class="section-head">
                                 <h3>AVARÉ E COOPERADOS · AMANHÃ</h3>
                                 <span class="pv-legenda">a unidade + 6 cooperados</span>
@@ -4308,7 +4308,7 @@
                         </div>
 
                         <!-- Chuva acumulada: o que já caiu e o que vem; base para colheita e umidade do grão -->
-                        <div class="content-section pv-section pv-acum">
+                        <div data-codigo="AVR-PRV-E" class="content-section pv-section pv-acum">
                             <div class="section-head">
                                 <h3>CHUVA ACUMULADA · AVARÉ</h3>
                                 <span class="pv-legenda">média histórica de setembro: 62 mm</span>
