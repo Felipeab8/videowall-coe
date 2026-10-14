@@ -125,7 +125,6 @@
                     <div class="submenu" id="submenu-0" hidden>
                         <button class="menu-item" data-screen="0"><span class="menu-text">Tela da recepção</span></button>
                         <button class="menu-item" data-screen="fluxo"><span class="menu-text">Fluxo de caminhões</span></button>
-                        <button class="menu-item" data-screen="cam-0"><span class="menu-text">Câmera da recepção</span></button>
                     </div>
                 </div>
                 <div class="menu-group" data-group="1">
@@ -135,7 +134,6 @@
                     </button>
                     <div class="submenu" id="submenu-1" hidden>
                         <button class="menu-item" data-screen="1"><span class="menu-text">Tela da classificação</span></button>
-                        <button class="menu-item" data-screen="cam-1"><span class="menu-text">Câmera da classificação</span></button>
                     </div>
                 </div>
                 <div class="menu-group" data-group="2">
@@ -145,7 +143,6 @@
                     </button>
                     <div class="submenu" id="submenu-2" hidden>
                         <button class="menu-item" data-screen="2"><span class="menu-text">Tela das moegas</span></button>
-                        <button class="menu-item" data-screen="cam-2"><span class="menu-text">Câmera das moegas</span></button>
                     </div>
                 </div>
                 <div class="menu-group" data-group="3">
@@ -156,7 +153,6 @@
                     <div class="submenu" id="submenu-3" hidden>
                         <button class="menu-item" data-screen="3"><span class="menu-text">Tela da secagem</span></button>
                         <button class="menu-item" data-screen="4"><span class="menu-text">Produtividade da secagem</span></button>
-                        <button class="menu-item" data-screen="cam-3"><span class="menu-text">Câmera da secagem</span></button>
                     </div>
                 </div>
                 <div class="menu-group" data-group="5">
@@ -166,7 +162,6 @@
                     </button>
                     <div class="submenu" id="submenu-5" hidden>
                         <button class="menu-item" data-screen="5"><span class="menu-text">Silos e aeração</span></button>
-                        <button class="menu-item" data-screen="cam-5"><span class="menu-text">Câmera dos silos</span></button>
                     </div>
                 </div>
                 <div class="menu-group" data-group="6">
@@ -176,7 +171,6 @@
                     </button>
                     <div class="submenu" id="submenu-6" hidden>
                         <button class="menu-item" data-screen="6"><span class="menu-text">Tela do armazém</span></button>
-                        <button class="menu-item" data-screen="cam-6"><span class="menu-text">Câmera do armazém</span></button>
                     </div>
                 </div>
                 <div class="menu-group" data-group="7">
@@ -186,11 +180,25 @@
                     </button>
                     <div class="submenu" id="submenu-7" hidden>
                         <button class="menu-item" data-screen="7"><span class="menu-text">Tela da expedição</span></button>
-                        <button class="menu-item" data-screen="cam-7"><span class="menu-text">Câmera da expedição</span></button>
                     </div>
                 </div>
                 <button class="menu-item menu-item--solo" data-screen="8"><span class="menu-text">Previsão do tempo</span></button>
             </nav>
+
+            <!-- Câmeras: seção própria, com todas as câmeras de Avaré numa tela
+                 (um quadro por operação). -->
+            <div class="sidebar-section">
+                <div class="sidebar-header">CÂMERAS</div>
+                <nav class="menu" data-unidade="Unidade Avaré" aria-label="Câmeras">
+                    <button class="menu-item menu-item--geral" data-screen="cameras"><span class="menu-text">Todas as câmeras</span></button>
+                    <button class="menu-item menu-item--solo" data-screen="cam-recepcao"><span class="menu-text">Recepção</span></button>
+                    <button class="menu-item menu-item--solo" data-screen="cam-classificacao"><span class="menu-text">Classificação</span></button>
+                    <button class="menu-item menu-item--solo" data-screen="cam-moegas"><span class="menu-text">Moegas · Tombadores · Caçamba</span></button>
+                    <button class="menu-item menu-item--solo" data-screen="cam-fornalha"><span class="menu-text">Fornalha · Elevador</span></button>
+                    <button class="menu-item menu-item--solo" data-screen="cam-silos"><span class="menu-text">Silos · Armazém</span></button>
+                    <button class="menu-item menu-item--solo" data-screen="cam-expedicao"><span class="menu-text">Expedição</span></button>
+                </nav>
+            </div>
 
             <!-- Demais unidades: telas comparando as outras unidades lado a lado,
                  com numeração própria. data-unidade vai para o cabeçalho da página. -->
@@ -4328,22 +4336,377 @@
                 </div>
             </section>
 
-            <!-- Camera 0: Câmera · Recepção -->
-            <section class="screen screen--camera" id="screen-cam-0">
+            <!-- Câmeras: todas numa tela só, um quadro por área, na ordem do fluxo
+                 do grão (levantamento de câmeras da unidade, out/2026). A grade tem
+                 40 colunas: --span dá a largura do quadro e --cols as colunas de
+                 câmera dentro dele (sempre duas linhas; com número ímpar de câmeras,
+                 a última ocupa duas colunas para não sobrar buraco). O título de
+                 cada quadro abre a tela só daquela área (data-goto). -->
+            <section class="screen screen--camera" id="screen-cameras">
                 <div class="screen-header">
                     <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
                     <div class="screen-title-section">
-                        <h2>Câmera · Recepção</h2>
-                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-01 · PÁTIO 1 · CAM-02 · PÁTIO 2</div>
+                        <h2>Câmeras da Unidade</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • 32 CÂMERAS · 6 ÁREAS</div>
                     </div>
                 </div>
 
-                <div class="camera-wall">
+                <div class="cam-ops">
+                    <div class="cam-op" style="--span: 8; --cols: 2">
+                        <button class="cam-op-head" type="button" data-goto="cam-recepcao" title="Abrir câmeras: Recepção">
+                            <span class="cam-op-name">Recepção</span>
+                            <span class="cam-op-count">3 câmeras</span>
+                        </button>
+                        <div class="camera-wall cam-op-grid">
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-01 · ENTRADA DO PÁTIO</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-02 · VISÃO GERAL DO PÁTIO</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-03 · BALANÇAS DE PESAGEM</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cam-op" style="--span: 12; --cols: 3">
+                        <button class="cam-op-head" type="button" data-goto="cam-classificacao" title="Abrir câmeras: Classificação">
+                            <span class="cam-op-name">Classificação</span>
+                            <span class="cam-op-count">5 câmeras</span>
+                        </button>
+                        <div class="camera-wall cam-op-grid">
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-04 · SALA DE AMOSTRAGEM</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-05 · LABORATÓRIO DE AMOSTRAGEM</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-06 · COLETA DE AMOSTRA · LADO DIREITO</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-07 · COLETA DE AMOSTRA · LADO ESQUERDO</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-08 · FILA DE CAMINHÕES PARA AS MOEGAS</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cam-op" style="--span: 20; --cols: 5">
+                        <button class="cam-op-head" type="button" data-goto="cam-moegas" title="Abrir câmeras: Moegas · Tombadores · Caçamba">
+                            <span class="cam-op-name">Moegas · Tombadores · Caçamba</span>
+                            <span class="cam-op-count">9 câmeras</span>
+                        </button>
+                        <div class="camera-wall cam-op-grid">
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-09 · MOEGAS 1 E 2</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-10 · MOEGAS 3 E 4</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-11 · MOEGAS 5 E 6</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-12 · CORRENTE DO TOMBADOR 1</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-13 · CORRENTE DO TOMBADOR 2</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-14 · INÍCIO DO TÚNEL</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-15 · MEIO DO TÚNEL</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-16 · FINAL DO TÚNEL</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-17 · CAÇAMBA DE RESÍDUOS</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cam-op" style="--span: 10; --cols: 2">
+                        <button class="cam-op-head" type="button" data-goto="cam-fornalha" title="Abrir câmeras: Fornalha · Elevador">
+                            <span class="cam-op-name">Fornalha · Elevador</span>
+                            <span class="cam-op-count">4 câmeras</span>
+                        </button>
+                        <div class="camera-wall cam-op-grid">
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-18 · DEPÓSITO DE CAVACO</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-19 · ALIMENTAÇÃO DE CAVACO · FORNALHA 1</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-20 · ALIMENTAÇÃO DE CAVACO · FORNALHA 2</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-21 · TOPO DO ELEVADOR · FUMAÇA DOS SECADORES</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cam-op" style="--span: 20; --cols: 4">
+                        <button class="cam-op-head" type="button" data-goto="cam-silos" title="Abrir câmeras: Silos · Armazém">
+                            <span class="cam-op-name">Silos · Armazém</span>
+                            <span class="cam-op-count">7 câmeras</span>
+                        </button>
+                        <div class="camera-wall cam-op-grid">
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-22 · PAINEL DO SILO 1</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-23 · INÍCIO DA ESTEIRA DOS SILOS</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-24 · MEIO DA ESTEIRA DOS SILOS</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-25 · FIM DA ESTEIRA DOS SILOS</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-26 · INÍCIO DO ARMAZÉM</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-27 · MEIO DO ARMAZÉM</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-28 · FIM DO ARMAZÉM</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cam-op" style="--span: 10; --cols: 2">
+                        <button class="cam-op-head" type="button" data-goto="cam-expedicao" title="Abrir câmeras: Expedição">
+                            <span class="cam-op-name">Expedição</span>
+                            <span class="cam-op-count">4 câmeras</span>
+                        </button>
+                        <div class="camera-wall cam-op-grid">
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-29 · SALA DE RESÍDUOS</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-30 · CARREGAMENTO PELO ARMAZÉM</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-31 · CARREGAMENTO PELOS SILOS</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="camera-tile">
+                                <figure class="camera-frame" data-cam-src="">
+                                    <div class="camera-placeholder">
+                                        <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                        <span class="camera-name">CAM-32 · OPERADOR</span>
+                                        <span class="camera-state">AGUARDANDO SINAL</span>
+                                    </div>
+                                </figure>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Câmeras · Recepção: só as câmeras da área, em tamanho grande -->
+            <section class="screen screen--camera screen--camera-area" id="screen-cam-recepcao">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
+                    <div class="screen-title-section">
+                        <h2>Câmeras · Recepção</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • 3 CÂMERAS · CAM-01 A CAM-03</div>
+                    </div>
+                </div>
+
+                <div class="camera-wall cam-op-grid" style="--cols: 2">
                     <div class="camera-tile">
                         <figure class="camera-frame" data-cam-src="">
                             <div class="camera-placeholder">
                                 <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
-                                <span class="camera-name">CAM-01 · PÁTIO 1</span>
+                                <span class="camera-name">CAM-01 · ENTRADA DO PÁTIO</span>
                                 <span class="camera-state">AGUARDANDO SINAL</span>
                             </div>
                         </figure>
@@ -4352,7 +4715,16 @@
                         <figure class="camera-frame" data-cam-src="">
                             <div class="camera-placeholder">
                                 <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
-                                <span class="camera-name">CAM-02 · PÁTIO 2</span>
+                                <span class="camera-name">CAM-02 · VISÃO GERAL DO PÁTIO</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-03 · BALANÇAS DE PESAGEM</span>
                                 <span class="camera-state">AGUARDANDO SINAL</span>
                             </div>
                         </figure>
@@ -4360,22 +4732,22 @@
                 </div>
             </section>
 
-            <!-- Camera 1: Câmera · Classificação -->
-            <section class="screen screen--camera" id="screen-cam-1">
+            <!-- Câmeras · Classificação: só as câmeras da área, em tamanho grande -->
+            <section class="screen screen--camera screen--camera-area" id="screen-cam-classificacao">
                 <div class="screen-header">
                     <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
                     <div class="screen-title-section">
-                        <h2>Câmera · Classificação</h2>
-                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-01 · LADO ESQUERDO · CAM-02 · LADO DIREITO</div>
+                        <h2>Câmeras · Classificação</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • 5 CÂMERAS · CAM-04 A CAM-08</div>
                     </div>
                 </div>
 
-                <div class="camera-wall">
+                <div class="camera-wall cam-op-grid" style="--cols: 3">
                     <div class="camera-tile">
                         <figure class="camera-frame" data-cam-src="">
                             <div class="camera-placeholder">
                                 <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
-                                <span class="camera-name">CAM-01 · LADO ESQUERDO</span>
+                                <span class="camera-name">CAM-04 · SALA DE AMOSTRAGEM</span>
                                 <span class="camera-state">AGUARDANDO SINAL</span>
                             </div>
                         </figure>
@@ -4384,7 +4756,34 @@
                         <figure class="camera-frame" data-cam-src="">
                             <div class="camera-placeholder">
                                 <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
-                                <span class="camera-name">CAM-02 · LADO DIREITO</span>
+                                <span class="camera-name">CAM-05 · LABORATÓRIO DE AMOSTRAGEM</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-06 · COLETA DE AMOSTRA · LADO DIREITO</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-07 · COLETA DE AMOSTRA · LADO ESQUERDO</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-08 · FILA DE CAMINHÕES PARA AS MOEGAS</span>
                                 <span class="camera-state">AGUARDANDO SINAL</span>
                             </div>
                         </figure>
@@ -4392,22 +4791,22 @@
                 </div>
             </section>
 
-            <!-- Camera 2: Câmera · Moegas -->
-            <section class="screen screen--camera" id="screen-cam-2">
+            <!-- Câmeras · Moegas · Tombadores · Caçamba: só as câmeras da área, em tamanho grande -->
+            <section class="screen screen--camera screen--camera-area" id="screen-cam-moegas">
                 <div class="screen-header">
                     <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
                     <div class="screen-title-section">
-                        <h2>Câmera · Moegas</h2>
-                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-03 · MOEGAS 1 E 2 · CAM-04 · MOEGAS 3 E 4 · CAM-05 · MOEGAS 5 E 6</div>
+                        <h2>Câmeras · Moegas · Tombadores · Caçamba</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • 9 CÂMERAS · CAM-09 A CAM-17</div>
                     </div>
                 </div>
 
-                <div class="camera-wall">
+                <div class="camera-wall cam-op-grid" style="--cols: 5">
                     <div class="camera-tile">
                         <figure class="camera-frame" data-cam-src="">
                             <div class="camera-placeholder">
                                 <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
-                                <span class="camera-name">CAM-03 · MOEGAS 1 E 2</span>
+                                <span class="camera-name">CAM-09 · MOEGAS 1 E 2</span>
                                 <span class="camera-state">AGUARDANDO SINAL</span>
                             </div>
                         </figure>
@@ -4416,7 +4815,7 @@
                         <figure class="camera-frame" data-cam-src="">
                             <div class="camera-placeholder">
                                 <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
-                                <span class="camera-name">CAM-04 · MOEGAS 3 E 4</span>
+                                <span class="camera-name">CAM-10 · MOEGAS 3 E 4</span>
                                 <span class="camera-state">AGUARDANDO SINAL</span>
                             </div>
                         </figure>
@@ -4425,7 +4824,61 @@
                         <figure class="camera-frame" data-cam-src="">
                             <div class="camera-placeholder">
                                 <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
-                                <span class="camera-name">CAM-05 · MOEGAS 5 E 6</span>
+                                <span class="camera-name">CAM-11 · MOEGAS 5 E 6</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-12 · CORRENTE DO TOMBADOR 1</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-13 · CORRENTE DO TOMBADOR 2</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-14 · INÍCIO DO TÚNEL</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-15 · MEIO DO TÚNEL</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-16 · FINAL DO TÚNEL</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-17 · CAÇAMBA DE RESÍDUOS</span>
                                 <span class="camera-state">AGUARDANDO SINAL</span>
                             </div>
                         </figure>
@@ -4433,22 +4886,49 @@
                 </div>
             </section>
 
-            <!-- Camera 3: Câmera · Secagem -->
-            <section class="screen screen--camera" id="screen-cam-3">
+            <!-- Câmeras · Fornalha · Elevador: só as câmeras da área, em tamanho grande -->
+            <section class="screen screen--camera screen--camera-area" id="screen-cam-fornalha">
                 <div class="screen-header">
                     <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
                     <div class="screen-title-section">
-                        <h2>Câmera · Secagem</h2>
-                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-06 · TORRE DE SECAGEM</div>
+                        <h2>Câmeras · Fornalha · Elevador</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • 4 CÂMERAS · CAM-18 A CAM-21</div>
                     </div>
                 </div>
 
-                <div class="camera-wall">
+                <div class="camera-wall cam-op-grid" style="--cols: 2">
                     <div class="camera-tile">
                         <figure class="camera-frame" data-cam-src="">
                             <div class="camera-placeholder">
                                 <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
-                                <span class="camera-name">CAM-06 · TORRE DE SECAGEM</span>
+                                <span class="camera-name">CAM-18 · DEPÓSITO DE CAVACO</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-19 · ALIMENTAÇÃO DE CAVACO · FORNALHA 1</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-20 · ALIMENTAÇÃO DE CAVACO · FORNALHA 2</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-21 · TOPO DO ELEVADOR · FUMAÇA DOS SECADORES</span>
                                 <span class="camera-state">AGUARDANDO SINAL</span>
                             </div>
                         </figure>
@@ -4456,22 +4936,76 @@
                 </div>
             </section>
 
-            <!-- Camera 5: Câmera · Silos -->
-            <section class="screen screen--camera" id="screen-cam-5">
+            <!-- Câmeras · Silos · Armazém: só as câmeras da área, em tamanho grande -->
+            <section class="screen screen--camera screen--camera-area" id="screen-cam-silos">
                 <div class="screen-header">
                     <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
                     <div class="screen-title-section">
-                        <h2>Câmera · Silos</h2>
-                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-07 · TOPO DOS SILOS</div>
+                        <h2>Câmeras · Silos · Armazém</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • 7 CÂMERAS · CAM-22 A CAM-28</div>
                     </div>
                 </div>
 
-                <div class="camera-wall">
+                <div class="camera-wall cam-op-grid" style="--cols: 4">
                     <div class="camera-tile">
                         <figure class="camera-frame" data-cam-src="">
                             <div class="camera-placeholder">
                                 <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
-                                <span class="camera-name">CAM-07 · TOPO DOS SILOS</span>
+                                <span class="camera-name">CAM-22 · PAINEL DO SILO 1</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-23 · INÍCIO DA ESTEIRA DOS SILOS</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-24 · MEIO DA ESTEIRA DOS SILOS</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-25 · FIM DA ESTEIRA DOS SILOS</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-26 · INÍCIO DO ARMAZÉM</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-27 · MEIO DO ARMAZÉM</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-28 · FIM DO ARMAZÉM</span>
                                 <span class="camera-state">AGUARDANDO SINAL</span>
                             </div>
                         </figure>
@@ -4479,22 +5013,22 @@
                 </div>
             </section>
 
-            <!-- Camera 6: Câmera · Armazém -->
-            <section class="screen screen--camera" id="screen-cam-6">
+            <!-- Câmeras · Expedição: só as câmeras da área, em tamanho grande -->
+            <section class="screen screen--camera screen--camera-area" id="screen-cam-expedicao">
                 <div class="screen-header">
                     <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
                     <div class="screen-title-section">
-                        <h2>Câmera · Armazém</h2>
-                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-08 · ARMAZÉM ÁREA 1 · CAM-11 · ARMAZÉM ÁREA 2</div>
+                        <h2>Câmeras · Expedição</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • 4 CÂMERAS · CAM-29 A CAM-32</div>
                     </div>
                 </div>
 
-                <div class="camera-wall">
+                <div class="camera-wall cam-op-grid" style="--cols: 2">
                     <div class="camera-tile">
                         <figure class="camera-frame" data-cam-src="">
                             <div class="camera-placeholder">
                                 <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
-                                <span class="camera-name">CAM-08 · ARMAZÉM ÁREA 1</span>
+                                <span class="camera-name">CAM-29 · SALA DE RESÍDUOS</span>
                                 <span class="camera-state">AGUARDANDO SINAL</span>
                             </div>
                         </figure>
@@ -4503,30 +5037,7 @@
                         <figure class="camera-frame" data-cam-src="">
                             <div class="camera-placeholder">
                                 <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
-                                <span class="camera-name">CAM-11 · ARMAZÉM ÁREA 2</span>
-                                <span class="camera-state">AGUARDANDO SINAL</span>
-                            </div>
-                        </figure>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Camera 7: Câmera · Expedição -->
-            <section class="screen screen--camera" id="screen-cam-7">
-                <div class="screen-header">
-                    <div class="screen-badge screen-badge--cam"><svg class="badge-icon" aria-hidden="true"><use href="#ico-camera"></use></svg></div>
-                    <div class="screen-title-section">
-                        <h2>Câmera · Expedição</h2>
-                        <div class="screen-meta"><span class="live-dot"></span>AO VIVO • CAM-09 · PLATAFORMA DE CARREGAMENTO · CAM-10 · POSTO DE DOSAGEM</div>
-                    </div>
-                </div>
-
-                <div class="camera-wall">
-                    <div class="camera-tile">
-                        <figure class="camera-frame" data-cam-src="">
-                            <div class="camera-placeholder">
-                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
-                                <span class="camera-name">CAM-09 · PLATAFORMA DE CARREGAMENTO</span>
+                                <span class="camera-name">CAM-30 · CARREGAMENTO PELO ARMAZÉM</span>
                                 <span class="camera-state">AGUARDANDO SINAL</span>
                             </div>
                         </figure>
@@ -4535,7 +5046,16 @@
                         <figure class="camera-frame" data-cam-src="">
                             <div class="camera-placeholder">
                                 <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
-                                <span class="camera-name">CAM-10 · POSTO DE DOSAGEM</span>
+                                <span class="camera-name">CAM-31 · CARREGAMENTO PELOS SILOS</span>
+                                <span class="camera-state">AGUARDANDO SINAL</span>
+                            </div>
+                        </figure>
+                    </div>
+                    <div class="camera-tile">
+                        <figure class="camera-frame" data-cam-src="">
+                            <div class="camera-placeholder">
+                                <svg class="camera-glyph" aria-hidden="true"><use href="#ico-camera"></use></svg>
+                                <span class="camera-name">CAM-32 · OPERADOR</span>
                                 <span class="camera-state">AGUARDANDO SINAL</span>
                             </div>
                         </figure>
