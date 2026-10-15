@@ -2014,7 +2014,7 @@
                                     <div data-codigo="AVR-SPR-B" class="secador-bloco secador-bloco--fornalha">
                                         <span class="secador-bloco-nome">Fornalha</span>
                                         <div class="secador-bloco-dados">
-                                            <span class="secador-dado"><small>temperatura setada</small><b>150°C</b></span>
+                                            <span class="secador-dado"><small>temperatura desejada</small><b>150°C</b></span>
                                             <span class="secador-dado"><small>temperatura da fornalha</small><b>148°C</b></span>
                                         </div>
                                     </div>
@@ -2128,7 +2128,7 @@
                                     <div data-codigo="AVR-SPR-B" class="secador-bloco secador-bloco--fornalha">
                                         <span class="secador-bloco-nome">Fornalha</span>
                                         <div class="secador-bloco-dados">
-                                            <span class="secador-dado"><small>temperatura setada</small><b>140°C</b></span>
+                                            <span class="secador-dado"><small>temperatura desejada</small><b>140°C</b></span>
                                             <span class="secador-dado"><small>temperatura da fornalha</small><b>138°C</b></span>
                                         </div>
                                     </div>
@@ -2645,7 +2645,8 @@
                                 <span class="manut-kpi"><b>DISPONIBILIDADE FÍSICA</b>96,4<small>%</small><span class="manut-kpi-track"><i class="is-ok" style="width: 96.4%"></i></span></span>
                                 <span class="manut-kpi"><b>TEMPO PARADO</b>34<small>min</small><em>de 15h40 programadas</em></span>
                                 <span class="manut-kpi"><b>PARADAS</b>1<em>programada</em></span>
-                                <span class="manut-kpi"><b>MTTR · MTBF</b>34<small>min</small><em>MTBF 15h05</em></span>
+                                <span class="manut-kpi"><b>MTTR</b>34<small>min</small><em>tempo médio de reparo</em></span>
+                                <span class="manut-kpi"><b>MTBF</b>15h05<em>tempo médio entre falhas</em></span>
                             </div>
                             <div class="manut-secadores">
                                 <div class="manut-disp-linha">
@@ -2668,7 +2669,8 @@
                                 <span class="manut-kpi"><b>DISPONIBILIDADE FÍSICA</b>94,5<small>%</small><span class="manut-kpi-track"><i class="is-atencao" style="width: 94.5%"></i></span></span>
                                 <span class="manut-kpi"><b>TEMPO PARADO</b>1h23<em>de 25h10 programadas</em></span>
                                 <span class="manut-kpi"><b>PARADAS</b>3<em>todas programadas</em></span>
-                                <span class="manut-kpi"><b>MTTR · MTBF</b>28<small>min</small><em>MTBF 7h55</em></span>
+                                <span class="manut-kpi"><b>MTTR</b>28<small>min</small><em>tempo médio de reparo</em></span>
+                                <span class="manut-kpi"><b>MTBF</b>7h55<em>tempo médio entre falhas</em></span>
                             </div>
                             <div class="manut-secadores">
                                 <div class="manut-disp-linha">
@@ -2691,7 +2693,8 @@
                                 <span class="manut-kpi"><b>DISPONIBILIDADE FÍSICA</b>94,0<small>%</small><span class="manut-kpi-track"><i class="is-atencao" style="width: 94%"></i></span></span>
                                 <span class="manut-kpi"><b>TEMPO PARADO</b>8h50<em>de 147h programadas</em></span>
                                 <span class="manut-kpi"><b>PARADAS</b>10<em>7 programadas · 3 não programadas</em></span>
-                                <span class="manut-kpi"><b>MTTR · MTBF</b>53<small>min</small><em>MTBF 13h50</em></span>
+                                <span class="manut-kpi"><b>MTTR</b>53<small>min</small><em>tempo médio de reparo</em></span>
+                                <span class="manut-kpi"><b>MTBF</b>13h50<em>tempo médio entre falhas</em></span>
                             </div>
                             <div class="manut-secadores">
                                 <div class="manut-disp-linha">
@@ -2714,7 +2717,8 @@
                                 <span class="manut-kpi"><b>DISPONIBILIDADE FÍSICA</b>91,5<small>%</small><span class="manut-kpi-track"><i class="is-ruim" style="width: 91.5%"></i></span></span>
                                 <span class="manut-kpi"><b>TEMPO PARADO</b>40h30<em>de 476h programadas</em></span>
                                 <span class="manut-kpi"><b>PARADAS</b>37<em>19 programadas · 18 não programadas</em></span>
-                                <span class="manut-kpi"><b>MTTR · MTBF</b>1h06<em>MTBF 11h45</em></span>
+                                <span class="manut-kpi"><b>MTTR</b>1h06<em>tempo médio de reparo</em></span>
+                                <span class="manut-kpi"><b>MTBF</b>11h45<em>tempo médio entre falhas</em></span>
                             </div>
                             <div class="manut-secadores">
                                 <div class="manut-disp-linha">
@@ -5889,7 +5893,7 @@
                         <span class="du-legenda">máx. do ar: milho 100 · sorgo 90 · trigo 80 °C · saída do ar até 50 °C</span>
                     </div>
                     <!-- Uma linha por secador; os dois da unidade ficam juntos (a unidade só
-                         na primeira linha). Fornalha = real / setada; ar do secador = real /
+                         na primeira linha). Fornalha = real / desejada; ar do secador = real /
                          máximo da cultura; saída do ar acima de 50 °C é risco de incêndio.
                          Massa = temperatura · umidade na entrada e na saída do secador;
                          umidade laranja = entrada acima de 17,5% ou saída acima do alvo
@@ -5899,7 +5903,7 @@
                     <div class="du-tabela-wrap">
                         <table class="pv-tabela du-tabela du-tabela--sec">
                             <thead>
-                                <tr><th>Unidade</th><th>Secador · status</th><th class="num">Prod.<small>t/h</small></th><th>Cultura</th><th class="num">Fornalha<small>real / setada</small></th><th class="num">Ar do secador<small>real / máx.</small></th><th class="num">Saída do ar</th><th class="num">Massa entrada<small>temp. · umidade</small></th><th class="num">Massa saída<small>temp. · umidade</small></th></tr>
+                                <tr><th>Unidade</th><th>Secador · status</th><th class="num">Prod.<small>t/h</small></th><th>Cultura</th><th class="num">Fornalha<small>real / desejada</small></th><th class="num">Ar do secador<small>real / máx.</small></th><th class="num">Saída do ar</th><th class="num">Massa entrada<small>temp. · umidade</small></th><th class="num">Massa saída<small>temp. · umidade</small></th></tr>
                             </thead>
                             <tbody>
                                 <tr class="du-st--alerta du-sec-par">
