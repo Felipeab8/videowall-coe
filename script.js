@@ -1163,6 +1163,8 @@ function applyEditMode(enabled) {
         limparFiltrosGrao();
         limparFiltrosFluxo();
         limparFiltrosClassificacao();
+        limparFiltrosMoega();
+        limparFiltrosSilo();
     }
     applyTextEditing(enabled);
     setupDragHandles(enabled);
@@ -3964,10 +3966,16 @@ function limparFiltrosGrao() {
 // ============================================
 // As janelas sao encaixadas: uma linha marcada com "hoje" aparece em hoje,
 // 7 dias e 30 dias; o CSS esconde as que estao fora da janela escolhida.
-const JANELAS_FLUXO = ['turno', 'hoje', '7d', '30d'];
+// Os turnos nao encaixam (o 3o atravessa a meia-noite): cada linha diz em
+// data-turno de qual turno e' — duas na troca, que se cruza por 20 minutos.
+const JANELAS_FLUXO = ['hoje', '7d', '30d'];
+const TURNOS_FLUXO = ['t1', 't2', 't3'];
 
 function noPeriodoFluxo(tr, periodo) {
-    const linha = JANELAS_FLUXO.indexOf(tr.dataset.janela || 'turno');
+    if (TURNOS_FLUXO.includes(periodo)) {
+        return (tr.dataset.turno || '').split(/\s+/).includes(periodo);
+    }
+    const linha = JANELAS_FLUXO.indexOf(tr.dataset.janela || 'hoje');
     const limite = JANELAS_FLUXO.indexOf(periodo);
     if (linha < 0 || limite < 0) return true;
     return linha <= limite;
@@ -4410,6 +4418,33 @@ function escolherPeriodoMoega(alvo) {
     scheduleFit();
 }
 
+// A cultura tambem e' da tela (data-moega-cultura): o CSS apaga as moegas e os
+// pulmoes de outra cultura sem tirar do lugar. O titulo da grade diz a cultura
+// e avisa quando nenhuma moega esta nela (a vazia nao conta: so pode receber).
+function escolherCulturaMoega(alvo) {
+    const tela = alvo.closest('.screen--moegas');
+    const cultura = alvo.dataset.moegaCultura;
+    if (!tela || !cultura) return;
+    tela.dataset.moegaCultura = cultura;
+    tela.querySelectorAll('button[data-moega-cultura]').forEach((btn) => {
+        const ativo = btn.dataset.moegaCultura === cultura;
+        btn.classList.toggle('is-active', ativo);
+        btn.setAttribute('aria-pressed', String(ativo));
+    });
+    const nome = NOME_CULTURA_FLUXO[cultura] || cultura;
+    const temMoega = !!tela.querySelector('.moega-item[data-cultura="' + cultura + '"]');
+    tela.querySelectorAll('[data-moega-cultura-nome]').forEach((el) => {
+        el.textContent = cultura === 'todas' ? ''
+            : ' · ' + (temMoega ? nome : 'nenhuma moega com ' + nome + ' agora');
+    });
+}
+
+// o editor salva o HTML como esta: a tela volta para todas as culturas antes
+function limparFiltrosMoega() {
+    const todas = document.querySelector('.screen--moegas button[data-moega-cultura="todas"]');
+    if (todas && !todas.classList.contains('is-active')) escolherCulturaMoega(todas);
+}
+
 // ============================================
 // FLUXO · PERIODO E CULTURA DA TELA
 // A section guarda as duas escolhas em data-fluxo-periodo / data-fluxo-cultura.
@@ -4418,7 +4453,10 @@ function escolherPeriodoMoega(alvo) {
 // estado e tempo medio) e esconde as linhas fora da janela; o filtro da
 // tabela recalcula a contagem dos selos. Delegado no documento.
 // ============================================
-const NOME_PERIODO_FLUXO = { turno: 'turno', hoje: 'hoje', '7d': '7 dias', '30d': '30 dias' };
+const NOME_PERIODO_FLUXO = {
+    t1: '1º turno 07:00–16:20', t2: '2º turno 16:00–22:20', t3: '3º turno 22:00–07:00',
+    hoje: 'hoje', '7d': '7 dias', '30d': '30 dias',
+};
 const NOME_CULTURA_FLUXO = { milho: 'milho', sorgo: 'sorgo', trigo: 'trigo', soja: 'soja' };
 
 function escolherPeriodoFluxo(alvo) {
@@ -4493,27 +4531,34 @@ function escolherCulturaExp(alvo) {
 
 // ============================================
 // EXPEDICAO · RITMO POR CONTRATO
-// O menu "Contratos" guarda a escolha nos proprios checkboxes; cada linha
-// .exp-contrato fica hidden quando o seu nao esta marcado. A cultura do
-// filtro geral esconde por CSS, entao a mensagem de vazio considera as duas.
+// O menu "Contrato" escolhe UM contrato por vez (radios), para a secao nao
+// mudar de tamanho: so a linha escolhida aparece. Se a cultura do filtro
+// geral nao for a do escolhido, passa para o primeiro contrato da cultura.
 // Delegado no documento porque o editor remonta o palco.
 // ============================================
 function atualizarContratos(bloco) {
     const tela = bloco.closest('#screen-7');
     const cultura = tela ? tela.dataset.expCultura : 'todas';
-    const opcoes = bloco.querySelectorAll('.exp-contrato-opcao input');
-    const marcados = new Set();
-    opcoes.forEach((input) => {
-        if (input.checked) marcados.add(input.value);
-    });
+    const daCultura = (linha) => !cultura || cultura === 'todas' || linha.dataset.cultura === cultura;
+    const opcoes = [...bloco.querySelectorAll('.exp-contrato-opcao input')];
+    const linhaDe = (input) => bloco.querySelector('.exp-contrato[data-contrato="' + input.value + '"]');
+    let escolhido = opcoes.find((input) => input.checked);
+    if (!escolhido || !linhaDe(escolhido) || !daCultura(linhaDe(escolhido))) {
+        const primeiro = opcoes.find((input) => linhaDe(input) && daCultura(linhaDe(input)));
+        if (primeiro) {
+            primeiro.checked = true;
+            escolhido = primeiro;
+        }
+    }
     let visiveis = 0;
     bloco.querySelectorAll('.exp-contrato').forEach((linha) => {
-        const escolhido = marcados.has(linha.dataset.contrato);
-        linha.hidden = !escolhido;
-        if (escolhido && (!cultura || cultura === 'todas' || linha.dataset.cultura === cultura)) visiveis++;
+        const mostra = !!escolhido && linha.dataset.contrato === escolhido.value;
+        linha.hidden = !mostra;
+        if (mostra && daCultura(linha)) visiveis++;
     });
     const conta = bloco.querySelector('.exp-contratos-conta');
-    if (conta) conta.textContent = marcados.size + ' de ' + opcoes.length;
+    const nome = escolhido && escolhido.closest('.exp-contrato-opcao').querySelector('b');
+    if (conta) conta.textContent = nome ? nome.textContent : '—';
     const vazio = bloco.querySelector('.exp-contratos-vazio');
     if (vazio) vazio.hidden = visiveis > 0;
     scheduleFit();
@@ -4544,22 +4589,14 @@ document.addEventListener('click', (e) => {
         abrirMenuContratos(bloco, btn.getAttribute('aria-expanded') !== 'true');
         return;
     }
-    const acao = e.target.closest('[data-contratos-acao]');
-    if (acao) {
-        const tipo = acao.dataset.contratosAcao;
-        bloco.querySelectorAll('.exp-contrato-opcao input').forEach((input) => {
-            const linha = bloco.querySelector('.exp-contrato[data-contrato="' + input.value + '"]');
-            const foraDoRitmo = !!linha && !linha.classList.contains('exp-contrato--ok');
-            input.checked = tipo === 'todos' || (tipo === 'atrasados' && foraDoRitmo);
-        });
-        atualizarContratos(bloco);
-    }
 });
 
 document.addEventListener('change', (e) => {
     if (!(e.target instanceof Element) || !e.target.matches('.exp-contrato-opcao input')) return;
     const bloco = e.target.closest('.exp-contratos');
-    if (bloco) atualizarContratos(bloco);
+    if (!bloco) return;
+    atualizarContratos(bloco);
+    abrirMenuContratos(bloco, false);
 });
 
 document.addEventListener('keydown', (e) => {
@@ -4650,6 +4687,20 @@ document.addEventListener('click', (e) => {
         escolherPeriodoProd(periodoProd);
         return;
     }
+    // a vista do grafico de chuva tambem usa a pilula do fluxo
+    const vistaChuva = e.target.closest('button[data-pv-chuva]');
+    if (vistaChuva) {
+        e.preventDefault();
+        escolherVistaChuva(vistaChuva);
+        return;
+    }
+    // os botoes de periodo dos silos usam a pilula do fluxo: vem antes dela
+    const periodoSilo = e.target.closest('button[data-silo-periodo]');
+    if (periodoSilo) {
+        e.preventDefault();
+        escolherPeriodoSilo(periodoSilo);
+        return;
+    }
     const periodoFluxo = e.target.closest('.fluxo-periodo-btn');
     if (periodoFluxo) {
         e.preventDefault();
@@ -4666,6 +4717,12 @@ document.addEventListener('click', (e) => {
     if (periodo) {
         e.preventDefault();
         escolherPeriodoMoega(periodo);
+        return;
+    }
+    const culturaMoega = e.target.closest('button[data-moega-cultura]');
+    if (culturaMoega) {
+        e.preventDefault();
+        escolherCulturaMoega(culturaMoega);
     }
 });
 
@@ -4923,7 +4980,7 @@ const HORA_MS = 3600000;
 // Pontos [x, y] da curva no viewBox do sparkline; usados tanto para
 // desenhar quanto para pendurar os rótulos de temperatura sobre a linha.
 // A série é alinhada pelo fim: se faltar leitura antiga, o começo fica vazio.
-function pontosSparkline(temps) {
+function pontosSparkline(temps, slots = SPARK_SLOTS) {
     const PAD = 2.5;
     let lo = Math.min(...temps);
     let hi = Math.max(...temps);
@@ -4932,9 +4989,9 @@ function pontosSparkline(temps) {
         lo = meio - 0.25;
         hi = meio + 0.25;
     }
-    const vazio = SPARK_SLOTS + 1 - temps.length;
+    const vazio = slots + 1 - temps.length;
     return temps.map((t, i) => {
-        const x = ((vazio + i) / SPARK_SLOTS) * SPARK_W;
+        const x = ((vazio + i) / slots) * SPARK_W;
         const y = PAD + (1 - (t - lo) / (hi - lo)) * (SPARK_H - PAD * 2);
         return [x, y];
     });
@@ -4949,11 +5006,11 @@ function caminho(pontos) {
 // hist e proj em sequência: o último ponto do histórico é o fechamento da
 // contagem, onde o eixo cheio termina e a linha passa a tracejada. As
 // marcas ficam no começo, na virada do bloco (meio) e no fim.
-function desenharSparkline(svg, hist, proj) {
+function desenharSparkline(svg, hist, proj, slots = SPARK_SLOTS) {
     if (!svg || hist.length < 2) return;
     const W = SPARK_W;
     const H = SPARK_H;
-    const pontos = pontosSparkline(hist.concat(proj));
+    const pontos = pontosSparkline(hist.concat(proj), slots);
     const iAgora = hist.length - 1;
     const antes = pontos.slice(0, iAgora + 1);
     const depois = pontos.slice(iAgora);
@@ -5016,6 +5073,18 @@ function formatarTaxa(taxa) {
 function prepararSilo(card) {
     const temps = numeros(card.dataset.temps);
     if (temps.length < 2) return;
+    // o alerta do cartao e' sempre das ultimas 24 h (situacao critica),
+    // qualquer que seja o periodo escolhido na tela
+    const alerta = tendenciaDe(taxaTemperatura(temps)) === 'alerta';
+    card.dataset.alerta = alerta ? '1' : '0';
+    const tela = card.closest('[data-silo-periodo]');
+    const periodo = tela ? tela.dataset.siloPeriodo : '24h';
+    const wrapModo = card.querySelector('[data-spark-wrap]');
+    if (wrapModo) wrapModo.dataset.modo = periodo === '24h' ? 'blocos' : 'serie';
+    if (periodo !== '24h') {
+        prepararSiloPeriodo(card, periodo, temps, alerta);
+        return;
+    }
     // A contagem fecha a cada 12h (00:00 e 12:00): a linha cheia é a última
     // contagem fechada, da virada anterior até a última (ex.: 00:00 → 12:00),
     // e não passa dela. Dali até o fim do bloco (ex.: 12:00 → 00:00) é só
@@ -5067,7 +5136,100 @@ function prepararSilo(card) {
             ? 'Temperatura subindo rápido: conferir aeração e umidade'
             : 'Variação média nas últimas 3 horas';
     }
-    card.dataset.alerta = tendencia === 'alerta' ? '1' : '0';
+}
+
+// ---- Periodos fora das 24 h: a curva e' so o historico, sem projecao,
+// esticada na largura toda. Turno recorta as leituras horarias do ultimo
+// turno (o 1o pode estar em andamento); 7 e 30 dias usam as leituras das
+// 06h e 18h (data-temps-dia), com a taxa em °C por dia. Silo que encheu
+// ha menos tempo que a janela comeca a curva no meio do eixo.
+const TURNOS_SILO = { t1: [7, 16], t2: [16, 22], t3: [22, 7] };
+const LEITURAS_SILO = { '7d': 14, '30d': 60 };
+
+function noTurno(hora, [ini, fim]) {
+    return ini < fim ? hora >= ini && hora <= fim : hora >= ini || hora <= fim;
+}
+
+// indices (no fim de data-temps) da ultima vez que o turno aconteceu
+function recorteTurno(temps, turno, agora) {
+    const faixa = TURNOS_SILO[turno];
+    const horaDe = (i) => new Date(agora.getTime() - (temps.length - 1 - i) * HORA_MS).getHours();
+    let fim = temps.length - 1;
+    while (fim >= 0 && !noTurno(horaDe(fim), faixa)) fim -= 1;
+    let ini = fim;
+    while (ini > 0 && noTurno(horaDe(ini - 1), faixa)) ini -= 1;
+    return { ini, fim, horaDe };
+}
+
+function formatarData(data) {
+    return `${String(data.getDate()).padStart(2, '0')}/${String(data.getMonth() + 1).padStart(2, '0')}`;
+}
+
+function prepararSiloPeriodo(card, periodo, temps, alerta) {
+    const agora = new Date();
+    let serie;
+    let slots;
+    let rotulos;
+    let taxa;
+    let unidade;
+    if (TURNOS_SILO[periodo]) {
+        const { ini, fim, horaDe } = recorteTurno(temps, periodo, agora);
+        serie = temps.slice(ini, fim + 1);
+        if (serie.length < 2) serie = temps.slice(-2);
+        slots = serie.length - 1;
+        const meio = Math.round((ini + fim) / 2);
+        const h = (i) => `${String(horaDe(i)).padStart(2, '0')}:00`;
+        rotulos = [h(ini), h(meio), h(fim)];
+        taxa = (serie[serie.length - 1] - serie[0]) / slots;
+        unidade = 'h';
+    } else {
+        const dia = numeros(card.dataset.tempsDia);
+        slots = LEITURAS_SILO[periodo] || 14;
+        serie = dia.slice(-(slots + 1));
+        if (serie.length < 2) return;
+        // a ultima leitura e' a das 06h ou 18h mais recente
+        const ultima = new Date(agora);
+        ultima.setMinutes(0, 0, 0);
+        ultima.setHours(agora.getHours() >= 18 ? 18 : agora.getHours() >= 6 ? 6 : -6);
+        const leitura = (k) => new Date(ultima.getTime() - k * 12 * HORA_MS);
+        rotulos = [formatarData(leitura(slots)), formatarData(leitura(slots / 2)), formatarData(leitura(0))];
+        taxa = (serie[serie.length - 1] - serie[0]) / ((serie.length - 1) / 2);
+        unidade = 'dia';
+    }
+
+    const svg = card.querySelector('[data-spark]');
+    const chave = `${periodo}:${rotulos.join('|')}`;
+    if (svg && svg.dataset.bloco !== chave) {
+        desenharSparkline(svg, serie, [], slots);
+        svg.dataset.bloco = chave;
+    }
+    escreverTexto(card.querySelector('[data-temp-inicio]'), formatarTemperatura(serie[0]));
+    escreverTexto(card.querySelector('[data-temp-atual]'), formatarTemperatura(serie[serie.length - 1]));
+    escreverTexto(card.querySelector('[data-temp-proj]'), '');
+    escreverTexto(card.querySelector('[data-hora-inicio]'), rotulos[0]);
+    escreverTexto(card.querySelector('[data-hora-meio]'), rotulos[1]);
+    escreverTexto(card.querySelector('[data-hora-fim]'), rotulos[2]);
+    const pontos = pontosSparkline(serie, slots);
+    const pct = (v, total) => `${((v / total) * 100).toFixed(1)}%`;
+    const wrap = card.querySelector('[data-spark-wrap]');
+    if (wrap) {
+        wrap.style.setProperty('--x-ini', pct(pontos[0][0], SPARK_W));
+        wrap.style.setProperty('--y-ini', pct(pontos[0][1], SPARK_H));
+        wrap.style.setProperty('--y-fim', pct(pontos[pontos.length - 1][1], SPARK_H));
+    }
+    // por dia: sobe 1 °C/dia ou mais e' alerta (regra da termometria)
+    const tendencia = unidade === 'dia'
+        ? (taxa >= 1 ? 'alerta' : taxa > 0.1 ? 'sobe' : taxa < -0.1 ? 'desce' : 'estavel')
+        : tendenciaDe(taxa);
+    const rate = card.querySelector('[data-temp-taxa]');
+    if (rate) {
+        escreverTexto(rate, formatarTaxa(taxa).replace('°C/h', `°C/${unidade}`));
+        rate.dataset.tendencia = tendencia;
+        rate.title = unidade === 'dia'
+            ? 'Variação média por dia no período (leituras das 06h e 18h)'
+            : 'Variação média por hora no turno';
+    }
+    card.dataset.alerta = alerta ? '1' : '0';
 }
 
 function atualizarSilosAeracao() {
@@ -5096,8 +5258,109 @@ function atualizarSilosAeracao() {
         card.dataset.aerEstado = estado;
         escreverTexto(card.querySelector('[data-aer-badge]'), selo);
         escreverTexto(card.querySelector('[data-aer-info]'), info);
+
+        // horas na cultura atual (zera na troca), total do silo e o consumo
+        // da cultura; ligado, os tres andam junto com o "ligado há"
+        if (card.dataset.aerCulturaMin) {
+            const extra = ligado ? decorrido / 60 : 0;
+            const cultura = paraNumero(card.dataset.aerCulturaMin) + extra;
+            const total = paraNumero(card.dataset.aerTotalMin) + extra;
+            const kwh = Math.round((cultura / 60) * paraNumero(card.dataset.aerKw));
+            escreverTexto(card.querySelector('[data-aer-cultura]'), `${Math.floor(cultura / 60)}h`);
+            escreverTexto(card.querySelector('[data-aer-total]'), `${Math.floor(total / 60).toLocaleString('pt-BR')}h`);
+            escreverTexto(card.querySelector('[data-aer-kwh]'), kwh.toLocaleString('pt-BR'));
+        }
     });
 }
 
-setInterval(atualizarSilosAeracao, 1000);
+// ============================================
+// SILOS · PERIODO DA TELA
+// data-silo-periodo na section: t1/t2/t3 (ultimo turno), 24h, 7d ou 30d.
+// Troca a curva e a taxa de cada silo e o saldo da volumetria (o CSS
+// mostra o .sa-per do periodo).
+// ============================================
+function escolherPeriodoSilo(alvo) {
+    const tela = alvo.closest('.screen--silos');
+    const periodo = alvo.dataset.siloPeriodo;
+    if (!tela || !periodo) return;
+    tela.dataset.siloPeriodo = periodo;
+    tela.querySelectorAll('button[data-silo-periodo]').forEach((btn) => {
+        const ativo = btn.dataset.siloPeriodo === periodo;
+        btn.classList.toggle('is-active', ativo);
+        btn.setAttribute('aria-pressed', String(ativo));
+    });
+    tela.querySelectorAll('[data-silo]').forEach(prepararSilo);
+    scheduleFit();
+}
+
+// Previsao do tempo: o grafico de chuva troca de vista (7 dias, mes, ano)
+// pelo data-pv-chuva-vista da secao; o CSS mostra so o grafico escolhido.
+function escolherVistaChuva(alvo) {
+    const secao = alvo.closest('.pv-acum');
+    const vista = alvo.dataset.pvChuva;
+    if (!secao || !vista) return;
+    secao.dataset.pvChuvaVista = vista;
+    secao.querySelectorAll('button[data-pv-chuva]').forEach((btn) => {
+        const ativo = btn.dataset.pvChuva === vista;
+        btn.classList.toggle('is-active', ativo);
+        btn.setAttribute('aria-pressed', String(ativo));
+    });
+}
+
+// o editor salva o HTML como esta: a tela volta para o padrao (24 h)
+function limparFiltrosSilo() {
+    const padrao = document.querySelector('.screen--silos button[data-silo-periodo="24h"]');
+    if (padrao && !padrao.classList.contains('is-active')) escolherPeriodoSilo(padrao);
+}
+
+
+// ============================================
+// PULMÕES · AERAÇÃO
+// Os pulmões não têm termometria, mas têm ventilador. O acumulado é da
+// cultura: não zera quando o ventilador desliga, só quando o pulmão troca
+// de cultura (no CLP, a cada descarga com cultura nova). Cada cartão traz
+// em minutos data-aer-desde-min (ligado há), data-aer-dia-min (rodou nas
+// últimas 24 h) e data-aer-acum-min (acumulado na cultura); com o
+// ventilador ligado os três andam a partir do carregamento, como nos silos.
+// Embaixo da coluna, a soma do acumulado por cultura nos dois pulmões.
+// ============================================
+function formatarHoras(minutos) {
+    const total = Math.max(0, Math.floor(minutos));
+    return `${Math.floor(total / 60)}h${String(total % 60).padStart(2, '0')}`;
+}
+
+function atualizarPulmoesAeracao() {
+    const decorridoMin = (Date.now() - SILOS_INICIO) / 60000;
+    const somaPorCultura = new Map();
+
+    document.querySelectorAll('[data-pulmao]').forEach((card) => {
+        const ligado = card.dataset.aer === 'on';
+        const extra = ligado ? decorridoMin : 0;
+        const acum = paraNumero(card.dataset.aerAcumMin) + extra;
+        const em24h = Math.min(24 * 60, paraNumero(card.dataset.aerDiaMin) + extra);
+
+        card.dataset.aerEstado = ligado ? 'on' : 'off';
+        escreverTexto(card.querySelector('[data-aer-badge]'), ligado ? 'ON' : 'OFF');
+        escreverTexto(card.querySelector('[data-aer-info]'), ligado
+            ? `ligado há ${formatarDuracao(paraNumero(card.dataset.aerDesdeMin) * 60 + decorridoMin * 60)}`
+            : `desligou às ${card.dataset.aerFim || '--:--'}`);
+        escreverTexto(card.querySelector('[data-aer-24h]'), formatarHoras(em24h));
+        escreverTexto(card.querySelector('[data-aer-acum]'), formatarHoras(acum));
+
+        const cultura = card.dataset.cultura;
+        if (cultura && cultura !== 'vazia') {
+            somaPorCultura.set(cultura, (somaPorCultura.get(cultura) || 0) + acum);
+        }
+    });
+
+    document.querySelectorAll('[data-pulmao-soma]').forEach((lista) => {
+        const html = [...somaPorCultura].map(([cultura, minutos]) =>
+            `<span class="pulmao-soma-item" data-cultura="${cultura}"><i class="legend-dot legend-dot--${cultura}"></i>`
+            + `${NOME_CULTURA_FLUXO[cultura] || cultura}<b>${formatarHoras(minutos)}</b></span>`).join('');
+        if (lista.innerHTML !== html) lista.innerHTML = html;
+    });
+}
+
+setInterval(() => { atualizarSilosAeracao(); atualizarPulmoesAeracao(); }, 1000);
 atualizarSilosAeracao();
+atualizarPulmoesAeracao();

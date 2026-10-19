@@ -3730,6 +3730,38 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 
 
+/* cultura da tela (data-moega-cultura na section): moega e pulmão de outra
+   cultura apagam e ficam no lugar; a moega vazia segue acesa porque pode
+   receber a cultura escolhida. Passar o mouse acende para conferir. */
+.screen--moegas:not([data-moega-cultura="todas"]) .moega-item:not([data-cultura="vazia"]),
+.screen--moegas:not([data-moega-cultura="todas"]) .sa-card[data-cultura] {
+    opacity: 0.3;
+    transition: opacity 0.2s ease;
+}
+
+.screen--moegas[data-moega-cultura="milho"] .moega-item[data-cultura="milho"],
+.screen--moegas[data-moega-cultura="sorgo"] .moega-item[data-cultura="sorgo"],
+.screen--moegas[data-moega-cultura="trigo"] .moega-item[data-cultura="trigo"],
+.screen--moegas[data-moega-cultura="soja"] .moega-item[data-cultura="soja"],
+.screen--moegas[data-moega-cultura="milho"] .sa-card[data-cultura="milho"],
+.screen--moegas[data-moega-cultura="sorgo"] .sa-card[data-cultura="sorgo"],
+.screen--moegas[data-moega-cultura="trigo"] .sa-card[data-cultura="trigo"],
+.screen--moegas[data-moega-cultura="soja"] .sa-card[data-cultura="soja"],
+.screen--moegas:not([data-moega-cultura="todas"]) .moega-item:hover,
+.screen--moegas:not([data-moega-cultura="todas"]) .sa-card[data-cultura]:hover {
+    opacity: 1;
+}
+
+/* a cultura escolhida no título da grade, no tom do período do fluxo */
+.moega-cultura-nome {
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--muted);
+}
+
+
+
 /* período da tela: pills no cabeçalho, escolha em data-moega-periodo na section */
 .moega-periodo-btn {
     display: inline-flex;
@@ -5142,15 +5174,6 @@ body.theme-light .kpi-flag--alerta {
 
 
 
-.pv-legenda-faixa {
-    height: 0.4rem !important;
-    border: 0 !important;
-    border-radius: 999px;
-    background: linear-gradient(90deg, #38bdf8, #e0a33c);
-}
-
-
-
 /* icones: mesmo traco dos glifos do resto do painel */
 .pv-icon {
     flex-shrink: 0;
@@ -5537,32 +5560,6 @@ body.theme-light .kpi-flag--alerta {
 
 
 
-/* faixa termica: --min/--max em graus, escala fixa 14–32 */
-.pv-faixa {
-    position: relative;
-    display: block;
-    width: 100%;
-    min-width: 5rem;
-    height: 0.5rem;
-    border-radius: 999px;
-    background: var(--row-line);
-    overflow: hidden;
-}
-
-
-
-.pv-faixa i {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: calc((var(--min) - 14) / 18 * 100%);
-    width: calc((var(--max) - var(--min)) / 18 * 100%);
-    border-radius: inherit;
-    background: linear-gradient(90deg, #38bdf8, #e0a33c);
-}
-
-
-
 .pv-tag {
     display: inline-block;
     width: 100%;
@@ -5779,28 +5776,6 @@ body.theme-light .kpi-flag--alerta {
 
 
 
-.pv-tabela-faixa {
-    width: 11%;
-}
-
-
-
-.pv-tabela-tag {
-    width: 1%;
-}
-
-
-
-.pv-tabela--dias .pv-tag {
-    width: auto;
-    min-width: 9rem;
-    font-size: 0.78rem;
-    padding: 0.2rem 0.7rem;
-    white-space: nowrap;
-}
-
-
-
 .pv-tabela td.is-alerta {
     color: var(--danger);
     font-weight: 700;
@@ -5832,9 +5807,9 @@ body.theme-light .kpi-flag--alerta {
 
 .pv-acum-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.5rem;
-    flex: 1 1 auto;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.4rem;
+    flex: 0 0 auto;
 }
 
 
@@ -5843,8 +5818,8 @@ body.theme-light .kpi-flag--alerta {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0.3rem;
-    padding: 0.75rem 0.9rem;
+    gap: 0.2rem;
+    padding: 0.5rem 0.55rem;
     border-radius: 10px;
     background: var(--row-bg);
     border: 1px solid var(--row-line);
@@ -5854,7 +5829,7 @@ body.theme-light .kpi-flag--alerta {
 
 
 .pv-acum-item b {
-    font-size: 2.6rem;
+    font-size: 1.6rem;
     font-weight: 800;
     line-height: 1;
     color: var(--text);
@@ -5873,7 +5848,8 @@ body.theme-light .kpi-flag--alerta {
 
 
 .pv-acum-item span {
-    font-size: 0.95rem;
+    font-size: 0.68rem;
+    line-height: 1.2;
     color: var(--muted);
 }
 
@@ -5887,52 +5863,6 @@ body.theme-light .kpi-flag--alerta {
 
 .pv-acum-item--prev b {
     color: var(--accent);
-}
-
-
-
-/* barra do mes: caido + previsto contra a media historica */
-.pv-acum-barra {
-    position: relative;
-    display: flex;
-    height: 0.9rem;
-    border-radius: 999px;
-    background: var(--row-line);
-    overflow: visible;
-}
-
-
-
-.pv-acum-caido,
-.pv-acum-prev {
-    display: block;
-    height: 100%;
-    width: calc(var(--p) * 100%);
-}
-
-
-
-.pv-acum-caido {
-    background: var(--accent);
-    border-radius: 999px 0 0 999px;
-}
-
-
-
-.pv-acum-prev {
-    background: repeating-linear-gradient(135deg, rgba(59, 130, 246, 0.55) 0 4px, rgba(59, 130, 246, 0.2) 4px 8px);
-    border-radius: 0 999px 999px 0;
-}
-
-
-
-.pv-acum-media {
-    position: absolute;
-    top: -0.3rem;
-    bottom: -0.3rem;
-    left: calc(var(--p) * 100%);
-    width: 2px;
-    background: var(--text);
 }
 
 
@@ -5970,6 +5900,244 @@ body.theme-light .kpi-flag--alerta {
 
 
 .pv-acum-leg-media { width: 2px !important; height: 0.9rem !important; background: var(--text); }
+
+
+/* grafico de chuva pequeno: uma coluna por dia (7 dias, mes) ou por mes
+   (ano). Cheio = ja choveu, hachurado = previsto (em cima do cheio),
+   traco = media historica. Alturas em fracao da escala da vista (--c, --p,
+   --m vem do HTML). So a vista escolhida aparece. */
+.pv-chuva {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-height: 0;
+}
+
+
+
+.pv-chuva-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+
+
+.pv-chuva-graf {
+    display: none;
+    flex: 1 1 auto;
+    min-height: 4.5rem;
+    max-height: 8rem;
+    gap: 3px;
+}
+
+
+
+.pv-acum[data-pv-chuva-vista="7d"] .pv-chuva-graf--7d,
+.pv-acum[data-pv-chuva-vista="mes"] .pv-chuva-graf--mes,
+.pv-acum[data-pv-chuva-vista="ano"] .pv-chuva-graf--ano {
+    display: flex;
+}
+
+
+
+.pv-chuva-col {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+
+
+.pv-chuva-barra {
+    position: relative;
+    flex: 1 1 auto;
+    display: block;
+    border-bottom: 1px solid var(--row-line);
+}
+
+
+
+.pv-chuva-caido,
+.pv-chuva-prev {
+    position: absolute;
+    left: 12%;
+    right: 12%;
+    display: block;
+    border-radius: 2px 2px 0 0;
+}
+
+
+
+.pv-chuva-caido {
+    bottom: 0;
+    height: calc(var(--c) * 100%);
+    background: var(--accent);
+}
+
+
+
+.pv-chuva-prev {
+    bottom: calc(var(--c) * 100%);
+    height: calc(var(--p) * 100%);
+    background: repeating-linear-gradient(135deg, rgba(59, 130, 246, 0.55) 0 3px, rgba(59, 130, 246, 0.2) 3px 6px);
+}
+
+
+
+.pv-chuva-media {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--m) * 100%);
+    height: 2px;
+    background: var(--text);
+    opacity: 0.7;
+}
+
+
+
+.pv-chuva-col small {
+    height: 0.7rem;
+    font-size: 0.56rem;
+    font-weight: 600;
+    line-height: 0.7rem;
+    text-align: center;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: visible;
+}
+
+
+
+.pv-chuva-col.is-hoje small {
+    color: var(--accent);
+    font-weight: 800;
+}
+
+
+
+/* ---- agora: o quadrado do que a estacao da unidade mediu, ao lado da
+   previsao do Climatempo para o momento ---- */
+.pv-agora .pv-agora-main {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: stretch;
+    gap: 1rem;
+}
+
+
+
+.pv-estacao {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.4rem;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    background: var(--accent-soft);
+}
+
+
+
+.pv-estacao-rot {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+
+
+.pv-estacao-vals {
+    display: flex;
+    gap: 1.5rem;
+}
+
+
+
+.pv-estacao-val {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    font-size: 0.76rem;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+
+
+.pv-estacao-val b {
+    font-size: 2.6rem;
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.pv-estacao-val b small {
+    margin-left: 0.15rem;
+    font-size: 0.42em;
+    font-weight: 600;
+    color: var(--muted);
+    vertical-align: top;
+    line-height: 1.6;
+}
+
+
+
+.pv-estacao-hora {
+    font-size: 0.66rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.pv-agora-prev {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.4rem;
+    min-width: 0;
+}
+
+
+
+.pv-agora-prev-main {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+}
+
+
+
+.pv-agora-prev .pv-facts {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+
+
+/* armazem: o clima da estacao na aeracao desce para a linha de baixo */
+.sa-foot--armazem .sa-aer {
+    flex-wrap: wrap;
+}
+
+
+
+.sa-foot--armazem .sa-aer-clima {
+    flex-basis: 100%;
+}
 
 /* ============================================
    PRINT — sai so a tela ativa, sem cromo de navegacao
@@ -10025,11 +10193,41 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 
 
 
-/* faixa de baixo da tela de silos: a movimentacao do dia ocupa a largura
-   inteira e divide a altura meio a meio com a grade dos silos, como era
-   quando os pulmoes ainda dividiam esta faixa */
-.screen > .sa-section--mov {
-    flex: 1.15 1 0;
+/* Tela de silos em grade: cabeçalho, os 8 silos (com a maior parte da
+   altura) e, embaixo, a volumetria na altura das próprias linhas. */
+.screen--silos.active {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 0.75rem;
+}
+
+
+
+.screen--silos > .sa-section {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+
+
+/* período da tela (data-silo-periodo): cada .sa-per diz em data-periodo
+   para quais períodos vale; "turno" vale para os três turnos */
+.screen--silos .sa-per {
+    display: none;
+}
+
+
+
+.screen--silos[data-silo-periodo^="t"] .sa-per[data-periodo~="turno"],
+.screen--silos[data-silo-periodo="t1"] .sa-per[data-periodo~="t1"],
+.screen--silos[data-silo-periodo="t2"] .sa-per[data-periodo~="t2"],
+.screen--silos[data-silo-periodo="t3"] .sa-per[data-periodo~="t3"],
+.screen--silos[data-silo-periodo="24h"] .sa-per[data-periodo~="24h"],
+.screen--silos[data-silo-periodo="7d"] .sa-per[data-periodo~="7d"],
+.screen--silos[data-silo-periodo="30d"] .sa-per[data-periodo~="30d"] {
+    display: inline;
 }
 
 
@@ -10270,6 +10468,42 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     align-items: baseline;
     justify-content: flex-end;
     gap: 0.375rem;
+}
+
+
+
+/* a média é só dos sensores dentro do grão: o rótulo diz quantos */
+.sa-temp-media {
+    margin-right: auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.52rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+
+
+/* fora das 24 h a curva é só histórico, de ponta a ponta: a primeira
+   leitura fica onde a curva começa e a atual encosta na direita */
+.sa-spark-wrap[data-modo="serie"] .sa-temp-ponto--ini {
+    left: var(--x-ini, 0%);
+}
+
+
+
+.sa-spark-wrap[data-modo="serie"] .sa-temp-ponto--fim {
+    left: auto;
+    right: 0;
+    transform: translateY(calc(-100% - 0.3rem));
+}
+
+
+
+.sa-spark-wrap[data-modo="serie"] .sa-temp-ponto--proj {
+    display: none;
 }
 
 
@@ -10541,6 +10775,82 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 
 
 
+/* clima da estação meteorológica quando a aeração ligou */
+.sa-aer-clima {
+    flex: 0 0 auto;
+    font-size: 0.56rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+/* temperatura numa linha e umidade na outra: o % nunca fica sozinho */
+.sa-aer-clima-ur {
+    display: block;
+}
+
+
+
+.sa-aer-clima b {
+    color: var(--text);
+    font-weight: 800;
+}
+
+
+
+/* horas na cultura (zera na troca), total do silo e kWh da cultura */
+.sa-aer-horas {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    justify-content: space-between;
+    gap: 0.25rem;
+}
+
+
+
+.sa-aer-dado {
+    display: flex;
+    flex-direction: column;
+    gap: 0.0625rem;
+    min-width: 0;
+}
+
+
+
+.sa-aer-dado span {
+    font-size: 0.48rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+
+.sa-aer-dado b {
+    font-size: 0.72rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+
+
+.sa-aer-dado:first-child b {
+    color: var(--c);
+}
+
+
+
 /* pulmão: moldura tracejada, como na visão anterior */
 .sa-section--pulmao {
     border-style: dashed;
@@ -10561,6 +10871,157 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 
 .screen--moegas .sa-grid--2 {
     grid-template-columns: minmax(0, 1fr);
+}
+
+
+
+/* aeração do pulmão: o selo liga/desliga em cima e, embaixo, as horas das
+   últimas 24 h ao lado do acumulado da cultura (que não zera ao desligar) */
+.pulmao-aer-horas {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+    gap: 0.5rem;
+}
+
+
+
+.pulmao-aer-dado {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+}
+
+
+
+.pulmao-aer-dado b {
+    font-size: 0.95rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.pulmao-aer-dado--acum b {
+    color: var(--c);
+}
+
+
+
+.pulmao-aer-dado small {
+    font-size: 0.52rem;
+    color: var(--faint);
+    white-space: nowrap;
+}
+
+
+
+/* histórico do pulmão: a data da descarga ocupa a linha de cima e a
+   cultura com as horas de aeração que ela levou, a de baixo */
+.pulmao-hist {
+    flex: 0 0 auto;
+    min-height: 0;
+}
+
+
+
+.pulmao-hist {
+    gap: 0.1875rem;
+    padding-top: 0.375rem;
+}
+
+
+
+.pulmao-hist .moega-hist-item {
+    flex-wrap: nowrap;
+    gap: 0.375rem;
+    font-size: 0.6rem;
+}
+
+
+
+.pulmao-hist .moega-hist-troca b {
+    margin-left: 0.125rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+/* o tanque cede altura para a aeração e o histórico, mas não some */
+.sa-card[data-pulmao] {
+    gap: 0.375rem;
+}
+
+
+
+.sa-card[data-pulmao] .sa-body {
+    min-height: 3rem;
+}
+
+
+
+.sa-card[data-pulmao] .sa-aer {
+    padding-top: 0.375rem;
+}
+
+
+
+/* soma das horas de aeração por cultura nos dois pulmões */
+.pulmao-soma {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-top: 0.625rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed var(--card-border);
+}
+
+
+
+.pulmao-soma-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+
+
+.pulmao-soma-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.66rem;
+    font-weight: 700;
+    color: var(--text);
+    text-transform: capitalize;
+}
+
+
+
+.pulmao-soma-item b {
+    margin-left: auto;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.screen--moegas:not([data-moega-cultura="todas"]) .pulmao-soma-item {
+    opacity: 0.3;
+}
+
+
+
+.screen--moegas[data-moega-cultura="milho"] .pulmao-soma-item[data-cultura="milho"],
+.screen--moegas[data-moega-cultura="sorgo"] .pulmao-soma-item[data-cultura="sorgo"],
+.screen--moegas[data-moega-cultura="trigo"] .pulmao-soma-item[data-cultura="trigo"],
+.screen--moegas[data-moega-cultura="soja"] .pulmao-soma-item[data-cultura="soja"] {
+    opacity: 1;
 }
 
 
@@ -10596,6 +11057,41 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 
 .sa-mov-table td:first-child {
     font-weight: 700;
+}
+
+
+
+/* na tela de silos a volumetria divide a altura com os cartoes:
+   linhas mais baixas para os silos ficarem com a altura */
+.screen--silos .sa-mov-table td {
+    padding: 0.14rem 0.625rem;
+    font-size: 0.7rem;
+}
+
+
+
+/* cartao estreito: a cultura e a umidade descem para a linha de baixo do nome */
+.screen--silos .sa-head {
+    flex-wrap: wrap;
+    row-gap: 0.125rem;
+}
+
+
+
+.screen--silos .sa-mov-table th {
+    padding: 0.2rem 0.625rem;
+}
+
+
+
+.screen--silos .sa-section .section-head {
+    margin-bottom: 0.375rem;
+}
+
+
+
+.sa-mov-table td .legend-dot {
+    margin-right: 0.3rem;
 }
 
 
@@ -10920,7 +11416,9 @@ body.theme-light .kpi-card--destaque .kpi-value {
 
 
 
-#screen-fluxo[data-fluxo-periodo="turno"] [data-periodo="turno"],
+#screen-fluxo[data-fluxo-periodo="t1"] [data-periodo="t1"],
+#screen-fluxo[data-fluxo-periodo="t2"] [data-periodo="t2"],
+#screen-fluxo[data-fluxo-periodo="t3"] [data-periodo="t3"],
 #screen-fluxo[data-fluxo-periodo="hoje"] [data-periodo="hoje"],
 #screen-fluxo[data-fluxo-periodo="7d"] [data-periodo="7d"],
 #screen-fluxo[data-fluxo-periodo="30d"] [data-periodo="30d"] {
@@ -10930,10 +11428,10 @@ body.theme-light .kpi-card--destaque .kpi-value {
 
 
 /* A tabela segue o mesmo periodo: cada linha traz em data-janela a menor
-   janela em que aparece (turno ⊂ hoje ⊂ 7d ⊂ 30d). */
-#screen-fluxo[data-fluxo-periodo="turno"] tbody tr[data-janela="hoje"],
-#screen-fluxo[data-fluxo-periodo="turno"] tbody tr[data-janela="7d"],
-#screen-fluxo[data-fluxo-periodo="turno"] tbody tr[data-janela="30d"],
+   janela em que aparece (hoje ⊂ 7d ⊂ 30d) e em data-turno o(s) turno(s). */
+#screen-fluxo[data-fluxo-periodo="t1"] tbody tr:not([data-turno~="t1"]),
+#screen-fluxo[data-fluxo-periodo="t2"] tbody tr:not([data-turno~="t2"]),
+#screen-fluxo[data-fluxo-periodo="t3"] tbody tr:not([data-turno~="t3"]),
 #screen-fluxo[data-fluxo-periodo="hoje"] tbody tr[data-janela="7d"],
 #screen-fluxo[data-fluxo-periodo="hoje"] tbody tr[data-janela="30d"],
 #screen-fluxo[data-fluxo-periodo="7d"] tbody tr[data-janela="30d"] {
@@ -10990,6 +11488,33 @@ body.theme-light .kpi-card--destaque .kpi-value {
     margin-right: 0.125rem;
 }
 
+/* No fluxo o filtro tem duas linhas encostadas na direita: cultura em cima,
+   turno + periodo embaixo (sao a mesma escolha). Numa linha so, os tres
+   turnos empurravam o periodo para baixo e a barrinha ficava solta. */
+#screen-fluxo .fluxo-filtro {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.fluxo-filtro-tempo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.875rem;
+    flex-wrap: wrap;
+}
+
+/* o turno abre a linha: sem barrinha antes dele */
+.fluxo-filtro .fluxo-periodo--turnos::before {
+    content: none;
+}
+
+/* horario do turno: numeros alinhados para os tres botoes lerem igual */
+.fluxo-periodo--turnos .fluxo-periodo-btn {
+    font-variant-numeric: tabular-nums;
+}
+
 
 
 .fluxo-etapa-estado {
@@ -11012,10 +11537,12 @@ body.theme-light .kpi-card--destaque .kpi-value {
 
 
 /* O alerta tambem segue o periodo: data-alerta lista em quais janelas a
-   etapa esta fora do padrao (ex.: data-alerta="turno hoje"). */
+   etapa esta fora do padrao (ex.: data-alerta="t1 hoje"). */
 .fluxo-etapa--alerta,
 .fluxo-etapa--alerta:hover,
-#screen-fluxo[data-fluxo-periodo="turno"] .fluxo-etapa[data-alerta~="turno"],
+#screen-fluxo[data-fluxo-periodo="t1"] .fluxo-etapa[data-alerta~="t1"],
+#screen-fluxo[data-fluxo-periodo="t2"] .fluxo-etapa[data-alerta~="t2"],
+#screen-fluxo[data-fluxo-periodo="t3"] .fluxo-etapa[data-alerta~="t3"],
 #screen-fluxo[data-fluxo-periodo="hoje"] .fluxo-etapa[data-alerta~="hoje"],
 #screen-fluxo[data-fluxo-periodo="7d"] .fluxo-etapa[data-alerta~="7d"],
 #screen-fluxo[data-fluxo-periodo="30d"] .fluxo-etapa[data-alerta~="30d"] {
@@ -11025,7 +11552,9 @@ body.theme-light .kpi-card--destaque .kpi-value {
 
 
 .fluxo-etapa--alerta .fluxo-etapa-estado,
-#screen-fluxo[data-fluxo-periodo="turno"] .fluxo-etapa[data-alerta~="turno"] .fluxo-etapa-estado,
+#screen-fluxo[data-fluxo-periodo="t1"] .fluxo-etapa[data-alerta~="t1"] .fluxo-etapa-estado,
+#screen-fluxo[data-fluxo-periodo="t2"] .fluxo-etapa[data-alerta~="t2"] .fluxo-etapa-estado,
+#screen-fluxo[data-fluxo-periodo="t3"] .fluxo-etapa[data-alerta~="t3"] .fluxo-etapa-estado,
 #screen-fluxo[data-fluxo-periodo="hoje"] .fluxo-etapa[data-alerta~="hoje"] .fluxo-etapa-estado,
 #screen-fluxo[data-fluxo-periodo="7d"] .fluxo-etapa[data-alerta~="7d"] .fluxo-etapa-estado,
 #screen-fluxo[data-fluxo-periodo="30d"] .fluxo-etapa[data-alerta~="30d"] .fluxo-etapa-estado {
@@ -11037,7 +11566,9 @@ body.theme-light .kpi-card--destaque .kpi-value {
 
 
 body.theme-light .fluxo-etapa--alerta .fluxo-etapa-estado,
-body.theme-light #screen-fluxo[data-fluxo-periodo="turno"] .fluxo-etapa[data-alerta~="turno"] .fluxo-etapa-estado,
+body.theme-light #screen-fluxo[data-fluxo-periodo="t1"] .fluxo-etapa[data-alerta~="t1"] .fluxo-etapa-estado,
+body.theme-light #screen-fluxo[data-fluxo-periodo="t2"] .fluxo-etapa[data-alerta~="t2"] .fluxo-etapa-estado,
+body.theme-light #screen-fluxo[data-fluxo-periodo="t3"] .fluxo-etapa[data-alerta~="t3"] .fluxo-etapa-estado,
 body.theme-light #screen-fluxo[data-fluxo-periodo="hoje"] .fluxo-etapa[data-alerta~="hoje"] .fluxo-etapa-estado,
 body.theme-light #screen-fluxo[data-fluxo-periodo="7d"] .fluxo-etapa[data-alerta~="7d"] .fluxo-etapa-estado,
 body.theme-light #screen-fluxo[data-fluxo-periodo="30d"] .fluxo-etapa[data-alerta~="30d"] .fluxo-etapa-estado {
@@ -14705,42 +15236,6 @@ body.theme-light .mensal-ritmo {
 
 
 
-.exp-contratos-acoes {
-    display: flex;
-    gap: 0.25rem;
-    padding: 0.125rem 0.125rem 0.375rem;
-    margin-bottom: 0.125rem;
-    border-bottom: 1px solid var(--row-line);
-}
-
-
-
-.exp-contratos-acoes button {
-    appearance: none;
-    border: 1px solid var(--card-border);
-    background: transparent;
-    color: var(--muted);
-    font: inherit;
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 0.25rem 0.5rem;
-    border-radius: 999px;
-    cursor: pointer;
-}
-
-
-
-.exp-contratos-acoes button:hover,
-.exp-contratos-acoes button:focus-visible {
-    color: var(--accent);
-    border-color: var(--accent);
-    outline: none;
-}
-
-
-
 .exp-contrato-opcao {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
@@ -14829,7 +15324,8 @@ body.theme-light .mensal-ritmo {
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
         "id status"
-        "barra ritmo";
+        "barra ritmo"
+        "dias dias";
     align-items: center;
     column-gap: 1rem;
     row-gap: 0.375rem;
@@ -15013,6 +15509,126 @@ body.theme-light .mensal-ritmo {
     justify-self: end;
     padding: 0.3125rem 0.875rem;
     font-size: 0.82rem;
+}
+
+
+
+/* dias do contrato, do inicio a validade: uma barra por dia com os
+   caminhoes carregados (--v, fracao da escala) e o traco do ritmo
+   necessario (--nec). Dia parado ganha um risco vermelho no pe; fim de
+   semana tem o fundo mais escuro; os dias que faltam ficam so com o fundo. */
+.exp-contrato-dias {
+    grid-area: dias;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+
+
+.exp-contrato-dias-graf {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 2.4rem;
+    border-bottom: 1px solid var(--row-line);
+}
+
+
+
+.exp-contrato-dias-graf i {
+    position: relative;
+    flex: 1 1 0;
+    height: 100%;
+    min-width: 0;
+    border-radius: 2px 2px 0 0;
+}
+
+
+
+.exp-contrato-dias-graf i::before {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: calc(var(--v) * 100%);
+    border-radius: 2px 2px 0 0;
+    background: var(--cor);
+    opacity: 0.85;
+}
+
+
+
+.exp-contrato-dias-graf i.is-fds {
+    background: var(--row-bg);
+}
+
+
+
+.exp-contrato-dias-graf i.is-hoje::before {
+    opacity: 0.45;
+}
+
+
+
+.exp-contrato-dias-graf i.is-zero::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 3px;
+    border-radius: 1px;
+    background: var(--danger);
+}
+
+
+
+.exp-contrato-dias-graf i.is-futuro {
+    background: repeating-linear-gradient(135deg, var(--row-line) 0 2px, transparent 2px 5px);
+    opacity: 0.6;
+}
+
+
+
+.exp-contrato-dias-nec {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--nec) * 100%);
+    border-top: 2px dashed var(--text);
+    opacity: 0.75;
+    pointer-events: none;
+}
+
+
+
+.exp-contrato-dias-leg {
+    display: flex;
+    align-items: baseline;
+    gap: 0.875rem;
+    font-size: 0.74rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+
+
+.exp-contrato-dias-leg b {
+    color: var(--text);
+    font-weight: 700;
+}
+
+
+
+.exp-contrato-parado b {
+    color: var(--danger);
+}
+
+
+
+.exp-contrato-validade {
+    margin-left: auto;
 }
 
 
@@ -16375,8 +16991,6 @@ body.theme-light .class-val--fora {
 
 
 
-.exp-table td.dos-carga--atencao .dos-carga-folga { color: var(--warn); }
-.exp-table td.dos-carga--fora .dos-carga-folga { color: var(--danger); }
 
 
 
@@ -18370,15 +18984,6 @@ body.theme-light .du-proj-sel option {
 
 
 
-/* anel tracejado por fora, afastado do círculo para não brigar com a
-   cor da faixa (nem com o halo do alerta) */
-.du-silos i.du-pulmao {
-    outline: 2px dashed var(--accent);
-    outline-offset: 3px;
-}
-
-
-
 /* a cor do selo é só a faixa da temperatura; subir +1 °C/dia ou mais é
    outro aviso: seta vermelha no canto e contorno vermelho, sem pintar o
    selo (um silo a 24 °C subindo não é um silo quente) */
@@ -18415,19 +19020,6 @@ body.theme-light .du-proj-sel option {
 
 
 
-/* respiro entre o último silo e os pulmões (entre os grupos é o gap) */
-.du-silos i:not(.du-pulmao) + i.du-pulmao {
-    margin-left: 0.6rem;
-}
-
-
-
-.du-silos i.du-pulmao + i.du-pulmao {
-    margin-left: 0.5rem;
-}
-
-
-
 /* legenda das formas: só o contorno, a cor fica na legenda das faixas */
 .du-forma {
     display: inline-block;
@@ -18443,13 +19035,6 @@ body.theme-light .du-proj-sel option {
     width: 1.3rem;
     height: 0.75rem;
     border-radius: 2px;
-}
-
-
-
-.du-forma--pulmao {
-    border-color: var(--accent);
-    border-style: dashed;
 }
 
 
@@ -18835,4 +19420,121 @@ body.theme-light .du-proj-sel option {
 .conc-scroll[data-codigo] {
     max-height: 7.05rem;
     padding-top: 0.8rem;
+}
+
+
+
+/* ============================================
+   EXPEDICAO · FLUXO DE CAMINHOES (tela 10)
+   Mesmos cartoes de etapa e tabela do fluxo da recepcao; no meio, o mesmo
+   grafico de tempo medio de ciclo por etapa da tela da recepcao.
+   A tabela fica com o resto da altura e rola.
+   ============================================ */
+.screen--exp-fluxo > .content-section--etapas,
+.screen--exp-fluxo > .etapa-section {
+    flex: 0 0 auto;
+}
+
+
+
+.screen--exp-fluxo > .exf-tabela {
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+.exf-table .exf-contrato small {
+    display: block;
+    font-size: 0.66rem;
+    color: var(--muted);
+}
+
+
+
+.exf-table td.exf-contrato,
+.exf-table td.exf-contrato small {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+
+.exf-table thead th {
+    white-space: nowrap;
+}
+
+
+
+/* aqui o grafico divide a altura com a tabela: linhas mais baixas e o nome
+   da cultura ao lado do total, numa linha so */
+.screen--exp-fluxo .etapa-chart {
+    padding: 0.625rem 0.875rem 0.375rem;
+}
+
+
+
+.screen--exp-fluxo .etapa-row {
+    grid-template-columns: 10.5rem minmax(0, 1fr);
+    margin-bottom: 0.375rem;
+}
+
+
+
+.screen--exp-fluxo .etapa-row--geral {
+    margin-top: 0.125rem;
+    padding-top: 0.375rem;
+}
+
+
+
+.screen--exp-fluxo .etapa-row--axis {
+    margin-top: 0.25rem;
+}
+
+
+
+.screen--exp-fluxo .etapa-cultura {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+
+
+.screen--exp-fluxo .etapa-cultura > * {
+    margin: 0;
+    white-space: nowrap;
+}
+
+
+
+.screen--exp-fluxo .etapa-track {
+    height: 1.375rem;
+}
+
+
+
+.screen--exp-fluxo .etapa-section .section-head {
+    margin-bottom: 0.375rem;
+}
+
+
+
+/* um contrato por vez: o grafico dos dias ganha altura e a legenda quebra
+   em vez de sair da secao */
+.exp-contratos .exp-contrato-dias-graf {
+    height: 3.25rem;
+}
+
+
+
+.exp-contratos .exp-contrato-dias-leg {
+    flex-wrap: wrap;
+    row-gap: 0.2rem;
 }
