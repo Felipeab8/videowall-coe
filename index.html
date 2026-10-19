@@ -2554,58 +2554,93 @@
                 </div>
 
                 <div class="split-grid split-grid--prod">
-                    <div data-codigo="AVR-SPD-G" class="content-section">
+                    <!-- Secagem por hora, um turno por vez (o turno escolhido no proprio
+                         grafico, para isolar o que teve problema). Cada hora traz os dois
+                         secadores lado a lado. Duas linhas por secador, na cor dele:
+                           tracejada = capacidade nominal (S1 80 t/h, S2 60 t/h)
+                           cheia     = meta de operacao, hora a hora: muda com a umidade de
+                                       entrada que vem das moegas e a temperatura de secagem,
+                                       e desconta o aquecimento (ao menos 30 min ate 100 °C)
+                                       depois de cada recarga
+                         Parada fica em vermelho atras da barra do secador, com o motivo
+                         embaixo da hora. Embaixo do grafico, o fim do turno: secado contra
+                         o que poderia ter secado no nominal; ate 10% abaixo e' normal,
+                         mais que isso alerta e mostra as toneladas perdidas.
+                         O script monta tudo a partir do JSON em data-prod-dados. -->
+                    <div data-codigo="AVR-SPD-G" class="content-section prod-grafico" data-prod-turno="t1">
                         <div class="section-head section-head--top">
                             <div class="section-head-text">
-                                <h3>SECAGEM POR HORA · POR SECADOR</h3>
+                                <h3>SECAGEM POR HORA · POR SECADOR <span class="fluxo-periodo-atual">· <span data-prod-turno-nome>1º turno 07:00–16:20</span></span></h3>
                             </div>
-                            <div class="chart-legend chart-legend--inline">
-                                <span class="legend-item"><i class="legend-dot legend-dot--sec1"></i>Pré-limpeza 1 → Secador 1</span>
-                                <span class="legend-item"><i class="legend-dot legend-dot--sec2"></i>Pré-limpeza 3 → Secador 2</span>
-                                <span class="legend-item"><i class="legend-dot legend-dot--proj-key"></i>Projeção</span>
+                            <div class="fluxo-periodo fluxo-periodo--turnos" role="group" aria-label="Turno do gráfico">
+                                <span class="class-filtro-rotulo">Turno</span>
+                                <button type="button" class="fluxo-periodo-btn is-active" data-prod-turno="t1" aria-pressed="true" title="1º turno · 07:00–16:20 · hoje">07:00–16:20</button>
+                                <button type="button" class="fluxo-periodo-btn" data-prod-turno="t2" aria-pressed="false" title="2º turno · 16:00–22:20 · ontem">16:00–22:20</button>
+                                <button type="button" class="fluxo-periodo-btn" data-prod-turno="t3" aria-pressed="false" title="3º turno · 22:00–07:00 · esta noite">22:00–07:00</button>
                             </div>
                         </div>
-                        <div class="forecast-chart forecast-chart--horas forecast-chart--turno" data-chart-max="100">
-                            <div class="forecast-yaxis">
-                                <span>100</span>
-                                <span>75</span>
-                                <span>50</span>
-                                <span>25</span>
-                                <span>0</span>
-                            </div>
-                            <div class="forecast-plot">
-                                <div class="forecast-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-                                <div class="forecast-cols">
-                                    <!-- cada hora traz os dois secadores lado a lado, cada barra contra a meta do proprio secador -->
-                                    <div class="hora-col" tabindex="0" data-dia="07h" data-recebido="128 t" data-nome-recebido="Secado" data-milho="72 t" data-nome-milho="Secador 1 · Milho" data-sorgo="56 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" data-serie="milho" style="height: 72.0%"><span class="forecast-cap">72</span><i class="forecast-seg forecast-seg--sec1" style="height: 100%"></i></div><div class="forecast-bar forecast-bar--hora is-stack" data-serie="sorgo" style="height: 56.0%"><span class="forecast-cap">56</span><i class="forecast-seg forecast-seg--sec2" style="height: 100%"></i></div></div>
-                                    <div class="hora-col" tabindex="0" data-dia="08h" data-recebido="135 t" data-nome-recebido="Secado" data-milho="79 t" data-nome-milho="Secador 1 · Milho" data-sorgo="56 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" data-serie="milho" style="height: 79.0%"><span class="forecast-cap">79</span><i class="forecast-seg forecast-seg--sec1" style="height: 100%"></i></div><div class="forecast-bar forecast-bar--hora is-stack" data-serie="sorgo" style="height: 56.0%"><span class="forecast-cap">56</span><i class="forecast-seg forecast-seg--sec2" style="height: 100%"></i></div></div>
-                                    <div class="hora-col" tabindex="0" data-dia="09h" data-recebido="132 t" data-nome-recebido="Secado" data-milho="77 t" data-nome-milho="Secador 1 · Milho" data-sorgo="55 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" data-serie="milho" style="height: 77.0%"><span class="forecast-cap">77</span><i class="forecast-seg forecast-seg--sec1" style="height: 100%"></i></div><div class="forecast-bar forecast-bar--hora is-stack" data-serie="sorgo" style="height: 55.0%"><span class="forecast-cap">55</span><i class="forecast-seg forecast-seg--sec2" style="height: 100%"></i></div></div>
-                                    <div class="hora-col" tabindex="0" data-dia="10h" data-recebido="137 t" data-nome-recebido="Secado" data-milho="79 t" data-nome-milho="Secador 1 · Milho" data-sorgo="58 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" data-serie="milho" style="height: 79.0%"><span class="forecast-cap">79</span><i class="forecast-seg forecast-seg--sec1" style="height: 100%"></i></div><div class="forecast-bar forecast-bar--hora is-stack" data-serie="sorgo" style="height: 58.0%"><span class="forecast-cap">58</span><i class="forecast-seg forecast-seg--sec2" style="height: 100%"></i></div></div>
-                                    <div class="hora-col" tabindex="0" data-dia="11h" data-recebido="127 t" data-nome-recebido="Secado" data-milho="75 t" data-nome-milho="Secador 1 · Milho" data-sorgo="52 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" data-serie="milho" style="height: 75.0%"><span class="forecast-cap">75</span><i class="forecast-seg forecast-seg--sec1" style="height: 100%"></i></div><div class="forecast-bar forecast-bar--hora is-stack" data-serie="sorgo" style="height: 52.0%"><span class="forecast-cap">52</span><i class="forecast-seg forecast-seg--sec2" style="height: 100%"></i></div></div>
-                                    <div class="hora-col" tabindex="0" data-dia="12h · S2 recarga 34 min" data-recebido="96 t" data-nome-recebido="Secado" data-milho="74 t" data-nome-milho="Secador 1 · Milho" data-sorgo="22 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" data-serie="milho" style="height: 74.0%"><span class="forecast-cap">74</span><i class="forecast-seg forecast-seg--sec1" style="height: 100%"></i></div><div class="forecast-bar forecast-bar--hora is-stack is-abaixo" data-serie="sorgo" style="height: 22.0%"><span class="forecast-cap">22</span><i class="forecast-seg forecast-seg--sec2" style="height: 100%"></i></div></div>
-                                    <div class="hora-col" tabindex="0" data-dia="13h" data-recebido="133 t" data-nome-recebido="Secado" data-milho="77 t" data-nome-milho="Secador 1 · Milho" data-sorgo="56 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack" data-serie="milho" style="height: 77.0%"><span class="forecast-cap">77</span><i class="forecast-seg forecast-seg--sec1" style="height: 100%"></i></div><div class="forecast-bar forecast-bar--hora is-stack" data-serie="sorgo" style="height: 56.0%"><span class="forecast-cap">56</span><i class="forecast-seg forecast-seg--sec2" style="height: 100%"></i></div></div>
-                                    <div class="hora-col is-parcial" tabindex="0" data-dia="14h · parcial · 50 min" data-recebido="112 t" data-nome-recebido="Secado" data-milho="64 t" data-nome-milho="Secador 1 · Milho" data-sorgo="48 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack is-parcial" data-serie="milho" style="height: 64.0%"><span class="forecast-cap">64</span><i class="forecast-seg forecast-seg--sec1" style="height: 100%"></i></div><div class="forecast-bar forecast-bar--hora is-stack is-parcial" data-serie="sorgo" style="height: 48.0%"><span class="forecast-cap">48</span><i class="forecast-seg forecast-seg--sec2" style="height: 100%"></i></div></div>
-                                    <div class="hora-col is-futuro" tabindex="0" data-dia="15h · projeção" data-recebido="134 t" data-nome-recebido="Projetado" data-milho="78 t" data-nome-milho="Secador 1 · Milho" data-sorgo="56 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack is-projecao" data-serie="milho" style="height: 78.0%"><span class="forecast-cap">~78</span><i class="forecast-seg forecast-seg--sec1" style="height: 100%"></i></div><div class="forecast-bar forecast-bar--hora is-stack is-projecao" data-serie="sorgo" style="height: 56.0%"><span class="forecast-cap">~56</span><i class="forecast-seg forecast-seg--sec2" style="height: 100%"></i></div></div>
-                                    <div class="hora-col is-futuro" tabindex="0" data-dia="16h · projeção" data-recebido="124 t" data-nome-recebido="Projetado" data-milho="74 t" data-nome-milho="Secador 1 · Milho" data-sorgo="50 t" data-nome-sorgo="Secador 2 · Sorgo"><div class="forecast-bar forecast-bar--hora is-stack is-projecao" data-serie="milho" style="height: 74.0%"><span class="forecast-cap">~74</span><i class="forecast-seg forecast-seg--sec1" style="height: 100%"></i></div><div class="forecast-bar forecast-bar--hora is-stack is-projecao" data-serie="sorgo" style="height: 50.0%"><span class="forecast-cap">~50</span><i class="forecast-seg forecast-seg--sec2" style="height: 100%"></i></div></div>
-                                </div>
-                                <!-- meta horaria de cada secador: 700 t e 500 t no turno de 10h -->
-                                <div class="forecast-meta-line forecast-meta-line--sec1" style="bottom: 70%" aria-hidden="true"><span>META<br>SECADOR&nbsp;1<br>70 t/h</span></div>
-                                <div class="forecast-meta-line forecast-meta-line--sec2" style="bottom: 50%" aria-hidden="true"><span>META<br>SECADOR&nbsp;2<br>50 t/h</span></div>
-                            </div>
-                            <div class="forecast-xaxis">
-                                <span class="forecast-day">07H</span>
-                                <span class="forecast-day">08H</span>
-                                <span class="forecast-day">09H</span>
-                                <span class="forecast-day">10H</span>
-                                <span class="forecast-day">11H</span>
-                                <span class="forecast-day">12H<small class="is-atencao">S2 recarga 34 min</small></span>
-                                <span class="forecast-day">13H</span>
-                                <span class="forecast-day is-agora">14H<small>parcial · 50 min</small></span>
-                                <span class="forecast-day is-futuro">15H<small>projeção</small></span>
-                                <span class="forecast-day is-futuro">16H<small>projeção</small></span>
-                            </div>
-                            <span class="forecast-unit">t/h</span>
+                        <div class="chart-legend chart-legend--inline prod-grafico-legenda">
+                            <span class="legend-item"><i class="legend-dot legend-dot--sec1"></i>Secador 1</span>
+                            <span class="legend-item"><i class="legend-dot legend-dot--sec2"></i>Secador 2</span>
+                            <span class="legend-item"><i class="prod-leg-linha prod-leg-linha--nominal"></i>Nominal</span>
+                            <span class="legend-item"><i class="prod-leg-linha prod-leg-linha--op"></i>Meta de operação</span>
+                            <span class="legend-item"><i class="prod-leg-parada"></i>Parada</span>
+                            <span class="legend-item"><i class="legend-dot legend-dot--proj-key"></i>Projeção</span>
                         </div>
+                        <div class="prod-grafico-corpo" data-prod-grafico></div>
+                        <div class="prod-fim" data-prod-fim></div>
+                        <script type="application/json" data-prod-dados>
+{
+  "nominal": { "s1": 80, "s2": 60 },
+  "max": 100,
+  "turnos": {
+    "t1": {
+      "nome": "1º turno 07:00–16:20", "quando": "hoje", "emAndamento": true,
+      "cultura": { "s1": "Milho", "s2": "Sorgo" },
+      "horas": [
+        { "h": "07h", "s1": 72, "s2": 56, "m1": 74, "m2": 56 },
+        { "h": "08h", "s1": 79, "s2": 56, "m1": 77, "m2": 57 },
+        { "h": "09h", "s1": 77, "s2": 55, "m1": 76, "m2": 56 },
+        { "h": "10h", "s1": 79, "s2": 58, "m1": 77, "m2": 57 },
+        { "h": "11h", "s1": 75, "s2": 52, "m1": 75, "m2": 56 },
+        { "h": "12h", "s1": 74, "s2": 22, "m1": 76, "m2": 32, "parada": { "sec": "s2", "min": 34, "motivo": "descarga e recarga" } },
+        { "h": "13h", "s1": 77, "s2": 56, "m1": 76, "m2": 53 },
+        { "h": "14h", "min": 50, "agora": true, "s1": 64, "s2": 48, "m1": 63, "m2": 47 },
+        { "h": "15h", "futuro": true, "s1": 78, "s2": 56, "m1": 76, "m2": 57 },
+        { "h": "16h", "min": 20, "futuro": true, "s1": 25, "s2": 17, "m1": 25, "m2": 19 }
+      ]
+    },
+    "t2": {
+      "nome": "2º turno 16:00–22:20", "quando": "ontem",
+      "cultura": { "s1": "Milho", "s2": "Sorgo" },
+      "horas": [
+        { "h": "16h", "s1": 77, "s2": 55, "m1": 76, "m2": 57 },
+        { "h": "17h", "s1": 78, "s2": 57, "m1": 76, "m2": 57 },
+        { "h": "18h", "s1": 76, "s2": 23, "m1": 76, "m2": 30, "parada": { "sec": "s2", "min": 32, "motivo": "descarga e recarga" } },
+        { "h": "19h", "s1": 36, "s2": 50, "m1": 76, "m2": 55, "parada": { "sec": "s1", "min": 35, "motivo": "elevador travado" } },
+        { "h": "20h", "s1": 75, "s2": 56, "m1": 76, "m2": 57 },
+        { "h": "21h", "s1": 77, "s2": 54, "m1": 76, "m2": 57 },
+        { "h": "22h", "min": 20, "s1": 25, "s2": 18, "m1": 25, "m2": 19 }
+      ]
+    },
+    "t3": {
+      "nome": "3º turno 22:00–07:00", "quando": "esta noite",
+      "cultura": { "s1": "Milho", "s2": "Sorgo" },
+      "horas": [
+        { "h": "22h", "s1": 76, "s2": 54, "m1": 76, "m2": 57 },
+        { "h": "23h", "s1": 77, "s2": 56, "m1": 76, "m2": 57 },
+        { "h": "00h", "s1": 75, "s2": 55, "m1": 76, "m2": 57 },
+        { "h": "01h", "s1": 76, "s2": 21, "m1": 76, "m2": 32, "parada": { "sec": "s2", "min": 34, "motivo": "descarga e recarga" } },
+        { "h": "02h", "s1": 74, "s2": 50, "m1": 76, "m2": 53 },
+        { "h": "03h", "s1": 46, "s2": 55, "m1": 76, "m2": 57, "parada": { "sec": "s1", "min": 25, "motivo": "moega vazia" } },
+        { "h": "04h", "s1": 76, "s2": 56, "m1": 76, "m2": 57 },
+        { "h": "05h", "s1": 77, "s2": 54, "m1": 76, "m2": 57 },
+        { "h": "06h", "s1": 76, "s2": 55, "m1": 76, "m2": 57 }
+      ]
+    }
+  }
+}
+                        </script>
                     </div>
 
                     <div class="content-section prod-col--secadores">
@@ -2624,6 +2659,9 @@
                                 <div class="prod-secador-grade">
                                     <span class="prod-linha-item"><b>PROJEÇÃO 17H</b>762 t <em class="is-bom">+62 t vs meta</em></span>
                                 </div>
+                                <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
+                                    <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--milho"></i>Milho</span><b>76 t/h</b><em>95% do nominal</em></span>
+                                </div>
                             </div>
 
                             <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec2">
@@ -2639,6 +2677,9 @@
                                 <div class="prod-secador-track"><span class="prod-secador-fill" style="width: 81%"></span></div>
                                 <div class="prod-secador-grade">
                                     <span class="prod-linha-item"><b>PROJEÇÃO 17H</b>518 t <em class="is-bom">+18 t vs meta</em></span>
+                                </div>
+                                <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
+                                    <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><b>55 t/h</b><em>92% do nominal</em></span>
                                 </div>
                             </div>
                         </div>
@@ -2657,6 +2698,9 @@
                                 <div class="prod-secador-grade">
                                     <span class="prod-linha-item"><b>PROJEÇÃO 24H</b>1.380 t <em class="is-atencao">−20 t vs meta</em></span>
                                 </div>
+                                <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
+                                    <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--milho"></i>Milho</span><b>77 t/h</b><em>96% do nominal</em></span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--soja"></i>Soja <small>noite</small></span><b>70 t/h</b><em>88% do nominal</em></span>
+                                </div>
                             </div>
 
                             <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec2">
@@ -2672,6 +2716,9 @@
                                 <div class="prod-secador-track"><span class="prod-secador-fill" style="width: 67%"></span></div>
                                 <div class="prod-secador-grade">
                                     <span class="prod-linha-item"><b>PROJEÇÃO 24H</b>970 t <em class="is-atencao">−30 t vs meta</em></span>
+                                </div>
+                                <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
+                                    <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><b>55 t/h</b><em>92% do nominal</em></span>
                                 </div>
                             </div>
                         </div>
@@ -2692,6 +2739,9 @@
                                     <span class="prod-linha-item"><b>MELHOR DIA</b>1.390 t <em>terça</em></span>
                                     <span class="prod-linha-item"><b>PIOR DIA</b>960 t <em>quarta · chuva</em></span>
                                 </div>
+                                <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
+                                    <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--milho"></i>Milho</span><b>77 t/h</b><em>96% do nominal</em></span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--soja"></i>Soja</span><b>71 t/h</b><em>89% do nominal</em></span>
+                                </div>
                             </div>
 
                             <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec2">
@@ -2709,6 +2759,9 @@
                                     <span class="prod-linha-item"><b>MÉDIA POR DIA</b>901 t <em>meta 1.000 t/dia</em></span>
                                     <span class="prod-linha-item"><b>MELHOR DIA</b>990 t <em>quarta</em></span>
                                     <span class="prod-linha-item"><b>PIOR DIA</b>620 t <em>sábado · manutenção</em></span>
+                                </div>
+                                <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
+                                    <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><b>54 t/h</b><em>90% do nominal</em></span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--milho"></i>Milho</span><b>58 t/h</b><em>97% do nominal</em></span>
                                 </div>
                             </div>
                         </div>
@@ -2729,6 +2782,9 @@
                                     <span class="prod-linha-item"><b>MELHOR DIA</b>1.420 t <em>dia 3</em></span>
                                     <span class="prod-linha-item"><b>PIOR DIA</b>410 t <em>dia 17 · chuva</em></span>
                                 </div>
+                                <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
+                                    <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--milho"></i>Milho</span><b>76 t/h</b><em>95% do nominal</em></span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--soja"></i>Soja</span><b>70 t/h</b><em>88% do nominal</em></span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--trigo"></i>Trigo</span><b>73 t/h</b><em>91% do nominal</em></span>
+                                </div>
                             </div>
 
                             <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec2">
@@ -2746,6 +2802,9 @@
                                     <span class="prod-linha-item"><b>MÉDIA POR DIA</b>860 t <em>meta 1.000 t/dia</em></span>
                                     <span class="prod-linha-item"><b>MELHOR DIA</b>1.010 t <em>dia 5 · milho</em></span>
                                     <span class="prod-linha-item"><b>PIOR DIA</b>0 t <em>dia 9 · troca de cultura</em></span>
+                                </div>
+                                <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
+                                    <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><b>53 t/h</b><em>88% do nominal</em></span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--milho"></i>Milho</span><b>57 t/h</b><em>95% do nominal</em></span>
                                 </div>
                             </div>
                         </div>
@@ -6711,5 +6770,6 @@
     <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.1.4/leaflet-maplibre-gl.js"></script>
     <script src="script.js?v=20261016b"></script>
+
 </body>
 </html>
