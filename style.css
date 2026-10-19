@@ -6128,16 +6128,6 @@ body.theme-light .kpi-flag--alerta {
 
 
 
-/* armazem: o clima da estacao na aeracao desce para a linha de baixo */
-.sa-foot--armazem .sa-aer {
-    flex-wrap: wrap;
-}
-
-
-
-.sa-foot--armazem .sa-aer-clima {
-    flex-basis: 100%;
-}
 
 /* ============================================
    PRINT — sai so a tela ativa, sem cromo de navegacao
@@ -7017,21 +7007,6 @@ body.theme-light .kpi-flag--alerta {
 
 
 
-.secador-estado-info--prox {
-    padding-left: 0.75rem;
-    border-left: 1px solid var(--row-line);
-}
-
-
-
-/* na ultima hora antes da limpeza o script marca is-perto e a linha avisa */
-.secador-estado-info--prox.is-perto,
-.secador-estado-info--prox.is-perto b {
-    color: var(--warn);
-}
-
-
-
 /* as duas colunas à esquerda do gráfico: o calor (fornalha em cima, secador
    embaixo, partidos por um separador) e a massa do grão (entrada e saída,
    com a seta marcando o sentido do fluxo) */
@@ -7234,222 +7209,6 @@ body.theme-light .kpi-flag--alerta {
 
 
 
-/* leituras de agora à direita do gráfico, cada uma com a cor da própria
-   linha, para o número e a curva se reconhecerem */
-.secador-agora-col {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-    min-height: 0;
-}
-
-
-
-.secador-agora-titulo {
-    flex: 0 0 auto;
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-}
-
-
-
-.secador-agora-titulo b {
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-}
-
-
-
-.secador-leitura {
-    --cor-serie: var(--accent);
-    flex: 1 1 0;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.05rem;
-    padding: 0.3rem 0.5625rem;
-    border-radius: 10px;
-    border: 1px solid var(--row-line);
-    border-left: 3px solid var(--cor-serie);
-    background: var(--row-bg);
-    overflow: hidden;
-}
-
-
-
-/* PROXIMA LIMPEZA: um reloginho depois das tres leituras. O anel esvazia
-   conforme a hora chega (--p vem do script) e o miolo diz quanto falta.
-   Nao divide a altura com as leituras: fica do tamanho do proprio anel. */
-.secador-limpeza {
-    --cor: var(--accent);
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.3rem 0.5rem;
-    border-radius: 10px;
-    border: 1px solid var(--row-line);
-    border-left: 3px solid var(--cor);
-    background: var(--row-bg);
-    overflow: hidden;
-}
-
-
-
-.secador-limpeza-relogio {
-    position: relative;
-    flex: 0 0 auto;
-    width: 2.2rem;
-    height: 2.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-
-
-/* o anel: rosca conica mascarada no meio, como os aneis da visao geral */
-.secador-limpeza-relogio::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: conic-gradient(var(--cor) calc(var(--p) * 360deg), var(--row-line) 0);
-    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 0.22rem), #000 calc(100% - 0.22rem + 1px));
-    mask: radial-gradient(farthest-side, transparent calc(100% - 0.22rem), #000 calc(100% - 0.22rem + 1px));
-}
-
-
-
-.secador-limpeza-relogio b {
-    position: relative;
-    font-size: 0.6rem;
-    font-weight: 800;
-    line-height: 1;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.02em;
-}
-
-
-
-.secador-limpeza-txt {
-    display: flex;
-    flex-direction: column;
-    gap: 0.05rem;
-    min-width: 0;
-}
-
-
-
-.secador-limpeza-nome {
-    font-size: 0.58rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--cor);
-    white-space: nowrap;
-}
-
-
-
-.secador-limpeza-ref {
-    font-size: 0.58rem;
-    font-weight: 500;
-    color: var(--muted);
-    white-space: nowrap;
-}
-
-
-
-/* na ultima hora o reloginho inteiro avisa */
-.secador-limpeza.is-perto {
-    --cor: var(--warn);
-}
-
-
-
-.secador-limpeza.is-perto .secador-limpeza-relogio b {
-    color: var(--warn);
-}
-
-
-
-.secador-leitura--fornalha { --cor-serie: var(--danger); }
-
-
-.secador-leitura--temp { --cor-serie: var(--warn); }
-
-
-.secador-leitura--umi { --cor-serie: var(--viz-real); }
-
-
-
-.secador-leitura-nome {
-    font-size: 0.6rem;
-    font-weight: 700;
-    line-height: 1.2;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--cor-serie);
-    white-space: nowrap;
-}
-
-
-
-.secador-leitura-valor {
-    font-size: 1.12rem;
-    font-weight: 700;
-    line-height: 1.05;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.01em;
-}
-
-
-
-.secador-leitura-ref {
-    font-size: 0.58rem;
-    font-weight: 500;
-    line-height: 1.2;
-    color: var(--muted);
-    white-space: nowrap;
-}
-
-
-
-/* desvio da umidade de saida em relacao ao alvo calculado, ao lado do valor */
-.secador-leitura-desvio {
-    font-size: 0.55em;
-    font-weight: 600;
-    letter-spacing: 0;
-    color: var(--muted);
-}
-
-
-
-.secador-leitura-desvio.is-bom {
-    color: var(--ok);
-}
-
-
-
-body.theme-light .secador-leitura-desvio.is-bom {
-    color: #1e7a45;
-}
-
-
-
-.secador-leitura-desvio.is-atencao {
-    color: var(--warn);
-}
-
-
-
 /* fases previstas para o resto do turno: mesma cor, tracejadas e mais claras */
 .secador-fase.is-prevista {
     opacity: 0.9;
@@ -7488,197 +7247,11 @@ body.theme-light .secador-leitura-desvio.is-bom {
 
 
 
-/* eixos Y: temperatura à esquerda (0–200 °C) e umidade à direita (12–20%).
-   As duas réguas dividem as mesmas cinco linhas do grid, então cada valor
-   escrito cai exatamente sobre uma linha. */
-.secador-eixo {
-    position: relative;
-    width: 1.875rem;
-}
-
-
-
-.secador-eixo span {
-    position: absolute;
-    transform: translateY(-50%);
-    font-size: 0.64rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    color: var(--faint);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-}
-
-
-
-.secador-eixo--temp span { right: 0; }
-
-
-
-/* a umidade tem escala própria: o rótulo puxa a cor da série para dizer isso */
-.secador-eixo--umi span {
-    left: 0;
-    color: color-mix(in srgb, var(--viz-real) 70%, var(--faint));
-}
-
-
-
-/* os rótulos das pontas não cabem centrados na linha: encostam nela por dentro */
-.secador-eixo span:first-child { transform: translateY(0); }
-
-
-
-.secador-eixo span:last-child { transform: translateY(-100%); }
-
-
-
-/* o que cada eixo mede, escrito no pé da régua, na linha das horas */
-.secador-eixo-cap {
-    grid-row: 2;
-    padding-top: 0.375rem;
-    font-size: 0.58rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--faint);
-    white-space: nowrap;
-}
-
-
-
-.secador-eixo-cap--temp {
-    grid-column: 1;
-    text-align: right;
-}
-
-
-
-.secador-eixo-cap--umi {
-    grid-column: 3;
-    color: color-mix(in srgb, var(--viz-real) 70%, var(--faint));
-}
-
-
-
 .secador-plot {
     position: relative;
     flex: 1 1 auto;
     min-height: 2.5rem;
 }
-
-
-
-/* as linhas caem de 25 em 25%: 200/150/100/50/0 °C à esquerda e
-   20/18/16/14/12% à direita, os valores escritos nos dois eixos */
-.secador-grid {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-}
-
-
-
-.secador-grid i {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: var(--row-line);
-}
-
-
-
-.secador-grid i:nth-child(1) { top: 0; }
-.secador-grid i:nth-child(2) { top: 25%; }
-.secador-grid i:nth-child(3) { top: 50%; }
-.secador-grid i:nth-child(4) { top: 75%; }
-
-
-
-.secador-grid i:last-child {
-    top: auto;
-    bottom: 0;
-    background: var(--panel-border);
-}
-
-
-
-.secador-svg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-}
-
-
-
-.secador-linha {
-    fill: none;
-    stroke-width: 2.2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    vector-effect: non-scaling-stroke;
-}
-
-
-
-.secador-linha--fornalha {
-    stroke: var(--danger);
-}
-
-
-
-.secador-linha--temp {
-    stroke: var(--warn);
-}
-
-
-
-.secador-linha--umi {
-    stroke: var(--viz-real);
-}
-
-
-
-/* temperatura desejada (fornalha e secador): tracejado fino na cor da serie,
-   atras das linhas, com o valor no canto esquerdo */
-.secador-setada-linha {
-    stroke: var(--muted);
-    stroke-width: 1;
-    stroke-dasharray: 4 3;
-    vector-effect: non-scaling-stroke;
-    opacity: 0.7;
-}
-
-
-
-.secador-setada-linha--fornalha { stroke: var(--danger); }
-
-
-.secador-setada-linha--temp { stroke: var(--warn); }
-
-
-
-.secador-setada-tag {
-    position: absolute;
-    left: 0.375rem;
-    transform: translateY(-100%);
-    margin-top: -2px;
-    font-size: 0.54rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    color: var(--muted);
-    white-space: nowrap;
-    pointer-events: none;
-}
-
-
-
-.secador-setada-tag--fornalha { color: var(--danger); }
-
-
-.secador-setada-tag--temp { color: var(--warn); }
 
 
 
@@ -7903,22 +7476,9 @@ body.theme-light .secador-fase--descarga {
 
 
 
-.serie-legenda-item--fornalha { --cor-serie: var(--danger); }
-
-
-
-.serie-legenda-item--temp { --cor-serie: var(--warn); }
-
-
-
-.serie-legenda-item--umi { --cor-serie: var(--viz-real); }
-
-
-
-/* a desejada repete a linha tracejada atrás das curvas: mesmo tracejado e
-   mesma cor da fornalha */
+/* a desejada e' o pontilhado do ar do secador */
 .serie-legenda-item--setada {
-    --cor-serie: var(--danger);
+    --cor-serie: var(--text);
 }
 
 
@@ -7989,6 +7549,493 @@ body.theme-light .secador-fase--descarga {
     letter-spacing: 0.08em;
     color: var(--faint);
     font-variant-numeric: tabular-nums;
+}
+
+
+
+/* ============================================
+   SECAGEM · UM GRAFICO POR INDICADOR, ALARME E LIMPEZA
+   Cores das series: o ar do secador e' vermelho (e' o indicador ligado a
+   incendio); fornalha laranja, saida do ar amarela e umidade azul. Os
+   quatro graficos dividem o mesmo eixo de horas e o fundo das fases.
+   ============================================ */
+.screen--secagem {
+    --sec-forn: #f0892a;
+    --sec-ar: var(--danger);
+    --sec-saida: #e3c02b;
+    --sec-umi: var(--viz-real);
+}
+
+
+
+body.theme-light .screen--secagem {
+    --sec-forn: #c4600c;
+    --sec-saida: #8a6f00;
+}
+
+
+
+.serie-legenda-item--fornalha { --cor-serie: var(--sec-forn); }
+.serie-legenda-item--ar { --cor-serie: var(--sec-ar); }
+.serie-legenda-item--saida { --cor-serie: var(--sec-saida); }
+.serie-legenda-item--umi { --cor-serie: var(--sec-umi); }
+.serie-legenda-item--limite { --cor-serie: var(--muted); }
+
+
+
+.serie-legenda-item--limite::before {
+    background: repeating-linear-gradient(to right, var(--cor-serie) 0 5px, transparent 5px 8px);
+}
+
+
+
+.serie-legenda-item--setada::before {
+    background: repeating-linear-gradient(to right, var(--text) 0 2px, transparent 2px 5px);
+    opacity: 0.7;
+}
+
+
+
+/* calor, massa, graficos e limpeza */
+.screen--secagem .secador-body {
+    grid-template-columns: 12rem 11rem minmax(0, 1fr) 12.5rem;
+}
+
+
+
+.screen--secagem .secador-bloco--fornalha { --cor-serie: var(--sec-forn); }
+.screen--secagem .secador-bloco--ar { --cor-serie: var(--sec-ar); }
+
+
+
+/* faixa e desejada: referencia, mais discretas que a leitura */
+.secador-dado--ref b {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+
+
+.secador-dado.is-acima b {
+    color: var(--danger);
+}
+
+
+
+/* saida do ar acima de 50 °C: o secador desarma e ha risco de incendio */
+.secador-dado--saida.is-alarme {
+    margin: 0 -0.375rem;
+    padding: 0.125rem 0.375rem;
+    border-radius: 6px;
+    background: rgba(231, 76, 60, 0.18);
+    animation: sec-pisca 1s ease-in-out infinite;
+}
+
+
+
+.secador-dado--saida.is-alarme b,
+.secador-dado--saida.is-alarme small {
+    color: var(--danger);
+}
+
+
+
+.secador.is-alarme {
+    border-color: rgba(231, 76, 60, 0.6);
+    box-shadow: inset 0 0 0 1px rgba(231, 76, 60, 0.35);
+}
+
+
+
+.secador-alarme {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: var(--danger);
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #fff;
+    white-space: nowrap;
+    animation: sec-pisca-forte 1s steps(2, jump-none) infinite;
+}
+
+
+
+.secador-alarme[hidden] {
+    display: none;
+}
+
+
+
+.secador-ponto-nota small {
+    display: block;
+    font-size: 0.54rem;
+    color: var(--faint);
+}
+
+
+
+/* graficos: plot em cima, horas embaixo */
+.screen--secagem .secador-chart {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+
+
+.screen--secagem .secador-horas {
+    grid-column: 1;
+}
+
+
+
+.secador-faixas {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-rows: repeat(4, minmax(0, 1fr));
+}
+
+
+
+.sec-faixa {
+    --cor: var(--muted);
+    position: relative;
+    min-height: 0;
+    border-bottom: 1px solid var(--row-line);
+}
+
+
+
+.sec-faixa:last-child {
+    border-bottom-color: var(--panel-border);
+}
+
+
+
+.sec-faixa--fornalha { --cor: var(--sec-forn); }
+.sec-faixa--ar { --cor: var(--sec-ar); }
+.sec-faixa--saida { --cor: var(--sec-saida); }
+.sec-faixa--umi { --cor: var(--sec-umi); }
+
+
+
+.sec-faixa.is-alarme {
+    background: rgba(231, 76, 60, 0.12);
+}
+
+
+
+.sec-faixa-nome {
+    position: absolute;
+    top: 0.125rem;
+    left: 0.375rem;
+    z-index: 1;
+    font-size: 0.54rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cor);
+    white-space: nowrap;
+    text-shadow: 0 0 3px var(--section-bg), 0 0 6px var(--section-bg);
+}
+
+
+
+.sec-faixa-nome b {
+    margin-left: 0.25rem;
+    font-size: 0.72rem;
+    letter-spacing: 0;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.sec-faixa.is-alarme .sec-faixa-nome b {
+    color: var(--danger);
+}
+
+
+
+.sec-faixa-plot {
+    position: absolute;
+    top: 0.875rem;
+    right: 0;
+    bottom: 0.25rem;
+    left: 0;
+}
+
+
+
+.sec-faixa-plot svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+
+
+.sec-linha {
+    fill: none;
+    stroke: var(--cor);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+
+
+
+.sec-ref {
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+}
+
+
+
+/* tracejado = limite da faixa; pontilhado = desejada (o operador define) */
+.sec-ref--limite {
+    stroke: var(--cor);
+    stroke-dasharray: 5 3;
+    opacity: 0.85;
+}
+
+
+
+.sec-ref--desejada {
+    stroke: var(--text);
+    stroke-dasharray: 1 3;
+    opacity: 0.6;
+}
+
+
+
+.sec-ref-tag {
+    position: absolute;
+    right: 0.375rem;
+    transform: translateY(-100%);
+    margin-top: -1px;
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--cor);
+    white-space: nowrap;
+    pointer-events: none;
+    text-shadow: 0 0 3px var(--section-bg), 0 0 6px var(--section-bg);
+}
+
+
+
+.sec-ref-tag--desejada {
+    right: auto;
+    left: 50%;
+    color: var(--muted);
+}
+
+
+
+/* limpeza: ciclo de 72 h trabalhadas */
+.secador-limpeza {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-height: 0;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--row-line);
+    border-radius: 10px;
+    background: var(--row-bg);
+    overflow: hidden;
+}
+
+
+
+.secador-limpeza .secador-col-titulo {
+    margin-bottom: 0;
+}
+
+
+
+.secador-limpeza-falta b {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.secador-limpeza-falta small {
+    font-size: 0.58rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+
+
+.secador-limpeza-barra {
+    height: 0.4375rem;
+    border-radius: 999px;
+    background: var(--row-line);
+    overflow: hidden;
+}
+
+
+
+.secador-limpeza-barra i {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: var(--ok);
+}
+
+
+
+.secador-limpeza-trab {
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+
+
+.secador-limpeza-trab b {
+    font-weight: 700;
+    color: var(--text);
+}
+
+
+
+.secador-limpeza-lista {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-top: auto;
+    padding-top: 0.375rem;
+    border-top: 1px solid var(--row-line);
+    min-height: 0;
+}
+
+
+
+.secador-limpeza-lista::before {
+    content: "Últimas limpezas";
+    font-size: 0.52rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+}
+
+
+
+.secador-limpeza-lista li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 0.375rem;
+    font-size: 0.62rem;
+}
+
+
+
+.secador-limpeza-lista li span {
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+
+
+.secador-limpeza-lista li b {
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.secador-limpeza-lista li small {
+    grid-column: 1 / -1;
+    font-size: 0.52rem;
+    color: var(--faint);
+}
+
+
+
+.secador-limpeza.is-perto .secador-limpeza-falta b {
+    color: var(--warn);
+}
+
+
+
+.secador-limpeza.is-perto .secador-limpeza-barra i {
+    background: var(--warn);
+}
+
+
+
+/* passou do ciclo: pisca em vermelho */
+.secador-limpeza.is-vencida {
+    border-color: var(--danger);
+    background: rgba(231, 76, 60, 0.14);
+    animation: sec-pisca 1s ease-in-out infinite;
+}
+
+
+
+.secador-limpeza.is-vencida .secador-limpeza-falta b,
+.secador-limpeza.is-vencida .secador-limpeza-falta small {
+    color: var(--danger);
+}
+
+
+
+.secador-limpeza.is-vencida .secador-limpeza-barra i {
+    background: var(--danger);
+}
+
+
+
+@keyframes sec-pisca {
+    50% {
+        background-color: rgba(231, 76, 60, 0.34);
+    }
+}
+
+
+
+@keyframes sec-pisca-forte {
+    50% {
+        opacity: 0.35;
+    }
+}
+
+
+
+@media (prefers-reduced-motion: reduce) {
+    .secador-alarme,
+    .secador-dado--saida.is-alarme,
+    .secador-limpeza.is-vencida {
+        animation: none;
+    }
+}
+
+
+
+@media screen and (max-width: 768px) {
+    .screen--secagem .secador-body {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .screen--secagem .secador-chart {
+        min-height: 17rem;
+    }
 }
 
 
@@ -11146,110 +11193,605 @@ body.theme-light .sa-mov-saldo--sobe {
 
 
 /* ============================================
-   ARMAZÉM · ARMAZÉNS GRANELEIROS
-   Mesmo cartão sa-card dos silos, só que largo: dois por linha, tanque
-   deitado (graneleiro é mais comprido que alto), barras por célula ao
-   lado e, no rodapé, temperatura e aeração dividindo a mesma linha.
+   ARMAZÉM · PLANTA POR SETOR
+   Um cartão largo por armazém, um embaixo do outro. A planta (montada
+   pelo script) é um tabuleiro: os motores na parede do lado A, as
+   fileiras de cabos do lado A, o túnel central, as do lado B e os
+   motores do lado B. Cada setor é uma coluna própria, com média, máxima e
+   motores ligados no topo; a coluna de rótulos à esquerda usa as mesmas
+   linhas da grade para ficar alinhada. À direita, as três tendências.
    ============================================ */
-.sa-grid--armazem {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+.screen--armazem > .sa-section {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+
+
+.arm-lista {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-rows: repeat(2, minmax(0, 1fr));
     gap: 0.875rem;
 }
 
 
 
-/* rótulo "Armazém 2" precisa de mais largura que "Milho" */
-.stack-chart--armazem .stack-label {
-    width: 5.5rem;
+/* Cor do cabo: abaixo de 28 °C uma só cor que ganha força com a
+   temperatura (faixas 1 a 5); 28–32 e 32+ usam as cores de aviso. O valor
+   fica escrito no quadradinho, então a cor nunca é a única pista. */
+.screen--armazem {
+    --arm-head-h: 2.15rem;
+    --arm-motor-h: 1rem;
+    --arm-tunel-h: 0.55rem;
+    --arm-gap: 0.25rem;
+    --arm-cel-gap: 2px;
+}
+
+
+
+.screen--armazem [data-faixa="1"] { --faixa-bg: color-mix(in srgb, var(--accent) 10%, transparent); --faixa-ink: var(--text); }
+.screen--armazem [data-faixa="2"] { --faixa-bg: color-mix(in srgb, var(--accent) 26%, transparent); --faixa-ink: var(--text); }
+.screen--armazem [data-faixa="3"] { --faixa-bg: color-mix(in srgb, var(--accent) 50%, transparent); --faixa-ink: #fff; }
+.screen--armazem [data-faixa="4"] { --faixa-bg: color-mix(in srgb, var(--accent) 78%, transparent); --faixa-ink: #fff; }
+.screen--armazem [data-faixa="5"] { --faixa-bg: color-mix(in srgb, var(--accent) 100%, transparent); --faixa-ink: #fff; }
+/* no claro a faixa 3 ainda é clara: o número volta para a tinta escura */
+body.theme-light .screen--armazem [data-faixa="3"] { --faixa-ink: var(--text); }
+.screen--armazem [data-faixa="atencao"] { --faixa-bg: var(--warn); --faixa-ink: #1b1300; }
+.screen--armazem [data-faixa="alerta"] { --faixa-bg: var(--danger); --faixa-ink: #fff; }
+
+.screen--armazem [data-faixa="fora"] {
+    --faixa-bg: repeating-linear-gradient(135deg, var(--row-line) 0 2px, transparent 2px 5px);
+    --faixa-ink: var(--faint);
+}
+
+
+
+/* legenda no cabeçalho da seção */
+.arm-legenda {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.25rem 0.875rem;
+    font-size: 0.56rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+
+
+.arm-legenda-grupo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
     white-space: nowrap;
 }
 
 
 
-.sa-card--armazem {
-    --c: var(--accent);
-    gap: 0.625rem;
-    padding: 0.75rem 0.875rem 0.6875rem;
+.arm-leg-cel {
+    display: inline-block;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 2px;
+    background: var(--faixa-bg);
 }
 
 
 
-.sa-card--armazem .sa-name {
-    font-size: 0.78rem;
+.arm-legenda-grupo .arm-leg-cel + .arm-leg-cel {
+    margin-left: -0.125rem;
 }
 
 
 
-.sa-card--armazem .sa-cultura {
-    font-size: 0.64rem;
+.arm-leg-motor {
+    display: inline-block;
+    width: 1rem;
+    height: 0.6rem;
+    border-radius: 999px;
+    border: 1px solid var(--row-line);
 }
 
 
 
-.sa-body--armazem {
-    gap: 0.875rem;
-    align-items: stretch;
+.arm-leg-motor[data-motor="on"] {
+    background: rgba(46, 204, 113, 0.22);
+    border-color: rgba(46, 204, 113, 0.6);
 }
 
 
 
-/* graneleiro: caixa larga com o "telhado" sugerido pelo canto superior */
-.sa-card .armazem-visual {
-    flex: 1 1 auto;
-    width: 100%;
-    min-height: 4.5rem;
-    border-radius: 10px 10px 6px 6px;
+/* cartão */
+.arm-card {
+    gap: 0.5rem;
+    padding: 0.625rem 0.875rem 0.625rem;
 }
 
 
 
-/* graneleiro: numero maior, ha espaco de sobra no cartao largo */
-.sa-card.sa-card--armazem .sa-stock b {
-    font-size: 2.6rem;
-}
-
-
-
-.sa-card.sa-card--armazem .sa-stock span {
-    font-size: 1.05rem;
-}
-
-
-
-
-/* rodapé: temperatura à esquerda, aeração à direita, uma linha só */
-.sa-foot--armazem {
-    display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-    gap: 0.875rem;
-    align-items: end;
-}
-
-
-
-.sa-foot--armazem .sa-temp,
-.sa-foot--armazem .sa-aer {
+.arm-head {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     min-width: 0;
 }
 
 
 
-.sa-foot--armazem .sa-aer {
-    align-self: stretch;
-    align-items: flex-end;
-    padding-bottom: 0.125rem;
+.arm-card .sa-name {
+    font-size: 0.78rem;
 }
 
 
 
-.sa-foot--armazem .sa-temp-ponto {
+.arm-card .sa-cultura {
+    font-size: 0.64rem;
+}
+
+
+
+.arm-ocup {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.arm-ocup b {
     font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--text);
 }
 
 
 
-.sa-foot--armazem .sa-spark {
-    height: 3rem;
+.arm-ocup-barra {
+    display: inline-block;
+    width: 5rem;
+    height: 0.375rem;
+    border-radius: 999px;
+    background: var(--row-line);
+    overflow: hidden;
+}
+
+
+
+.arm-ocup-barra i {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: var(--c);
+}
+
+
+
+.arm-media {
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+
+
+.arm-media b {
+    margin-left: 0.2rem;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+/* aeração do armazém, na mesma linha do cabeçalho */
+.sa-aer.arm-aer {
+    margin-left: auto;
+    padding-top: 0;
+    border-top: 0;
+}
+
+
+
+.arm-aer-motores {
+    font-size: 0.62rem;
+    font-weight: 800;
+    color: var(--text);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.arm-card[data-aer-estado="off"] .arm-aer-motores {
+    color: var(--muted);
+}
+
+
+
+.arm-aer .sa-aer-info,
+.arm-aer .sa-aer-clima {
+    white-space: nowrap;
+}
+
+
+
+.arm-aer .sa-aer-clima {
+    padding-left: 0.4rem;
+    border-left: 1px solid var(--row-line);
+}
+
+
+
+.arm-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 14rem;
+    gap: 1rem;
+}
+
+
+
+/* planta */
+.arm-mapa {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+}
+
+
+
+.arm-planta {
+    flex: 1 1 auto;
+    display: flex;
+    gap: 0.375rem;
+    min-width: 0;
+    min-height: 0;
+}
+
+
+
+.arm-lados {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-rows: var(--arm-head-h) var(--arm-motor-h) minmax(0, 1fr) var(--arm-tunel-h) minmax(0, 1fr) var(--arm-motor-h);
+    row-gap: var(--arm-gap);
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--faint);
+    text-align: right;
+}
+
+
+
+.arm-lados span {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    white-space: nowrap;
+}
+
+
+
+.arm-lado-cel {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    justify-content: center !important;
+}
+
+
+
+.arm-lado-tunel {
+    font-size: 0.44rem;
+}
+
+
+
+.arm-setor {
+    flex: 1 1 0;
+    min-width: 0;
+    display: grid;
+    grid-template-rows: var(--arm-head-h) minmax(0, 1fr);
+    row-gap: var(--arm-gap);
+}
+
+
+
+.arm-setor-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-content: end;
+    column-gap: 0.25rem;
+    padding-bottom: 0.15rem;
+    border-bottom: 2px solid var(--row-line);
+    min-width: 0;
+    white-space: nowrap;
+}
+
+
+
+/* setor com algum motor ligado: a linha de baixo do cabeçalho fica verde */
+.arm-setor:not([data-ligados="0"]) .arm-setor-head {
+    border-bottom-color: rgba(46, 204, 113, 0.6);
+}
+
+
+
+.arm-card[data-aer-estado="pausa"] .arm-setor:not([data-ligados="0"]) .arm-setor-head {
+    border-bottom-color: rgba(243, 156, 18, 0.6);
+}
+
+
+
+.arm-setor-nome {
+    font-size: 0.52rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+
+.arm-setor-motores {
+    font-size: 0.5rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.arm-setor:not([data-ligados="0"]) .arm-setor-motores {
+    color: var(--ok);
+}
+
+
+
+.arm-card[data-aer-estado="pausa"] .arm-setor:not([data-ligados="0"]) .arm-setor-motores {
+    color: var(--warn);
+}
+
+
+
+.arm-setor-media {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.86rem;
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+/* amostra da faixa ao lado da média: liga o número à cor da planta */
+.arm-setor-media::before {
+    content: "";
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 2px;
+    background: var(--faixa-bg);
+}
+
+
+
+.arm-setor-max {
+    align-self: center;
+    font-size: 0.52rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.arm-setor-corpo {
+    display: grid;
+    grid-template-rows: var(--arm-motor-h) minmax(0, 1fr) var(--arm-tunel-h) minmax(0, 1fr) var(--arm-motor-h);
+    row-gap: var(--arm-gap);
+    min-height: 0;
+}
+
+
+
+.arm-motores,
+.arm-celulas {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    gap: var(--arm-cel-gap);
+    min-height: 0;
+}
+
+
+
+.arm-celulas {
+    grid-template-rows: repeat(var(--linhas), minmax(0, 1fr));
+}
+
+
+
+.arm-motor {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    overflow: hidden;
+    font-style: normal;
+    font-size: 0.46rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    color: var(--faint);
+    border: 1px solid var(--row-line);
+    border-radius: 999px;
+}
+
+
+
+.arm-motor[data-motor="on"] {
+    color: var(--ok);
+    background: rgba(46, 204, 113, 0.18);
+    border-color: rgba(46, 204, 113, 0.6);
+}
+
+
+
+.arm-card[data-aer-estado="pausa"] .arm-motor[data-motor="on"] {
+    color: var(--warn);
+    background: rgba(243, 156, 18, 0.16);
+    border-color: rgba(243, 156, 18, 0.55);
+}
+
+
+
+.arm-cel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    overflow: hidden;
+    font-style: normal;
+    font-size: 0.52rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--faixa-ink);
+    background: var(--faixa-bg);
+    border-radius: 3px;
+}
+
+
+
+/* túnel central: faixa contínua entre os dois lados */
+.arm-tunel {
+    margin: 0 calc(-0.375rem / 2);
+    background: color-mix(in srgb, var(--muted) 16%, transparent);
+    border-top: 1px dashed var(--row-line);
+    border-bottom: 1px dashed var(--row-line);
+}
+
+
+
+/* tendências fixas: 24 h, 7 dias e 30 dias, uma embaixo da outra */
+.arm-tend {
+    display: grid;
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+    gap: 0.375rem;
+    padding-left: 1rem;
+    border-left: 1px solid var(--row-line);
+    min-height: 0;
+}
+
+
+
+.arm-tend-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 0;
+}
+
+
+
+.arm-tend-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.375rem;
+}
+
+
+
+.arm-tend-nome {
+    font-size: 0.56rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+
+
+.arm-tend .sa-spark-wrap {
+    margin-top: 0.75rem;
+}
+
+
+
+.arm-tend .sa-spark {
+    height: 1.6rem;
+}
+
+
+
+.arm-tend .sa-temp-ponto {
+    font-size: 0.64rem;
+}
+
+
+
+.arm-tend .sa-spark-horas {
+    margin-top: 0.25rem;
+    font-size: 0.5rem;
+}
+
+
+
+/* celular: um bloco embaixo do outro; a planta rola de lado */
+@media screen and (max-width: 768px) {
+    /* .screen > .sa-section (flex com base 0) vence o reset do celular */
+    .screen--armazem > .sa-section {
+        flex: none;
+    }
+
+    .arm-lista {
+        grid-template-rows: none;
+    }
+
+    .arm-head {
+        flex-wrap: wrap;
+        gap: 0.375rem 0.875rem;
+    }
+
+    .sa-aer.arm-aer {
+        margin-left: 0;
+        flex-wrap: wrap;
+    }
+
+    .arm-body {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .arm-mapa {
+        overflow-x: auto;
+    }
+
+    .arm-planta {
+        min-width: 40rem;
+        min-height: 16rem;
+    }
+
+    .arm-tend {
+        grid-template-rows: none;
+        padding-left: 0;
+        border-left: 0;
+    }
 }
 
 
@@ -11491,7 +12033,8 @@ body.theme-light .kpi-card--destaque .kpi-value {
 /* No fluxo o filtro tem duas linhas encostadas na direita: cultura em cima,
    turno + periodo embaixo (sao a mesma escolha). Numa linha so, os tres
    turnos empurravam o periodo para baixo e a barrinha ficava solta. */
-#screen-fluxo .fluxo-filtro {
+#screen-fluxo .fluxo-filtro,
+#screen-1 .fluxo-filtro {
     flex-direction: column;
     align-items: flex-end;
     gap: 0.5rem;
@@ -12364,12 +12907,6 @@ body.edit-mode .fluxo-etapa[data-fluxo-filtro] {
 
 
 
-    .secador-agora-col {
-        flex-direction: row;
-    }
-
-
-
     .kpi-value--tarifa {
         font-size: 0.95rem;
     }
@@ -12505,8 +13042,6 @@ body.edit-mode .fluxo-etapa[data-fluxo-filtro] {
     .fluxo-etapas,
     .sa-grid--8,
     .sa-grid--2,
-    .sa-grid--armazem,
-    .sa-foot--armazem,
     .ponta-strip,
     .editor-modal-body,
     .editor-form {
@@ -14923,9 +15458,8 @@ body.theme-light .mensal-ritmo {
 
 
 
-/* o limite anda junto do rotulo: PH e falling number sao minimos
-   (quanto maior, melhor) e o queimado tem teto proprio de 1%
-   mesmo ja estando contado dentro do avariado */
+/* o limite do padrao anda junto do rotulo (o queimado da soja tem teto
+   proprio de 1% mesmo ja estando contado dentro do avariado) */
 .kpi-lim {
     margin-left: 0.4rem;
     padding: 0.05rem 0.35rem;
@@ -14936,6 +15470,247 @@ body.theme-light .mensal-ritmo {
     letter-spacing: 0.04em;
     text-transform: none;
     color: var(--faint);
+    white-space: nowrap;
+}
+
+
+
+
+/* limite do padrão por cultura: no rosto do cartão só aparece com uma
+   cultura sozinha no filtro (com várias, cada limite vai no balão) */
+#screen-1 .class-lim {
+    display: none;
+}
+
+
+
+#screen-1[data-class-cultura="milho"] .class-lim[data-cultura="milho"],
+#screen-1[data-class-cultura="sorgo"] .class-lim[data-cultura="sorgo"],
+#screen-1[data-class-cultura="trigo"] .class-lim[data-cultura="trigo"],
+#screen-1[data-class-cultura="soja"] .class-lim[data-cultura="soja"] {
+    display: inline;
+}
+
+
+
+/* o queimado é só da soja: some quando a soja sai do filtro */
+#screen-1[data-cult-soja="off"] .kpi-queimado {
+    visibility: hidden;
+}
+
+
+
+.kpi-queimado-valor {
+    color: var(--text);
+}
+
+
+
+/* ============================================
+   CLASSIFICACAO — TRIGO POR TIPO
+   Ocupa o lugar dos antigos PH médio e falling number (duas colunas da
+   faixa): um bloco por tipo do padrão da unidade, cada um com as médias
+   de PH e FN só das cargas daquele tipo, as cargas e a faixa do tipo.
+   No cabeçalho, as cargas fora de padrão (abaixo do AP) em vermelho.
+   ============================================ */
+.kpi-card.trigo-tipos {
+    grid-column: span 2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+
+
+.trigo-tipos .kpi-label {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+
+
+.trigo-fora {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    font-size: 0.56rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    color: var(--faint);
+    white-space: nowrap;
+}
+
+
+
+.trigo-fora b {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.trigo-fora b.is-alerta {
+    padding: 0 0.4rem;
+    border-radius: 999px;
+    color: var(--danger);
+    background: rgba(231, 76, 60, 0.14);
+    border: 1px solid rgba(231, 76, 60, 0.4);
+}
+
+
+
+/* PH e FN por cultura: so o trigo tem. Sem trigo no filtro o cartao fica
+   zerado: os numeros saem e o .trigo-zero (0 cargas, "—") entra no lugar */
+.trigo-zero {
+    display: none;
+    font-style: normal;
+}
+
+
+
+#screen-1[data-cult-trigo="off"] .trigo-tipos b[data-periodo] {
+    display: none;
+}
+
+
+
+#screen-1[data-cult-trigo="off"] .trigo-zero {
+    display: inline;
+}
+
+
+
+
+
+
+#screen-1[data-cult-trigo="off"] .trigo-tipos-grid {
+    opacity: 0.55;
+}
+
+
+
+.trigo-tipos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.625rem;
+}
+
+
+
+.trigo-tipo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+    padding-left: 0.5rem;
+    border-left: 2px solid var(--grao-trigo);
+}
+
+
+
+.trigo-tipo-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.25rem;
+    white-space: nowrap;
+}
+
+
+
+.trigo-tipo-nome {
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+
+
+.trigo-tipo-cargas {
+    font-size: 0.55rem;
+    font-weight: 600;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.trigo-tipo-vals {
+    display: flex;
+    align-items: baseline;
+    gap: 0.625rem;
+    white-space: nowrap;
+}
+
+
+
+.trigo-val {
+    font-size: 1.05rem;
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.trigo-val small {
+    margin-right: 0.2rem;
+    font-size: 0.55rem;
+    font-weight: 700;
+    color: var(--faint);
+}
+
+
+
+
+
+
+.trigo-tipo-lim {
+    font-size: 0.52rem;
+    font-weight: 600;
+    color: var(--faint);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+
+/* tabela: tipo do trigo ao lado do nome e queimado da soja ao lado do total */
+.class-tipo {
+    margin-left: 0.4rem;
+    padding: 0.05rem 0.4rem;
+    border: 1px solid var(--row-line);
+    border-radius: 999px;
+    font-size: 0.58rem;
+    font-weight: 700;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+
+
+.class-tipo--fora {
+    color: var(--danger);
+    border-color: rgba(231, 76, 60, 0.45);
+}
+
+
+
+.class-queim {
+    margin-left: 0.4rem;
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--muted);
     white-space: nowrap;
 }
 
@@ -15774,7 +16549,9 @@ body.theme-light .mensal-ritmo {
 #screen-1[data-class-cultura="sorgo"] .class-cult[data-cultura="sorgo"],
 #screen-1[data-class-cultura="trigo"] .class-cult[data-cultura="trigo"],
 #screen-1[data-class-cultura="soja"] .class-cult[data-cultura="soja"],
-#screen-1[data-class-periodo="turno"] b[data-periodo="turno"],
+#screen-1[data-class-periodo="t1"] b[data-periodo="t1"],
+#screen-1[data-class-periodo="t2"] b[data-periodo="t2"],
+#screen-1[data-class-periodo="t3"] b[data-periodo="t3"],
 #screen-1[data-class-periodo="hoje"] b[data-periodo="hoje"],
 #screen-1[data-class-periodo="7d"] b[data-periodo="7d"],
 #screen-1[data-class-periodo="30d"] b[data-periodo="30d"] {
@@ -15804,16 +16581,17 @@ body.theme-light .mensal-ritmo {
 
 
 
-/* janelas encaixadas: uma carga marcada com "hoje" aparece em hoje, 7 e 30 dias */
-#screen-1[data-class-periodo="turno"] .class-table tbody tr[data-janela="hoje"],
-#screen-1[data-class-periodo="turno"] .class-table tbody tr[data-janela="7d"],
-#screen-1[data-class-periodo="turno"] .class-table tbody tr[data-janela="30d"],
+/* janelas encaixadas: uma carga marcada com "hoje" aparece em hoje, 7 e 30
+   dias; no turno so entra quem tem o turno em data-turno (como na recepcao) */
+#screen-1[data-class-periodo="t1"] .class-table tbody tr:not([data-turno~="t1"]),
+#screen-1[data-class-periodo="t2"] .class-table tbody tr:not([data-turno~="t2"]),
+#screen-1[data-class-periodo="t3"] .class-table tbody tr:not([data-turno~="t3"]),
+#screen-1[data-class-periodo="t1"] .conc-table tbody tr:not([data-turno~="t1"]),
+#screen-1[data-class-periodo="t2"] .conc-table tbody tr:not([data-turno~="t2"]),
+#screen-1[data-class-periodo="t3"] .conc-table tbody tr:not([data-turno~="t3"]),
 #screen-1[data-class-periodo="hoje"] .class-table tbody tr[data-janela="7d"],
 #screen-1[data-class-periodo="hoje"] .class-table tbody tr[data-janela="30d"],
 #screen-1[data-class-periodo="7d"] .class-table tbody tr[data-janela="30d"],
-#screen-1[data-class-periodo="turno"] .conc-table tbody tr[data-janela="hoje"],
-#screen-1[data-class-periodo="turno"] .conc-table tbody tr[data-janela="7d"],
-#screen-1[data-class-periodo="turno"] .conc-table tbody tr[data-janela="30d"],
 #screen-1[data-class-periodo="hoje"] .conc-table tbody tr[data-janela="7d"],
 #screen-1[data-class-periodo="hoje"] .conc-table tbody tr[data-janela="30d"],
 #screen-1[data-class-periodo="7d"] .conc-table tbody tr[data-janela="30d"] {
@@ -15835,7 +16613,8 @@ body.theme-light .mensal-ritmo {
 
 .conc-corpo {
     display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    /* quatro quadros de resumo a esquerda, a lista de cacambas a direita */
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
     gap: 1rem;
     align-items: stretch;
 }
@@ -15844,7 +16623,7 @@ body.theme-light .mensal-ritmo {
 
 .conc-resumo {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 0.625rem;
     align-content: start;
 }
@@ -16020,13 +16799,16 @@ body.theme-light .mensal-ritmo {
 
 
 
-.class-val--atencao {
+/* td pede o seletor da tabela: .data-table td pinta o texto de var(--text) */
+.class-val--atencao,
+.data-table td.class-val--atencao {
     color: var(--warn);
 }
 
 
 
-.class-val--fora {
+.class-val--fora,
+.data-table td.class-val--fora {
     color: var(--danger);
 }
 

@@ -2605,6 +2605,12 @@ function remontar() {
     sincronizarMenuComTela();
     desenharRoscas(palco);
     desenharProjecoes(palco);
+    // no carregamento o remontar roda antes das constantes do armazém
+    // existirem (lá no fim do arquivo): espera o script terminar
+    requestAnimationFrame(() => {
+        montarArmazens(palco);
+        montarSecagem(palco);
+    });
     applyEditMode(isEditing());
     scheduleFit();
 }
@@ -4097,22 +4103,23 @@ function limparFiltrosFluxo() {
 }
 
 // ============================================
-// CLASSIFICACAO · FILTRO GERAL DA TELA (CULTURA + PERIODO)
-// O periodo e' escolha unica e mora em data-class-periodo. A cultura e'
-// marcacao multipla: as quatro nascem marcadas e cada botao desmarca a sua
-// (data-cult-milho, data-cult-sorgo, data-cult-trigo, data-cult-soja na
-// tela). Tirar uma cultura tira as linhas dela da tabela, o item dela da
-// lista do cartao e o peso dela na conta do indicador — a escala do grafico
-// e a leitura da tela melhoram quando uma cultura pequena sai de cena.
+// CLASSIFICACAO · FILTRO GERAL DA TELA (CULTURA + TURNO/PERIODO)
+// Igual ao da recepcao: a cultura e' escolha unica (Todas ou uma) e o
+// periodo mora em data-class-periodo, em turno (t1/t2/t3, a ultima vez que
+// cada turno aconteceu) ou janela (hoje/7d/30d). data-cult-milho,
+// data-cult-sorgo, data-cult-trigo e data-cult-soja na tela dizem quem esta
+// no recorte: as quatro "on" em Todas, so a escolhida nas outras — o CSS
+// usa isso para tirar linhas da tabela e zerar o PH/FN sem trigo.
 // O CSS troca o numero de cada indicador (o HTML traz a versao de "todas" e
-// a de cada cultura sozinha); um recorte no meio e' contado aqui e escrito
-// num span "mistura". O historico mostra uma cultura por vez: fica na
-// primeira que estiver marcada.
+// a de cada cultura sozinha). O historico segue a cultura escolhida.
 // ============================================
-const NOME_PERIODO_CLASS = { turno: 'turno', hoje: 'hoje', '7d': '7 dias', '30d': '30 dias' };
+const NOME_PERIODO_CLASS = {
+    t1: '1º turno 07:00–16:20', t2: '2º turno 16:00–22:20', t3: '3º turno 22:00–07:00',
+    hoje: 'hoje', '7d': '7 dias', '30d': '30 dias',
+};
 
 const CULTURAS_CLASS = ['milho', 'sorgo', 'trigo', 'soja'];
-const PERIODOS_CLASS = ['turno', 'hoje', '7d', '30d'];
+const PERIODOS_CLASS = ['t1', 't2', 't3', 'hoje', '7d', '30d'];
 
 // data-cult-milho / data-cult-sorgo / ... guardam quem esta marcado; tudo que
 // nao estiver escrito "off" conta como marcado (o HTML nasce com as quatro).
@@ -4142,9 +4149,8 @@ function formatarComoClass(modelo, valor) {
 }
 
 // Um grupo de valores e' tudo que tem data-class-agg: o cartao inteiro, ou
-// uma linha dentro dele (o queimado mora no cartao de avariados). Cada
-// elemento pertence ao grupo mais proximo, entao um grupo nunca le o numero
-// do outro.
+// uma linha dentro dele. Cada elemento pertence ao grupo mais proximo, entao
+// um grupo nunca le o numero do outro.
 function dentroDoGrupoClass(grupo, seletor) {
     return Array.prototype.filter.call(
         grupo.querySelectorAll(seletor),
@@ -4173,9 +4179,9 @@ function pesosClass(tela, periodo) {
 }
 
 // valor do indicador com mais de uma cultura marcada: soma nas cargas,
-// media ponderada pelas cargas no resto (umidade, impureza, queimado...).
-// PH e falling number so existem no trigo: as outras entram como "—" e ficam
-// de fora da conta.
+// media ponderada pelas cargas no resto (umidade, impureza, avariados).
+// Valor em "—" (cultura sem o ensaio) fica de fora da conta. PH e falling
+// number sairam daqui: ficam no quadro do trigo por tipo, que nao mistura.
 function valorMisturaClass(grupo, periodo, marcadas, pesos) {
     const soma = grupo.dataset.classAgg === 'soma';
     let acumulado = 0;
@@ -4240,14 +4246,26 @@ function nomeRecorteClass(marcadas) {
 // valendo e so com as culturas marcadas — refeita a cada troca de filtro.
 const ROTULO_CULTURA_CLASS = { milho: 'Milho', sorgo: 'Sorgo', trigo: 'Trigo', soja: 'Soja' };
 
+// limite de cada cultura no padrao da unidade, em data-class-lim do cartao
+// ("milho:máx. 14%|sorgo:máx. 13%"): vai na terceira coluna do balao
+function limitesClass(grupo) {
+    const lim = {};
+    (grupo.dataset.classLim || '').split('|').forEach((par) => {
+        const i = par.indexOf(':');
+        if (i > 0) lim[par.slice(0, i).trim()] = par.slice(i + 1).trim();
+    });
+    return lim;
+}
+
 function escreverMotivoClass(tela, marcadas) {
     if (!tela) return;
     const periodo = tela.dataset.classPeriodo || 'hoje';
     const recorte = nomeRecorteClass(marcadas) || ' · todas as culturas';
     tela.querySelectorAll('[data-class-agg]').forEach((grupo) => {
+        const lim = limitesClass(grupo);
         const itens = marcadas.map((c) => {
             const b = fonteClass(grupo, c, periodo);
-            return ROTULO_CULTURA_CLASS[c] + '::' + (b ? b.textContent.trim() : '—');
+            return ROTULO_CULTURA_CLASS[c] + '::' + (b ? b.textContent.trim() : '—') + '::' + (lim[c] || '');
         });
         grupo.dataset.motivoLista = itens.join('|');
         grupo.dataset.motivoResumo = (NOME_PERIODO_CLASS[periodo] || periodo) + recorte;
@@ -4303,16 +4321,9 @@ function aplicarCulturasClassificacao(tela, marcadas) {
     // recorte pronto. "mistura" e' o caso contado na hora.
     tela.dataset.classCultura = todas ? 'todas' : (lista.length === 1 ? lista[0] : 'mistura');
     tela.querySelectorAll('button[data-class-cultura]').forEach((btn) => {
-        const chave = btn.dataset.classCultura;
-        if (chave === 'todas') {
-            btn.classList.toggle('is-active', todas);
-            btn.setAttribute('aria-pressed', String(todas));
-            return;
-        }
-        const marcada = lista.indexOf(chave) >= 0;
-        btn.classList.toggle('is-off', !marcada);
-        btn.setAttribute('aria-pressed', String(marcada));
-        btn.title = (marcada ? 'Desmarcar ' : 'Marcar ') + chave;
+        const ativo = btn.dataset.classCultura === tela.dataset.classCultura;
+        btn.classList.toggle('is-active', ativo);
+        btn.setAttribute('aria-pressed', String(ativo));
     });
     tela.querySelectorAll('[data-class-cultura-nome]').forEach((el) => {
         el.textContent = nomeRecorteClass(lista);
@@ -4325,19 +4336,12 @@ function aplicarCulturasClassificacao(tela, marcadas) {
     scheduleFit();
 }
 
-// "Todas" remarca as quatro; cada cultura alterna a sua. A ultima marcada nao
-// sai sozinha (a tela ficaria vazia): o clique nela devolve todas.
+// escolha unica, como nas outras telas: "Todas" ou so a cultura clicada
 function escolherCulturaClassificacao(alvo) {
     const tela = alvo.closest('#screen-1');
     const cultura = alvo.dataset.classCultura;
     if (!tela || !cultura) return;
-    const marcadas = culturasMarcadasClass(tela);
-    let novas;
-    if (cultura === 'todas') novas = CULTURAS_CLASS.slice();
-    else if (marcadas.indexOf(cultura) < 0) novas = marcadas.concat([cultura]);
-    else if (marcadas.length === 1) novas = CULTURAS_CLASS.slice();
-    else novas = marcadas.filter((c) => c !== cultura);
-    aplicarCulturasClassificacao(tela, novas);
+    aplicarCulturasClassificacao(tela, cultura === 'todas' ? CULTURAS_CLASS.slice() : [cultura]);
 }
 
 function escolherPeriodoClassificacao(alvo) {
@@ -4890,52 +4894,166 @@ setInterval(atualizarPonta, 1000);
 atualizarPonta();
 
 // ============================================
-// SECAGEM · CONTAGEM ATE A PROXIMA LIMPEZA
-// Cada secador guarda a hora da proxima limpeza em data-limpeza (HH:MM).
-// Se a hora de hoje ja passou, vale a de amanha. O bloco mostra quanto
-// falta e entra em alerta na ultima hora.
+// SECAGEM · GRAFICOS, ALARMES E LIMPEZA
+// Cada [data-secador] traz as series do turno (data-forn, data-ar e
+// data-saida de 5 em 5 min; data-umi de 15 em 15 min, a partir de
+// data-inicio) e o script monta os quatro graficos pequenos, um por
+// indicador, todos no mesmo eixo de horas (data-inicio a data-fim) e cada
+// um na propria escala:
+//   fornalha  0–1.000 °C, tracejado no minimo e no maximo da faixa
+//   ar        0 até um pouco acima do limite da cultura, tracejado no limite
+//             e pontilhado na desejada (o operador define)
+//   saida     0–60 °C, tracejado no limite (50); acima dele o cartao alarma
+//   umidade   12–20 %
+// Os numeros do cartao saem da ultima leitura, entao nunca brigam com o
+// grafico. Monta uma vez; os dados de demonstracao sao fixos em 14h50.
 // ============================================
-function atualizarLimpezas() {
-    const agora = new Date();
-    document.querySelectorAll('[data-limpeza]').forEach((el) => {
-        const partes = String(el.dataset.limpeza || '').split(':');
-        const h = Number(partes[0]);
-        const m = Number(partes[1]);
-        if (!Number.isFinite(h) || !Number.isFinite(m)) return;
+const SEC_PASSO_TEMP = 5; // min entre leituras de temperatura
+const SEC_PASSO_UMI = 15; // min entre leituras de umidade
 
-        const alvo = new Date(agora);
-        alvo.setHours(h, m, 0, 0);
-        const amanha = alvo <= agora;
-        if (amanha) alvo.setDate(alvo.getDate() + 1);
-
-        const faltam = Math.max(0, Math.round((alvo - agora) / 60000));
-        const horas = Math.floor(faltam / 60);
-        const minutos = faltam % 60;
-
-        const tempo = el.querySelector('[data-limpeza-tempo]');
-        const ref = el.querySelector('[data-limpeza-ref]');
-        if (tempo) {
-            tempo.textContent = horas
-                ? horas + 'h' + String(minutos).padStart(2, '0')
-                : minutos + 'min';
-        }
-        if (ref) {
-            ref.textContent = (amanha ? 'amanhã' : 'hoje') + ' às ' + el.dataset.limpeza;
-        }
-
-        // o anel esvazia conforme a hora chega: cheio logo apos uma limpeza,
-        // vazio na hora da proxima
-        const intervalo = Number(el.dataset.limpezaIntervalo) || 720;
-        const relogio = el.querySelector('.secador-limpeza-relogio');
-        if (relogio) {
-            relogio.style.setProperty('--p', Math.max(0, Math.min(1, faltam / intervalo)).toFixed(3));
-        }
-        el.classList.toggle('is-perto', faltam <= 60);
-    });
+function minutosDoDia(hhmm) {
+    const [h, m] = String(hhmm || '0:0').split(':').map(Number);
+    return (h || 0) * 60 + (m || 0);
 }
 
-setInterval(atualizarLimpezas, 15000);
-atualizarLimpezas();
+function grau(v) {
+    return `${Math.round(v)}°C`;
+}
+
+function umidade(v) {
+    return `${Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
+}
+
+// Queda de umidade em pontos por hora: a cada leitura (15 min), a de 1 h
+// atras menos a atual; so entra quando as cinco leituras sao da mesma
+// secagem (nenhuma subida, que seria grao novo entrando). Media das que
+// cairam nas ultimas 3 h.
+function quedaUmidade(umi) {
+    const porHora = 60 / SEC_PASSO_UMI;
+    const janela = (3 * 60) / SEC_PASSO_UMI;
+    const quedas = [];
+    for (let k = umi.length - 1; k >= porHora && k > umi.length - 1 - janela; k -= 1) {
+        let mesmaSecagem = true;
+        for (let j = k - porHora + 1; j <= k; j += 1) {
+            if (umi[j] - umi[j - 1] > 0.15) mesmaSecagem = false;
+        }
+        const queda = umi[k - porHora] - umi[k];
+        if (mesmaSecagem && queda > 0) quedas.push(queda);
+    }
+    return quedas.length ? quedas.reduce((a, b) => a + b, 0) / quedas.length : null;
+}
+
+function graficoSecador({ nome, cls, serie, passo, total, lo, hi, linhas, valor, alarme }) {
+    const y = (v) => Math.max(0, Math.min(100, (1 - (v - lo) / (hi - lo)) * 100));
+    const x = (i) => ((i * passo) / total) * 1000;
+    const pontos = serie.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+    const refs = linhas.map((l) =>
+        `<line class="sec-ref sec-ref--${l.tipo}" x1="0" y1="${y(l.v).toFixed(1)}" x2="1000" y2="${y(l.v).toFixed(1)}"></line>`).join('');
+    const tags = linhas.map((l) =>
+        `<span class="sec-ref-tag sec-ref-tag--${l.tipo}" style="top: ${y(l.v).toFixed(1)}%">${l.rotulo}</span>`).join('');
+    return `<div class="sec-faixa sec-faixa--${cls}${alarme ? ' is-alarme' : ''}">`
+        + `<span class="sec-faixa-nome">${nome} <b>${valor}</b></span>`
+        + '<div class="sec-faixa-plot">'
+        + `<svg viewBox="0 0 1000 100" preserveAspectRatio="none" aria-hidden="true">${refs}`
+        + `<polyline class="sec-linha" points="${pontos}"></polyline></svg>${tags}`
+        + '</div></div>';
+}
+
+function montarSecador(card) {
+    const alvo = card.querySelector('[data-sec-graficos]');
+    if (!alvo) return;
+    const total = minutosDoDia(card.dataset.fim) - minutosDoDia(card.dataset.inicio);
+    const forn = numeros(card.dataset.forn);
+    const ar = numeros(card.dataset.ar);
+    const saida = numeros(card.dataset.saida);
+    const umi = numeros(card.dataset.umi);
+    const ultimo = (s) => s[s.length - 1];
+    const fornMin = paraNumero(card.dataset.fornMin);
+    const fornMax = paraNumero(card.dataset.fornMax);
+    const arMax = paraNumero(card.dataset.arMax);
+    const arDesejada = paraNumero(card.dataset.arDesejada);
+    const saidaMax = paraNumero(card.dataset.saidaMax) || 50;
+    const saidaAlarme = saida.length > 0 && ultimo(saida) > saidaMax;
+    const arAcima = ar.length > 0 && ultimo(ar) > arMax;
+
+    alvo.innerHTML = [
+        graficoSecador({
+            nome: 'Fornalha', cls: 'fornalha', serie: forn, passo: SEC_PASSO_TEMP, total, lo: 0, hi: 1000,
+            valor: forn.length ? grau(ultimo(forn)) : '--',
+            linhas: [
+                { v: fornMax, tipo: 'limite', rotulo: `máx. ${fornMax}` },
+                { v: fornMin, tipo: 'limite', rotulo: `mín. ${fornMin}` },
+            ],
+        }),
+        graficoSecador({
+            nome: 'Ar do secador', cls: 'ar', serie: ar, passo: SEC_PASSO_TEMP, total, lo: 0, hi: Math.ceil((arMax + 15) / 10) * 10,
+            valor: ar.length ? grau(ultimo(ar)) : '--', alarme: arAcima,
+            linhas: [
+                { v: arMax, tipo: 'limite', rotulo: `limite ${arMax}` },
+                { v: arDesejada, tipo: 'desejada', rotulo: `desejada ${arDesejada}` },
+            ],
+        }),
+        graficoSecador({
+            nome: 'Saída do ar', cls: 'saida', serie: saida, passo: SEC_PASSO_TEMP, total, lo: 0, hi: 60,
+            valor: saida.length ? grau(ultimo(saida)) : '--', alarme: saidaAlarme,
+            linhas: [{ v: saidaMax, tipo: 'limite', rotulo: `limite ${saidaMax}` }],
+        }),
+        graficoSecador({
+            nome: 'Umidade', cls: 'umi', serie: umi, passo: SEC_PASSO_UMI, total, lo: 12, hi: 20,
+            valor: umi.length ? umidade(ultimo(umi)) : '--', linhas: [],
+        }),
+    ].join('');
+
+    // valores do cartao = ultima leitura de cada serie
+    const escreve = (chave, texto) => {
+        const el = card.querySelector(`[data-sec-val="${chave}"]`);
+        if (el) el.textContent = texto;
+    };
+    if (forn.length) escreve('forn', grau(ultimo(forn)));
+    if (ar.length) escreve('ar', grau(ultimo(ar)));
+    if (saida.length) escreve('saida', grau(ultimo(saida)));
+    if (umi.length) escreve('umi', umidade(ultimo(umi)));
+    const queda = quedaUmidade(umi);
+    const elQueda = card.querySelector('[data-sec-queda]');
+    if (elQueda) {
+        elQueda.textContent = queda === null ? '--'
+            : `${queda.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} ${queda >= 2 ? 'pontos' : 'ponto'}`;
+    }
+
+    // saida do ar acima do limite: o secador desarma e ha risco de incendio
+    card.classList.toggle('is-alarme', saidaAlarme);
+    const dadoSaida = card.querySelector('[data-sec-saida]');
+    if (dadoSaida) dadoSaida.classList.toggle('is-alarme', saidaAlarme);
+    const dadoAr = card.querySelector('.secador-dado--ar');
+    if (dadoAr) dadoAr.classList.toggle('is-acima', arAcima);
+    const alarme = card.querySelector('[data-sec-alarme]');
+    if (alarme) {
+        alarme.hidden = !saidaAlarme;
+        alarme.textContent = saidaAlarme ? `Saída do ar ${grau(ultimo(saida))} · risco de incêndio` : '';
+    }
+
+    // limpeza: ciclo de horas trabalhadas; passou, pisca em vermelho
+    const ciclo = paraNumero(card.dataset.limpezaCiclo) || 72;
+    const trab = paraNumero(card.dataset.limpezaTrab);
+    const falta = ciclo - trab;
+    const limpeza = card.querySelector('[data-sec-limpeza]');
+    if (limpeza) {
+        limpeza.classList.toggle('is-vencida', falta < 0);
+        limpeza.classList.toggle('is-perto', falta >= 0 && falta <= 8);
+        const b = limpeza.querySelector('[data-sec-limpeza-falta]');
+        const rotulo = limpeza.querySelector('[data-sec-limpeza-rotulo]');
+        if (b) b.textContent = falta < 0 ? `passou ${-falta} h` : `faltam ${falta} h`;
+        if (rotulo) rotulo.textContent = falta < 0 ? 'do ciclo · limpar já' : 'trabalhadas até a limpeza';
+        const barra = limpeza.querySelector('[data-sec-limpeza-barra]');
+        if (barra) barra.style.width = `${Math.min(100, (trab / ciclo) * 100).toFixed(1)}%`;
+    }
+}
+
+function montarSecagem(raiz) {
+    (raiz || document).querySelectorAll('[data-secador]').forEach(montarSecador);
+}
+
+montarSecagem();
 
 // ============================================
 // SILOS & AERAÇÃO
@@ -5070,6 +5188,58 @@ function formatarTaxa(taxa) {
     return `${sinal}${abs} °C/h`;
 }
 
+// Curva com histórico (linha cheia) e projeção (tracejada) dentro de alvo,
+// que tem os mesmos [data-spark], [data-temp-*] e [data-hora-*] do cartão
+// de silo. O svg só é redesenhado quando muda a chave (nova contagem).
+// Os rótulos acompanham a altura da curva no início, no fechamento
+// (--x-agora, onde o eixo cheio termina e o tracejado começa) e no fim
+// da projeção.
+function desenharCurvaProjecao(alvo, hist, proj, slots, rotulos, chave) {
+    const svg = alvo.querySelector('[data-spark]');
+    if (svg && (svg.childElementCount === 0 || svg.dataset.bloco !== chave)) {
+        desenharSparkline(svg, hist, proj, slots);
+        svg.dataset.bloco = chave;
+    }
+    escreverTexto(alvo.querySelector('[data-temp-inicio]'), formatarTemperatura(hist[0]));
+    escreverTexto(alvo.querySelector('[data-temp-atual]'), formatarTemperatura(hist[hist.length - 1]));
+    escreverTexto(alvo.querySelector('[data-temp-proj]'), proj.length ? formatarTemperatura(proj[proj.length - 1]) : '');
+    escreverTexto(alvo.querySelector('[data-hora-inicio]'), rotulos[0]);
+    escreverTexto(alvo.querySelector('[data-hora-meio]'), rotulos[1]);
+    escreverTexto(alvo.querySelector('[data-hora-fim]'), rotulos[2]);
+    const pontos = pontosSparkline(hist.concat(proj), slots);
+    const pct = (v, total) => `${((v / total) * 100).toFixed(1)}%`;
+    const wrap = alvo.querySelector('[data-spark-wrap]');
+    if (wrap) {
+        wrap.style.setProperty('--x-agora', pct(pontos[hist.length - 1][0], SPARK_W));
+        wrap.style.setProperty('--y-ini', pct(pontos[0][1], SPARK_H));
+        wrap.style.setProperty('--y-fim', pct(pontos[hist.length - 1][1], SPARK_H));
+        wrap.style.setProperty('--y-proj', pct(pontos[pontos.length - 1][1], SPARK_H));
+    }
+}
+
+// A contagem fecha a cada 12h (00:00 e 12:00): a linha cheia é a última
+// contagem fechada, da virada anterior até a última (ex.: 00:00 → 12:00),
+// e não passa dela. Dali até o fim do bloco (ex.: 12:00 → 00:00) é só
+// projeção tracejada, feita a partir do fechamento. As leituras de
+// data-temps depois da virada ainda não entraram em contagem. card é quem
+// tem data-aer / data-pausa-ponta (a projeção para na ponta).
+function curvaBlocos24h(alvo, temps, card) {
+    const horaAgora = new Date();
+    horaAgora.setMinutes(0, 0, 0);
+    const corridas = horaAgora.getHours() % SPARK_BLOCO;
+    const viradaBloco = new Date(horaAgora.getTime() - corridas * HORA_MS);
+    const fimContagem = temps.length - corridas;
+    const hist = temps.slice(Math.max(0, fimContagem - SPARK_BLOCO - 1), fimContagem);
+    if (hist.length < 2) return false;
+    const proj = projetarTemperaturas(hist, card, viradaBloco, SPARK_BLOCO);
+    const inicio = new Date(viradaBloco.getTime() - SPARK_BLOCO * HORA_MS);
+    const fimBloco = new Date(viradaBloco.getTime() + SPARK_BLOCO * HORA_MS);
+    // a projeção só muda quando fecha uma nova contagem
+    desenharCurvaProjecao(alvo, hist, proj, SPARK_SLOTS,
+        [formatarHora(inicio), formatarHora(viradaBloco), formatarHora(fimBloco)], String(viradaBloco.getTime()));
+    return true;
+}
+
 function prepararSilo(card) {
     const temps = numeros(card.dataset.temps);
     if (temps.length < 2) return;
@@ -5085,49 +5255,10 @@ function prepararSilo(card) {
         prepararSiloPeriodo(card, periodo, temps, alerta);
         return;
     }
-    // A contagem fecha a cada 12h (00:00 e 12:00): a linha cheia é a última
-    // contagem fechada, da virada anterior até a última (ex.: 00:00 → 12:00),
-    // e não passa dela. Dali até o fim do bloco (ex.: 12:00 → 00:00) é só
-    // projeção tracejada, feita a partir do fechamento. As leituras de
-    // data-temps depois da virada ainda não entraram em contagem.
-    const horaAgora = new Date();
-    horaAgora.setMinutes(0, 0, 0);
-    const corridas = horaAgora.getHours() % SPARK_BLOCO;
-    const viradaBloco = new Date(horaAgora.getTime() - corridas * HORA_MS);
-    const fimContagem = temps.length - corridas;
-    const hist = temps.slice(Math.max(0, fimContagem - SPARK_BLOCO - 1), fimContagem);
-    if (hist.length < 2) return;
-    const proj = projetarTemperaturas(hist, card, viradaBloco, SPARK_BLOCO);
-    // a projeção só muda quando fecha uma nova contagem
-    const chaveBloco = String(viradaBloco.getTime());
-    const svg = card.querySelector('[data-spark]');
-    if (svg && (svg.childElementCount === 0 || svg.dataset.bloco !== chaveBloco)) {
-        desenharSparkline(svg, hist, proj);
-        svg.dataset.bloco = chaveBloco;
-    }
+    if (!curvaBlocos24h(card, temps, card)) return;
 
     const taxa = taxaTemperatura(temps);
     const tendencia = tendenciaDe(taxa);
-    escreverTexto(card.querySelector('[data-temp-inicio]'), formatarTemperatura(hist[0]));
-    escreverTexto(card.querySelector('[data-temp-atual]'), formatarTemperatura(hist[hist.length - 1]));
-    escreverTexto(card.querySelector('[data-temp-proj]'), formatarTemperatura(proj[proj.length - 1]));
-    const fimBloco = new Date(viradaBloco.getTime() + SPARK_BLOCO * HORA_MS);
-    const inicio = new Date(viradaBloco.getTime() - SPARK_BLOCO * HORA_MS);
-    escreverTexto(card.querySelector('[data-hora-inicio]'), formatarHora(inicio));
-    escreverTexto(card.querySelector('[data-hora-meio]'), formatarHora(viradaBloco));
-    escreverTexto(card.querySelector('[data-hora-fim]'), formatarHora(fimBloco));
-    // rótulos acompanham a altura da curva no início, no fechamento da
-    // contagem (--x-agora, onde o eixo cheio termina e o tracejado começa)
-    // e no fim da projeção
-    const pontos = pontosSparkline(hist.concat(proj));
-    const pct = (v, total) => `${((v / total) * 100).toFixed(1)}%`;
-    const wrap = card.querySelector('[data-spark-wrap]');
-    if (wrap) {
-        wrap.style.setProperty('--x-agora', pct(pontos[hist.length - 1][0], SPARK_W));
-        wrap.style.setProperty('--y-ini', pct(pontos[0][1], SPARK_H));
-        wrap.style.setProperty('--y-fim', pct(pontos[hist.length - 1][1], SPARK_H));
-        wrap.style.setProperty('--y-proj', pct(pontos[pontos.length - 1][1], SPARK_H));
-    }
     const rate = card.querySelector('[data-temp-taxa]');
     if (rate) {
         escreverTexto(rate, formatarTaxa(taxa));
@@ -5315,6 +5446,232 @@ function limparFiltrosSilo() {
 
 
 // ============================================
+// ARMAZÉM · PLANTA POR SETOR
+// Cada cartão [data-armazem] vira um tabuleiro: um quadradinho por cabo de
+// termometria, o túnel central separando o lado A (em cima) do lado B
+// (embaixo) e os motores de aeração na parede de cada lado, alinhados com
+// os quadradinhos que atendem. Os quadradinhos são agrupados por setor de
+// aeração, com média, máxima e motores ligados no topo. Os atributos estão
+// descritos no comentário da tela 6, no index.html. A planta é montada uma
+// vez; a cada segundo só mudam o estado da aeração e as tendências (estas
+// só são redesenhadas quando vira a hora ou a leitura das 06h/18h).
+// ============================================
+const ARM_ATENCAO = 28; // °C: mesmas faixas da termometria das demais unidades
+const ARM_ALERTA = 32;
+
+// faixa da cor do quadradinho: abaixo de 28 °C a cor só ganha força com a
+// temperatura (1 a 5, de 2 em 2 °C a partir de 20); acima disso, aviso
+function faixaArmazem(t) {
+    if (t === null) return 'fora';
+    if (t >= ARM_ALERTA) return 'alerta';
+    if (t >= ARM_ATENCAO) return 'atencao';
+    return String(Math.min(5, Math.max(1, Math.floor((t - 20) / 2) + 2)));
+}
+
+function formatarGrau(t) {
+    return Number(t).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+}
+
+// "A7-A13,B2" -> Set { A7, A8, ..., A13, B2 }
+function motoresLigados(texto) {
+    const ligados = new Set();
+    (texto || '').split(',').map((s) => s.trim()).filter(Boolean).forEach((parte) => {
+        const m = parte.match(/^([AB])(\d+)(?:\s*-\s*[AB]?(\d+))?$/i);
+        if (!m) return;
+        const lado = m[1].toUpperCase();
+        const ini = Number(m[2]);
+        const fim = m[3] ? Number(m[3]) : ini;
+        for (let n = Math.min(ini, fim); n <= Math.max(ini, fim); n += 1) ligados.add(`${lado}${n}`);
+    });
+    return ligados;
+}
+
+// linhas separadas por ";" e valores por ","; "-" (ou vazio) = fora do produto
+function celulasArmazem(texto) {
+    return (texto || '').split(';').map((linha) => linha.split(',').map((v) => {
+        const n = Number.parseFloat(v);
+        return Number.isFinite(n) ? n : null;
+    }));
+}
+
+function media(valores) {
+    return valores.length ? valores.reduce((a, b) => a + b, 0) / valores.length : null;
+}
+
+function montarArmazem(card) {
+    const mapa = card.querySelector('[data-arm-mapa]');
+    if (!mapa) return;
+    const motores = Math.max(1, paraNumero(card.dataset.armMotores) || 1);
+    const cpm = Math.max(1, paraNumero(card.dataset.armColsPorMotor) || 1);
+    const linhas = Math.max(1, paraNumero(card.dataset.armLinhas) || 1);
+    const ligados = motoresLigados(card.dataset.armMotoresOn);
+    const celulas = celulasArmazem(card.dataset.armCelulas);
+    const valor = (linha, col) => (celulas[linha] && celulas[linha][col] !== undefined ? celulas[linha][col] : null);
+
+    // setores em posições de motor; se a soma não fecha, o último absorve a diferença
+    const setores = numeros(card.dataset.armSetores).filter((n) => n > 0);
+    if (!setores.length) setores.push(motores);
+    const soma = setores.reduce((a, b) => a + b, 0);
+    setores[setores.length - 1] = Math.max(1, setores[setores.length - 1] + motores - soma);
+
+    const todas = [];
+    let html = '<div class="arm-lados" aria-hidden="true"><span></span><span>A</span><span class="arm-lado-cel">lado A</span>'
+        + '<span class="arm-lado-tunel">túnel</span><span class="arm-lado-cel">lado B</span><span>B</span></div>';
+    let pos = 0; // primeira posição de motor do setor
+    setores.forEach((qtd, s) => {
+        const c0 = pos * cpm;
+        const cols = qtd * cpm;
+        const doSetor = [];
+        const motor = (lado) => {
+            let h = '';
+            for (let k = 0; k < qtd; k += 1) {
+                const id = `${lado}${pos + k + 1}`;
+                const on = ligados.has(id);
+                h += `<i class="arm-motor" data-motor="${on ? 'on' : 'off'}" style="grid-column: span ${cpm}" title="Motor ${id} · ${on ? 'ligado' : 'desligado'}">${id}</i>`;
+            }
+            return `<div class="arm-motores">${h}</div>`;
+        };
+        const lado = (de, ate, nomeLado) => {
+            let h = '';
+            for (let l = de; l < ate; l += 1) {
+                for (let c = c0; c < c0 + cols; c += 1) {
+                    const t = valor(l, c);
+                    if (t !== null) doSetor.push(t);
+                    const cabo = `cabo ${l + 1}.${c + 1}`;
+                    const motorDe = `${nomeLado}${Math.floor(c / cpm) + 1}`;
+                    h += t === null
+                        ? `<i class="arm-cel" data-faixa="fora" title="Setor ${s + 1} · ${cabo} · fora do produto"></i>`
+                        : `<i class="arm-cel" data-faixa="${faixaArmazem(t)}" title="Setor ${s + 1} · lado ${nomeLado} · ${cabo} · motor ${motorDe} · ${formatarGrau(t)} °C">${formatarGrau(t)}</i>`;
+                }
+            }
+            return `<div class="arm-celulas">${h}</div>`;
+        };
+        const corpo = motor('A') + lado(0, linhas, 'A') + '<div class="arm-tunel"></div>' + lado(linhas, linhas * 2, 'B') + motor('B');
+        const m = media(doSetor);
+        const max = doSetor.length ? Math.max(...doSetor) : null;
+        let on = 0;
+        for (let k = 1; k <= qtd; k += 1) on += (ligados.has(`A${pos + k}`) ? 1 : 0) + (ligados.has(`B${pos + k}`) ? 1 : 0);
+        todas.push(...doSetor);
+        html += `<div class="arm-setor" style="--cols: ${cols}; flex-grow: ${cols}" data-ligados="${on}">`
+            + '<div class="arm-setor-head">'
+            + `<span class="arm-setor-nome">SETOR ${s + 1}</span>`
+            + `<span class="arm-setor-motores" title="Motores ligados no setor (lados A e B)">${on}/${qtd * 2} motores</span>`
+            + `<b class="arm-setor-media" data-faixa="${m === null ? 'fora' : faixaArmazem(m)}" title="Média dos cabos do setor">${m === null ? '--' : `${formatarGrau(m)}°`}</b>`
+            + `<span class="arm-setor-max" title="Cabo mais quente do setor">máx ${max === null ? '--' : `${formatarGrau(max)}°`}</span>`
+            + '</div>'
+            + `<div class="arm-setor-corpo" style="--linhas: ${linhas}">${corpo}</div>`
+            + '</div>';
+        pos += qtd;
+    });
+    mapa.innerHTML = `<div class="arm-planta">${html}</div>`;
+
+    const total = motores * 2;
+    escreverTexto(card.querySelector('[data-arm-motores-total]'), `${ligados.size}/${total} motores`);
+    const m = media(todas);
+    escreverTexto(card.querySelector('[data-arm-media]'), m === null ? '--' : formatarTemperatura(m));
+    card.dataset.armMax = todas.length ? String(Math.max(...todas)) : '';
+    mapa.setAttribute('aria-label', `${mapa.getAttribute('aria-label').split(':')[0]}: ${setores.length} setores, `
+        + `${ligados.size} de ${total} motores ligados, média ${m === null ? '--' : formatarTemperatura(m)}`);
+}
+
+// Tendências fixas do armazém (24 h, 7 dias, 30 dias), iguais à curva dos
+// silos: linha cheia no histórico e projeção tracejada. 24 h é a mesma
+// curva dos silos (última contagem de 12 h + 12 h projetadas, taxa das
+// últimas 3 h); 7 e 30 dias usam as leituras das 06h e 18h: o eixo tem a
+// janela inteira de histórico e, depois de "agora", outra janela igual de
+// projeção, com a taxa em °C por dia.
+function projetarLeituras(serie, passos) {
+    const n = serie.length;
+    // por leitura (12 h), das 3 últimas; perde força a cada passo
+    let taxa = n >= 4 ? (serie[n - 1] - serie[n - 4]) / 3 : 0;
+    let t = serie[n - 1];
+    const proj = [];
+    for (let k = 0; k < passos; k += 1) {
+        taxa *= 0.85;
+        t += taxa;
+        proj.push(t);
+    }
+    return proj;
+}
+
+function escreverTaxaArmazem(item, taxa, unidade) {
+    const tendencia = unidade === 'dia'
+        ? (taxa >= 1 ? 'alerta' : taxa > 0.1 ? 'sobe' : taxa < -0.1 ? 'desce' : 'estavel')
+        : tendenciaDe(taxa);
+    const rate = item.querySelector('[data-temp-taxa]');
+    if (rate) {
+        escreverTexto(rate, formatarTaxa(taxa).replace('°C/h', `°C/${unidade}`));
+        rate.dataset.tendencia = tendencia;
+        rate.title = unidade === 'dia'
+            ? 'Variação média por dia no período (leituras das 06h e 18h)'
+            : 'Variação média por hora nas últimas 3 horas';
+    }
+    return tendencia;
+}
+
+function tendenciasArmazem(card) {
+    const agora = new Date();
+    const temps = numeros(card.dataset.temps);
+    const dia = numeros(card.dataset.tempsDia);
+    let alerta = false;
+    card.querySelectorAll('[data-arm-tend]').forEach((item) => {
+        const periodo = item.dataset.armTend;
+        let tendencia = 'estavel';
+        if (periodo === '24h') {
+            if (curvaBlocos24h(item, temps, card)) tendencia = escreverTaxaArmazem(item, taxaTemperatura(temps), 'h');
+        } else {
+            const passos = LEITURAS_SILO[periodo] || 14;
+            const hist = dia.slice(-(passos + 1));
+            if (hist.length < 2) return;
+            const proj = projetarLeituras(hist, passos);
+            const ultima = new Date(agora);
+            ultima.setMinutes(0, 0, 0);
+            ultima.setHours(agora.getHours() >= 18 ? 18 : agora.getHours() >= 6 ? 6 : -6);
+            const leitura = (k) => formatarData(new Date(ultima.getTime() + k * 12 * HORA_MS));
+            const rotulos = [leitura(-passos), leitura(0), leitura(passos)];
+            desenharCurvaProjecao(item, hist, proj, passos * 2, rotulos, `${periodo}:${rotulos.join('|')}`);
+            tendencia = escreverTaxaArmazem(item, (hist[hist.length - 1] - hist[0]) / ((hist.length - 1) / 2), 'dia');
+        }
+        if (tendencia === 'alerta') alerta = true;
+    });
+    return alerta;
+}
+
+function montarArmazens(raiz) {
+    (raiz || document).querySelectorAll('[data-armazem]').forEach(montarArmazem);
+    atualizarArmazens();
+}
+
+function atualizarArmazens() {
+    const dentroPonta = emPonta(new Date());
+    const decorrido = (Date.now() - SILOS_INICIO) / 1000;
+    document.querySelectorAll('[data-armazem]').forEach((card) => {
+        const subindo = tendenciasArmazem(card);
+        const quente = paraNumero(card.dataset.armMax) >= ARM_ALERTA;
+        card.dataset.alerta = subindo || quente ? '1' : '0';
+
+        const ligado = card.dataset.aer === 'on';
+        const pausado = ligado && card.dataset.pausaPonta === '1' && dentroPonta;
+        let estado = 'off';
+        let selo = 'OFF';
+        let info = `desligou às ${card.dataset.aerFim || '--:--'} · rodou ${card.dataset.aerRodou || '--'}`;
+        if (pausado) {
+            estado = 'pausa';
+            selo = 'PAUSA';
+            info = `pausado na ponta · volta às ${String(PONTA_FIM).padStart(2, '0')}:00`;
+        } else if (ligado) {
+            estado = 'on';
+            selo = 'ON';
+            info = `ligado há ${formatarDuracao(paraNumero(card.dataset.aerDesdeMin) * 60 + decorrido)}`;
+        }
+        card.dataset.aerEstado = estado;
+        escreverTexto(card.querySelector('[data-aer-badge]'), selo);
+        escreverTexto(card.querySelector('[data-aer-info]'), info);
+    });
+}
+
+
+// ============================================
 // PULMÕES · AERAÇÃO
 // Os pulmões não têm termometria, mas têm ventilador. O acumulado é da
 // cultura: não zera quando o ventilador desliga, só quando o pulmão troca
@@ -5361,6 +5718,7 @@ function atualizarPulmoesAeracao() {
     });
 }
 
-setInterval(() => { atualizarSilosAeracao(); atualizarPulmoesAeracao(); }, 1000);
+setInterval(() => { atualizarSilosAeracao(); atualizarPulmoesAeracao(); atualizarArmazens(); }, 1000);
 atualizarSilosAeracao();
 atualizarPulmoesAeracao();
+montarArmazens();

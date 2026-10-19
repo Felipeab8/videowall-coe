@@ -345,8 +345,10 @@
                         </div>
                     </button>
 
-                    <!-- 04 Secagem: o turno 07h–17h contra a meta, os dois limites de
-                         temperatura estourados agora e cada secador contra a própria meta.
+                    <!-- 04 Secagem: o turno 07h–17h contra a meta, as duas temperaturas que
+                         pedem atenção (o ar do S1 perto do máximo de 105 °C do milho e a saída
+                         do ar do S2 acima de 50 °C, risco de incêndio) e cada secador contra a
+                         própria meta.
                          Os números são os das telas da secagem e da produtividade às 14h50;
                          vazão fica por secador (t/h de secadores diferentes não se somam). -->
                     <button data-codigo="AVR-VG-D" class="geral-card alert" type="button" data-goto="3" title="Abrir tela da secagem">
@@ -363,7 +365,7 @@
                             </div>
                             <!-- escala até 120 °C (ar) e 60 °C (saída); a marca é o limite -->
                             <div class="gv-meters gv-meters--stack">
-                                <div class="gv-meter gv-meter--ruim" style="--p: 0.842"><span class="gv-meter-label">Ar · S1</span><span class="gv-meter-track"><span class="gv-meter-fill"></span><span class="gv-meter-mark" style="--m: 0.833"></span></span><span class="gv-meter-value">101°C</span><span class="gv-meter-lim">máx. 100°C no milho</span></div>
+                                <div class="gv-meter" style="--p: 0.867"><span class="gv-meter-label">Ar · S1</span><span class="gv-meter-track"><span class="gv-meter-fill"></span><span class="gv-meter-mark" style="--m: 0.875"></span></span><span class="gv-meter-value">104°C</span><span class="gv-meter-lim">máx. 105°C no milho</span></div>
                                 <div class="gv-meter gv-meter--ruim" style="--p: 0.867"><span class="gv-meter-label">Saída do ar · S2</span><span class="gv-meter-track"><span class="gv-meter-fill"></span><span class="gv-meter-mark" style="--m: 0.833"></span></span><span class="gv-meter-value">52°C</span><span class="gv-meter-lim">limite 50°C · incêndio</span></div>
                             </div>
                         </div>
@@ -1046,29 +1048,34 @@
                         <h2>Controle de Classificação</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">4</span>s</div>
                     </div>
-                    <!-- filtro geral da tela: cultura e periodo, guardados na section em
-                         data-class-cultura / data-class-periodo. Valem para os indicadores
-                         e para a tabela de cargas; o historico segue a cultura (ele mostra
-                         uma por vez, entao fica na primeira marcada).
-                         A cultura e' marcacao multipla: as quatro comecam marcadas e cada
-                         botao desmarca a sua (data-cult-<cultura> na section diz quais
-                         valem). Desmarcar tira a cultura das listas, da tabela e da conta
-                         do indicador — e' assim que se tira a soja para a escala do
-                         grafico e a leitura da tela melhorarem. "Todas" remarca tudo, e
-                         desmarcar a ultima que restou tambem volta para todas. -->
+                    <!-- filtro geral da tela, igual ao da recepcao: uma cultura por vez
+                         (data-class-cultura) e o periodo (data-class-periodo) em turno
+                         (t1/t2/t3, a ultima vez que cada turno aconteceu) ou janela
+                         (hoje/7d/30d). Valem para os indicadores, a tabela de cargas e a
+                         conciliacao; o historico segue a cultura escolhida. data-cult-<cultura>
+                         na section diz se a cultura esta no recorte (todas "on" em Todas,
+                         so a escolhida nas outras). -->
                     <div class="fluxo-filtro">
-                        <div class="class-filtro" role="group" aria-label="Culturas consideradas na tela">
+                        <div class="class-filtro" role="group" aria-label="Filtrar a classificação por cultura">
                             <span class="class-filtro-rotulo">Cultura</span>
                             <button type="button" class="class-filtro-btn is-active" data-class-cultura="todas" aria-pressed="true">Todas</button>
-                            <button type="button" class="class-filtro-btn" data-class-cultura="milho" aria-pressed="true" title="Desmarcar milho"><i class="legend-dot legend-dot--milho"></i>Milho</button>
-                            <button type="button" class="class-filtro-btn" data-class-cultura="sorgo" aria-pressed="true" title="Desmarcar sorgo"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</button>
-                            <button type="button" class="class-filtro-btn" data-class-cultura="trigo" aria-pressed="true" title="Desmarcar trigo"><i class="legend-dot legend-dot--trigo"></i>Trigo</button>
-                            <button type="button" class="class-filtro-btn" data-class-cultura="soja" aria-pressed="true" title="Desmarcar soja"><i class="legend-dot legend-dot--soja"></i>Soja</button>
+                            <button type="button" class="class-filtro-btn" data-class-cultura="milho" aria-pressed="false"><i class="legend-dot legend-dot--milho"></i>Milho</button>
+                            <button type="button" class="class-filtro-btn" data-class-cultura="sorgo" aria-pressed="false"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</button>
+                            <button type="button" class="class-filtro-btn" data-class-cultura="trigo" aria-pressed="false"><i class="legend-dot legend-dot--trigo"></i>Trigo</button>
+                            <button type="button" class="class-filtro-btn" data-class-cultura="soja" aria-pressed="false"><i class="legend-dot legend-dot--soja"></i>Soja</button>
+                        </div>
+                        <div class="fluxo-filtro-tempo">
+                        <div class="fluxo-periodo fluxo-periodo--turnos" role="group" aria-label="Turno dos dados da tela">
+                            <span class="class-filtro-rotulo">Turno</span>
+                            <button type="button" class="class-periodo-btn" data-class-periodo="t1" aria-pressed="false" title="1º turno · 07:00–16:20">07:00–16:20</button>
+                            <button type="button" class="class-periodo-btn" data-class-periodo="t2" aria-pressed="false" title="2º turno · 16:00–22:20">16:00–22:20</button>
+                            <button type="button" class="class-periodo-btn" data-class-periodo="t3" aria-pressed="false" title="3º turno · 22:00–07:00">22:00–07:00</button>
                         </div>
                         <div class="fluxo-periodo" role="group" aria-label="Período dos dados da tela">
                             <button type="button" class="class-periodo-btn is-active" data-class-periodo="hoje" aria-pressed="true">Hoje</button>
                             <button type="button" class="class-periodo-btn" data-class-periodo="7d" aria-pressed="false">7 dias</button>
                             <button type="button" class="class-periodo-btn" data-class-periodo="30d" aria-pressed="false">30 dias</button>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -1085,88 +1092,114 @@
                         tabindex="0" data-motivo data-motivo-titulo="Cargas classificadas por cultura">
                         <div class="kpi-label">CARGAS CLASSIFICADAS</div>
                         <div class="kpi-value">
-                            <span class="class-cult" data-cultura="todas"><b data-periodo="turno">38</b><b data-periodo="hoje">100</b><b data-periodo="7d">687</b><b data-periodo="30d">2.940</b></span>
-                            <span class="class-cult" data-cultura="milho"><b data-periodo="turno">16</b><b data-periodo="hoje">42</b><b data-periodo="7d">289</b><b data-periodo="30d">1.236</b></span>
-                            <span class="class-cult" data-cultura="sorgo"><b data-periodo="turno">10</b><b data-periodo="hoje">26</b><b data-periodo="7d">178</b><b data-periodo="30d">764</b></span>
-                            <span class="class-cult" data-cultura="trigo"><b data-periodo="turno">7</b><b data-periodo="hoje">18</b><b data-periodo="7d">124</b><b data-periodo="30d">530</b></span>
-                            <span class="class-cult" data-cultura="soja"><b data-periodo="turno">5</b><b data-periodo="hoje">14</b><b data-periodo="7d">96</b><b data-periodo="30d">410</b></span>
+                            <span class="class-cult" data-cultura="todas"><b data-periodo="t1">38</b><b data-periodo="t2">29</b><b data-periodo="t3">22</b><b data-periodo="hoje">100</b><b data-periodo="7d">687</b><b data-periodo="30d">2.940</b></span>
+                            <span class="class-cult" data-cultura="milho"><b data-periodo="t1">16</b><b data-periodo="t2">12</b><b data-periodo="t3">9</b><b data-periodo="hoje">42</b><b data-periodo="7d">289</b><b data-periodo="30d">1.236</b></span>
+                            <span class="class-cult" data-cultura="sorgo"><b data-periodo="t1">10</b><b data-periodo="t2">8</b><b data-periodo="t3">6</b><b data-periodo="hoje">26</b><b data-periodo="7d">178</b><b data-periodo="30d">764</b></span>
+                            <span class="class-cult" data-cultura="trigo"><b data-periodo="t1">7</b><b data-periodo="t2">5</b><b data-periodo="t3">4</b><b data-periodo="hoje">18</b><b data-periodo="7d">124</b><b data-periodo="30d">530</b></span>
+                            <span class="class-cult" data-cultura="soja"><b data-periodo="t1">5</b><b data-periodo="t2">4</b><b data-periodo="t3">3</b><b data-periodo="hoje">14</b><b data-periodo="7d">96</b><b data-periodo="30d">410</b></span>
                         </div>
                     </div>
                     <div data-codigo="AVR-CLA-B" class="kpi-card kpi-card--grao kpi-card--slim kpi-card--motivo" data-class-agg="media"
+                        data-class-lim="milho:máx. 14%|sorgo:máx. 13%|trigo:máx. 13% (AP 14%)|soja:máx. 14%"
                         tabindex="0" data-motivo data-motivo-titulo="Umidade média por cultura">
-                        <div class="kpi-label">UMIDADE MÉDIA</div>
+                        <div class="kpi-label">UMIDADE MÉDIA<span class="kpi-lim class-lim" data-cultura="milho">máx. 14%</span><span class="kpi-lim class-lim" data-cultura="sorgo">máx. 13%</span><span class="kpi-lim class-lim" data-cultura="trigo">máx. 13% · AP 14%</span><span class="kpi-lim class-lim" data-cultura="soja">máx. 14%</span></div>
                         <div class="kpi-value">
-                            <span class="class-cult" data-cultura="todas"><b data-periodo="turno">12,1%</b><b data-periodo="hoje">12,3%</b><b data-periodo="7d">12,5%</b><b data-periodo="30d">12,7%</b></span>
-                            <span class="class-cult" data-cultura="milho"><b data-periodo="turno">12,4%</b><b data-periodo="hoje">12,6%</b><b data-periodo="7d">12,8%</b><b data-periodo="30d">13,0%</b></span>
-                            <span class="class-cult" data-cultura="sorgo"><b data-periodo="turno">11,9%</b><b data-periodo="hoje">12,1%</b><b data-periodo="7d">12,3%</b><b data-periodo="30d">12,5%</b></span>
-                            <span class="class-cult" data-cultura="trigo"><b data-periodo="turno">11,8%</b><b data-periodo="hoje">11,9%</b><b data-periodo="7d">12,0%</b><b data-periodo="30d">12,2%</b></span>
-                            <span class="class-cult" data-cultura="soja"><b data-periodo="turno">12,6%</b><b data-periodo="hoje">12,8%</b><b data-periodo="7d">13,0%</b><b data-periodo="30d">13,1%</b></span>
+                            <span class="class-cult" data-cultura="todas"><b data-periodo="t1">12,1%</b><b data-periodo="t2">12,2%</b><b data-periodo="t3">12,0%</b><b data-periodo="hoje">12,3%</b><b data-periodo="7d">12,5%</b><b data-periodo="30d">12,7%</b></span>
+                            <span class="class-cult" data-cultura="milho"><b data-periodo="t1">12,4%</b><b data-periodo="t2">12,3%</b><b data-periodo="t3">12,6%</b><b data-periodo="hoje">12,6%</b><b data-periodo="7d">12,8%</b><b data-periodo="30d">13,0%</b></span>
+                            <span class="class-cult" data-cultura="sorgo"><b data-periodo="t1">11,9%</b><b data-periodo="t2">12,1%</b><b data-periodo="t3">11,9%</b><b data-periodo="hoje">12,1%</b><b data-periodo="7d">12,3%</b><b data-periodo="30d">12,5%</b></span>
+                            <span class="class-cult" data-cultura="trigo"><b data-periodo="t1">11,8%</b><b data-periodo="t2">11,8%</b><b data-periodo="t3">11,9%</b><b data-periodo="hoje">11,9%</b><b data-periodo="7d">12,0%</b><b data-periodo="30d">12,2%</b></span>
+                            <span class="class-cult" data-cultura="soja"><b data-periodo="t1">12,6%</b><b data-periodo="t2">12,4%</b><b data-periodo="t3">12,4%</b><b data-periodo="hoje">12,8%</b><b data-periodo="7d">13,0%</b><b data-periodo="30d">13,1%</b></span>
                         </div>
                     </div>
                     <div data-codigo="AVR-CLA-C" class="kpi-card kpi-card--grao kpi-card--slim kpi-card--motivo" data-class-agg="media"
+                        data-class-lim="milho:máx. 1%|sorgo:máx. 1%|trigo:máx. 1%|soja:máx. 1%"
                         tabindex="0" data-motivo data-motivo-titulo="Impureza por cultura">
-                        <div class="kpi-label">IMPUREZA</div>
+                        <div class="kpi-label">IMPUREZA<span class="kpi-lim">máx. 1%</span></div>
                         <div class="kpi-value">
-                            <span class="class-cult" data-cultura="todas"><b data-periodo="turno">0,7%</b><b data-periodo="hoje">0,8%</b><b data-periodo="7d">0,8%</b><b data-periodo="30d">0,9%</b></span>
-                            <span class="class-cult" data-cultura="milho"><b data-periodo="turno">0,8%</b><b data-periodo="hoje">0,9%</b><b data-periodo="7d">0,9%</b><b data-periodo="30d">1,0%</b></span>
-                            <span class="class-cult" data-cultura="sorgo"><b data-periodo="turno">0,6%</b><b data-periodo="hoje">0,7%</b><b data-periodo="7d">0,8%</b><b data-periodo="30d">0,8%</b></span>
-                            <span class="class-cult" data-cultura="trigo"><b data-periodo="turno">0,6%</b><b data-periodo="hoje">0,6%</b><b data-periodo="7d">0,7%</b><b data-periodo="30d">0,7%</b></span>
-                            <span class="class-cult" data-cultura="soja"><b data-periodo="turno">0,8%</b><b data-periodo="hoje">0,9%</b><b data-periodo="7d">0,9%</b><b data-periodo="30d">1,0%</b></span>
+                            <span class="class-cult" data-cultura="todas"><b data-periodo="t1">0,7%</b><b data-periodo="t2">0,8%</b><b data-periodo="t3">0,6%</b><b data-periodo="hoje">0,8%</b><b data-periodo="7d">0,8%</b><b data-periodo="30d">0,9%</b></span>
+                            <span class="class-cult" data-cultura="milho"><b data-periodo="t1">0,8%</b><b data-periodo="t2">0,7%</b><b data-periodo="t3">0,9%</b><b data-periodo="hoje">0,9%</b><b data-periodo="7d">0,9%</b><b data-periodo="30d">1,0%</b></span>
+                            <span class="class-cult" data-cultura="sorgo"><b data-periodo="t1">0,6%</b><b data-periodo="t2">0,7%</b><b data-periodo="t3">0,5%</b><b data-periodo="hoje">0,7%</b><b data-periodo="7d">0,8%</b><b data-periodo="30d">0,8%</b></span>
+                            <span class="class-cult" data-cultura="trigo"><b data-periodo="t1">0,6%</b><b data-periodo="t2">0,5%</b><b data-periodo="t3">0,8%</b><b data-periodo="hoje">0,6%</b><b data-periodo="7d">0,7%</b><b data-periodo="30d">0,7%</b></span>
+                            <span class="class-cult" data-cultura="soja"><b data-periodo="t1">0,8%</b><b data-periodo="t2">1,0%</b><b data-periodo="t3">0,8%</b><b data-periodo="hoje">0,9%</b><b data-periodo="7d">0,9%</b><b data-periodo="30d">1,0%</b></span>
                         </div>
                     </div>
-                    <!-- O queimado esta somado dentro do avariado, entao mora aqui, na linha
-                         de baixo do mesmo cartao: le-se "3,2% avariados, dos quais 0,5%
-                         queimados". Tem data-class-agg e data-motivo proprios porque a conta
-                         e o balao dele sao do queimado, nao do avariado. -->
+                    <!-- Total de avariados (o nome que a classificacao usa). Cada cultura
+                         tem o seu teto no padrao da unidade (milho 6%, sorgo 6%, soja 8%;
+                         no trigo vale o total de defeitos, 3%). O queimado e' so da soja:
+                         ja esta contado dentro do avariado, mas tem teto proprio de 1% e o
+                         que passa dele vira desconto (ex.: 7% de avariados com 1,5% de
+                         queimado = desconto de 0,5). Milho mostra so o total. -->
                     <div data-codigo="AVR-CLA-D" class="kpi-card kpi-card--grao kpi-card--slim kpi-card--motivo" data-class-agg="media"
-                        tabindex="0" data-motivo data-motivo-titulo="Avariados por cultura">
-                        <div class="kpi-label">AVARIADOS</div>
+                        data-class-lim="milho:máx. 6%|sorgo:máx. 6%|trigo:defeitos máx. 3%|soja:máx. 8%"
+                        tabindex="0" data-motivo data-motivo-titulo="Total de avariados por cultura"
+                        data-motivo-nota="No trigo o padrão usa o total de defeitos (máx. 3%).">
+                        <div class="kpi-label">TOTAL DE AVARIADOS<span class="kpi-lim class-lim" data-cultura="milho">máx. 6%</span><span class="kpi-lim class-lim" data-cultura="sorgo">máx. 6%</span><span class="kpi-lim class-lim" data-cultura="trigo">defeitos máx. 3%</span><span class="kpi-lim class-lim" data-cultura="soja">máx. 8%</span></div>
                         <div class="kpi-value">
-                            <span class="class-cult" data-cultura="todas"><b data-periodo="turno">3,0%</b><b data-periodo="hoje">3,2%</b><b data-periodo="7d">3,4%</b><b data-periodo="30d">3,6%</b></span>
-                            <span class="class-cult" data-cultura="milho"><b data-periodo="turno">3,8%</b><b data-periodo="hoje">4,0%</b><b data-periodo="7d">4,2%</b><b data-periodo="30d">4,4%</b></span>
-                            <span class="class-cult" data-cultura="sorgo"><b data-periodo="turno">2,6%</b><b data-periodo="hoje">2,8%</b><b data-periodo="7d">3,0%</b><b data-periodo="30d">3,1%</b></span>
-                            <span class="class-cult" data-cultura="trigo"><b data-periodo="turno">2,0%</b><b data-periodo="hoje">2,1%</b><b data-periodo="7d">2,2%</b><b data-periodo="30d">2,3%</b></span>
-                            <span class="class-cult" data-cultura="soja"><b data-periodo="turno">3,2%</b><b data-periodo="hoje">3,4%</b><b data-periodo="7d">3,5%</b><b data-periodo="30d">3,7%</b></span>
+                            <span class="class-cult" data-cultura="todas"><b data-periodo="t1">3,0%</b><b data-periodo="t2">3,0%</b><b data-periodo="t3">3,1%</b><b data-periodo="hoje">3,2%</b><b data-periodo="7d">3,4%</b><b data-periodo="30d">3,6%</b></span>
+                            <span class="class-cult" data-cultura="milho"><b data-periodo="t1">3,8%</b><b data-periodo="t2">3,6%</b><b data-periodo="t3">3,6%</b><b data-periodo="hoje">4,0%</b><b data-periodo="7d">4,2%</b><b data-periodo="30d">4,4%</b></span>
+                            <span class="class-cult" data-cultura="sorgo"><b data-periodo="t1">2,6%</b><b data-periodo="t2">2,7%</b><b data-periodo="t3">2,5%</b><b data-periodo="hoje">2,8%</b><b data-periodo="7d">3,0%</b><b data-periodo="30d">3,1%</b></span>
+                            <span class="class-cult" data-cultura="trigo"><b data-periodo="t1">2,0%</b><b data-periodo="t2">1,9%</b><b data-periodo="t3">2,1%</b><b data-periodo="hoje">2,1%</b><b data-periodo="7d">2,2%</b><b data-periodo="30d">2,3%</b></span>
+                            <span class="class-cult" data-cultura="soja"><b data-periodo="t1">3,2%</b><b data-periodo="t2">3,3%</b><b data-periodo="t3">3,1%</b><b data-periodo="hoje">3,4%</b><b data-periodo="7d">3,5%</b><b data-periodo="30d">3,7%</b></span>
                         </div>
-                        <div class="kpi-queimado" data-class-agg="media"
-                            data-motivo data-motivo-titulo="Queimado por cultura"
-                            data-motivo-nota="O queimado já está contado dentro do avariado; o limite de 1% é dele.">
-                            <span class="kpi-queimado-rotulo">queimado</span>
-                            <span class="class-cult" data-cultura="todas"><b data-periodo="turno">0,4%</b><b data-periodo="hoje">0,5%</b><b data-periodo="7d">0,5%</b><b data-periodo="30d">0,6%</b></span>
-                            <span class="class-cult" data-cultura="milho"><b data-periodo="turno">0,5%</b><b data-periodo="hoje">0,6%</b><b data-periodo="7d">0,7%</b><b data-periodo="30d">0,8%</b></span>
-                            <span class="class-cult" data-cultura="sorgo"><b data-periodo="turno">0,3%</b><b data-periodo="hoje">0,4%</b><b data-periodo="7d">0,4%</b><b data-periodo="30d">0,5%</b></span>
-                            <span class="class-cult" data-cultura="trigo"><b data-periodo="turno">0,2%</b><b data-periodo="hoje">0,3%</b><b data-periodo="7d">0,3%</b><b data-periodo="30d">0,4%</b></span>
-                            <span class="class-cult" data-cultura="soja"><b data-periodo="turno">0,4%</b><b data-periodo="hoje">0,5%</b><b data-periodo="7d">0,6%</b><b data-periodo="30d">0,6%</b></span>
-                            <span class="kpi-lim">lim. 1%</span>
+                        <div class="kpi-queimado" title="Só soja: o queimado já está dentro do total de avariados, mas tem teto de 1%; o que passa disso é descontado (7% de avariados com 1,5% de queimado = desconto de 0,5)">
+                            <span class="kpi-queimado-rotulo">queimado · soja</span>
+                            <span class="kpi-queimado-valor"><b data-periodo="t1">0,4%</b><b data-periodo="t2">0,3%</b><b data-periodo="t3">0,6%</b><b data-periodo="hoje">0,5%</b><b data-periodo="7d">0,6%</b><b data-periodo="30d">0,6%</b></span>
+                            <span class="kpi-lim">máx. 1%</span>
                         </div>
                     </div>
-                    <div data-codigo="AVR-CLA-E" class="kpi-card kpi-card--grao kpi-card--slim kpi-card--motivo" data-class-agg="media"
-                        tabindex="0" data-motivo data-motivo-titulo="PH médio por cultura">
-                        <div class="kpi-label">PH MÉDIO <span class="kpi-lim">mín. 72 kg/hL · só trigo</span></div>
-                        <div class="kpi-value">
-                            <span class="class-cult" data-cultura="todas"><b data-periodo="turno">79,4</b><b data-periodo="hoje">79,1</b><b data-periodo="7d">78,8</b><b data-periodo="30d">78,4</b></span>
-                            <span class="class-cult" data-cultura="milho"><b data-periodo="turno">—</b><b data-periodo="hoje">—</b><b data-periodo="7d">—</b><b data-periodo="30d">—</b></span>
-                            <span class="class-cult" data-cultura="sorgo"><b data-periodo="turno">—</b><b data-periodo="hoje">—</b><b data-periodo="7d">—</b><b data-periodo="30d">—</b></span>
-                            <span class="class-cult" data-cultura="trigo"><b data-periodo="turno">79,4</b><b data-periodo="hoje">79,1</b><b data-periodo="7d">78,8</b><b data-periodo="30d">78,4</b></span>
-                            <span class="class-cult" data-cultura="soja"><b data-periodo="turno">—</b><b data-periodo="hoje">—</b><b data-periodo="7d">—</b><b data-periodo="30d">—</b></span>
-                            <span class="kpi-value-ref">kg/hL</span>
+                    <!-- Trigo por tipo, pelo padrao de classificacao da unidade:
+                           Superior       PH >= 78     FN >= 250 s
+                           Intermediario  PH 72 a 77   FN 170 a 249 s
+                           AP             PH 68 a 71   FN 150 a 169 s
+                         O tipo da carga e' o menor entre o do PH e o do FN (PH 79 com FN
+                         226 s cai para intermediario). Abaixo do AP (PH < 68 ou FN < 150)
+                         a carga esta fora de padrao: e' o contador vermelho do cabecalho.
+                         As medias de PH e FN sao so das cargas de cada tipo; a media
+                         geral misturava os tipos e nao servia para decisao.
+                         PH e FN sao por cultura e so o trigo tem: sem trigo no filtro
+                         da tela o cartao fica zerado (o .trigo-zero aparece no lugar
+                         dos numeros). -->
+                    <div data-codigo="AVR-CLA-E" class="kpi-card kpi-card--slim trigo-tipos">
+                        <div class="kpi-label">
+                            <span>PH E FALLING NUMBER POR CULTURA</span>
+                            <span class="trigo-fora" title="Cargas abaixo do tipo AP (PH menor que 68 ou FN menor que 150 s)">fora de padrão <b data-periodo="t1">0</b><b data-periodo="t2" class="is-alerta">1</b><b data-periodo="t3">0</b><b data-periodo="hoje">0</b><b data-periodo="7d" class="is-alerta">2</b><b data-periodo="30d" class="is-alerta">10</b><i class="trigo-zero">0</i></span>
                         </div>
-                    </div>
-                    <div data-codigo="AVR-CLA-F" class="kpi-card kpi-card--grao kpi-card--slim kpi-card--motivo" data-class-agg="media"
-                        tabindex="0" data-motivo data-motivo-titulo="Falling number por cultura">
-                        <div class="kpi-label">FALLING NUMBER <span class="kpi-lim">mín. 220 s · só trigo</span></div>
-                        <div class="kpi-value">
-                            <span class="class-cult" data-cultura="todas"><b data-periodo="turno">268</b><b data-periodo="hoje">262</b><b data-periodo="7d">258</b><b data-periodo="30d">251</b></span>
-                            <span class="class-cult" data-cultura="milho"><b data-periodo="turno">—</b><b data-periodo="hoje">—</b><b data-periodo="7d">—</b><b data-periodo="30d">—</b></span>
-                            <span class="class-cult" data-cultura="sorgo"><b data-periodo="turno">—</b><b data-periodo="hoje">—</b><b data-periodo="7d">—</b><b data-periodo="30d">—</b></span>
-                            <span class="class-cult" data-cultura="trigo"><b data-periodo="turno">268</b><b data-periodo="hoje">262</b><b data-periodo="7d">258</b><b data-periodo="30d">251</b></span>
-                            <span class="class-cult" data-cultura="soja"><b data-periodo="turno">—</b><b data-periodo="hoje">—</b><b data-periodo="7d">—</b><b data-periodo="30d">—</b></span>
-                            <span class="kpi-value-ref">s</span>
+                        <div class="trigo-tipos-grid">
+                            <div class="trigo-tipo">
+                                <div class="trigo-tipo-head"><span class="trigo-tipo-nome">Superior</span><span class="trigo-tipo-cargas"><b data-periodo="t1">5 cargas</b><b data-periodo="t2">4 cargas</b><b data-periodo="t3">3 cargas</b><b data-periodo="hoje">12 cargas</b><b data-periodo="7d">82 cargas</b><b data-periodo="30d">341 cargas</b><i class="trigo-zero">0 cargas</i></span></div>
+                                <div class="trigo-tipo-vals">
+                                    <span class="trigo-val"><small>PH</small><b data-periodo="t1">79,6</b><b data-periodo="t2">80,0</b><b data-periodo="t3">79,6</b><b data-periodo="hoje">79,4</b><b data-periodo="7d">79,3</b><b data-periodo="30d">79,1</b><i class="trigo-zero">—</i></span>
+                                    <span class="trigo-val"><small>FN</small><b data-periodo="t1">272</b><b data-periodo="t2">272</b><b data-periodo="t3">275</b><b data-periodo="hoje">266</b><b data-periodo="7d">263</b><b data-periodo="30d">260</b><i class="trigo-zero">—</i></span>
+                                </div>
+                                <div class="trigo-tipo-lim">PH ≥ 78 · FN ≥ 250</div>
+                            </div>
+                            <div class="trigo-tipo">
+                                <div class="trigo-tipo-head"><span class="trigo-tipo-nome">Intermediário</span><span class="trigo-tipo-cargas"><b data-periodo="t1">2 cargas</b><b data-periodo="t2">1 carga</b><b data-periodo="t3">1 carga</b><b data-periodo="hoje">5 cargas</b><b data-periodo="7d">33 cargas</b><b data-periodo="30d">148 cargas</b><i class="trigo-zero">0 cargas</i></span></div>
+                                <div class="trigo-tipo-vals">
+                                    <span class="trigo-val"><small>PH</small><b data-periodo="t1">75,8</b><b data-periodo="t2">75,4</b><b data-periodo="t3">75,4</b><b data-periodo="hoje">76,1</b><b data-periodo="7d">75,4</b><b data-periodo="30d">75,2</b><i class="trigo-zero">—</i></span>
+                                    <span class="trigo-val"><small>FN</small><b data-periodo="t1">231</b><b data-periodo="t2">234</b><b data-periodo="t3">228</b><b data-periodo="hoje">228</b><b data-periodo="7d">224</b><b data-periodo="30d">221</b><i class="trigo-zero">—</i></span>
+                                </div>
+                                <div class="trigo-tipo-lim">PH 72–77 · FN 170–249</div>
+                            </div>
+                            <div class="trigo-tipo">
+                                <div class="trigo-tipo-head"><span class="trigo-tipo-nome">AP</span><span class="trigo-tipo-cargas"><b data-periodo="t1">0 cargas</b><b data-periodo="t2">0 cargas</b><b data-periodo="t3">0 cargas</b><b data-periodo="hoje">1 carga</b><b data-periodo="7d">7 cargas</b><b data-periodo="30d">31 cargas</b><i class="trigo-zero">0 cargas</i></span></div>
+                                <div class="trigo-tipo-vals">
+                                    <span class="trigo-val"><small>PH</small><b data-periodo="t1">—</b><b data-periodo="t2">—</b><b data-periodo="t3">—</b><b data-periodo="hoje">70,6</b><b data-periodo="7d">70,2</b><b data-periodo="30d">70,4</b><i class="trigo-zero">—</i></span>
+                                    <span class="trigo-val"><small>FN</small><b data-periodo="t1">—</b><b data-periodo="t2">—</b><b data-periodo="t3">—</b><b data-periodo="hoje">163</b><b data-periodo="7d">160</b><b data-periodo="30d">158</b><i class="trigo-zero">—</i></span>
+                                </div>
+                                <div class="trigo-tipo-lim">PH 68–71 · FN 150–169</div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- A tabela obedece ao filtro do cabecalho: a cultura esconde as linhas
+                <!-- Status e cores pelo padrao de classificacao da unidade (umidade:
+                     milho e soja 14%, sorgo e trigo 13%, trigo AP 14%; impureza 1%;
+                     total de avariados: milho e sorgo 6%, soja 8%, trigo 3% de defeitos).
+                     Atencao a 0,5 ponto do limite (impureza a 0,1). Trigo leva o tipo ao
+                     lado do nome; o PH ou FN que derrubou o tipo fica em amarelo e o que
+                     passa do AP, em vermelho. Soja mostra o queimado (teto 1%) e o desconto.
+                     A tabela obedece ao filtro do cabecalho: a cultura esconde as linhas
                      cujo data-cultura nao bate e o periodo esconde as que estao fora da
                      janela (data-janela, encaixada: turno ⊂ hoje ⊂ 7 dias ⊂ 30 dias). -->
                 <div data-codigo="AVR-CLA-G" class="content-section content-section--livre class-detalhe">
@@ -1184,31 +1217,31 @@
                                     <th>COOPERADOS</th>
                                     <th>UMIDADE</th>
                                     <th>IMPUREZA</th>
-                                    <th>AVARIADOS</th>
+                                    <th>TOTAL DE AVARIADOS</th>
                                     <th>PH</th>
                                     <th>FALLING NUMBER</th>
                                     <th>STATUS</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr data-janela="turno" data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD126174</span></td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Santa Rita</td><td>12,4%</td><td>0,6%</td><td>2,8%</td><td>—</td><td>—</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
-                                <tr data-janela="turno" data-cultura="sorgo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD0FED74</span></td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Faz. Três Lagoas</td><td>12,0%</td><td>0,7%</td><td>2,9%</td><td>—</td><td>—</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
-                                <tr data-janela="turno" data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FDE16474</span></td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Palmeiras</td><td class="class-val class-val--fora">14,6%</td><td class="class-val class-val--atencao">0,9%</td><td class="class-val class-val--fora">7,2%</td><td>—</td><td>—</td><td><span class="class-status class-status--fora">Fora do padrão</span></td></tr>
-                                <tr data-janela="turno" data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000050136FD4DCA74</span></td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Palmeiras</td><td>12,9%</td><td>0,4%</td><td>3,1%</td><td>—</td><td>—</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
-                                <tr data-janela="turno" data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD253074</span></td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Sítio Boa Vista</td><td>11,9%</td><td>0,6%</td><td>2,0%</td><td>79,6</td><td>271</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
-                                <tr data-janela="hoje" data-cultura="soja" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD7A2C74</span></td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Faz. Bela Vista</td><td>12,7%</td><td>0,8%</td><td>3,5%</td><td>—</td><td>—</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
-                                <tr data-janela="hoje" data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD9B1E74</span></td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Santa Rita</td><td class="class-val class-val--atencao">13,6%</td><td class="class-val class-val--fora">1,2%</td><td>4,9%</td><td>—</td><td>—</td><td><span class="class-status class-status--fora">Fora do padrão</span></td></tr>
-                                <tr data-janela="hoje" data-cultura="sorgo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD3C8874</span></td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Faz. Bela Vista</td><td>12,3%</td><td>0,7%</td><td>2,6%</td><td>—</td><td>—</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
-                                <tr data-janela="hoje" data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000050136FD61F074</span></td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Faz. Palmeiras</td><td>12,1%</td><td>0,5%</td><td>2,2%</td><td>79,2</td><td>264</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
-                                <tr data-janela="hoje" data-cultura="soja" data-status="atencao"><td><span class="fluxo-tag">E2806995000040136FD84D274</span></td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Sítio Boa Vista</td><td>12,8%</td><td class="class-val class-val--atencao">0,9%</td><td>3,3%</td><td>—</td><td>—</td><td><span class="class-status class-status--atencao">Atenção</span></td></tr>
-                                <tr data-janela="7d" data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD96FF74</span></td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Bela Vista</td><td>12,5%</td><td>0,8%</td><td>3,7%</td><td>—</td><td>—</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
-                                <tr data-janela="7d" data-cultura="sorgo" data-status="atencao"><td><span class="fluxo-tag">E2806995000050136FDA31274</span></td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Faz. Palmeiras</td><td class="class-val class-val--atencao">13,4%</td><td>0,8%</td><td>3,0%</td><td>—</td><td>—</td><td><span class="class-status class-status--atencao">Atenção</span></td></tr>
-                                <tr data-janela="7d" data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD721F74</span></td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Faz. Três Lagoas</td><td>12,0%</td><td>0,7%</td><td>2,3%</td><td>78,9</td><td>258</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
-                                <tr data-janela="7d" data-cultura="soja" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD0F2374</span></td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Faz. Três Lagoas</td><td class="class-val class-val--fora">14,9%</td><td class="class-val class-val--fora">1,3%</td><td>4,1%</td><td>—</td><td>—</td><td><span class="class-status class-status--fora">Fora do padrão</span></td></tr>
-                                <tr data-janela="30d" data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000050136FD197174</span></td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Sítio Boa Vista</td><td>13,0%</td><td>0,9%</td><td>4,3%</td><td>—</td><td>—</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
+                                <tr data-janela="hoje" data-turno="t1" data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD126174</span></td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Santa Rita</td><td>12,4%</td><td>0,6%</td><td>2,8%</td><td>—</td><td>—</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
+                                <tr data-janela="hoje" data-turno="t1" data-cultura="sorgo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD0FED74</span></td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Faz. Três Lagoas</td><td>12,0%</td><td>0,7%</td><td>2,9%</td><td>—</td><td>—</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
+                                <tr data-janela="hoje" data-turno="t1" data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FDE16474</span></td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Palmeiras</td><td class="class-val class-val--fora">14,6%</td><td class="class-val class-val--atencao">0,9%</td><td class="class-val class-val--fora">7,2%</td><td>—</td><td>—</td><td><span class="class-status class-status--fora">Fora do padrão</span></td></tr>
+                                <tr data-janela="hoje" data-turno="t1" data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000050136FD4DCA74</span></td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Palmeiras</td><td>12,9%</td><td>0,4%</td><td>3,1%</td><td>—</td><td>—</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
+                                <tr data-janela="hoje" data-turno="t1" data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD253074</span></td><td><i class="legend-dot legend-dot--trigo"></i>Trigo<span class="class-tipo">Superior</span></td><td>Sítio Boa Vista</td><td>11,9%</td><td>0,6%</td><td>2,0%</td><td>79,6</td><td>271</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
+                                <tr data-janela="hoje" data-turno="t1" data-cultura="soja" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD7A2C74</span></td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Faz. Bela Vista</td><td>12,7%</td><td>0,8%</td><td>3,5%<small class="class-queim">queim. 0,4%</small></td><td>—</td><td>—</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
+                                <tr data-janela="hoje" data-turno="t3" data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD9B1E74</span></td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Santa Rita</td><td class="class-val class-val--atencao">13,6%</td><td class="class-val class-val--fora">1,2%</td><td>4,9%</td><td>—</td><td>—</td><td><span class="class-status class-status--fora">Fora do padrão</span></td></tr>
+                                <tr data-janela="hoje" data-turno="t3" data-cultura="sorgo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD3C8874</span></td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Faz. Bela Vista</td><td>12,3%</td><td>0,7%</td><td>2,6%</td><td>—</td><td>—</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
+                                <tr data-janela="hoje" data-turno="t3" data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000050136FD61F074</span></td><td><i class="legend-dot legend-dot--trigo"></i>Trigo<span class="class-tipo">Superior</span></td><td>Faz. Palmeiras</td><td>12,1%</td><td>0,5%</td><td>2,2%</td><td>79,2</td><td>264</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
+                                <tr data-janela="hoje" data-turno="t3" data-cultura="soja" data-status="atencao"><td><span class="fluxo-tag">E2806995000040136FD84D274</span></td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Sítio Boa Vista</td><td>12,8%</td><td class="class-val class-val--atencao">0,9%</td><td>3,3%<small class="class-queim">queim. 0,6%</small></td><td>—</td><td>—</td><td><span class="class-status class-status--atencao">Atenção</span></td></tr>
+                                <tr data-janela="7d" data-turno="t2" data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD96FF74</span></td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Bela Vista</td><td>12,5%</td><td>0,8%</td><td>3,7%</td><td>—</td><td>—</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
+                                <tr data-janela="7d" data-turno="t2" data-cultura="sorgo" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FDA31274</span></td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Faz. Palmeiras</td><td class="class-val class-val--fora" title="Sorgo: umidade máxima 13%">13,4%</td><td>0,8%</td><td>3,0%</td><td>—</td><td>—</td><td><span class="class-status class-status--fora">Fora do padrão</span></td></tr>
+                                <tr data-janela="7d" data-turno="t2" data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD721F74</span></td><td><i class="legend-dot legend-dot--trigo"></i>Trigo<span class="class-tipo">Intermediário</span></td><td>Faz. Três Lagoas</td><td>12,0%</td><td>0,7%</td><td>2,3%</td><td>78,9</td><td class="class-val class-val--atencao" title="PH de Superior, mas o FN abaixo de 250 s derruba a carga para Intermediário">226</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
+                                <tr data-janela="7d" data-turno="t2" data-cultura="soja" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD0F2374</span></td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Faz. Três Lagoas</td><td class="class-val class-val--fora">14,9%</td><td class="class-val class-val--fora">1,3%</td><td>4,1%<small class="class-queim class-val--fora" title="Queimado acima de 1%: o excedente é descontado">queim. 1,3% · desc. 0,3</small></td><td>—</td><td>—</td><td><span class="class-status class-status--fora">Fora do padrão</span></td></tr>
+                                <tr data-janela="30d" data-cultura="milho" data-status="atencao"><td><span class="fluxo-tag">E2806995000050136FD197174</span></td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Sítio Boa Vista</td><td>13,0%</td><td class="class-val class-val--atencao">0,9%</td><td>4,3%</td><td>—</td><td>—</td><td><span class="class-status class-status--atencao">Atenção</span></td></tr>
                                 <tr data-janela="30d" data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000040136FD449474</span></td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Faz. Santa Rita</td><td class="class-val class-val--fora">15,1%</td><td class="class-val class-val--atencao">1,0%</td><td class="class-val class-val--fora">6,8%</td><td>—</td><td>—</td><td><span class="class-status class-status--fora">Fora do padrão</span></td></tr>
-                                <tr data-janela="30d" data-cultura="sorgo" data-status="ok"><td><span class="fluxo-tag">E2806995000050136FD493C74</span></td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Faz. Santa Rita</td><td>12,6%</td><td>0,8%</td><td>3,2%</td><td>—</td><td>—</td><td><span class="class-status class-status--ok">Dentro do padrão</span></td></tr>
-                                <tr data-janela="30d" data-cultura="trigo" data-status="atencao"><td><span class="fluxo-tag">E2806995000040136FDC18E74</span></td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Faz. Bela Vista</td><td>12,4%</td><td class="class-val class-val--atencao">0,9%</td><td>2,5%</td><td>77,8</td><td class="class-val class-val--atencao">226</td><td><span class="class-status class-status--atencao">Atenção</span></td></tr>
+                                <tr data-janela="30d" data-cultura="sorgo" data-status="atencao"><td><span class="fluxo-tag">E2806995000050136FD493C74</span></td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Faz. Santa Rita</td><td class="class-val class-val--atencao" title="Sorgo: umidade máxima 13%">12,6%</td><td>0,8%</td><td>3,2%</td><td>—</td><td>—</td><td><span class="class-status class-status--atencao">Atenção</span></td></tr>
+                                <tr data-janela="30d" data-cultura="trigo" data-status="fora"><td><span class="fluxo-tag">E2806995000040136FDC18E74</span></td><td><i class="legend-dot legend-dot--trigo"></i>Trigo<span class="class-tipo class-tipo--fora">fora de padrão</span></td><td>Faz. Bela Vista</td><td>12,4%</td><td class="class-val class-val--atencao">0,9%</td><td class="class-val class-val--atencao" title="Trigo: total de defeitos máximo 3%">2,5%</td><td class="class-val class-val--fora" title="Abaixo do mínimo do AP (68)">66,9</td><td class="class-val class-val--fora" title="Abaixo do mínimo do AP (150 s)">141</td><td><span class="class-status class-status--fora">Fora do padrão</span></td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -1233,19 +1266,25 @@
                     <div class="conc-corpo">
                         <div class="conc-resumo">
                             <div class="conc-num">
-                                <span class="conc-num-label">Descontado na classificação</span>
-                                <span class="conc-num-valor"><b data-periodo="hoje">19,4</b><b data-periodo="7d">141,5</b><b data-periodo="30d">688,0</b><small>t</small></span>
-                                <span class="conc-num-sub">impureza das cargas</span>
+                                <span class="conc-num-label" title="Impureza descontada na classificação">Descontado</span>
+                                <span class="conc-num-valor"><b data-periodo="t1">19,4</b><b data-periodo="t2">10,2</b><b data-periodo="t3">0,0</b><b data-periodo="hoje">19,4</b><b data-periodo="7d">141,5</b><b data-periodo="30d">688,0</b><small>t</small></span>
+                                <span class="conc-num-sub">impureza das cargas na classificação</span>
                             </div>
                             <div class="conc-num">
                                 <span class="conc-num-label">Resíduo pesado</span>
-                                <span class="conc-num-valor"><b data-periodo="hoje">17,5</b><b data-periodo="7d">136,8</b><b data-periodo="30d">669,2</b><small>t</small></span>
-                                <span class="conc-num-sub"><b data-periodo="hoje">2 caçambas</b><b data-periodo="7d">14 caçambas</b><b data-periodo="30d">67 caçambas</b> na balança</span>
+                                <span class="conc-num-valor"><b data-periodo="t1">17,5</b><b data-periodo="t2">10,1</b><b data-periodo="t3">0,0</b><b data-periodo="hoje">17,5</b><b data-periodo="7d">136,8</b><b data-periodo="30d">669,2</b><small>t</small></span>
+                                <span class="conc-num-sub"><b data-periodo="t1">2 caçambas</b><b data-periodo="t2">1 caçamba</b><b data-periodo="t3">nenhuma caçamba</b><b data-periodo="hoje">2 caçambas</b><b data-periodo="7d">14 caçambas</b><b data-periodo="30d">67 caçambas</b> na balança</span>
+                            </div>
+                            <!-- peso medio por cacamba: resíduo pesado ÷ caçambas do periodo, todas juntas -->
+                            <div class="conc-num" title="Peso médio por caçamba, todas as caçambas do período juntas">
+                                <span class="conc-num-label">Média por caçamba</span>
+                                <span class="conc-num-valor"><b data-periodo="t1">8,8</b><b data-periodo="t2">10,1</b><b data-periodo="t3">—</b><b data-periodo="hoje">8,8</b><b data-periodo="7d">9,8</b><b data-periodo="30d">10,0</b><small>t</small></span>
+                                <span class="conc-num-sub">todas as caçambas juntas</span>
                             </div>
                             <div class="conc-num conc-num--dif">
-                                <span class="conc-num-label">Diferença · descontado − pesado</span>
-                                <span class="conc-num-valor"><b data-periodo="hoje" class="conc-dif--atencao">+1,9</b><b data-periodo="7d" class="conc-dif--ok">+4,7</b><b data-periodo="30d" class="conc-dif--ok">+18,8</b><small>t</small></span>
-                                <span class="conc-num-sub"><b data-periodo="hoje"><span class="class-status class-status--atencao">+10% · atenção</span></b><b data-periodo="7d"><span class="class-status class-status--ok">+3,3% · conciliado</span></b><b data-periodo="30d"><span class="class-status class-status--ok">+2,7% · conciliado</span></b></span>
+                                <span class="conc-num-label" title="Diferença = descontado − pesado">Desc. − pesado</span>
+                                <span class="conc-num-valor"><b data-periodo="t1" class="conc-dif--atencao">+1,9</b><b data-periodo="t2" class="conc-dif--ok">+0,1</b><b data-periodo="t3">0,0</b><b data-periodo="hoje" class="conc-dif--atencao">+1,9</b><b data-periodo="7d" class="conc-dif--ok">+4,7</b><b data-periodo="30d" class="conc-dif--ok">+18,8</b><small>t</small></span>
+                                <span class="conc-num-sub"><b data-periodo="t1"><span class="class-status class-status--atencao">+10% · atenção</span></b><b data-periodo="t2"><span class="class-status class-status--ok">+1% · conciliado</span></b><b data-periodo="t3">sem caçamba no turno</b><b data-periodo="hoje"><span class="class-status class-status--atencao">+10% · atenção</span></b><b data-periodo="7d"><span class="class-status class-status--ok">+3,3% · conciliado</span></b><b data-periodo="30d"><span class="class-status class-status--ok">+2,7% · conciliado</span></b></span>
                             </div>
                         </div>
                         <div data-codigo="AVR-CLA-I" class="table-scroll table-scroll--livre conc-scroll">
@@ -1261,9 +1300,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr data-janela="hoje"><td>CÇ-232</td><td>25/09 13:05</td><td>Pré-limpeza 3</td><td>8,9 t</td><td>9,4 t</td><td><span class="class-status class-status--ok conc-pill">+0,5 t · +5%</span></td></tr>
-                                    <tr data-janela="hoje"><td>CÇ-231</td><td>25/09 08:20</td><td>Pré-limpeza 1</td><td>8,6 t</td><td>10,0 t</td><td><span class="class-status class-status--fora conc-pill">+1,4 t · +14%</span></td></tr>
-                                    <tr data-janela="7d"><td>CÇ-230</td><td>24/09 17:40</td><td>Pré-limpeza 1</td><td>10,1 t</td><td>10,2 t</td><td><span class="class-status class-status--ok conc-pill">+0,1 t · +1%</span></td></tr>
+                                    <tr data-janela="hoje" data-turno="t1"><td>CÇ-232</td><td>25/09 13:05</td><td>Pré-limpeza 3</td><td>8,9 t</td><td>9,4 t</td><td><span class="class-status class-status--ok conc-pill">+0,5 t · +5%</span></td></tr>
+                                    <tr data-janela="hoje" data-turno="t1"><td>CÇ-231</td><td>25/09 08:20</td><td>Pré-limpeza 1</td><td>8,6 t</td><td>10,0 t</td><td><span class="class-status class-status--fora conc-pill">+1,4 t · +14%</span></td></tr>
+                                    <tr data-janela="7d" data-turno="t2"><td>CÇ-230</td><td>24/09 17:40</td><td>Pré-limpeza 1</td><td>10,1 t</td><td>10,2 t</td><td><span class="class-status class-status--ok conc-pill">+0,1 t · +1%</span></td></tr>
                                     <tr data-janela="7d"><td>CÇ-229</td><td>24/09 09:15</td><td>Pré-limpeza 3</td><td>10,3 t</td><td>9,8 t</td><td><span class="class-status class-status--ok conc-pill">−0,5 t · −5%</span></td></tr>
                                     <tr data-janela="7d"><td>CÇ-228</td><td>23/09 15:30</td><td>Pré-limpeza 1</td><td>9,7 t</td><td>10,5 t</td><td><span class="class-status class-status--atencao conc-pill">+0,8 t · +8%</span></td></tr>
                                     <tr data-janela="7d"><td>CÇ-227</td><td>22/09 11:00</td><td>Pré-limpeza 3</td><td>9,9 t</td><td>9,6 t</td><td><span class="class-status class-status--ok conc-pill">−0,3 t · −3%</span></td></tr>
@@ -1307,7 +1346,7 @@
                     <div class="hist-grid hist-grid--head">
                         <div class="hist-head">UMIDADE</div>
                         <div class="hist-head">IMPUREZA</div>
-                        <div class="hist-head">AVARIADOS</div>
+                        <div class="hist-head">TOTAL DE AVARIADOS</div>
                     </div>
                     <div class="hist-grid hist-row" data-hist-cultura="milho">
                         <div class="hist-cell" data-metrica="umidade" style="--cor: var(--grao-milho)">
@@ -1384,13 +1423,13 @@
                         <div class="hist-cell" data-metrica="umidade" style="--cor: var(--grao-sorgo)">
                             <span class="hist-cell-label">UMIDADE</span>
                             <div class="hist-plot">
-                                <span class="hist-meta-line" style="--meta:75.0%"></span>
+                                <span class="hist-meta-line" style="--meta:50.0%"></span>
                                 <div class="hist-bars hist-bars--antes"><div class="hist-bar"><b class="hist-bar-val">12,7</b><i class="hist-bar-fill" style="height:42.5%"></i><span class="hist-bar-lbl">2025</span></div></div>
                                 <div class="hist-spark">
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,24.0 16.7,27.0 33.3,22.0 50.0,30.0 66.7,26.0 83.3,31.0 100.0,29.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl">limite 14,0</em>
+                                    <em class="hist-meta-lbl">limite 13,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:40.0%">12,6</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:32.5%">12,3</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:45.0%">12,8</b>
@@ -1455,13 +1494,13 @@
                         <div class="hist-cell" data-metrica="umidade" style="--cor: var(--grao-trigo)">
                             <span class="hist-cell-label">UMIDADE</span>
                             <div class="hist-plot">
-                                <span class="hist-meta-line" style="--meta:75.0%"></span>
+                                <span class="hist-meta-line" style="--meta:50.0%"></span>
                                 <div class="hist-bars hist-bars--antes"><div class="hist-bar"><b class="hist-bar-val">12,4</b><i class="hist-bar-fill" style="height:35.0%"></i><span class="hist-bar-lbl">2025</span></div></div>
                                 <div class="hist-spark">
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,28.0 16.7,33.0 33.3,26.0 50.0,32.0 66.7,29.0 83.3,27.0 100.0,31.0"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl">limite 14,0</em>
+                                    <em class="hist-meta-lbl">limite 13,0</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:30.0%">12,2</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:17.5%">11,7</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:35.0%">12,4</b>
@@ -1499,15 +1538,15 @@
                             </div>
                         </div>
                         <div class="hist-cell" data-metrica="avariados" style="--cor: var(--grao-trigo)">
-                            <span class="hist-cell-label">AVARIADOS</span>
+                            <span class="hist-cell-label">TOTAL DE DEFEITOS</span>
                             <div class="hist-plot">
-                                <span class="hist-meta-line" style="--meta:83.3%"></span>
+                                <span class="hist-meta-line" style="--meta:33.3%"></span>
                                 <div class="hist-bars hist-bars--antes"><div class="hist-bar"><b class="hist-bar-val">2,6</b><i class="hist-bar-fill" style="height:26.7%"></i><span class="hist-bar-lbl">2025</span></div></div>
                                 <div class="hist-spark">
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                                         <polyline class="hist-linha" points="0.0,30.7 16.7,34.0 33.3,31.3 50.0,29.3 66.7,33.3 83.3,32.0 100.0,32.7"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl">limite 6,0</em>
+                                    <em class="hist-meta-lbl">limite 3,0 · defeitos</em>
                                     <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:23.2%">2,4</b>
                                     <b class="hist-spark-dia" style="left:16.7%;bottom:15.0%">1,9</b>
                                     <b class="hist-spark-dia" style="left:33.3%;bottom:21.8%">2,3</b>
@@ -1572,24 +1611,24 @@
                         <div class="hist-cell" data-metrica="avariados" style="--cor: var(--grao-soja)">
                             <span class="hist-cell-label">AVARIADOS</span>
                             <div class="hist-plot">
-                                <span class="hist-meta-line" style="--meta:83.3%"></span>
-                                <div class="hist-bars hist-bars--antes"><div class="hist-bar"><b class="hist-bar-val">3,6</b><i class="hist-bar-fill" style="height:43.3%"></i><span class="hist-bar-lbl">2025</span></div></div>
+                                <span class="hist-meta-line" style="--meta:80.0%"></span>
+                                <div class="hist-bars hist-bars--antes"><div class="hist-bar"><b class="hist-bar-val">3,6</b><i class="hist-bar-fill" style="height:36.0%"></i><span class="hist-bar-lbl">2025</span></div></div>
                                 <div class="hist-spark">
                                     <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
-                                        <polyline class="hist-linha" points="0.0,26.7 16.7,22.7 33.3,25.3 50.0,21.3 66.7,23.3 83.3,26.0 100.0,24.0"></polyline>
+                                        <polyline class="hist-linha" points="0.0,28.0 16.7,25.6 33.3,27.2 50.0,24.8 66.7,26.0 83.3,27.6 100.0,26.4"></polyline>
                                     </svg>
-                                    <em class="hist-meta-lbl">limite 6,0</em>
-                                    <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:33.2%">3,0</b>
-                                    <b class="hist-spark-dia" style="left:16.7%;bottom:43.2%">3,6</b>
-                                    <b class="hist-spark-dia" style="left:33.3%;bottom:36.8%">3,2</b>
-                                    <b class="hist-spark-dia" style="left:50.0%;bottom:46.8%">3,8</b>
-                                    <b class="hist-spark-dia" style="left:66.7%;bottom:41.8%">3,5</b>
-                                    <b class="hist-spark-dia" style="left:83.3%;bottom:35.0%">3,1</b>
-                                    <i class="hist-ponto" style="bottom:40.0%"></i>
-                                    <b class="hist-spark-val" style="bottom:40.0%">3,4</b>
+                                    <em class="hist-meta-lbl">limite 8,0</em>
+                                    <b class="hist-spark-dia hist-spark-dia--ini" style="left:0.0%;bottom:30.0%">3,0</b>
+                                    <b class="hist-spark-dia" style="left:16.7%;bottom:36.0%">3,6</b>
+                                    <b class="hist-spark-dia" style="left:33.3%;bottom:32.0%">3,2</b>
+                                    <b class="hist-spark-dia" style="left:50.0%;bottom:38.0%">3,8</b>
+                                    <b class="hist-spark-dia" style="left:66.7%;bottom:35.0%">3,5</b>
+                                    <b class="hist-spark-dia" style="left:83.3%;bottom:31.0%">3,1</b>
+                                    <i class="hist-ponto" style="bottom:34.0%"></i>
+                                    <b class="hist-spark-val" style="bottom:34.0%">3,4</b>
                                     <div class="hist-eixo"><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span><span>D</span><span>S</span></div>
                                 </div>
-                                <div class="hist-bars"><div class="hist-bar"><b class="hist-bar-val">3,4</b><i class="hist-bar-fill" style="height:40.0%"></i><span class="hist-bar-lbl">SEM</span></div><div class="hist-bar"><b class="hist-bar-val">3,3</b><i class="hist-bar-fill" style="height:38.3%"></i><span class="hist-bar-lbl">MÊS</span></div><div class="hist-bar"><b class="hist-bar-val">3,2</b><i class="hist-bar-fill" style="height:36.7%"></i><span class="hist-bar-lbl">ANO</span></div></div>
+                                <div class="hist-bars"><div class="hist-bar"><b class="hist-bar-val">3,4</b><i class="hist-bar-fill" style="height:34.0%"></i><span class="hist-bar-lbl">SEM</span></div><div class="hist-bar"><b class="hist-bar-val">3,3</b><i class="hist-bar-fill" style="height:33.0%"></i><span class="hist-bar-lbl">MÊS</span></div><div class="hist-bar"><b class="hist-bar-val">3,2</b><i class="hist-bar-fill" style="height:32.0%"></i><span class="hist-bar-lbl">ANO</span></div></div>
                             </div>
                         </div>
                     </div>
@@ -2061,11 +2100,31 @@
                 </div>
             </section>
 
-            <!-- Screen 3: Secagem -->
-            <!-- Cada linha traz os dados do ciclo e o grafico do turno inteiro: temperatura
-                 da fornalha, temperatura do secador (cada uma com a desejada tracejada) e a
-                 umidade da massa, com o marcador AGORA separando o que ja aconteceu do que falta. -->
-            <section class="screen" id="screen-3">
+            <!-- Screen 3: Secagem
+                 Um cartao por secador. A esquerda o calor (fornalha e ar do secador),
+                 a massa do grao (entrada e saida) e, a direita, a limpeza. No meio,
+                 quatro graficos pequenos no mesmo eixo de horas do turno (07h–17h),
+                 cada um na propria escala, com as faixas do padrao da unidade:
+                   Fornalha                200 a 950 °C (todas as culturas): tracejado no minimo e no maximo
+                   Ar do secador           50 a 105 (milho e soja), 50 a 85 (sorgo e trigo),
+                                           20 a 60 (cevada): tracejado so no limite; o pontilhado
+                                           e' a temperatura desejada, que o operador define
+                   Saida do ar do secador  0 a 50 °C: tracejado no limite; acima de 50 o secador
+                                           desarma e ha risco de incendio, entao o cartao alarma
+                   Umidade da massa        % de umidade do grao
+                 A fornalha nao tem temperatura desejada. O ar do secador e' vermelho
+                 por ser o indicador ligado a incendio.
+                 O script monta os graficos e escreve os valores a partir das series do
+                 cartao (data-forn, data-ar e data-saida de 5 em 5 min; data-umi de 15 em
+                 15 min, a partir de data-inicio). A queda de umidade e' em pontos por
+                 hora: a cada leitura, a leitura de 1 h atras menos a atual, so dentro
+                 da secagem, e a media das ultimas 3 h.
+                 Limpeza: ciclo de 72 h trabalhadas (data-limpeza-ciclo). Mostra quanto
+                 falta, quanto o secador trabalhou desde a ultima e as ultimas limpezas
+                 com a duracao e o turno (o 3o turno tem 2 pessoas e leva ~5 h; o 1o tem
+                 5 pessoas e leva ~2 h). Passou do ciclo, pisca em vermelho; a equipe
+                 antecipa quando chove. -->
+            <section class="screen screen--secagem" id="screen-3">
                 <div class="screen-header">
                     <div class="screen-badge">05</div>
                     <div class="screen-title-section">
@@ -2076,58 +2135,65 @@
 
                 <div data-codigo="AVR-SPR-A" class="content-section">
                     <div class="section-head">
-                        <h3>SECADORES · FASES DO TURNO 07h–17h · TEMPERATURA x UMIDADE</h3>
+                        <h3>SECADORES · FASES DO TURNO 07h–17h · TEMPERATURA E UMIDADE</h3>
                         <!-- legenda das linhas: cada traço na cor da própria série do gráfico -->
                         <div class="serie-legenda" aria-label="Linhas do gráfico">
                             <span class="serie-legenda-item serie-legenda-item--fornalha">Fornalha</span>
-                            <span class="serie-legenda-item serie-legenda-item--temp">Ar do secador</span>
+                            <span class="serie-legenda-item serie-legenda-item--ar">Ar do secador</span>
+                            <span class="serie-legenda-item serie-legenda-item--saida">Saída do ar</span>
                             <span class="serie-legenda-item serie-legenda-item--umi">Umidade</span>
+                            <span class="serie-legenda-item serie-legenda-item--limite">Limite</span>
                             <span class="serie-legenda-item serie-legenda-item--setada">Desejada</span>
                         </div>
                         <button class="btn-table-toggle" type="button" data-print title="Gerar print desta tela">PRINT</button>
                     </div>
 
                     <div class="secador-list">
-                        <div class="secador">
+                        <div class="secador" data-secador data-nome="Secador 1"
+                            data-inicio="07:00" data-agora="14:50" data-fim="17:00"
+                            data-forn-min="200" data-forn-max="950"
+                            data-ar-max="105" data-ar-desejada="98" data-saida-max="50"
+                            data-limpeza-ciclo="72" data-limpeza-trab="54"
+                            data-forn="330,400,473,546,626,704,780,778,799,817,818,797,765,749,768,796,808,827,814,775,758,752,792,808,813,816,784,753,756,786,798,812,831,809,777,748,757,782,811,837,815,783,756,758,777,814,810,827,801,751,764,768,799,805,834,819,788,749,750,780,695,615,532,447,359,330,330,330,401,480,551,628,703,775,802,821,814,811,776,763,768,764,809,835,827,801,756,746,775,804,808,830,815,772,752"
+                            data-ar="26.9,33.5,40.4,47.4,54.1,61.4,68.2,75.6,82.2,89.4,96.4,103.0,99.4,95.3,93.0,90.4,93.4,98.9,101.0,103.2,102.5,97.6,92.4,91.8,94.0,96.2,101.9,102.1,103.2,100.0,96.0,91.4,91.1,96.0,100.5,103.4,103.2,100.3,96.9,91.6,92.6,94.2,97.1,102.5,102.2,102.6,99.5,94.2,92.1,92.3,96.6,99.9,104.2,104.3,99.9,96.5,92.3,91.0,93.0,99.2,88.8,78.7,68.7,58.6,48.6,38.2,38.0,38.0,45.1,51.6,59.1,66.2,73.6,80.6,87.6,94.3,99.4,103.7,102.5,100.0,97.8,93.3,91.0,94.2,98.4,101.5,103.5,101.5,97.4,94.9,92.6,91.7,96.4,99.7,104.0"
+                            data-saida="17.2,16.4,16.4,17.5,19.3,21.6,23.8,26.5,29.2,31.6,34.7,37.3,39.0,39.9,40.4,40.0,40.6,40.9,41.7,43.0,43.7,43.8,43.3,42.2,41.6,41.7,42.1,42.8,43.6,43.7,43.3,42.3,41.5,42.0,42.2,42.7,43.7,43.7,43.8,42.8,42.2,42.3,42.2,42.9,43.4,43.7,44.1,43.5,42.5,42.0,42.3,42.8,43.2,43.6,43.4,42.9,42.5,42.1,41.4,42.0,41.1,39.6,37.6,34.3,31.3,28.0,25.4,23.3,22.1,22.2,23.5,25.1,27.1,29.3,31.4,33.8,36.7,39.0,40.6,41.5,41.9,41.8,41.2,41.2,41.9,42.3,43.1,43.6,43.6,43.2,42.8,42.1,42.1,42.9,43.3"
+                            data-umi="18.4,18.4,18.4,18.0,16.9,16.0,15.4,14.9,14.6,14.3,14.1,13.9,13.8,13.7,13.6,13.5,13.6,13.5,13.5,13.5,13.4,13.5,13.4,18.6,18.6,18.0,16.5,15.6,14.9,14.4,14.1,13.9">
                             <div class="secador-head">
                                 <span class="secador-nome"><i class="secador-dot is-operando"></i>SECADOR 1</span>
-                                <span class="secador-cultura secador-cultura--milho">Milho <small class="secador-cultura-lim">máx. 100°C</small></span>
+                                <span class="secador-cultura secador-cultura--milho">Milho <small class="secador-cultura-lim">ar 50–105°C</small></span>
                                 <span class="secador-tipo">Fluxo contínuo · próxima parada em <b>6 h</b> trabalhadas</span>
                                 <div class="secador-estado">
+                                    <span class="secador-alarme" data-sec-alarme hidden></span>
                                     <b class="secador-estado-pill is-secando">Secando</b>
-                                    <span class="secador-estado-info">há <b>1h45</b></span>
-                                    <!-- limpeza contada em horas de operação, como a parada -->
-                                    <span class="secador-estado-info secador-estado-info--prox" title="Limpeza de finos e telas do Secador 1 a cada 12 h de operação">próxima limpeza em <b>10 h</b> trabalhadas</span>
+                                    <span class="secador-estado-info">há <b>1h40</b></span>
                                 </div>
                             </div>
                             <div class="secador-body">
-                                <!-- coluna do calor: em cima o que a fornalha entrega e, depois do
-                                     separador, o que o secador faz com esse ar -->
                                 <div class="secador-col secador-col--calor">
                                     <div data-codigo="AVR-SPR-B" class="secador-bloco secador-bloco--fornalha">
                                         <span class="secador-bloco-nome">Fornalha</span>
                                         <div class="secador-bloco-dados">
-                                            <span class="secador-dado"><small>temperatura desejada</small><b>150°C</b></span>
-                                            <span class="secador-dado"><small>temperatura da fornalha</small><b>148°C</b></span>
+                                            <span class="secador-dado"><small>temperatura</small><b data-sec-val="forn">--</b></span>
+                                            <span class="secador-dado secador-dado--ref"><small>faixa</small><b>200–950°C</b></span>
                                         </div>
                                     </div>
                                     <span class="secador-col-sep" aria-hidden="true"></span>
                                     <div data-codigo="AVR-SPR-C" class="secador-bloco secador-bloco--ar">
                                         <span class="secador-bloco-nome">Secador</span>
                                         <div class="secador-bloco-dados">
-                                            <span class="secador-dado"><small>ar do secador</small><b>101°C</b></span>
-                                            <span class="secador-dado"><small>saída do ar do secador</small><b>46°C</b></span>
+                                            <span class="secador-dado secador-dado--ar"><small>ar do secador</small><b data-sec-val="ar">--</b></span>
+                                            <span class="secador-dado secador-dado--ref" title="Temperatura do ar que o operador define no painel"><small>desejada · operador</small><b>98°C</b></span>
+                                            <span class="secador-dado secador-dado--saida" data-sec-saida title="Acima de 50 °C o secador desarma e há risco de incêndio"><small>saída do ar · máx. 50°C</small><b data-sec-val="saida">--</b></span>
                                         </div>
                                     </div>
                                 </div>
-                                <!-- a massa do grão: como entra e como sai, temperatura e volume -->
                                 <div class="secador-col secador-col--massa">
                                     <span class="secador-col-titulo">Massa do grão</span>
                                     <div data-codigo="AVR-SPR-D" class="secador-ponto secador-ponto--entra">
                                         <span class="secador-ponto-nome">Entrada</span>
                                         <div class="secador-ponto-dados">
                                             <span class="secador-dado"><small>temperatura</small><b>28°C</b></span>
-                                            <span class="secador-dado"><small>umidade</small><b>18,4%</b></span>
+                                            <span class="secador-dado"><small>umidade</small><b>18,6%</b></span>
                                         </div>
                                     </div>
                                     <span class="secador-fluxo-seta" aria-hidden="true"></span>
@@ -2135,20 +2201,12 @@
                                         <span class="secador-ponto-nome">Saída</span>
                                         <div class="secador-ponto-dados">
                                             <span class="secador-dado"><small>temperatura</small><b>92°C</b></span>
-                                            <span class="secador-dado"><small>umidade</small><b>13,4%</b></span>
+                                            <span class="secador-dado"><small>umidade</small><b data-sec-val="umi">--</b></span>
                                         </div>
-                                        <span class="secador-ponto-nota">caiu <b>5,0 pontos</b> de umidade</span>
+                                        <span class="secador-ponto-nota" title="Leituras a cada 15 min; a cada leitura, a umidade de 1 h atrás menos a atual, só durante a secagem; média das últimas 3 h">queda de <b data-sec-queda>--</b> por hora<small>média das últimas 3 h</small></span>
                                     </div>
                                 </div>
                                 <div data-codigo="AVR-SPR-F" class="secador-chart">
-                                    <!-- eixo Y da esquerda: temperatura, 0 a 200 °C, escala das duas linhas de calor -->
-                                    <div class="secador-eixo secador-eixo--temp" aria-hidden="true">
-                                        <span style="top: 0%">200°</span>
-                                        <span style="top: 25%">150°</span>
-                                        <span style="top: 50%">100°</span>
-                                        <span style="top: 75%">50°</span>
-                                        <span style="top: 100%">0°</span>
-                                    </div>
                                     <div class="secador-plot">
                                         <div class="secador-fases" aria-hidden="true">
                                             <span class="secador-fase secador-fase--carga" style="left: 0%; width: 6.7%"></span>
@@ -2160,30 +2218,10 @@
                                             <span class="secador-fase secador-fase--carga is-prevista" style="left: 89.1%; width: 5%"></span>
                                             <span class="secador-fase secador-fase--secagem is-prevista" style="left: 94.1%; width: 5.9%"></span>
                                         </div>
-                                        <!-- as linhas do grid caem nos mesmos valores do eixo Y -->
-                                        <div class="secador-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-                                        <svg class="secador-svg" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label="Secador 1: turno das 07h às 17h em duas secagens de milho. Fornalha em 148 graus (desejada 150) e ar do secador em 101 graus (desejada 98). Carga até 07h40, secagem até 12h com a umidade caindo de 18,4 para 13,4 por cento, descarga e nova carga até 13h10, e a segunda secagem em curso às 14h50 com 13,4 por cento">
-                                            <line class="secador-setada-linha secador-setada-linha--fornalha" x1="0" y1="25" x2="300" y2="25"></line>
-                                            <line class="secador-setada-linha secador-setada-linha--temp" x1="0" y1="51" x2="300" y2="51"></line>
-                                            <polyline class="secador-linha secador-linha--fornalha" points="0,65 5,55.1 10,45.3 15,35.4 20,26.6 25,26.4 30,26.7 35,25.9 40,25.8 45,26.3 50,26.1 55,25.7 60,26.6 65,26.7 70,25.6 75,26.6 80,25.9 85,25.6 90,26.1 95,25.3 100,26.5 105,26.5 110,25.6 115,26.6 120,26.1 125,26.3 130,25.3 135,25.7 140,25.6 145,25.7 150,26 155,30.6 160,32.5 165,30.6 170,31.5 175,29.5 180,27.5 185,26.5 190,25.3 195,26.2 200,25.7 205,26.1 210,26.1 215,26.5 220,26 225,26.2 230,25.4 235,26"></polyline>
-                                            <polyline class="secador-linha secador-linha--temp" points="0,77.5 5,71.1 10,64.8 15,58.4 20,50.6 25,50.6 30,50.7 35,50.6 40,50.7 45,50.2 50,50.1 55,50.6 60,50.7 65,50.7 70,50.2 75,50.9 80,50.9 85,50.3 90,50.1 95,50.6 100,50.1 105,50.3 110,50 115,51 120,50.5 125,50.1 130,50.6 135,50.8 140,50.8 145,50.6 150,50.5 155,66.8 160,73.5 165,66.8 170,73 175,66.2 180,59.3 185,51.8 190,51.7 195,51.1 200,51.1 205,50.6 210,50.8 215,50.7 220,50.3 225,50.1 230,50.1 235,49.4"></polyline>
-                                            <polyline class="secador-linha secador-linha--umi" points="0,20 5,20 10,20 15,20 20,20 25,27.9 30,34.8 35,40.8 40,46 45,50.6 50,54.6 55,58.1 60,61.2 65,63.9 70,66.2 75,68.3 80,70.1 85,71.6 90,73 95,74.2 100,75.2 105,76.2 110,77 115,77.7 120,78.3 125,78.8 130,79.3 135,79.7 140,80 145,80.3 150,81.3 155,81.3 160,81.3 165,81.3 170,72.5 175,55 180,37.5 185,20 190,38.5 195,51.5 200,60.6 205,67.1 210,71.6 215,74.8 220,77.1 225,78.7 230,79.8 235,80.6"></polyline>
-                                        </svg>
-                                        <span class="secador-setada-tag secador-setada-tag--fornalha" style="top: 25%">fornalha desejada 150°C</span>
-                                        <span class="secador-setada-tag secador-setada-tag--temp" style="top: 51%">ar desejado 98°C</span>
+                                        <div class="secador-faixas" data-sec-graficos role="img" aria-label="Secador 1: fornalha, ar do secador, saída do ar e umidade da massa no turno das 07h às 17h"></div>
                                         <div class="secador-futuro" aria-hidden="true" style="left: 78.3%"></div>
                                         <div class="secador-agora" style="left: 78.3%"><span class="secador-agora-label">Agora <b>14h50</b><small>previsto até 17h</small></span></div>
                                     </div>
-                                    <!-- eixo Y da direita: umidade da massa, 12 a 20%, escala da terceira linha -->
-                                    <div class="secador-eixo secador-eixo--umi" aria-hidden="true">
-                                        <span style="top: 0%">20%</span>
-                                        <span style="top: 25%">18%</span>
-                                        <span style="top: 50%">16%</span>
-                                        <span style="top: 75%">14%</span>
-                                        <span style="top: 100%">12%</span>
-                                    </div>
-                                    <!-- o que cada eixo mede, na linha das horas -->
-                                    <span class="secador-eixo-cap secador-eixo-cap--temp">°C</span>
                                     <div class="secador-horas">
                                         <span>07h</span>
                                         <span>08h</span>
@@ -2197,51 +2235,66 @@
                                         <span>16h</span>
                                         <span>17h</span>
                                     </div>
-                                    <span class="secador-eixo-cap secador-eixo-cap--umi">umid.</span>
+                                </div>
+                                <div data-codigo="AVR-SPR-G" class="secador-limpeza" data-sec-limpeza>
+                                    <span class="secador-col-titulo">Limpeza</span>
+                                    <div class="secador-limpeza-falta"><b data-sec-limpeza-falta>--</b><small data-sec-limpeza-rotulo>--</small></div>
+                                    <div class="secador-limpeza-barra" aria-hidden="true"><i data-sec-limpeza-barra></i></div>
+                                    <span class="secador-limpeza-trab">trabalhou <b>54 h</b> desde a última · ciclo de 72 h</span>
+                                    <ul class="secador-limpeza-lista">
+                                        <li><span>16/10 · 3º turno</span><b>5h10</b><small>2 pessoas · antecipada por chuva</small></li>
+                                        <li><span>12/10 · 1º turno</span><b>2h05</b><small>5 pessoas</small></li>
+                                        <li><span>08/10 · 3º turno</span><b>4h50</b><small>2 pessoas</small></li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="secador">
+                        <div class="secador" data-secador data-nome="Secador 2"
+                            data-inicio="07:00" data-agora="14:50" data-fim="17:00"
+                            data-forn-min="200" data-forn-max="950"
+                            data-ar-max="85" data-ar-desejada="80" data-saida-max="50"
+                            data-limpeza-ciclo="72" data-limpeza-trab="75"
+                            data-forn="333,405,476,552,631,702,678,704,743,749,760,721,695,678,706,740,749,753,727,702,686,685,711,743,753,735,707,700,673,702,734,743,761,719,708,686,687,716,744,749,750,698,680,688,722,736,757,759,729,696,692,709,733,739,757,747,696,679,702,613,526,442,360,330,330,330,407,480,556,635,711,696,676,700,713,740,760,754,724,674,685,713,749,758,739,714,685,681,708,735,649,564,480,399,330"
+                            data-ar="27.4,34.2,41.7,48.3,54.8,61.3,68.8,76.0,78.1,82.3,83.0,84.6,81.3,79.3,76.8,76.3,78.2,80.4,82.9,84.6,83.4,78.9,76.4,76.5,75.3,79.2,83.3,84.6,84.2,80.6,78.8,74.7,75.6,78.6,82.5,83.4,84.1,81.9,80.3,75.9,76.3,78.0,79.0,84.2,83.5,83.6,80.5,76.5,74.7,76.7,78.5,82.2,84.6,84.6,83.1,78.1,76.2,75.0,76.3,66.7,56.9,46.5,38.0,38.0,38.0,38.0,45.1,52.6,59.5,66.2,73.0,80.0,79.0,75.5,75.4,78.6,82.2,84.5,84.6,82.2,78.3,76.5,76.6,76.2,80.5,83.9,84.6,83.9,81.8,78.4,68.6,58.5,48.6,39.1,38.0"
+                            data-saida="17.0,16.8,16.9,18.0,19.7,21.5,23.3,26.2,28.1,30.2,31.5,33.0,33.7,34.2,34.0,34.2,34.4,34.8,35.5,35.7,36.0,35.4,34.7,34.8,34.5,34.8,35.7,36.0,36.3,36.2,35.8,35.2,34.9,34.6,35.0,35.2,36.0,36.2,36.2,35.4,35.3,35.3,34.9,35.2,35.6,36.2,35.7,35.2,34.8,34.8,34.7,35.3,35.6,35.9,36.0,35.3,34.9,34.5,34.6,33.5,31.3,28.9,25.9,23.5,21.9,20.5,20.5,21.5,22.3,23.7,25.6,28.1,30.1,31.3,31.6,32.5,33.4,34.0,34.9,35.2,35.4,35.8,36.3,37.5,38.4,39.7,41.2,42.0,43.6,44.8,46.6,48.1,49.3,50.6,52.4"
+                            data-umi="18.8,18.8,18.8,17.9,16.7,15.9,15.3,14.9,14.6,14.3,14.1,14.0,13.9,13.8,13.8,13.7,13.7,13.6,13.6,13.6,13.6,13.6,18.7,18.7,18.7,16.9,15.8,15.0,14.5,14.2,14.0,14.0">
                             <div class="secador-head">
                                 <span class="secador-nome"><i class="secador-dot is-operando"></i>SECADOR 2</span>
-                                <span class="secador-cultura secador-cultura--sorgo">Sorgo <small class="secador-cultura-lim">máx. 90°C</small></span>
+                                <span class="secador-cultura secador-cultura--sorgo">Sorgo <small class="secador-cultura-lim">ar 50–85°C</small></span>
                                 <span class="secador-tipo">Intermitente · próxima parada em <b>3 h</b> trabalhadas</span>
                                 <div class="secador-estado">
+                                    <span class="secador-alarme" data-sec-alarme hidden></span>
                                     <b class="secador-estado-pill is-descarregando">Descarregando</b>
                                     <span class="secador-estado-info">há <b>20 min</b></span>
-                                    <!-- limpeza contada em horas de operação, como a parada -->
-                                    <span class="secador-estado-info secador-estado-info--prox" title="Limpeza de finos e telas do Secador 2 a cada 12 h de operação">próxima limpeza em <b>7 h</b> trabalhadas</span>
                                 </div>
                             </div>
                             <div class="secador-body">
-                                <!-- coluna do calor: em cima o que a fornalha entrega e, depois do
-                                     separador, o que o secador faz com esse ar -->
                                 <div class="secador-col secador-col--calor">
                                     <div data-codigo="AVR-SPR-B" class="secador-bloco secador-bloco--fornalha">
                                         <span class="secador-bloco-nome">Fornalha</span>
                                         <div class="secador-bloco-dados">
-                                            <span class="secador-dado"><small>temperatura desejada</small><b>140°C</b></span>
-                                            <span class="secador-dado"><small>temperatura da fornalha</small><b>138°C</b></span>
+                                            <span class="secador-dado"><small>temperatura</small><b data-sec-val="forn">--</b></span>
+                                            <span class="secador-dado secador-dado--ref"><small>faixa</small><b>200–950°C</b></span>
                                         </div>
                                     </div>
                                     <span class="secador-col-sep" aria-hidden="true"></span>
                                     <div data-codigo="AVR-SPR-C" class="secador-bloco secador-bloco--ar">
                                         <span class="secador-bloco-nome">Secador</span>
                                         <div class="secador-bloco-dados">
-                                            <span class="secador-dado"><small>ar do secador</small><b>85°C</b></span>
-                                            <span class="secador-dado" title="Acima de 50°C o ar de saída indica risco de incêndio: o RM desarma os ventiladores"><small>saída do ar do secador</small><b>52°C</b></span>
+                                            <span class="secador-dado secador-dado--ar"><small>ar do secador</small><b data-sec-val="ar">--</b></span>
+                                            <span class="secador-dado secador-dado--ref" title="Temperatura do ar que o operador define no painel"><small>desejada · operador</small><b>80°C</b></span>
+                                            <span class="secador-dado secador-dado--saida" data-sec-saida title="Acima de 50 °C o secador desarma e há risco de incêndio"><small>saída do ar · máx. 50°C</small><b data-sec-val="saida">--</b></span>
                                         </div>
                                     </div>
                                 </div>
-                                <!-- a massa do grão: como entra e como sai, temperatura e volume -->
                                 <div class="secador-col secador-col--massa">
                                     <span class="secador-col-titulo">Massa do grão</span>
                                     <div data-codigo="AVR-SPR-D" class="secador-ponto secador-ponto--entra">
                                         <span class="secador-ponto-nome">Entrada</span>
                                         <div class="secador-ponto-dados">
                                             <span class="secador-dado"><small>temperatura</small><b>27°C</b></span>
-                                            <span class="secador-dado"><small>umidade</small><b>18,8%</b></span>
+                                            <span class="secador-dado"><small>umidade</small><b>18,7%</b></span>
                                         </div>
                                     </div>
                                     <span class="secador-fluxo-seta" aria-hidden="true"></span>
@@ -2249,20 +2302,12 @@
                                         <span class="secador-ponto-nome">Saída</span>
                                         <div class="secador-ponto-dados">
                                             <span class="secador-dado"><small>temperatura</small><b>83°C</b></span>
-                                            <span class="secador-dado"><small>umidade</small><b>13,6%</b></span>
+                                            <span class="secador-dado"><small>umidade</small><b data-sec-val="umi">--</b></span>
                                         </div>
-                                        <span class="secador-ponto-nota">caiu <b>5,2 pontos</b> de umidade</span>
+                                        <span class="secador-ponto-nota" title="Leituras a cada 15 min; a cada leitura, a umidade de 1 h atrás menos a atual, só durante a secagem; média das últimas 3 h">queda de <b data-sec-queda>--</b> por hora<small>média das últimas 3 h</small></span>
                                     </div>
                                 </div>
                                 <div data-codigo="AVR-SPR-F" class="secador-chart">
-                                    <!-- eixo Y da esquerda: temperatura, 0 a 200 °C, escala das duas linhas de calor -->
-                                    <div class="secador-eixo secador-eixo--temp" aria-hidden="true">
-                                        <span style="top: 0%">200°</span>
-                                        <span style="top: 25%">150°</span>
-                                        <span style="top: 50%">100°</span>
-                                        <span style="top: 75%">50°</span>
-                                        <span style="top: 100%">0°</span>
-                                    </div>
                                     <div class="secador-plot">
                                         <div class="secador-fases" aria-hidden="true">
                                             <span class="secador-fase secador-fase--carga" style="left: 0%; width: 5.8%"></span>
@@ -2275,30 +2320,10 @@
                                             <span class="secador-fase secador-fase--carga is-prevista" style="left: 81.7%; width: 5%"></span>
                                             <span class="secador-fase secador-fase--secagem is-prevista" style="left: 86.7%; width: 13.3%"></span>
                                         </div>
-                                        <!-- as linhas do grid caem nos mesmos valores do eixo Y -->
-                                        <div class="secador-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-                                        <svg class="secador-svg" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label="Secador 2: turno das 07h às 17h em dois ciclos intermitentes de sorgo. Fornalha em 138 graus (desejada 140) e ar do secador em 85 graus (desejada 88). Carga até 07h35, secagem até 11h55, descarga e nova carga até 13h, segunda secagem até 14h30 e descarga em curso às 14h50, com a umidade caindo de 18,8 para 13,6 por cento">
-                                            <line class="secador-setada-linha secador-setada-linha--fornalha" x1="0" y1="30" x2="300" y2="30"></line>
-                                            <line class="secador-setada-linha secador-setada-linha--temp" x1="0" y1="56" x2="300" y2="56"></line>
-                                            <polyline class="secador-linha secador-linha--fornalha" points="0,67.5 5,56.6 10,45.7 15,34.9 20,31.3 25,31.3 30,31.7 35,31.1 40,30.6 45,30.6 50,30.4 55,30.3 60,31.4 65,31.5 70,31.5 75,31.1 80,30.6 85,30.8 90,30.4 95,31.7 100,31 105,30.7 110,31.7 115,31.5 120,31.3 125,31.5 130,30.5 135,31.4 140,30.4 145,30.7 150,33.2 155,36.8 160,35.8 165,36 170,34.2 175,32.3 180,31.1 185,31.1 190,31.6 195,31 200,30.7 205,31 210,30.9 215,31.4 220,31.4 225,31 230,34.5 235,36"></polyline>
-                                            <polyline class="secador-linha secador-linha--temp" points="0,79 5,73 10,66.9 15,60.9 20,57.6 25,57.6 30,57.1 35,57 40,57 45,57.5 50,57.9 55,57.7 60,57.2 65,57.6 70,57.9 75,57.6 80,57.4 85,57.2 90,57.1 95,57.9 100,57.6 105,57.1 110,57.2 115,57.8 120,57.1 125,57.6 130,57.1 135,57.7 140,57.6 145,57.4 150,64.4 155,75.8 160,72.7 165,75 170,69.5 175,64 180,57.3 185,57.2 190,57.4 195,57.3 200,57.9 205,57.3 210,57 215,57.3 220,57.1 225,57.5 230,59.8 235,62"></polyline>
-                                            <polyline class="secador-linha secador-linha--umi" points="0,15 5,15 10,15 15,15 20,20 25,27.5 30,34.1 35,39.8 40,44.8 45,49.2 50,53.1 55,56.5 60,59.4 65,62 70,64.2 75,66.2 80,67.9 85,69.4 90,70.8 95,71.9 100,72.9 105,73.8 110,74.6 115,75.3 120,75.9 125,76.4 130,76.8 135,77.2 140,77.6 145,77.9 150,78.8 155,78.8 160,78.8 165,70 170,51.7 175,33.3 180,15 185,35.9 190,50.1 195,59.8 200,66.3 205,70.7 210,73.7 215,75.7 220,77.1 225,80 230,80 235,80"></polyline>
-                                        </svg>
-                                        <span class="secador-setada-tag secador-setada-tag--fornalha" style="top: 30%">fornalha desejada 140°C</span>
-                                        <span class="secador-setada-tag secador-setada-tag--temp" style="top: 56%">ar desejado 88°C</span>
+                                        <div class="secador-faixas" data-sec-graficos role="img" aria-label="Secador 2: fornalha, ar do secador, saída do ar e umidade da massa no turno das 07h às 17h"></div>
                                         <div class="secador-futuro" aria-hidden="true" style="left: 78.3%"></div>
                                         <div class="secador-agora" style="left: 78.3%"><span class="secador-agora-label">Agora <b>14h50</b><small>previsto até 17h</small></span></div>
                                     </div>
-                                    <!-- eixo Y da direita: umidade da massa, 12 a 20%, escala da terceira linha -->
-                                    <div class="secador-eixo secador-eixo--umi" aria-hidden="true">
-                                        <span style="top: 0%">20%</span>
-                                        <span style="top: 25%">18%</span>
-                                        <span style="top: 50%">16%</span>
-                                        <span style="top: 75%">14%</span>
-                                        <span style="top: 100%">12%</span>
-                                    </div>
-                                    <!-- o que cada eixo mede, na linha das horas -->
-                                    <span class="secador-eixo-cap secador-eixo-cap--temp">°C</span>
                                     <div class="secador-horas">
                                         <span>07h</span>
                                         <span>08h</span>
@@ -2312,7 +2337,17 @@
                                         <span>16h</span>
                                         <span>17h</span>
                                     </div>
-                                    <span class="secador-eixo-cap secador-eixo-cap--umi">umid.</span>
+                                </div>
+                                <div data-codigo="AVR-SPR-G" class="secador-limpeza" data-sec-limpeza>
+                                    <span class="secador-col-titulo">Limpeza</span>
+                                    <div class="secador-limpeza-falta"><b data-sec-limpeza-falta>--</b><small data-sec-limpeza-rotulo>--</small></div>
+                                    <div class="secador-limpeza-barra" aria-hidden="true"><i data-sec-limpeza-barra></i></div>
+                                    <span class="secador-limpeza-trab">trabalhou <b>75 h</b> desde a última · ciclo de 72 h</span>
+                                    <ul class="secador-limpeza-lista">
+                                        <li><span>15/10 · 1º turno</span><b>2h15</b><small>5 pessoas</small></li>
+                                        <li><span>11/10 · 3º turno</span><b>5h20</b><small>2 pessoas</small></li>
+                                        <li><span>07/10 · 1º turno</span><b>1h55</b><small>5 pessoas</small></li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -3263,14 +3298,31 @@
             </section>
 
             <!-- Screen 6: Armazém
-                 Mesma lógica da tela de silos, mas para os dois armazéns
-                 graneleiros: a faixa de ponta no topo, um cartão largo por
-                 armazém (ocupação, produtos em estoque por célula, curva de
-                 temperatura em blocos de 12h com projeção e aeração) e, embaixo,
-                 capacidade x estoque por armazém ao lado da lista de lotes.
-                 Os cartões usam os mesmos atributos data-silo / data-temps /
-                 data-aer dos silos, então o script trata os dois iguais. -->
-            <section class="screen" id="screen-6">
+                 Um cartão por armazém graneleiro, um embaixo do outro (o
+                 armazém é comprido). O miolo é a planta vista de cima, como um
+                 tabuleiro: cada quadradinho é um cabo de termometria com a média
+                 dos sensores dentro do grão; o túnel central divide o armazém
+                 em lado A (em cima) e lado B (embaixo) e cada motor de aeração
+                 fica na parede do seu lado, em cima dos quadradinhos que atende.
+                 Os quadradinhos são agrupados por setor de aeração; no topo de
+                 cada setor, a temperatura média, a máxima e quantos motores
+                 estão ligados. À direita, as três tendências fixas (24 h,
+                 7 dias e 30 dias) da média do armazém.
+                 O script monta a planta a partir dos atributos do cartão:
+                   data-arm-motores        motores por lado (posições ao longo do armazém)
+                   data-arm-cols-por-motor quadradinhos que cada motor atende ao longo do comprimento
+                   data-arm-linhas         fileiras de quadradinhos em cada lado do túnel
+                   data-arm-setores        motores (posições) de cada setor, em ordem
+                   data-arm-motores-on     motores ligados (A1-A13 = faixa; B4 = um só)
+                   data-arm-celulas        temperaturas: uma linha por fileira (";"),
+                                           da parede do lado A até a parede do lado B;
+                                           "-" = cabo fora do produto, fica de fora
+                   data-temps / data-temps-dia  média do armazém hora a hora (24 h)
+                                           e nas leituras das 06h e 18h (30 dias)
+                 PROVISÓRIO: setores e motores são estimativa da reunião (mínimo
+                 5 setores, ~25 motores laterais) até chegar o mapa de aeração
+                 da unidade; é só trocar os atributos. -->
+            <section class="screen screen--armazem" id="screen-6">
                 <div class="screen-header">
                     <div class="screen-badge">08</div>
                     <div class="screen-title-section">
@@ -3281,69 +3333,137 @@
 
                 <div data-codigo="AVR-ARM-A" class="content-section sa-section">
                     <div class="section-head">
-                        <h3>ARMAZÉNS GRANELEIROS · OCUPAÇÃO, TEMPERATURA E AERAÇÃO</h3>
-                        <span class="stack-hint">tracejado = projeção</span>
+                        <h3>ARMAZÉNS GRANELEIROS · TEMPERATURA E AERAÇÃO POR SETOR</h3>
+                        <span class="arm-legenda" aria-label="Legenda">
+                            <span class="arm-legenda-grupo">
+                                <i class="arm-leg-cel" data-faixa="1"></i><i class="arm-leg-cel" data-faixa="2"></i><i class="arm-leg-cel" data-faixa="3"></i><i class="arm-leg-cel" data-faixa="4"></i><i class="arm-leg-cel" data-faixa="5"></i>
+                                <span>&lt; 28 °C, de 2 em 2 °C (cor mais forte = mais quente)</span>
+                            </span>
+                            <span class="arm-legenda-grupo"><i class="arm-leg-cel" data-faixa="atencao"></i>28–32</span>
+                            <span class="arm-legenda-grupo"><i class="arm-leg-cel" data-faixa="alerta"></i>≥ 32</span>
+                            <span class="arm-legenda-grupo"><i class="arm-leg-cel" data-faixa="fora"></i>fora do produto</span>
+                            <span class="arm-legenda-grupo"><i class="arm-leg-motor" data-motor="on"></i>motor ligado</span>
+                            <span class="arm-legenda-grupo"><i class="arm-leg-motor" data-motor="off"></i>desligado</span>
+                        </span>
                     </div>
-                    <div class="sa-grid sa-grid--armazem">
-                        <article class="sa-card sa-card--armazem" data-silo data-aer="on" data-aer-desde-min="96" data-pausa-ponta="1"
-                            data-temps="22.9,22.9,22.8,22.8,22.7,22.7,22.7,22.6,22.6,22.5,22.5,22.5,22.4,22.4,22.3,22.3,22.3,22.2,22.2,22.2,22.3,22.2,22.1,22.0">
-                            <div class="sa-head">
+                    <div class="arm-lista">
+                        <!-- Área 1: aeração ligada em quase todo o armazém; A1, B1 e B6 desligados -->
+                        <article class="sa-card arm-card" data-armazem data-aer="on" data-aer-desde-min="96" data-pausa-ponta="1"
+                            data-arm-motores="13" data-arm-cols-por-motor="2" data-arm-linhas="3"
+                            data-arm-setores="3,3,2,3,2"
+                            data-arm-motores-on="A2-A13,B2-B5,B7-B13"
+                            data-arm-celulas="-,21.5,22.1,21.7,21.6,22.0,21.7,21.6,21.9,21.9,21.7,21.8,22.2,22.3,22.0,22.0,22.7,22.7,22.3,22.7,22.6,22.9,23.4,23.0,23.2,-;21.7,21.6,21.5,21.5,21.7,21.7,21.3,21.3,21.6,21.3,21.2,21.2,21.7,21.6,22.0,21.8,22.4,22.5,22.0,22.1,22.3,22.3,22.8,22.7,23.1,22.6;21.4,21.4,21.6,21.7,21.5,21.3,21.3,21.2,21.3,21.3,21.3,21.4,21.8,21.6,22.0,21.7,22.5,22.3,22.3,22.3,22.3,22.4,23.1,22.8,23.0,22.7;21.5,21.4,21.4,21.4,21.6,21.7,21.1,21.6,21.1,21.3,21.2,21.1,22.1,21.6,21.8,21.5,22.2,22.3,22.0,22.5,22.5,22.5,23.1,23.1,23.0,22.7;21.2,21.3,21.2,21.2,21.5,21.3,21.5,21.4,21.5,21.2,21.6,21.2,21.7,22.0,21.5,21.8,22.0,22.5,22.3,22.5,22.0,22.5,22.7,23.1,22.9,23.0;-,21.7,21.6,21.6,21.9,21.5,21.9,21.8,21.8,21.7,21.4,21.5,22.4,21.9,22.2,22.3,22.3,22.8,22.8,22.9,22.9,22.8,23.2,23.1,23.3,-"
+                            data-temps="22.9,22.9,22.8,22.8,22.7,22.7,22.7,22.6,22.6,22.5,22.5,22.5,22.4,22.4,22.3,22.3,22.3,22.2,22.2,22.2,22.3,22.2,22.1,22.0"
+                            data-temps-dia="25.6,25.6,25.5,25.4,25.3,25.3,25.2,25.2,25.0,24.9,25.0,24.9,24.7,24.6,24.6,24.7,24.6,24.5,24.5,24.4,24.2,24.1,24.2,24.0,24.1,24.0,23.9,23.9,23.8,23.7,23.8,23.6,23.6,23.4,23.5,23.4,23.3,23.2,23.2,23.1,23.2,23.1,22.9,23.0,23.0,22.7,22.7,22.8,22.5,22.5,22.5,22.4,22.5,22.5,22.2,22.2,22.3,22.2,22.0,22.0,22.0">
+                            <div class="arm-head">
                                 <span class="sa-name">ÁREA 1</span>
                                 <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho · 20.000 m³<span class="sa-umi">umid. 13,1%</span></span>
-                            </div>
-                            <div class="sa-body sa-body--armazem">
-                                <div class="silo-visual armazem-visual"><div class="silo-fill" style="height: 73%"></div></div>
-                                <div class="sa-stock"><b>73%</b><span>14.600 m³</span></div>
-                            </div>
-                            <div class="sa-foot--armazem">
-                                <div class="sa-temp">
-                                    <div class="sa-temp-head">
-                                        <span class="sa-temp-rate" data-temp-taxa>--</span>
-                                    </div>
-                                    <div class="sa-spark-wrap" data-spark-wrap>
-                                        <b class="sa-temp-ponto sa-temp-ponto--ini" data-temp-inicio>--</b>
-                                        <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
-                                        <b class="sa-temp-ponto sa-temp-ponto--fim" data-temp-atual>--</b>
-                                        <b class="sa-temp-ponto sa-temp-ponto--proj" data-temp-proj>--</b>
-                                    </div>
-                                    <div class="sa-spark-horas" aria-hidden="true"><span data-hora-inicio>--</span><span data-hora-meio>--</span><span data-hora-fim>--</span></div>
-                                </div>
-                                <div class="sa-aer">
+                                <span class="arm-ocup" title="Ocupação do armazém">
+                                    <span class="arm-ocup-barra"><i style="width: 73%"></i></span>
+                                    <b>73%</b><span>14.600 m³</span>
+                                </span>
+                                <span class="arm-media">média <b data-arm-media>--</b></span>
+                                <span class="sa-aer arm-aer">
                                     <span class="sa-aer-badge" data-aer-badge>--</span>
+                                    <span class="arm-aer-motores" data-arm-motores-total>--</span>
                                     <span class="sa-aer-info" data-aer-info>--</span>
-                                    <span class="sa-aer-clima" title="Estação meteorológica da unidade, no momento em que a aeração ligou">ao ligar: <b>28,6 °C</b><span class="sa-aer-clima-ur">umidade relativa <b>46%</b></span></span>
+                                    <span class="sa-aer-clima" title="Estação meteorológica da unidade, no momento em que a aeração ligou">ao ligar: <b>28,6 °C</b> · UR <b>46%</b></span>
+                                </span>
+                            </div>
+                            <div class="arm-body">
+                                <div class="arm-mapa" data-arm-mapa role="img" aria-label="Planta do armazém da área 1 por setor"></div>
+                                <div class="arm-tend">
+                                    <div class="arm-tend-item" data-arm-tend="24h">
+                                        <div class="arm-tend-head"><span class="arm-tend-nome">24 h</span><span class="sa-temp-rate" data-temp-taxa>--</span></div>
+                                        <div class="sa-spark-wrap" data-spark-wrap data-modo="blocos">
+                                            <b class="sa-temp-ponto sa-temp-ponto--ini" data-temp-inicio>--</b>
+                                            <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
+                                            <b class="sa-temp-ponto sa-temp-ponto--fim" data-temp-atual>--</b>
+                                            <b class="sa-temp-ponto sa-temp-ponto--proj" data-temp-proj>--</b>
+                                        </div>
+                                        <div class="sa-spark-horas" aria-hidden="true"><span data-hora-inicio>--</span><span data-hora-meio>--</span><span data-hora-fim>--</span></div>
+                                    </div>
+                                    <div class="arm-tend-item" data-arm-tend="7d">
+                                        <div class="arm-tend-head"><span class="arm-tend-nome">7 dias</span><span class="sa-temp-rate" data-temp-taxa>--</span></div>
+                                        <div class="sa-spark-wrap" data-spark-wrap data-modo="blocos">
+                                            <b class="sa-temp-ponto sa-temp-ponto--ini" data-temp-inicio>--</b>
+                                            <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
+                                            <b class="sa-temp-ponto sa-temp-ponto--fim" data-temp-atual>--</b>
+                                            <b class="sa-temp-ponto sa-temp-ponto--proj" data-temp-proj>--</b>
+                                        </div>
+                                        <div class="sa-spark-horas" aria-hidden="true"><span data-hora-inicio>--</span><span data-hora-meio>--</span><span data-hora-fim>--</span></div>
+                                    </div>
+                                    <div class="arm-tend-item" data-arm-tend="30d">
+                                        <div class="arm-tend-head"><span class="arm-tend-nome">30 dias</span><span class="sa-temp-rate" data-temp-taxa>--</span></div>
+                                        <div class="sa-spark-wrap" data-spark-wrap data-modo="blocos">
+                                            <b class="sa-temp-ponto sa-temp-ponto--ini" data-temp-inicio>--</b>
+                                            <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
+                                            <b class="sa-temp-ponto sa-temp-ponto--fim" data-temp-atual>--</b>
+                                            <b class="sa-temp-ponto sa-temp-ponto--proj" data-temp-proj>--</b>
+                                        </div>
+                                        <div class="sa-spark-horas" aria-hidden="true"><span data-hora-inicio>--</span><span data-hora-meio>--</span><span data-hora-fim>--</span></div>
+                                    </div>
                                 </div>
                             </div>
                         </article>
 
-                        <!-- Área 2: ventilação desligada e temperatura subindo devagar -->
-                        <article class="sa-card sa-card--armazem" data-silo data-aer="off" data-aer-fim="09:20" data-aer-rodou="4h05"
-                            data-temps="20.8,20.8,20.8,20.9,20.9,20.9,21.0,21.0,21.0,21.1,21.1,21.1,21.2,21.2,21.2,21.3,21.3,21.3,21.3,21.4,21.2,21.3,21.4,21.5">
-                            <div class="sa-head">
+                        <!-- Área 2: aeração ligada há pouco, só A8 e B2 desligados; foco quente
+                             no setor 3, perto do túnel do lado B, e média subindo na última semana -->
+                        <article class="sa-card arm-card" data-armazem data-aer="on" data-aer-desde-min="52" data-pausa-ponta="1"
+                            data-arm-motores="10" data-arm-cols-por-motor="2" data-arm-linhas="3"
+                            data-arm-setores="2,2,2,2,2"
+                            data-arm-motores-on="A1-A7,A9-A10,B1,B3-B10"
+                            data-arm-celulas="-,21.4,21.1,21.0,21.3,21.6,21.4,21.2,22.1,22.2,21.9,22.2,21.6,21.4,21.5,21.9,21.5,21.3,21.4,-;21.0,20.6,20.9,20.6,21.0,21.0,21.2,21.3,21.8,21.6,21.8,21.6,21.4,21.3,21.3,21.3,21.0,20.8,21.0,20.6;20.7,20.8,20.6,20.9,20.9,20.8,21.2,21.3,22.1,22.8,22.9,22.6,21.9,21.5,21.6,21.0,21.0,20.9,21.0,21.1;20.5,20.6,20.5,20.5,20.7,20.8,21.3,22.1,23.2,23.9,24.0,23.5,22.0,21.5,21.6,21.2,21.0,21.0,20.8,20.8;20.5,20.6,21.0,21.1,20.8,21.3,21.3,21.6,23.2,24.2,24.0,23.2,22.0,21.7,21.4,21.3,21.2,20.6,20.8,20.8;-,20.8,20.8,21.1,21.1,21.2,21.7,21.8,22.9,23.0,23.2,23.0,22.1,21.8,21.7,21.5,21.2,21.2,21.2,-"
+                            data-temps="20.8,20.8,20.8,20.9,20.9,20.9,21.0,21.0,21.0,21.1,21.1,21.1,21.2,21.2,21.2,21.3,21.3,21.3,21.3,21.4,21.2,21.3,21.4,21.5"
+                            data-temps-dia="20.6,20.5,20.7,20.6,20.7,20.6,20.6,20.7,20.7,20.7,20.7,20.7,20.7,20.7,20.7,20.6,20.6,20.7,20.6,20.7,20.6,20.6,20.7,20.7,20.8,20.7,20.8,20.6,20.8,20.7,20.8,20.8,20.8,20.7,20.8,20.8,20.8,20.8,20.8,20.8,20.8,20.9,20.9,20.7,20.8,20.8,20.8,21.0,21.0,20.9,21.0,21.1,21.2,21.3,21.3,21.3,21.3,21.3,21.4,21.5,21.5">
+                            <div class="arm-head">
                                 <span class="sa-name">ÁREA 2</span>
                                 <span class="sa-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo · 15.000 m³<span class="sa-umi sa-umi--alto" title="Acima do limite de 14% para armazenagem">umid. 14,1%</span></span>
-                            </div>
-                            <div class="sa-body sa-body--armazem">
-                                <div class="silo-visual armazem-visual"><div class="silo-fill" style="height: 42%"></div></div>
-                                <div class="sa-stock"><b>42%</b><span>6.300 m³</span></div>
-                            </div>
-                            <div class="sa-foot--armazem">
-                                <div class="sa-temp">
-                                    <div class="sa-temp-head">
-                                        <span class="sa-temp-rate" data-temp-taxa>--</span>
-                                    </div>
-                                    <div class="sa-spark-wrap" data-spark-wrap>
-                                        <b class="sa-temp-ponto sa-temp-ponto--ini" data-temp-inicio>--</b>
-                                        <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
-                                        <b class="sa-temp-ponto sa-temp-ponto--fim" data-temp-atual>--</b>
-                                        <b class="sa-temp-ponto sa-temp-ponto--proj" data-temp-proj>--</b>
-                                    </div>
-                                    <div class="sa-spark-horas" aria-hidden="true"><span data-hora-inicio>--</span><span data-hora-meio>--</span><span data-hora-fim>--</span></div>
-                                </div>
-                                <div class="sa-aer">
+                                <span class="arm-ocup" title="Ocupação do armazém">
+                                    <span class="arm-ocup-barra"><i style="width: 42%"></i></span>
+                                    <b>42%</b><span>6.300 m³</span>
+                                </span>
+                                <span class="arm-media">média <b data-arm-media>--</b></span>
+                                <span class="sa-aer arm-aer">
                                     <span class="sa-aer-badge" data-aer-badge>--</span>
+                                    <span class="arm-aer-motores" data-arm-motores-total>--</span>
                                     <span class="sa-aer-info" data-aer-info>--</span>
-                                    <span class="sa-aer-clima" title="Estação meteorológica da unidade, no momento em que a aeração ligou">na última: <b>15,8 °C</b><span class="sa-aer-clima-ur">umidade relativa <b>79%</b></span></span>
+                                    <span class="sa-aer-clima" title="Estação meteorológica da unidade, no momento em que a aeração ligou">ao ligar: <b>24,1 °C</b> · UR <b>58%</b></span>
+                                </span>
+                            </div>
+                            <div class="arm-body">
+                                <div class="arm-mapa" data-arm-mapa role="img" aria-label="Planta do armazém da área 2 por setor"></div>
+                                <div class="arm-tend">
+                                    <div class="arm-tend-item" data-arm-tend="24h">
+                                        <div class="arm-tend-head"><span class="arm-tend-nome">24 h</span><span class="sa-temp-rate" data-temp-taxa>--</span></div>
+                                        <div class="sa-spark-wrap" data-spark-wrap data-modo="blocos">
+                                            <b class="sa-temp-ponto sa-temp-ponto--ini" data-temp-inicio>--</b>
+                                            <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
+                                            <b class="sa-temp-ponto sa-temp-ponto--fim" data-temp-atual>--</b>
+                                            <b class="sa-temp-ponto sa-temp-ponto--proj" data-temp-proj>--</b>
+                                        </div>
+                                        <div class="sa-spark-horas" aria-hidden="true"><span data-hora-inicio>--</span><span data-hora-meio>--</span><span data-hora-fim>--</span></div>
+                                    </div>
+                                    <div class="arm-tend-item" data-arm-tend="7d">
+                                        <div class="arm-tend-head"><span class="arm-tend-nome">7 dias</span><span class="sa-temp-rate" data-temp-taxa>--</span></div>
+                                        <div class="sa-spark-wrap" data-spark-wrap data-modo="blocos">
+                                            <b class="sa-temp-ponto sa-temp-ponto--ini" data-temp-inicio>--</b>
+                                            <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
+                                            <b class="sa-temp-ponto sa-temp-ponto--fim" data-temp-atual>--</b>
+                                            <b class="sa-temp-ponto sa-temp-ponto--proj" data-temp-proj>--</b>
+                                        </div>
+                                        <div class="sa-spark-horas" aria-hidden="true"><span data-hora-inicio>--</span><span data-hora-meio>--</span><span data-hora-fim>--</span></div>
+                                    </div>
+                                    <div class="arm-tend-item" data-arm-tend="30d">
+                                        <div class="arm-tend-head"><span class="arm-tend-nome">30 dias</span><span class="sa-temp-rate" data-temp-taxa>--</span></div>
+                                        <div class="sa-spark-wrap" data-spark-wrap data-modo="blocos">
+                                            <b class="sa-temp-ponto sa-temp-ponto--ini" data-temp-inicio>--</b>
+                                            <svg class="sa-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" data-spark></svg>
+                                            <b class="sa-temp-ponto sa-temp-ponto--fim" data-temp-atual>--</b>
+                                            <b class="sa-temp-ponto sa-temp-ponto--proj" data-temp-proj>--</b>
+                                        </div>
+                                        <div class="sa-spark-horas" aria-hidden="true"><span data-hora-inicio>--</span><span data-hora-meio>--</span><span data-hora-fim>--</span></div>
+                                    </div>
                                 </div>
                             </div>
                         </article>
@@ -6188,7 +6308,7 @@
                                      (até ligar a termometria delas); São Manuel sem leitura. -->
                                 <tr class="du-st--alerta">
                                     <td class="pv-tabela-nome">Avaré</td>
-                                    <td><span class="du-silos" role="img" aria-label=" silos e 2 armazéns: silo 5 subindo 2,5 °C por dia"><span class="du-grupo"><i title="Silo 1 · 22,4 °C"><small>silo 1</small>22,4°</i><i title="Silo 2 · 21,0 °C"><small>silo 2</small>21,0°</i><i title="Silo 3 · 23,1 °C"><small>silo 3</small>23,1°</i><i title="Silo 4 · 22,2 °C"><small>silo 4</small>22,2°</i><i class="is-subindo" title="Silo 5 · 24,3 °C · subindo 0,4 °C/h"><small>silo 5</small>24,3°</i><i title="Silo 6 · 20,2 °C"><small>silo 6</small>20,2°</i><i title="Silo 7 · 23,0 °C"><small>silo 7</small>23,0°</i><i title="Silo 8 · 21,2 °C"><small>silo 8</small>21,2°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 (área 1, milho) · 22,0 °C"><small>armazém 1</small>22,0°</i><i class="du-arm" title="Armazém 2 (área 2, sorgo) · 21,5 °C"><small>armazém 2</small>21,5°</i></span></span></td>
+                                    <td><span class="du-silos" role="img" aria-label=" silos e 2 armazéns: silo 5 subindo 2,5 °C por dia"><span class="du-grupo"><i title="Silo 1 · 22,4 °C"><small>silo 1</small>22,4°</i><i title="Silo 2 · 21,0 °C"><small>silo 2</small>21,0°</i><i title="Silo 3 · 23,1 °C"><small>silo 3</small>23,1°</i><i title="Silo 4 · 22,2 °C"><small>silo 4</small>22,2°</i><i class="is-subindo" title="Silo 5 · 24,3 °C · subindo 0,4 °C/h"><small>silo 5</small>24,3°</i><i title="Silo 6 · 20,2 °C"><small>silo 6</small>20,2°</i><i title="Silo 7 · 23,0 °C"><small>silo 7</small>23,0°</i><i title="Silo 8 · 21,2 °C"><small>silo 8</small>21,2°</i></span><span class="du-grupo"><i class="du-arm" title="Armazém 1 (área 1, milho) · cabo mais quente 23,4 °C"><small>armazém 1</small>23,4°</i><i class="du-arm" title="Armazém 2 (área 2, sorgo) · cabo mais quente 24,2 °C"><small>armazém 2</small>24,2°</i></span></span></td>
                                     <td class="num"><b>24,3 °C</b><small>silo 5 · milho</small></td>
                                     <td class="num is-alerta">+2,5 <small>°C/dia</small></td>
                                     <td><span class="pv-tag pv-tag--alerta">Checar silo 5</span></td>
@@ -6267,11 +6387,11 @@
                 <div class="content-section du-section">
                     <div class="section-head">
                         <h3>SECAGEM · SECADORES</h3>
-                        <span class="du-legenda">máx. do ar: milho 100 · sorgo 90 · trigo 80 °C · saída do ar até 50 °C</span>
+                        <span class="du-legenda">fornalha 200–950 · ar do secador: milho e soja até 105, sorgo e trigo até 85, cevada até 60 · saída do ar até 50 °C</span>
                     </div>
                     <!-- Uma linha por secador; os dois da unidade ficam juntos (a unidade só
-                         na primeira linha). Fornalha = real / desejada; ar do secador = real /
-                         máximo da cultura; saída do ar acima de 50 °C é risco de incêndio.
+                         na primeira linha). Fornalha = leitura (faixa 200 a 950 °C, sem desejada); ar do secador =
+                         real / maximo da cultura (milho e soja 105, sorgo e trigo 85, cevada 60); saída do ar acima de 50 °C é risco de incêndio.
                          Massa = temperatura · umidade na entrada e na saída do secador;
                          umidade laranja = entrada acima de 17,5% ou saída acima do alvo
                          (milho 13,5 · sorgo 12,5 · trigo 13%). Avaré vem das telas da
@@ -6280,7 +6400,7 @@
                     <div class="du-tabela-wrap">
                         <table class="pv-tabela du-tabela du-tabela--sec">
                             <thead>
-                                <tr><th>Unidade</th><th>Secador · status</th><th class="num">Prod.<small>t/h</small></th><th>Cultura</th><th class="num">Fornalha<small>real / desejada</small></th><th class="num">Ar do secador<small>real / máx.</small></th><th class="num">Saída do ar</th><th class="num">Massa entrada<small>temp. · umidade</small></th><th class="num">Massa saída<small>temp. · umidade</small></th></tr>
+                                <tr><th>Unidade</th><th>Secador · status</th><th class="num">Prod.<small>t/h</small></th><th>Cultura</th><th class="num">Fornalha<small>faixa 200–950</small></th><th class="num">Ar do secador<small>real / máx.</small></th><th class="num">Saída do ar</th><th class="num">Massa entrada<small>temp. · umidade</small></th><th class="num">Massa saída<small>temp. · umidade</small></th></tr>
                             </thead>
                             <tbody>
                                 <tr class="du-st--alerta du-sec-par">
@@ -6288,22 +6408,22 @@
                                     <td><span class="du-sec">S1 · Operando</span></td>
                                     <td class="num">78</td>
                                     <td class="du-sec-cult"><i class="legend-dot legend-dot--milho"></i>Milho</td>
-                                    <td class="num">148° <small>/ 150</small></td>
-                                    <td class="num is-alerta">101° <small>/ 100</small></td>
-                                    <td class="num">46°</td>
-                                    <td class="num"><small>28° ·</small> <span class="du-umi is-atencao">18,4%</span></td>
-                                    <td class="num"><small>92° ·</small> <span class="du-umi">13,4%</span></td>
+                                    <td class="num">752°</td>
+                                    <td class="num">104° <small>/ 105</small></td>
+                                    <td class="num">43°</td>
+                                    <td class="num"><small>28° ·</small> <span class="du-umi is-atencao">18,6%</span></td>
+                                    <td class="num"><small>92° ·</small> <span class="du-umi is-atencao">13,9%</span></td>
                                 </tr>
                                 <tr class="du-st--alerta">
                                     <td class="pv-tabela-nome"></td>
                                     <td><span class="du-sec is-alerta">S2 · Desarmado</span></td>
                                     <td class="num">—</td>
                                     <td class="du-sec-cult"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td>
-                                    <td class="num">138° <small>/ 140</small></td>
-                                    <td class="num">85° <small>/ 90</small></td>
+                                    <td class="num">330°</td>
+                                    <td class="num">38° <small>/ 85</small></td>
                                     <td class="num is-alerta">52°</td>
-                                    <td class="num"><small>27° ·</small> <span class="du-umi is-atencao">18,8%</span></td>
-                                    <td class="num"><small>83° ·</small> <span class="du-umi is-atencao">13,6%</span></td>
+                                    <td class="num"><small>27° ·</small> <span class="du-umi is-atencao">18,7%</span></td>
+                                    <td class="num"><small>83° ·</small> <span class="du-umi is-atencao">14,0%</span></td>
                                 </tr>
                                 <tr class="du-st--atencao du-sec-par">
                                     <td class="pv-tabela-nome">Matriz</td>
@@ -6315,8 +6435,8 @@
                                     <td><span class="du-sec">S2 · Operando</span></td>
                                     <td class="num">58</td>
                                     <td class="du-sec-cult"><i class="legend-dot legend-dot--milho"></i>Milho</td>
-                                    <td class="num">146° <small>/ 150</small></td>
-                                    <td class="num">96° <small>/ 100</small></td>
+                                    <td class="num">770°</td>
+                                    <td class="num">96° <small>/ 105</small></td>
                                     <td class="num">44°</td>
                                     <td class="num"><small>27° ·</small> <span class="du-umi">16,4%</span></td>
                                     <td class="num"><small>88° ·</small> <span class="du-umi">13,3%</span></td>
@@ -6326,8 +6446,8 @@
                                     <td><span class="du-sec">S1 · Operando</span></td>
                                     <td class="num">44</td>
                                     <td class="du-sec-cult"><i class="legend-dot legend-dot--milho"></i>Milho</td>
-                                    <td class="num">145° <small>/ 150</small></td>
-                                    <td class="num">94° <small>/ 100</small></td>
+                                    <td class="num">770°</td>
+                                    <td class="num">94° <small>/ 105</small></td>
                                     <td class="num">42°</td>
                                     <td class="num"><small>26° ·</small> <span class="du-umi">14,6%</span></td>
                                     <td class="num"><small>86° ·</small> <span class="du-umi">13,2%</span></td>
@@ -6337,8 +6457,8 @@
                                     <td><span class="du-sec">S2 · Operando</span></td>
                                     <td class="num">47</td>
                                     <td class="du-sec-cult"><i class="legend-dot legend-dot--trigo"></i>Trigo</td>
-                                    <td class="num">118° <small>/ 120</small></td>
-                                    <td class="num">76° <small>/ 80</small></td>
+                                    <td class="num">630°</td>
+                                    <td class="num">76° <small>/ 85</small></td>
                                     <td class="num">40°</td>
                                     <td class="num"><small>25° ·</small> <span class="du-umi">15,0%</span></td>
                                     <td class="num"><small>72° ·</small> <span class="du-umi">12,9%</span></td>
@@ -6352,8 +6472,8 @@
                                     <td><span class="du-sec">S1 · Operando</span></td>
                                     <td class="num">48</td>
                                     <td class="du-sec-cult"><i class="legend-dot legend-dot--trigo"></i>Trigo</td>
-                                    <td class="num">119° <small>/ 120</small></td>
-                                    <td class="num">77° <small>/ 80</small></td>
+                                    <td class="num">630°</td>
+                                    <td class="num">77° <small>/ 85</small></td>
                                     <td class="num">41°</td>
                                     <td class="num"><small>25° ·</small> <span class="du-umi">14,9%</span></td>
                                     <td class="num"><small>73° ·</small> <span class="du-umi">13,0%</span></td>
@@ -6368,8 +6488,8 @@
                                     <td><span class="du-sec">S1 · Operando</span></td>
                                     <td class="num">57</td>
                                     <td class="du-sec-cult"><i class="legend-dot legend-dot--milho"></i>Milho</td>
-                                    <td class="num">147° <small>/ 150</small></td>
-                                    <td class="num">97° <small>/ 100</small></td>
+                                    <td class="num">780°</td>
+                                    <td class="num">97° <small>/ 105</small></td>
                                     <td class="num">45°</td>
                                     <td class="num"><small>27° ·</small> <span class="du-umi">15,7%</span></td>
                                     <td class="num"><small>89° ·</small> <span class="du-umi">13,4%</span></td>
@@ -6379,8 +6499,8 @@
                                     <td><span class="du-sec">S2 · Operando</span></td>
                                     <td class="num">59</td>
                                     <td class="du-sec-cult"><i class="legend-dot legend-dot--milho"></i>Milho</td>
-                                    <td class="num">149° <small>/ 150</small></td>
-                                    <td class="num">98° <small>/ 100</small></td>
+                                    <td class="num">790°</td>
+                                    <td class="num">98° <small>/ 105</small></td>
                                     <td class="num">46°</td>
                                     <td class="num"><small>27° ·</small> <span class="du-umi">16,1%</span></td>
                                     <td class="num"><small>90° ·</small> <span class="du-umi">13,5%</span></td>
@@ -6390,8 +6510,8 @@
                                     <td><span class="du-sec is-baixo">S1 · Operando</span></td>
                                     <td class="num is-atencao">34 <small>/ 40</small></td>
                                     <td class="du-sec-cult"><i class="legend-dot legend-dot--milho"></i>Milho</td>
-                                    <td class="num">150° <small>/ 150</small></td>
-                                    <td class="num">99° <small>/ 100</small></td>
+                                    <td class="num">800°</td>
+                                    <td class="num">99° <small>/ 105</small></td>
                                     <td class="num">47°</td>
                                     <td class="num"><small>28° ·</small> <span class="du-umi is-atencao">17,8%</span></td>
                                     <td class="num"><small>91° ·</small> <span class="du-umi is-atencao">14,1%</span></td>
@@ -6401,8 +6521,8 @@
                                     <td><span class="du-sec">S2 · Operando</span></td>
                                     <td class="num">36</td>
                                     <td class="du-sec-cult"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td>
-                                    <td class="num">139° <small>/ 140</small></td>
-                                    <td class="num">86° <small>/ 90</small></td>
+                                    <td class="num">740°</td>
+                                    <td class="num">83° <small>/ 85</small></td>
                                     <td class="num">44°</td>
                                     <td class="num"><small>27° ·</small> <span class="du-umi is-atencao">17,6%</span></td>
                                     <td class="num"><small>84° ·</small> <span class="du-umi">12,5%</span></td>
