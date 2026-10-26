@@ -5372,7 +5372,15 @@ function caminho(pontos) {
 // contagem, onde o eixo cheio termina e a linha passa a tracejada. As
 // marcas ficam no começo, na virada do bloco (meio) e no fim.
 function desenharSparkline(svg, hist, proj, slots = SPARK_SLOTS) {
-    if (!svg || hist.length < 2) return;
+    if (!svg) return;
+
+    // Silos: só 3 medições por dia
+    if (svg.closest('[data-silo]')) {
+        desenharSpark3Pontos(svg, hist);
+        return;
+    }
+
+    if (hist.length < 2) return;
     const W = SPARK_W;
     const H = SPARK_H;
     const pontos = pontosSparkline(hist.concat(proj), slots);
@@ -5390,6 +5398,58 @@ function desenharSparkline(svg, hist, proj, slots = SPARK_SLOTS) {
         (proj.length ? `<path class="sa-spark-proj" d="${caminho(depois)}"></path>` : '') +
         `<path class="sa-spark-line" d="${caminho(antes)}"></path>` +
         `<circle class="sa-spark-ponto" cx="${xa}" cy="${ay.toFixed(2)}" r="2"></circle>`;
+}
+
+function desenharSpark3Pontos(svg, hist) {
+    const W = SPARK_W;
+    const H = SPARK_H;
+    const card = svg.closest('[data-silo]');
+
+    const vals = (hist || []).map(Number).filter(Number.isFinite);
+    if (!vals.length) { svg.innerHTML = ''; return; }
+
+    // Usa as 3 medições: se vierem mais valores, pega o primeiro, o do meio e o último
+    const n = vals.length;
+    const tres = n <= 3 ? vals : [vals[0], vals[Math.floor((n - 1) / 2)], vals[n - 1]];
+
+    let min = Math.min(...tres);
+    let max = Math.max(...tres);
+    if (max - min < 0.6) { const m = (max + min) / 2; min = m - 0.3; max = m + 0.3; }
+
+    const mx = 3;
+    const xs = tres.length === 1
+        ? [W / 2]
+        : tres.map((_, i) => mx + i * (W - 2 * mx) / (tres.length - 1));
+    const ys = tres.map(v => (H - 4) - (v - min) / (max - min) * (H - 8));
+
+    const linha = xs.map((x, i) => `${i ? 'L' : 'M'}${x.toFixed(2)} ${ys[i].toFixed(2)}`).join(' ');
+    const area = `${linha} L${xs[xs.length - 1].toFixed(2)} ${H} L${xs[0].toFixed(2)} ${H} Z`;
+    const marcas = xs.map(x => `M${x.toFixed(2)} ${H - 3} L${x.toFixed(2)} ${H + 3}`).join(' ');
+    const bolinhas = xs.map((x, i) =>
+        `<circle class="sa-spark-ponto" cx="${x.toFixed(2)}" cy="${ys[i].toFixed(2)}" r="2"></circle>`).join('');
+
+    svg.innerHTML =
+        `<path class="sa-spark-area" d="${area}"></path>` +
+        `<path class="sa-spark-eixo" d="M0 ${H} L${W} ${H} ${marcas}"></path>` +
+        `<path class="sa-spark-line" d="${linha}"></path>` +
+        bolinhas;
+
+    if (!card) return;
+
+    // Esconde a projeção, porque não há projeção com 3 medições
+    const proj = card.querySelector('[data-temp-proj]');
+    if (proj) proj.style.display = 'none';
+
+    // Horários das medições (opcional: data-horarios="07:00,15:00,23:00" no <article>)
+    if (card.dataset.horarios) {
+        const h = card.dataset.horarios.split(',');
+        const ini = card.querySelector('[data-hora-inicio]');
+        const meio = card.querySelector('[data-hora-meio]');
+        const fim = card.querySelector('[data-hora-fim]');
+        if (ini && h[0]) ini.textContent = h[0].trim();
+        if (meio && h[1]) meio.textContent = h[1].trim();
+        if (fim && h[2]) fim.textContent = h[2].trim();
+    }
 }
 
 // Taxa das últimas 3 horas: leitura atual menos a de 3h atrás, por hora.
