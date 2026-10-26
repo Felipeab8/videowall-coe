@@ -191,7 +191,9 @@ function fitTargets() {
     // (lista longa de caminhoes): fica fora da conta. Bloco com overflow
     // visivel tambem sai: o que passa dele ja aparece na medida da tela, e
     // um menu aberto por cima (contratos da expedicao) nao e transbordo.
-    const blocos = active.querySelectorAll('.content-section:not(.content-section--livre), .table-scroll:not(.table-scroll--livre), .alerts-list, .geral-grid');
+    // O cartao do secador (produtividade) corta o que passa da fileira dele,
+    // sem a secao perceber: entra na conta para nada sumir.
+    const blocos = active.querySelectorAll('.content-section:not(.content-section--livre), .table-scroll:not(.table-scroll--livre), .alerts-list, .geral-grid, .prod-secador');
     return [active, ...Array.prototype.filter.call(blocos, (el) => getComputedStyle(el).overflowY !== 'visible')];
 }
 
@@ -1257,6 +1259,7 @@ function buildVizTooltip() {
     const values = {};
     const rows = {};
     const names = {};
+    const keys = {};
     VIZ_SERIES.forEach((serie) => {
         const row = document.createElement('div');
         row.className = 'viz-tooltip-row' + (serie.total ? ' is-total' : '');
@@ -1279,10 +1282,11 @@ function buildVizTooltip() {
         values[serie.chave] = value;
         rows[serie.chave] = row;
         names[serie.chave] = name;
+        keys[serie.chave] = key;
     });
 
     document.body.appendChild(box);
-    return { box: box, title: title, values: values, rows: rows, names: names };
+    return { box: box, title: title, values: values, rows: rows, names: names, keys: keys };
 }
 
 function showVizTooltip(col, clientX, clientY) {
@@ -1296,9 +1300,13 @@ function showVizTooltip(col, clientX, clientY) {
     VIZ_SERIES.forEach((serie) => {
         const dado = col.dataset[serie.chave];
         vizTooltip.values[serie.chave].textContent = dado || '—';
-        // a coluna pode renomear a linha (ex.: "Secador 1 · Milho" no grafico de secagem)
-        const apelido = col.dataset['nome' + serie.chave.charAt(0).toUpperCase() + serie.chave.slice(1)];
+        // a coluna pode renomear a linha (ex.: "Secado" no grafico de cada secador)
+        const sufixo = serie.chave.charAt(0).toUpperCase() + serie.chave.slice(1);
+        const apelido = col.dataset['nome' + sufixo];
         vizTooltip.names[serie.chave].textContent = apelido || serie.nome;
+        // e pintar a chave com uma variavel CSS dela (ex.: --sec, a cor do secador)
+        const cor = col.dataset['cor' + sufixo];
+        vizTooltip.keys[serie.chave].style.background = (cor && getComputedStyle(col).getPropertyValue(cor).trim()) || serie.cor;
         if (serie.grao) {
             vizTooltip.rows[serie.chave].hidden = !dado || (grao !== 'todas' && serie.chave !== grao);
         } else if (!serie.total) {
@@ -1362,15 +1370,55 @@ function buildMotivoTip() {
     const lista = document.createElement('ul');
     lista.className = 'motivo-tip-lista';
 
+    const tabela = document.createElement('table');
+    tabela.className = 'motivo-tip-tabela';
+
     const nota = document.createElement('span');
     nota.className = 'motivo-tip-nota';
 
     box.appendChild(titulo);
     box.appendChild(resumo);
     box.appendChild(lista);
+    box.appendChild(tabela);
     box.appendChild(nota);
     document.body.appendChild(box);
-    return { box: box, titulo: titulo, resumo: resumo, lista: lista, nota: nota };
+    return { box: box, titulo: titulo, resumo: resumo, lista: lista, tabela: tabela, nota: nota };
+}
+
+// data-motivo-tabela: linhas separadas por "|", celulas por "::"; a primeira
+// linha e' o cabecalho. Linha que comeca com "*" sai em destaque (ex.: a
+// cultura atual no historico do silo).
+function preencherTabelaMotivo(tabela, bruto) {
+    tabela.textContent = '';
+    const linhas = bruto.split('|').map((l) => l.trim()).filter(Boolean);
+    if (linhas.length < 2) return;
+
+    const cabeca = document.createElement('thead');
+    const trCabeca = document.createElement('tr');
+    linhas[0].split('::').forEach((texto) => {
+        const th = document.createElement('th');
+        th.textContent = texto.trim();
+        trCabeca.appendChild(th);
+    });
+    cabeca.appendChild(trCabeca);
+
+    const corpo = document.createElement('tbody');
+    linhas.slice(1).forEach((linha) => {
+        const tr = document.createElement('tr');
+        if (linha.charAt(0) === '*') {
+            tr.className = 'is-destaque';
+            linha = linha.slice(1);
+        }
+        linha.split('::').forEach((texto) => {
+            const td = document.createElement('td');
+            td.textContent = texto.trim();
+            tr.appendChild(td);
+        });
+        corpo.appendChild(tr);
+    });
+
+    tabela.appendChild(cabeca);
+    tabela.appendChild(corpo);
 }
 
 const MOTIVO_TONS = { ruim: 'is-ruim', bom: 'is-bom' };
@@ -1422,6 +1470,9 @@ function preencherMotivo(alvo) {
         item.appendChild(elDesvio);
         motivoTip.lista.appendChild(item);
     });
+
+    preencherTabelaMotivo(motivoTip.tabela, campoMotivo(alvo, 'motivoTabela'));
+    motivoTip.box.classList.toggle('tem-tabela', motivoTip.tabela.rows.length > 0);
 }
 
 // A caixa se ancora no proprio indicador, nao no cursor: assim ela nunca
@@ -4645,18 +4696,20 @@ function escolherPeriodoProd(alvo) {
 
 // ============================================
 // PRODUTIVIDADE · SECAGEM POR HORA, POR TURNO
-// O grafico mostra um turno por vez (data-prod-turno na secao) e e'
-// montado do JSON em [data-prod-dados]: por hora, o secado de cada secador
-// (s1, s2), a meta de operacao (m1, m2), os minutos da hora que contam
-// (min, 60 se faltar), parada {sec, min, motivo}, agora/futuro. Duas linhas
-// por secador: a capacidade nominal (tracejada) e a meta de operacao
-// (cheia, em degraus, hora a hora). Embaixo, o fim do turno: secado contra
-// o que o nominal permitiria nas horas que ja passaram; ate 10% abaixo e'
-// normal, mais que isso alerta com as toneladas perdidas.
+// Um grafico por secador, dentro do cartao dele ([data-prod-grafico="s1"]),
+// mostrando um turno por vez (data-prod-turno na secao). Monta do JSON em
+// [data-prod-dados]: por hora, o secado de cada secador (s1, s2), a meta de
+// operacao (m1, m2), os minutos da hora que contam (min, 60 se faltar),
+// parada {sec, min, motivo}, agora/futuro. Duas linhas no grafico: a
+// capacidade nominal (tracejada) e a meta de operacao (cheia, em degraus,
+// hora a hora); os dois graficos usam a mesma escala (max). Embaixo de cada
+// um, o fim do turno: secado contra o que o nominal permitiria nas horas
+// que ja passaram; ate 10% abaixo e' normal, mais que isso alerta com as
+// toneladas perdidas.
 // ============================================
 const PROD_SECADORES = [
-    { chave: 's1', meta: 'm1', nome: 'Secador 1', curto: 'S1', serie: 'milho' },
-    { chave: 's2', meta: 'm2', nome: 'Secador 2', curto: 'S2', serie: 'sorgo' },
+    { chave: 's1', meta: 'm1' },
+    { chave: 's2', meta: 'm2' },
 ];
 const PROD_TOLERANCIA = 0.9; // ate 10% abaixo do nominal e' normal
 
@@ -4676,122 +4729,117 @@ function horasEMinutos(minutos) {
     return h ? `${h}h${String(m).padStart(2, '0')}` : `${m} min`;
 }
 
-function graficoProd(dados, turno) {
+// a parada so entra no grafico do secador que parou
+function paradaDoSecador(hora, s) {
+    return hora.parada && hora.parada.sec === s.chave ? hora.parada : null;
+}
+
+function graficoProd(dados, turno, s) {
     const horas = turno.horas;
     const max = dados.max || 100;
     const pct = (v) => Math.max(0, Math.min(100, (v / max) * 100));
     const n = horas.length;
+    const nominal = dados.nominal[s.chave];
 
     const cols = horas.map((hora) => {
         const min = hora.min || 60;
         const parcial = min < 60 && !hora.futuro;
-        const parada = hora.parada;
-        const sec = parada ? PROD_SECADORES.find((s) => s.chave === parada.sec) : null;
+        const parada = paradaDoSecador(hora, s);
+        const v = hora[s.chave];
         let dia = hora.h;
         if (hora.futuro) dia += ' · projeção';
         else if (parcial) dia += ` · ${min} min`;
-        if (parada) dia += ` · ${sec.curto} parado ${parada.min} min (${parada.motivo})`;
+        if (parada) dia += ` · parado ${parada.min} min (${parada.motivo})`;
+        // o tooltip pinta as duas linhas na cor do secador (--sec do cartao)
         const attrs = [
             `data-dia="${dia}"`,
-            `data-recebido="${hora.s1 + hora.s2} t"`,
+            `data-recebido="${v} t"`,
             `data-nome-recebido="${hora.futuro ? 'Projetado' : 'Secado'}"`,
-            `data-milho="${hora.s1} t"`,
-            `data-nome-milho="Secador 1 · ${turno.cultura.s1}"`,
-            `data-sorgo="${hora.s2} t"`,
-            `data-nome-sorgo="Secador 2 · ${turno.cultura.s2}"`,
-            `data-programado="S1 ${hora.m1} · S2 ${hora.m2} t"`,
+            'data-cor-recebido="--sec"',
+            `data-programado="${hora[s.meta]} t"`,
             'data-nome-programado="Meta de operação"',
+            'data-cor-programado="--sec"',
         ].join(' ');
-        const barras = PROD_SECADORES.map((s) => {
-            const v = hora[s.chave];
-            const abaixo = !hora.futuro && v < hora[s.meta] * PROD_TOLERANCIA;
-            const cls = ['forecast-bar', 'forecast-bar--hora', 'is-stack'];
-            if (parcial) cls.push('is-parcial');
-            if (hora.futuro) cls.push('is-projecao');
-            if (abaixo) cls.push('is-abaixo');
-            return `<div class="${cls.join(' ')}" data-serie="${s.serie}" style="height: ${pct(v).toFixed(1)}%">`
-                + `<span class="forecast-cap">${hora.futuro ? '~' : ''}${v}</span>`
-                + `<i class="forecast-seg forecast-seg--sec${s.chave.slice(1)}" style="height: 100%"></i></div>`;
-        }).join('');
+        const abaixo = !hora.futuro && v < hora[s.meta] * PROD_TOLERANCIA;
+        const barra = ['forecast-bar', 'forecast-bar--hora', 'is-stack'];
+        if (parcial) barra.push('is-parcial');
+        if (hora.futuro) barra.push('is-projecao');
+        if (abaixo) barra.push('is-abaixo');
         const faixa = parada
-            ? `<span class="prod-parada prod-parada--${parada.sec}" aria-hidden="true"><b>${parada.min} min</b></span>`
+            ? `<span class="prod-parada" aria-hidden="true"><b>${parada.min} min</b></span>`
             : '';
         const cls = ['hora-col'];
         if (hora.futuro) cls.push('is-futuro');
         if (parcial) cls.push('is-parcial');
         if (parada) cls.push('is-parada');
-        return `<div class="${cls.join(' ')}" tabindex="0" ${attrs}>${faixa}${barras}</div>`;
+        return `<div class="${cls.join(' ')}" tabindex="0" ${attrs}>${faixa}`
+            + `<div class="${barra.join(' ')}" style="height: ${pct(v).toFixed(1)}%">`
+            + `<span class="forecast-cap">${hora.futuro ? '~' : ''}${v}</span>`
+            + `<i class="forecast-seg forecast-seg--sec${s.chave.slice(1)}" style="height: 100%"></i></div></div>`;
     }).join('');
 
     // linhas: nominal reta e tracejada; operacao em degraus, hora a hora
     const y = (v) => (100 - pct(v)).toFixed(2);
-    const linhas = PROD_SECADORES.map((s) => {
-        const nominal = dados.nominal[s.chave];
-        const degraus = horas.map((hora, i) => `${i * 100},${y(hora[s.meta])} ${(i + 1) * 100},${y(hora[s.meta])}`).join(' ');
-        return `<line class="prod-linha-nominal prod-linha--${s.chave}" x1="0" y1="${y(nominal)}" x2="${n * 100}" y2="${y(nominal)}"></line>`
-            + `<polyline class="prod-linha-op prod-linha--${s.chave}" points="${degraus}"></polyline>`;
-    }).join('');
-    const rotulos = PROD_SECADORES.map((s) =>
-        `<span class="prod-meta-tag prod-meta-tag--${s.chave}" style="bottom: ${pct(dados.nominal[s.chave]).toFixed(1)}%">`
-        + `${s.curto} nominal<b>${dados.nominal[s.chave]} t/h</b></span>`).join('');
+    const degraus = horas.map((hora, i) => `${i * 100},${y(hora[s.meta])} ${(i + 1) * 100},${y(hora[s.meta])}`).join(' ');
+    const linhas = `<line class="prod-linha-nominal prod-linha--${s.chave}" x1="0" y1="${y(nominal)}" x2="${n * 100}" y2="${y(nominal)}"></line>`
+        + `<polyline class="prod-linha-op prod-linha--${s.chave}" points="${degraus}"></polyline>`;
+    const rotulo = `<span class="prod-meta-tag prod-meta-tag--${s.chave}" style="bottom: ${pct(nominal).toFixed(1)}%">`
+        + `nominal<b>${nominal} t/h</b></span>`;
 
     const eixoX = horas.map((hora) => {
         const min = hora.min || 60;
+        const parada = paradaDoSecador(hora, s);
         const cls = ['forecast-day'];
         if (hora.agora) cls.push('is-agora');
         if (hora.futuro) cls.push('is-futuro');
         let nota = '';
-        if (hora.parada) {
-            const sec = PROD_SECADORES.find((s) => s.chave === hora.parada.sec);
-            nota = `<small class="is-parada">${sec.curto} parado ${hora.parada.min} min<br>${hora.parada.motivo}</small>`;
+        if (parada) {
+            nota = `<small class="is-parada">parado ${parada.min} min<br>${parada.motivo}</small>`;
         } else if (hora.futuro) {
             nota = '<small>projeção</small>';
         } else if (min < 60) {
-            nota = `<small>parcial · ${min} min</small>`;
+            // duas linhas curtas: a coluna de um secador so e' estreita
+            nota = `<small>parcial<br>${min} min</small>`;
         }
         return `<span class="${cls.join(' ')}">${hora.h.toUpperCase()}${nota}</span>`;
     }).join('');
 
-    return `<div class="forecast-chart forecast-chart--horas forecast-chart--turno" style="--chart-cols: ${n}">`
+    return `<div class="forecast-chart forecast-chart--horas forecast-chart--turno" style="--chart-cols: ${n}" data-chart-max="${max}">`
         + `<div class="forecast-yaxis"><span>${max}</span><span>${max * 0.75}</span><span>${max / 2}</span><span>${max / 4}</span><span>0</span></div>`
         + '<div class="forecast-plot">'
         + '<div class="forecast-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>'
         + `<div class="forecast-cols">${cols}</div>`
         + `<svg class="prod-linhas" viewBox="0 0 ${n * 100} 100" preserveAspectRatio="none" aria-hidden="true">${linhas}</svg>`
-        + rotulos
+        + rotulo
         + '</div>'
         + `<div class="forecast-xaxis">${eixoX}</div>`
         + '<span class="forecast-unit">t/h</span>'
         + '</div>';
 }
 
-// fim do turno: o que secou contra o que o nominal permitiria nas horas
-// que ja passaram (as projetadas ficam de fora)
-function fimDoTurnoProd(dados, turno) {
+// fim do turno de um secador: o que secou contra o que o nominal permitiria
+// nas horas que ja passaram (as projetadas ficam de fora). O t/h com o
+// secador rodando nao entra: o cartao ja mostra na produtividade por cultura
+function fimDoTurnoProd(dados, turno, s) {
     const feitas = turno.horas.filter((hora) => !hora.futuro);
     const minutos = feitas.reduce((a, hora) => a + (hora.min || 60), 0);
     const titulo = turno.emAndamento
         ? `Até agora · ${horasEMinutos(minutos)} de turno`
         : `Fim do turno · ${horasEMinutos(minutos)}`;
-    const itens = PROD_SECADORES.map((s) => {
-        const secado = feitas.reduce((a, hora) => a + hora[s.chave], 0);
-        const parado = feitas.reduce((a, hora) => a + (hora.parada && hora.parada.sec === s.chave ? hora.parada.min : 0), 0);
-        const possivel = Math.round((dados.nominal[s.chave] * minutos) / 60);
-        const fator = possivel ? secado / possivel : 0;
-        const normal = fator >= PROD_TOLERANCIA;
-        const tph = Math.round(secado / ((minutos - parado) / 60));
-        const status = normal
-            ? `<span class="class-status class-status--ok">normal · até 10% abaixo</span>`
-            : `<span class="class-status class-status--fora">perdeu ${(possivel - secado).toLocaleString('pt-BR')} t</span>`;
-        return `<div class="prod-fim-item prod-fim-item--${s.chave}${normal ? '' : ' is-alerta'}">`
-            + `<span class="prod-fim-nome"><i class="legend-dot legend-dot--sec${s.chave.slice(1)}"></i>${s.nome} · ${turno.cultura[s.chave]}`
-            + `<em title="Produtividade com o secador rodando: secado ÷ horas sem parada">${tph} t/h</em></span>`
-            + `<span class="prod-fim-conta">secou <b>${secado.toLocaleString('pt-BR')} t</b> de <b>${possivel.toLocaleString('pt-BR')} t</b> possíveis no nominal (${dados.nominal[s.chave]} t/h)</span>`
-            + `<span class="prod-fim-pct"><b>${Math.round(fator * 100)}%</b> do nominal</span>`
-            + status
-            + '</div>';
-    }).join('');
-    return `<span class="prod-fim-titulo">${titulo}</span>${itens}`;
+    const secado = feitas.reduce((a, hora) => a + hora[s.chave], 0);
+    const possivel = Math.round((dados.nominal[s.chave] * minutos) / 60);
+    const fator = possivel ? secado / possivel : 0;
+    const normal = fator >= PROD_TOLERANCIA;
+    const status = normal
+        ? `<span class="class-status class-status--ok">normal · até 10% abaixo</span>`
+        : `<span class="class-status class-status--fora">perdeu ${(possivel - secado).toLocaleString('pt-BR')} t</span>`;
+    // "do possivel", nao "do nominal": conta o tempo parado, entao nao bate
+    // com o % do nominal da produtividade por cultura no mesmo cartao
+    const html = `<span class="prod-fim-titulo">${titulo}</span>`
+        + `<span class="prod-fim-conta">secou <b>${secado.toLocaleString('pt-BR')} t</b> de <b>${possivel.toLocaleString('pt-BR')} t</b> possíveis no nominal</span>`
+        + `<span class="prod-fim-pct"><b>${Math.round(fator * 100)}%</b> do possível</span>`
+        + status;
+    return { html, normal };
 }
 
 function montarGraficoProd(secao) {
@@ -4800,10 +4848,16 @@ function montarGraficoProd(secao) {
     const chave = secao.dataset.prodTurno || 't1';
     const turno = dados.turnos[chave];
     if (!turno) return;
-    const alvo = secao.querySelector('[data-prod-grafico]');
-    const fim = secao.querySelector('[data-prod-fim]');
-    if (alvo) alvo.innerHTML = graficoProd(dados, turno);
-    if (fim) fim.innerHTML = fimDoTurnoProd(dados, turno);
+    PROD_SECADORES.forEach((s) => {
+        const alvo = secao.querySelector(`[data-prod-grafico="${s.chave}"]`);
+        const fim = secao.querySelector(`[data-prod-fim="${s.chave}"]`);
+        if (alvo) alvo.innerHTML = graficoProd(dados, turno, s);
+        if (fim) {
+            const resumo = fimDoTurnoProd(dados, turno, s);
+            fim.innerHTML = resumo.html;
+            fim.classList.toggle('is-alerta', !resumo.normal);
+        }
+    });
     secao.querySelectorAll('[data-prod-turno-nome]').forEach((el) => {
         el.textContent = `${turno.nome} · ${turno.quando}`;
     });

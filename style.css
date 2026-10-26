@@ -8057,12 +8057,13 @@ body.theme-light .screen--secagem {
 }
 
 
-/* duas fileiras numa grade so: a esquerda tem o grafico por hora em cima
-   e o bloco de paradas embaixo (na altura do proprio conteudo); a coluna
-   dos secadores, a direita, atravessa as duas e ganha a sobra de altura */
+/* a esquerda o bloco dos secadores (grafico por hora e cartao de cada um,
+   um secador por fileira) com a altura toda; a direita, numa coluna
+   estreita, o bloco de paradas. Com paradas embaixo, em 1600x900 os
+   graficos ficavam achatados e a tela encolhia em 7 e 30 dias */
 .split-grid--prod {
-    grid-template-columns: 1.5fr 1fr;
-    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 19rem);
+    grid-template-rows: minmax(0, 1fr);
 }
 
 
@@ -8162,18 +8163,6 @@ body.theme-light .kpi-flag--atencao {
 
 
 
-.legend-dot--sec1 {
-    background: var(--sec1);
-}
-
-
-
-.legend-dot--sec2 {
-    background: var(--sec2);
-}
-
-
-
 .legend-dot--proj-key {
     width: 0.625rem;
     height: 0.625rem;
@@ -8232,9 +8221,10 @@ body.theme-light .kpi-flag--atencao {
 
 
 
+/* uma barra por hora: cada secador tem o seu grafico */
 .forecast-chart--turno .forecast-bar--hora {
-    width: 3rem;
-    max-width: 60%;
+    width: 2.4rem;
+    max-width: 55%;
 }
 
 
@@ -8247,21 +8237,6 @@ body.theme-light .kpi-flag--atencao {
 
 .forecast-seg--sec2 {
     background: var(--sec2);
-}
-
-
-
-/* secagem por hora: cada secador tem a sua propria barra, lado a lado
-   dentro da mesma hora — as duas dividem a largura da coluna */
-.forecast-chart--turno .hora-col {
-    gap: 3px;
-}
-
-
-
-.forecast-chart--turno .forecast-bar--hora {
-    width: 1.9rem;
-    max-width: 40%;
 }
 
 
@@ -8421,9 +8396,10 @@ body.theme-light .forecast-chart--turno .forecast-bar--hora.is-stack {
 
 /* ============================================
    PRODUTIVIDADE · SECAGEM POR HORA, UM TURNO POR VEZ
-   Turno escolhido no proprio grafico; duas linhas por secador (nominal
-   tracejada, meta de operacao em degraus), paradas em vermelho atras da
-   barra do secador e, embaixo, o fim do turno contra o nominal.
+   Turno escolhido no proprio bloco; um grafico por secador, dentro do
+   cartao dele, com duas linhas (nominal tracejada, meta de operacao em
+   degraus), paradas em vermelho atras da barra e, embaixo, o fim do
+   turno contra o nominal.
    ============================================ */
 .prod-grafico {
     display: flex;
@@ -8435,12 +8411,14 @@ body.theme-light .forecast-chart--turno .forecast-bar--hora.is-stack {
 
 .prod-grafico .section-head {
     align-items: center;
+    margin-bottom: 0.625rem;
 }
 
 
 
+/* a legenda vale para os dois graficos: fica embaixo do titulo */
 .prod-grafico-legenda {
-    margin: -0.125rem 0 0.625rem;
+    margin: 0;
 }
 
 
@@ -8480,11 +8458,19 @@ body.theme-light .forecast-chart--turno .forecast-bar--hora.is-stack {
 
 
 
-/* o grafico ocupa a altura que sobrar na secao, como antes */
+/* o grafico ocupa a altura que sobrar no cartao do secador */
 .prod-grafico-corpo > .forecast-chart {
     flex: 1 1 auto;
-    min-height: 10rem;
+    min-height: 6.5rem;
     grid-template-rows: minmax(0, 1fr) auto;
+}
+
+
+
+/* eixo com altura fixa (hora + nota de duas linhas): os dois graficos ficam
+   com a mesma altura de barra, tenha ou nao parada na nota */
+.prod-grafico-corpo .forecast-xaxis {
+    min-height: 2.8rem;
 }
 
 
@@ -8495,28 +8481,18 @@ body.theme-light .forecast-chart--turno .forecast-bar--hora.is-stack {
 
 
 
-/* parada: faixa vermelha atras da barra do secador que parou */
+/* parada: faixa vermelha atras da barra, na hora em que o secador parou */
 .prod-parada {
     position: absolute;
     top: 0;
     bottom: 0;
-    width: calc(min(1.9rem, 40%) + 8px);
+    left: 50%;
+    width: calc(min(2.4rem, 55%) + 8px);
+    transform: translateX(-50%);
     border: 1px solid rgba(231, 76, 60, 0.55);
     border-radius: 4px;
     background: repeating-linear-gradient(135deg, rgba(231, 76, 60, 0.3) 0 4px, rgba(231, 76, 60, 0.1) 4px 8px);
     pointer-events: none;
-}
-
-
-
-.prod-parada--s1 {
-    right: calc(50% - 2.5px);
-}
-
-
-
-.prod-parada--s2 {
-    left: calc(50% - 2.5px);
 }
 
 
@@ -8612,82 +8588,44 @@ body.theme-light .forecast-chart--turno .forecast-bar--hora.is-stack {
 
 
 
-/* fim do turno: secado contra o que o nominal permitiria */
+/* fim do turno de um secador, embaixo do grafico dele: secado contra o
+   que o nominal permitiria nas horas que ja passaram. A conta a esquerda,
+   o % e o selo a direita */
 .prod-fim {
     flex: 0 0 auto;
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr);
-    align-items: stretch;
-    gap: 0.625rem;
-    margin-top: 0.75rem;
-    padding-top: 0.625rem;
-    border-top: 1px solid var(--row-line);
-}
-
-
-
-.prod-fim-titulo {
-    align-self: center;
-    max-width: 6.5rem;
-    font-size: 0.58rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    line-height: 1.3;
-    text-transform: uppercase;
-    color: var(--muted);
-}
-
-
-
-.prod-fim-item {
-    display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    gap: 0.2rem 0.625rem;
-    padding: 0.4rem 0.625rem;
+    gap: 0.125rem 0.75rem;
+    margin-top: 0.375rem;
+    padding: 0.3rem 0.625rem;
     border: 1px solid var(--row-line);
     border-radius: 8px;
     background: var(--row-bg);
-    min-width: 0;
 }
 
 
 
-.prod-fim-item.is-alerta {
+.prod-fim.is-alerta {
     border-color: rgba(231, 76, 60, 0.5);
     background: rgba(231, 76, 60, 0.08);
 }
 
 
 
-.prod-fim-nome {
-    font-size: 0.66rem;
+.prod-fim-titulo {
+    font-size: 0.58rem;
     font-weight: 700;
-    color: var(--text);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
     white-space: nowrap;
 }
 
 
 
-.prod-fim-nome .legend-dot {
-    margin-right: 0.3rem;
-}
-
-
-
-.prod-fim-nome em {
-    margin-left: 0.4rem;
-    padding-left: 0.4rem;
-    border-left: 1px solid var(--row-line);
-    font-style: normal;
-    font-weight: 800;
-    font-variant-numeric: tabular-nums;
-}
-
-
-
 .prod-fim-conta {
-    grid-column: 1;
+    grid-row: 2;
     font-size: 0.6rem;
     color: var(--muted);
 }
@@ -8720,13 +8658,13 @@ body.theme-light .forecast-chart--turno .forecast-bar--hora.is-stack {
 
 
 
-.prod-fim-item.is-alerta .prod-fim-pct b {
+.prod-fim.is-alerta .prod-fim-pct b {
     color: var(--danger);
 }
 
 
 
-.prod-fim-item .class-status {
+.prod-fim .class-status {
     grid-column: 2;
     grid-row: 2;
     justify-self: end;
@@ -8734,41 +8672,128 @@ body.theme-light .forecast-chart--turno .forecast-bar--hora.is-stack {
 
 
 
-@media screen and (max-width: 768px) {
-    .prod-fim {
-        grid-template-columns: minmax(0, 1fr);
-    }
-
-    .prod-fim-titulo {
-        max-width: none;
-    }
-}
-
-
-
-/* ---- cartao por secador: secado grande contra a meta do turno ---- */
+/* ---- cartao por secador: o grafico por hora a esquerda e, a direita,
+   o secado grande contra a meta do periodo da tela ---- */
 .prod-secador-list {
     flex: 1 1 auto;
     min-height: 0;
     display: grid;
+    /* fileiras sempre da mesma altura: os dois graficos ficam com a mesma
+       escala tambem em pixels */
     grid-auto-rows: minmax(0, 1fr);
     gap: 0.625rem;
 }
 
 
 
+/* o cartao corta o que passar da fileira, mas entra na conta do ajuste a
+   tela (fitTargets): se nao couber, a tela encolhe ate caber */
 .prod-secador {
     --sec: var(--muted);
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    column-gap: 1rem;
+    min-height: 0;
+    overflow: hidden;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
+}
+
+
+
+.prod-secador-grafico {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+}
+
+
+
+.prod-secador-info {
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 0.2rem;
-    min-height: 0;
-    overflow: hidden;
-    padding: 0.625rem 1rem;
-    border: 1px solid var(--card-border);
-    border-radius: 12px;
-    background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
+    min-width: 0;
+    padding-left: 1rem;
+    border-left: 1px solid var(--row-line);
+}
+
+
+
+/* o que muda com o periodo da tela. Turno e hoje: a projecao e a
+   produtividade por cultura lado a lado; 7 e 30 dias tem tres numeros na
+   grade e a produtividade desce para a linha de baixo */
+.prod-secador-periodo {
+    grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+    gap: 0.2rem 1rem;
+}
+
+
+
+.prod-secador-periodo > .prod-secador-total,
+.prod-secador-periodo > .prod-secador-track,
+.prod-secador-periodo[data-periodo="7d"] > *,
+.prod-secador-periodo[data-periodo="30d"] > * {
+    grid-column: 1 / -1;
+}
+
+
+
+/* uma coluna por numero, seja 1 (projecao) ou 3 (media, melhor e pior dia) */
+.prod-secador-periodo .prod-secador-grade {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    margin-top: 0;
+    padding-top: 0.3125rem;
+}
+
+
+
+.prod-secador-periodo .prod-cult-lista {
+    margin-top: 0;
+    padding-top: 0.3125rem;
+}
+
+
+
+/* em 7 e 30 dias as culturas vem em fileira, para caber na altura do cartao */
+.prod-secador-periodo[data-periodo="7d"] .prod-cult-lista,
+.prod-secador-periodo[data-periodo="30d"] .prod-cult-lista {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 1rem;
+}
+
+
+
+/* o % nao reserva largura fixa: o cartao divide a linha com o grafico */
+.prod-secador-periodo .prod-cult em {
+    min-width: 0;
+}
+
+
+
+@media screen and (max-width: 768px) {
+    .prod-secador {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 0.625rem;
+    }
+
+    .prod-secador-info {
+        padding: 0.625rem 0 0;
+        border-left: 0;
+        border-top: 1px solid var(--row-line);
+    }
+
+    .prod-grafico-corpo > .forecast-chart {
+        min-height: 10rem;
+    }
 }
 
 
@@ -8787,9 +8812,10 @@ body.theme-light .forecast-chart--turno .forecast-bar--hora.is-stack {
 
 .prod-secador-head {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 0.75rem;
+    gap: 0.125rem 0.75rem;
     margin-bottom: 0.125rem;
 }
 
@@ -8942,7 +8968,8 @@ body.theme-light .prod-linha-item em.is-bom {
 
 
 /* periodo da tela (data-prod-periodo na section): so o bloco do periodo escolhido aparece.
-   Vale para a fileira de KPIs e para a lista de cartoes dos secadores; o grafico e sempre do turno. */
+   Vale para a fileira de KPIs, para os numeros do cartao de cada secador e para as paradas;
+   os graficos por hora sao sempre do turno. */
 #screen-4 .prod-periodo-bloco {
     display: none;
 }
@@ -9024,7 +9051,8 @@ body.theme-light .prod-linha-item em.is-bom {
 
 
 
-/* nome nunca quebra; o tipo/nominal e que cede espaco ao pill de estado */
+/* nome e estado na primeira linha; o tipo e o nominal descem para a
+   segunda, ja que o cartao divide a largura com o grafico */
 .prod-secador-head .secador-nome {
     white-space: nowrap;
     flex-shrink: 0;
@@ -9033,6 +9061,8 @@ body.theme-light .prod-linha-item em.is-bom {
 
 
 .prod-secador-head .secador-tipo {
+    order: 3;
+    flex-basis: 100%;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -9053,6 +9083,13 @@ body.theme-light .prod-linha-item em.is-bom {
 
 .prod-secador-estado.is-secando {
     background: linear-gradient(135deg, var(--ok) 0%, #1e7a45 100%);
+}
+
+
+
+#screen-4[data-prod-periodo="7d"] .prod-secador-estado,
+#screen-4[data-prod-periodo="30d"] .prod-secador-estado {
+    display: none;
 }
 
 
@@ -10303,6 +10340,82 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     display: none;
 }
 
+
+
+/* balao com tabela (data-motivo-tabela): mais largo, cabecalho no tom do
+   rotulo, numeros alinhados a direita e a linha em destaque em negrito */
+.motivo-tip.tem-tabela {
+    max-width: 34rem;
+}
+
+
+
+.motivo-tip-tabela {
+    margin-top: 0.5rem;
+    padding-top: 0.375rem;
+    border-top: 1px solid var(--panel-border);
+    border-collapse: collapse;
+    font-size: 0.66rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+}
+
+
+
+.motivo-tip-tabela:empty {
+    display: none;
+}
+
+
+
+.motivo-tip-tabela th {
+    padding: 0.375rem 0.5rem 0.25rem;
+    border-bottom: 1px solid var(--panel-border);
+    font-size: 0.52rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: right;
+    white-space: nowrap;
+    color: var(--faint);
+}
+
+
+
+.motivo-tip-tabela td {
+    padding: 0.25rem 0.5rem;
+    text-align: right;
+    white-space: nowrap;
+}
+
+
+
+.motivo-tip-tabela th:first-child,
+.motivo-tip-tabela td:first-child {
+    padding-left: 0;
+    text-align: left;
+}
+
+
+
+.motivo-tip-tabela th:last-child,
+.motivo-tip-tabela td:last-child {
+    padding-right: 0;
+}
+
+
+
+.motivo-tip-tabela tbody tr + tr td {
+    border-top: 1px solid var(--row-line);
+}
+
+
+
+.motivo-tip-tabela tr.is-destaque td {
+    font-weight: 700;
+    color: var(--text);
+}
+
 @media screen and (max-width: 900px) {
 
 
@@ -10698,6 +10811,21 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     font-weight: 700;
     color: var(--muted);
     white-space: nowrap;
+}
+
+
+
+/* o mouse em cima da cultura abre a cultura anterior do silo (data-motivo) */
+.sa-cultura[data-motivo] {
+    cursor: help;
+    border-radius: 4px;
+    outline: none;
+}
+
+
+
+.sa-cultura[data-motivo]:focus-visible {
+    box-shadow: 0 0 0 2px var(--accent);
 }
 
 
@@ -11161,9 +11289,21 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 
 
 
-/* temperatura numa linha e umidade na outra: o % nunca fica sozinho */
+/* temperatura numa linha e umidade na outra: o % nunca fica sozinho.
+   Nos silos o rotulo vai na primeira linha (ligado: ao ligar; desligado:
+   ultima medicao) e temperatura e UR juntas na segunda */
 .sa-aer-clima-ur {
     display: block;
+}
+
+
+
+/* o rotulo nunca quebra: "temperatura na ultima medicao:" passa uns px da
+   largura do cartao; o espaco entre letras um pouco mais justo e o padding
+   do cartao absorvem, e o desenho do silo nao perde uma linha de altura */
+.sa-aer-clima-rotulo {
+    white-space: nowrap;
+    letter-spacing: -0.01em;
 }
 
 
@@ -11542,6 +11682,76 @@ body.theme-light .sa-mov-saldo--sobe {
     display: grid;
     grid-template-rows: repeat(2, minmax(0, 1fr));
     gap: 0.875rem;
+}
+
+
+
+/* canto superior da tela: temperatura e umidade relativa de agora, da
+   estacao meteorologica da unidade (o ar que a aeracao joga no grao) */
+.arm-clima {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 1.125rem;
+    padding: 0.375rem 0.875rem;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    background: var(--section-bg);
+}
+
+
+
+.arm-clima-rot {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+
+
+.arm-clima-rot small {
+    font-size: 0.56rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.arm-clima-val {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.56rem;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+
+
+.arm-clima-val b {
+    font-size: 1.35rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.arm-clima-val b small {
+    margin-left: 0.1rem;
+    font-size: 0.5em;
+    font-weight: 600;
+    color: var(--muted);
+    vertical-align: top;
 }
 
 
@@ -18106,7 +18316,7 @@ body.theme-light .class-val--fora {
 
 
 /* ============================================
-   SECAGEM · PRODUTIVIDADE — TERCEIRA FILEIRA
+   SECAGEM · PRODUTIVIDADE — COLUNA DE PARADAS
    Paradas e disponibilidade fisica (manutencao). A cor identifica o
    ESTADO da hora de equipamento: operando (neutro), parada programada
    (amarelo) e nao programada (vermelho) — o que a tela quer destacar
@@ -18122,19 +18332,6 @@ body.theme-light .class-val--fora {
 
 body.theme-light #screen-4 {
     --manut-op: rgba(60, 70, 80, 0.22);
-}
-
-
-
-.prod-col--secadores {
-    grid-column: 2;
-    grid-row: 1 / -1;
-}
-
-
-
-.prod-col--paradas {
-    grid-column: 1;
 }
 
 
@@ -18396,13 +18593,6 @@ body.theme-light #screen-4 {
 
 @media screen and (max-width: 768px) {
 
-    .prod-col--secadores,
-    .prod-col--paradas {
-        grid-column: 1;
-        grid-row: auto;
-    }
-
-
     .manut-disp-linha {
         grid-template-columns: 5rem minmax(0, 1fr) 2.75rem;
     }
@@ -18415,16 +18605,60 @@ body.theme-light #screen-4 {
 
 
 
-/* O bloco de manutencao ocupa a fileira inteira: os KPIs em cima e a
-   barra de disponibilidade de cada secador logo abaixo. */
-#screen-4 .manut-bloco.prod-periodo-bloco {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto 1fr;
+/* O bloco de manutencao e' a coluna estreita a direita dos secadores:
+   titulo e legenda empilhados, os KPIs dois a dois (a disponibilidade
+   na largura toda) e, embaixo, a barra de disponibilidade de cada
+   secador com a referencia (paradas e tempo) sob a barra. */
+.prod-col--paradas > .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
 }
 
 
 
-/* Ajuste fino de densidade: a fileira precisa caber junto com o grafico
+#screen-4 .manut-bloco.prod-periodo-bloco {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto;
+}
+
+
+
+.prod-col--paradas .manut-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+
+
+.prod-col--paradas .manut-kpi:first-child {
+    grid-column: 1 / -1;
+}
+
+
+
+.prod-col--paradas .manut-disp-linha {
+    grid-template-columns: 5.5rem minmax(0, 1fr) 2.75rem;
+    row-gap: 0.125rem;
+}
+
+
+
+.prod-col--paradas .manut-disp-ref {
+    grid-column: 2 / -1;
+}
+
+
+
+/* a sobra de altura fica entre os KPIs e as barras (align-content mais
+   abaixo): a linha marca as barras como o pe da coluna */
+.prod-col--paradas .manut-secadores {
+    padding-top: 0.625rem;
+    border-top: 1px solid var(--row-line);
+}
+
+
+
+/* Ajuste fino de densidade: o bloco precisa caber ao lado dos graficos
    por hora em 1600x900 sem depender so do --fit-adjust. */
 #screen-4 .manut-bloco.prod-periodo-bloco {
     gap: 0.4375rem;

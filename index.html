@@ -2555,22 +2555,34 @@
 
                 <div class="split-grid split-grid--prod">
                     <!-- Secagem por hora, um turno por vez (o turno escolhido no proprio
-                         grafico, para isolar o que teve problema). Cada hora traz os dois
-                         secadores lado a lado. Duas linhas por secador, na cor dele:
+                         grafico, para isolar o que teve problema), um grafico por secador.
+                         Cada secador e' um bloco so (AVR-SPD-H): a esquerda o grafico por
+                         hora dele, a direita o cartao com o secado contra a meta. Duas
+                         linhas no grafico, na cor do secador:
                            tracejada = capacidade nominal (S1 80 t/h, S2 60 t/h)
                            cheia     = meta de operacao, hora a hora: muda com a umidade de
                                        entrada que vem das moegas e a temperatura de secagem,
                                        e desconta o aquecimento (ao menos 30 min ate 100 °C)
                                        depois de cada recarga
-                         Parada fica em vermelho atras da barra do secador, com o motivo
-                         embaixo da hora. Embaixo do grafico, o fim do turno: secado contra
-                         o que poderia ter secado no nominal; ate 10% abaixo e' normal,
-                         mais que isso alerta e mostra as toneladas perdidas.
-                         O script monta tudo a partir do JSON em data-prod-dados. -->
+                         Os dois graficos usam a mesma escala, para as barras se compararem.
+                         Parada fica em vermelho atras da barra, com o motivo embaixo da hora.
+                         Embaixo de cada grafico, o fim do turno: secado contra o que poderia
+                         ter secado no nominal; ate 10% abaixo e' normal, mais que isso
+                         alerta e mostra as toneladas perdidas. O t/h com o secador rodando
+                         fica so no cartao (produtividade por cultura).
+                         O botao de turno vale para os graficos e o fim do turno; o periodo
+                         da tela (turno/hoje/7 dias/30 dias) troca os numeros do cartao.
+                         O script monta os graficos a partir do JSON em data-prod-dados. -->
                     <div data-codigo="AVR-SPD-G" class="content-section prod-grafico" data-prod-turno="t1">
                         <div class="section-head section-head--top">
                             <div class="section-head-text">
                                 <h3>SECAGEM POR HORA · POR SECADOR <span class="fluxo-periodo-atual">· <span data-prod-turno-nome>1º turno 07:00–16:20</span></span></h3>
+                                <div class="chart-legend chart-legend--inline prod-grafico-legenda">
+                                    <span class="legend-item"><i class="prod-leg-linha prod-leg-linha--nominal"></i>Nominal</span>
+                                    <span class="legend-item"><i class="prod-leg-linha prod-leg-linha--op"></i>Meta de operação</span>
+                                    <span class="legend-item"><i class="prod-leg-parada"></i>Parada</span>
+                                    <span class="legend-item"><i class="legend-dot legend-dot--proj-key"></i>Projeção</span>
+                                </div>
                             </div>
                             <div class="fluxo-periodo fluxo-periodo--turnos" role="group" aria-label="Turno do gráfico">
                                 <span class="class-filtro-rotulo">Turno</span>
@@ -2579,16 +2591,147 @@
                                 <button type="button" class="fluxo-periodo-btn" data-prod-turno="t3" aria-pressed="false" title="3º turno · 22:00–07:00 · esta noite">22:00–07:00</button>
                             </div>
                         </div>
-                        <div class="chart-legend chart-legend--inline prod-grafico-legenda">
-                            <span class="legend-item"><i class="legend-dot legend-dot--sec1"></i>Secador 1</span>
-                            <span class="legend-item"><i class="legend-dot legend-dot--sec2"></i>Secador 2</span>
-                            <span class="legend-item"><i class="prod-leg-linha prod-leg-linha--nominal"></i>Nominal</span>
-                            <span class="legend-item"><i class="prod-leg-linha prod-leg-linha--op"></i>Meta de operação</span>
-                            <span class="legend-item"><i class="prod-leg-parada"></i>Parada</span>
-                            <span class="legend-item"><i class="legend-dot legend-dot--proj-key"></i>Projeção</span>
+                        <div class="prod-secador-list">
+                            <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec1">
+                                <div class="prod-secador-grafico">
+                                    <div class="prod-grafico-corpo" data-prod-grafico="s1"></div>
+                                    <div class="prod-fim" data-prod-fim="s1"></div>
+                                </div>
+                                <div class="prod-secador-info">
+                                    <div class="prod-secador-head">
+                                        <span class="secador-nome"><i class="secador-dot prod-secador-dot"></i>SECADOR 1 <em class="prod-secador-cultura">Milho</em></span>
+                                        <span class="secador-tipo">Fluxo contínuo · nominal 80 t/h</span>
+                                        <b class="secador-estado-pill prod-secador-estado is-secando">Secando</b>
+                                    </div>
+                                    <div class="prod-secador-periodo prod-periodo-bloco" data-periodo="turno">
+                                        <div class="prod-secador-total">
+                                            <span class="prod-secador-volume">597 <small>t</small></span>
+                                            <span class="prod-secador-meta">meta <b>700 t</b> · <b>85%</b></span>
+                                        </div>
+                                        <div class="prod-secador-track"><span class="prod-secador-fill" style="width: 85%"></span></div>
+                                        <div class="prod-secador-grade">
+                                            <span class="prod-linha-item"><b>PROJEÇÃO 17H</b>762 t <em class="is-bom">+62 t vs meta</em></span>
+                                        </div>
+                                        <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
+                                            <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--milho"></i>Milho</span><b>76 t/h</b><em>95% do nominal</em></span>
+                                        </div>
+                                    </div>
+                                    <div class="prod-secador-periodo prod-periodo-bloco" data-periodo="hoje">
+                                        <div class="prod-secador-total">
+                                            <span class="prod-secador-volume">975 <small>t</small></span>
+                                            <span class="prod-secador-meta">meta <b>1.400 t</b> · <b>70%</b></span>
+                                        </div>
+                                        <div class="prod-secador-track"><span class="prod-secador-fill" style="width: 70%"></span></div>
+                                        <div class="prod-secador-grade">
+                                            <span class="prod-linha-item"><b>PROJEÇÃO 24H</b>1.380 t <em class="is-atencao">−20 t vs meta</em></span>
+                                        </div>
+                                        <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
+                                            <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--milho"></i>Milho</span><b>77 t/h</b><em>96% do nominal</em></span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--soja"></i>Soja <small>noite</small></span><b>70 t/h</b><em>88% do nominal</em></span>
+                                        </div>
+                                    </div>
+                                    <div class="prod-secador-periodo prod-periodo-bloco" data-periodo="7d">
+                                        <div class="prod-secador-total">
+                                            <span class="prod-secador-volume">9.120 <small>t</small></span>
+                                            <span class="prod-secador-meta">meta <b>9.800 t</b> · <b>93%</b></span>
+                                        </div>
+                                        <div class="prod-secador-track"><span class="prod-secador-fill" style="width: 93%"></span></div>
+                                        <div class="prod-secador-grade">
+                                            <span class="prod-linha-item"><b>MÉDIA POR DIA</b>1.303 t <em>meta 1.400 t/dia</em></span>
+                                            <span class="prod-linha-item"><b>MELHOR DIA</b>1.390 t <em>terça</em></span>
+                                            <span class="prod-linha-item"><b>PIOR DIA</b>960 t <em>quarta · chuva</em></span>
+                                        </div>
+                                        <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
+                                            <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--milho"></i>Milho</span><b>77 t/h</b><em>96% do nominal</em></span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--soja"></i>Soja</span><b>71 t/h</b><em>89% do nominal</em></span>
+                                        </div>
+                                    </div>
+                                    <div class="prod-secador-periodo prod-periodo-bloco" data-periodo="30d">
+                                        <div class="prod-secador-total">
+                                            <span class="prod-secador-volume">38.100 <small>t</small></span>
+                                            <span class="prod-secador-meta">meta <b>42.000 t</b> · <b>91%</b></span>
+                                        </div>
+                                        <div class="prod-secador-track"><span class="prod-secador-fill" style="width: 91%"></span></div>
+                                        <div class="prod-secador-grade">
+                                            <span class="prod-linha-item"><b>MÉDIA POR DIA</b>1.270 t <em>meta 1.400 t/dia</em></span>
+                                            <span class="prod-linha-item"><b>MELHOR DIA</b>1.420 t <em>dia 3</em></span>
+                                            <span class="prod-linha-item"><b>PIOR DIA</b>410 t <em>dia 17 · chuva</em></span>
+                                        </div>
+                                        <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
+                                            <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--milho"></i>Milho</span><b>76 t/h</b><em>95% do nominal</em></span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--soja"></i>Soja</span><b>70 t/h</b><em>88% do nominal</em></span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--trigo"></i>Trigo</span><b>73 t/h</b><em>91% do nominal</em></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec2">
+                                <div class="prod-secador-grafico">
+                                    <div class="prod-grafico-corpo" data-prod-grafico="s2"></div>
+                                    <div class="prod-fim" data-prod-fim="s2"></div>
+                                </div>
+                                <div class="prod-secador-info">
+                                    <div class="prod-secador-head">
+                                        <span class="secador-nome"><i class="secador-dot prod-secador-dot"></i>SECADOR 2 <em class="prod-secador-cultura">Sorgo</em></span>
+                                        <span class="secador-tipo">Intermitente · nominal 60 t/h</span>
+                                        <b class="secador-estado-pill prod-secador-estado is-descarregando">Descarregando</b>
+                                    </div>
+                                    <div class="prod-secador-periodo prod-periodo-bloco" data-periodo="turno">
+                                        <div class="prod-secador-total">
+                                            <span class="prod-secador-volume">403 <small>t</small></span>
+                                            <span class="prod-secador-meta">meta <b>500 t</b> · <b>81%</b></span>
+                                        </div>
+                                        <div class="prod-secador-track"><span class="prod-secador-fill" style="width: 81%"></span></div>
+                                        <div class="prod-secador-grade">
+                                            <span class="prod-linha-item"><b>PROJEÇÃO 17H</b>518 t <em class="is-bom">+18 t vs meta</em></span>
+                                        </div>
+                                        <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
+                                            <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><b>55 t/h</b><em>92% do nominal</em></span>
+                                        </div>
+                                    </div>
+                                    <div class="prod-secador-periodo prod-periodo-bloco" data-periodo="hoje">
+                                        <div class="prod-secador-total">
+                                            <span class="prod-secador-volume">665 <small>t</small></span>
+                                            <span class="prod-secador-meta">meta <b>1.000 t</b> · <b>67%</b></span>
+                                        </div>
+                                        <div class="prod-secador-track"><span class="prod-secador-fill" style="width: 67%"></span></div>
+                                        <div class="prod-secador-grade">
+                                            <span class="prod-linha-item"><b>PROJEÇÃO 24H</b>970 t <em class="is-atencao">−30 t vs meta</em></span>
+                                        </div>
+                                        <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
+                                            <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><b>55 t/h</b><em>92% do nominal</em></span>
+                                        </div>
+                                    </div>
+                                    <div class="prod-secador-periodo prod-periodo-bloco" data-periodo="7d">
+                                        <div class="prod-secador-total">
+                                            <span class="prod-secador-volume">6.310 <small>t</small></span>
+                                            <span class="prod-secador-meta">meta <b>7.000 t</b> · <b>90%</b></span>
+                                        </div>
+                                        <div class="prod-secador-track"><span class="prod-secador-fill" style="width: 90%"></span></div>
+                                        <div class="prod-secador-grade">
+                                            <span class="prod-linha-item"><b>MÉDIA POR DIA</b>901 t <em>meta 1.000 t/dia</em></span>
+                                            <span class="prod-linha-item"><b>MELHOR DIA</b>990 t <em>quarta</em></span>
+                                            <span class="prod-linha-item"><b>PIOR DIA</b>620 t <em>sábado · manutenção</em></span>
+                                        </div>
+                                        <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
+                                            <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><b>54 t/h</b><em>90% do nominal</em></span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--milho"></i>Milho</span><b>58 t/h</b><em>97% do nominal</em></span>
+                                        </div>
+                                    </div>
+                                    <div class="prod-secador-periodo prod-periodo-bloco" data-periodo="30d">
+                                        <div class="prod-secador-total">
+                                            <span class="prod-secador-volume">25.800 <small>t</small></span>
+                                            <span class="prod-secador-meta">meta <b>30.000 t</b> · <b>86%</b></span>
+                                        </div>
+                                        <div class="prod-secador-track"><span class="prod-secador-fill" style="width: 86%"></span></div>
+                                        <div class="prod-secador-grade">
+                                            <span class="prod-linha-item"><b>MÉDIA POR DIA</b>860 t <em>meta 1.000 t/dia</em></span>
+                                            <span class="prod-linha-item"><b>MELHOR DIA</b>1.010 t <em>dia 5 · milho</em></span>
+                                            <span class="prod-linha-item"><b>PIOR DIA</b>0 t <em>dia 9 · troca de cultura</em></span>
+                                        </div>
+                                        <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
+                                            <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><b>53 t/h</b><em>88% do nominal</em></span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--milho"></i>Milho</span><b>57 t/h</b><em>95% do nominal</em></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="prod-grafico-corpo" data-prod-grafico></div>
-                        <div class="prod-fim" data-prod-fim></div>
                         <script type="application/json" data-prod-dados>
 {
   "nominal": { "s1": 80, "s2": 60 },
@@ -2643,178 +2786,9 @@
                         </script>
                     </div>
 
-                    <div class="content-section prod-col--secadores">
-                        <div class="prod-secador-list prod-periodo-bloco" data-periodo="turno">
-                            <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec1">
-                                <div class="prod-secador-head">
-                                    <span class="secador-nome"><i class="secador-dot prod-secador-dot"></i>SECADOR 1 <em class="prod-secador-cultura">Milho</em></span>
-                                    <span class="secador-tipo">Fluxo contínuo · nominal 80 t/h</span>
-                                    <b class="secador-estado-pill prod-secador-estado is-secando">Secando</b>
-                                </div>
-                                <div class="prod-secador-total">
-                                    <span class="prod-secador-volume">597 <small>t</small></span>
-                                    <span class="prod-secador-meta">meta <b>700 t</b> · <b>85%</b></span>
-                                </div>
-                                <div class="prod-secador-track"><span class="prod-secador-fill" style="width: 85%"></span></div>
-                                <div class="prod-secador-grade">
-                                    <span class="prod-linha-item"><b>PROJEÇÃO 17H</b>762 t <em class="is-bom">+62 t vs meta</em></span>
-                                </div>
-                                <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
-                                    <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--milho"></i>Milho</span><b>76 t/h</b><em>95% do nominal</em></span>
-                                </div>
-                            </div>
-
-                            <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec2">
-                                <div class="prod-secador-head">
-                                    <span class="secador-nome"><i class="secador-dot prod-secador-dot"></i>SECADOR 2 <em class="prod-secador-cultura">Sorgo</em></span>
-                                    <span class="secador-tipo">Intermitente · nominal 60 t/h</span>
-                                    <b class="secador-estado-pill prod-secador-estado is-descarregando">Descarregando</b>
-                                </div>
-                                <div class="prod-secador-total">
-                                    <span class="prod-secador-volume">403 <small>t</small></span>
-                                    <span class="prod-secador-meta">meta <b>500 t</b> · <b>81%</b></span>
-                                </div>
-                                <div class="prod-secador-track"><span class="prod-secador-fill" style="width: 81%"></span></div>
-                                <div class="prod-secador-grade">
-                                    <span class="prod-linha-item"><b>PROJEÇÃO 17H</b>518 t <em class="is-bom">+18 t vs meta</em></span>
-                                </div>
-                                <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
-                                    <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><b>55 t/h</b><em>92% do nominal</em></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="prod-secador-list prod-periodo-bloco" data-periodo="hoje">
-                            <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec1">
-                                <div class="prod-secador-head">
-                                    <span class="secador-nome"><i class="secador-dot prod-secador-dot"></i>SECADOR 1 <em class="prod-secador-cultura">Milho</em></span>
-                                    <span class="secador-tipo">Fluxo contínuo · nominal 80 t/h</span>
-                                    <b class="secador-estado-pill prod-secador-estado is-secando">Secando</b>
-                                </div>
-                                <div class="prod-secador-total">
-                                    <span class="prod-secador-volume">975 <small>t</small></span>
-                                    <span class="prod-secador-meta">meta <b>1.400 t</b> · <b>70%</b></span>
-                                </div>
-                                <div class="prod-secador-track"><span class="prod-secador-fill" style="width: 70%"></span></div>
-                                <div class="prod-secador-grade">
-                                    <span class="prod-linha-item"><b>PROJEÇÃO 24H</b>1.380 t <em class="is-atencao">−20 t vs meta</em></span>
-                                </div>
-                                <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
-                                    <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--milho"></i>Milho</span><b>77 t/h</b><em>96% do nominal</em></span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--soja"></i>Soja <small>noite</small></span><b>70 t/h</b><em>88% do nominal</em></span>
-                                </div>
-                            </div>
-
-                            <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec2">
-                                <div class="prod-secador-head">
-                                    <span class="secador-nome"><i class="secador-dot prod-secador-dot"></i>SECADOR 2 <em class="prod-secador-cultura">Sorgo</em></span>
-                                    <span class="secador-tipo">Intermitente · nominal 60 t/h</span>
-                                    <b class="secador-estado-pill prod-secador-estado is-descarregando">Descarregando</b>
-                                </div>
-                                <div class="prod-secador-total">
-                                    <span class="prod-secador-volume">665 <small>t</small></span>
-                                    <span class="prod-secador-meta">meta <b>1.000 t</b> · <b>67%</b></span>
-                                </div>
-                                <div class="prod-secador-track"><span class="prod-secador-fill" style="width: 67%"></span></div>
-                                <div class="prod-secador-grade">
-                                    <span class="prod-linha-item"><b>PROJEÇÃO 24H</b>970 t <em class="is-atencao">−30 t vs meta</em></span>
-                                </div>
-                                <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
-                                    <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><b>55 t/h</b><em>92% do nominal</em></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="prod-secador-list prod-periodo-bloco" data-periodo="7d">
-                            <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec1">
-                                <div class="prod-secador-head">
-                                    <span class="secador-nome"><i class="secador-dot prod-secador-dot"></i>SECADOR 1 <em class="prod-secador-cultura">Milho</em></span>
-                                    <span class="secador-tipo">Fluxo contínuo · nominal 80 t/h</span>
-                                    
-                                </div>
-                                <div class="prod-secador-total">
-                                    <span class="prod-secador-volume">9.120 <small>t</small></span>
-                                    <span class="prod-secador-meta">meta <b>9.800 t</b> · <b>93%</b></span>
-                                </div>
-                                <div class="prod-secador-track"><span class="prod-secador-fill" style="width: 93%"></span></div>
-                                <div class="prod-secador-grade">
-                                    <span class="prod-linha-item"><b>MÉDIA POR DIA</b>1.303 t <em>meta 1.400 t/dia</em></span>
-                                    <span class="prod-linha-item"><b>MELHOR DIA</b>1.390 t <em>terça</em></span>
-                                    <span class="prod-linha-item"><b>PIOR DIA</b>960 t <em>quarta · chuva</em></span>
-                                </div>
-                                <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
-                                    <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--milho"></i>Milho</span><b>77 t/h</b><em>96% do nominal</em></span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--soja"></i>Soja</span><b>71 t/h</b><em>89% do nominal</em></span>
-                                </div>
-                            </div>
-
-                            <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec2">
-                                <div class="prod-secador-head">
-                                    <span class="secador-nome"><i class="secador-dot prod-secador-dot"></i>SECADOR 2 <em class="prod-secador-cultura">Sorgo</em></span>
-                                    <span class="secador-tipo">Intermitente · nominal 60 t/h</span>
-                                    
-                                </div>
-                                <div class="prod-secador-total">
-                                    <span class="prod-secador-volume">6.310 <small>t</small></span>
-                                    <span class="prod-secador-meta">meta <b>7.000 t</b> · <b>90%</b></span>
-                                </div>
-                                <div class="prod-secador-track"><span class="prod-secador-fill" style="width: 90%"></span></div>
-                                <div class="prod-secador-grade">
-                                    <span class="prod-linha-item"><b>MÉDIA POR DIA</b>901 t <em>meta 1.000 t/dia</em></span>
-                                    <span class="prod-linha-item"><b>MELHOR DIA</b>990 t <em>quarta</em></span>
-                                    <span class="prod-linha-item"><b>PIOR DIA</b>620 t <em>sábado · manutenção</em></span>
-                                </div>
-                                <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
-                                    <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><b>54 t/h</b><em>90% do nominal</em></span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--milho"></i>Milho</span><b>58 t/h</b><em>97% do nominal</em></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="prod-secador-list prod-periodo-bloco" data-periodo="30d">
-                            <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec1">
-                                <div class="prod-secador-head">
-                                    <span class="secador-nome"><i class="secador-dot prod-secador-dot"></i>SECADOR 1 <em class="prod-secador-cultura">Milho</em></span>
-                                    <span class="secador-tipo">Fluxo contínuo · nominal 80 t/h</span>
-                                    
-                                </div>
-                                <div class="prod-secador-total">
-                                    <span class="prod-secador-volume">38.100 <small>t</small></span>
-                                    <span class="prod-secador-meta">meta <b>42.000 t</b> · <b>91%</b></span>
-                                </div>
-                                <div class="prod-secador-track"><span class="prod-secador-fill" style="width: 91%"></span></div>
-                                <div class="prod-secador-grade">
-                                    <span class="prod-linha-item"><b>MÉDIA POR DIA</b>1.270 t <em>meta 1.400 t/dia</em></span>
-                                    <span class="prod-linha-item"><b>MELHOR DIA</b>1.420 t <em>dia 3</em></span>
-                                    <span class="prod-linha-item"><b>PIOR DIA</b>410 t <em>dia 17 · chuva</em></span>
-                                </div>
-                                <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
-                                    <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--milho"></i>Milho</span><b>76 t/h</b><em>95% do nominal</em></span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--soja"></i>Soja</span><b>70 t/h</b><em>88% do nominal</em></span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--trigo"></i>Trigo</span><b>73 t/h</b><em>91% do nominal</em></span>
-                                </div>
-                            </div>
-
-                            <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec2">
-                                <div class="prod-secador-head">
-                                    <span class="secador-nome"><i class="secador-dot prod-secador-dot"></i>SECADOR 2 <em class="prod-secador-cultura">Sorgo</em></span>
-                                    <span class="secador-tipo">Intermitente · nominal 60 t/h</span>
-                                    
-                                </div>
-                                <div class="prod-secador-total">
-                                    <span class="prod-secador-volume">25.800 <small>t</small></span>
-                                    <span class="prod-secador-meta">meta <b>30.000 t</b> · <b>86%</b></span>
-                                </div>
-                                <div class="prod-secador-track"><span class="prod-secador-fill" style="width: 86%"></span></div>
-                                <div class="prod-secador-grade">
-                                    <span class="prod-linha-item"><b>MÉDIA POR DIA</b>860 t <em>meta 1.000 t/dia</em></span>
-                                    <span class="prod-linha-item"><b>MELHOR DIA</b>1.010 t <em>dia 5 · milho</em></span>
-                                    <span class="prod-linha-item"><b>PIOR DIA</b>0 t <em>dia 9 · troca de cultura</em></span>
-                                </div>
-                                <div class="prod-cult-lista" title="Produtividade com o secador rodando (secado ÷ horas sem parada), separada pela cultura que estava no secador">
-                                    <span class="prod-cult-titulo">Produtividade por cultura</span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><b>53 t/h</b><em>88% do nominal</em></span><span class="prod-cult"><span class="prod-cult-nome"><i class="legend-dot legend-dot--milho"></i>Milho</span><b>57 t/h</b><em>95% do nominal</em></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Terceira fileira, na coluna da esquerda: a visao de manutencao.
+                    <!-- Coluna estreita a direita dos secadores: a visao de manutencao.
                          Disponibilidade fisica (tempo disponivel / tempo programado)
-                         e a leitura de cada secador. Fica na mesma grade do grafico
-                         para a coluna dos secadores, a direita, ocupar a altura das
-                         duas fileiras. O bloco respeita o periodo da tela. -->
+                         e a leitura de cada secador. O bloco respeita o periodo da tela. -->
                     <div data-codigo="AVR-SPD-I" class="content-section prod-col--paradas">
                         <div class="section-head section-head--top">
                             <div class="section-head-text">
@@ -2947,6 +2921,13 @@
                  do silo (data-aer-total-min) e o consumo em kWh da cultura
                  (horas x data-aer-kw); com o ventilador ligado os tres andam. As
                  horas na cultura e o total vem do software de termometria.
+                 HISTORICO DE CULTURAS: o mouse em cima da cultura do cartao
+                 abre o historico dos ultimos 30 dias numa tabela
+                 (data-motivo-tabela na .sa-cultura), da mais nova para a mais
+                 antiga: a atual, o vazio da limpeza e a anterior, com entrada,
+                 saida, dias, volume maximo, umidade media e horas de aeracao.
+                 Na atual, volume, umidade e aeracao sao os do proprio cartao.
+                 A que entrou antes da janela aparece com a data real.
                  CLIMA: temperatura externa e umidade relativa da estacao
                  meteorologica da unidade, gravadas no momento em que cada
                  aeracao liga; o cartao mostra a da aeracao em curso ou da ultima.
@@ -2990,7 +2971,7 @@
                             data-temps-dia="25.8,25.8,25.7,25.7,25.5,25.4,25.3,25.4,25.3,25.3,25.2,25.1,24.9,24.9,24.9,24.9,24.8,24.8,24.6,24.6,24.5,24.5,24.4,24.4,24.3,24.2,24.1,24.1,24.0,24.1,24.0,23.9,23.8,23.7,23.6,23.7,23.6,23.6,23.5,23.4,23.3,23.3,23.2,23.2,23.2,23.1,23.0,23.0,22.9,22.9,22.8,22.8,22.7,22.7,22.6,22.6,22.5,22.5,22.5,22.5,22.4">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 1</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho<span class="sa-umi">umid. 13,2%</span></span>
+                                <span class="sa-cultura" tabindex="0" data-motivo data-motivo-titulo="Silo 1 · histórico de culturas" data-motivo-resumo="Sem troca de cultura nos últimos 30 dias: milho desde 13/09" data-motivo-tabela="Cultura::Entrada::Saída::Dias::Volume máx.::Umid. média::Aeração|*Milho (atual)::13/09::no silo::42::3.120 m³::13,2%::214 h|Vazio (limpeza)::09/09::13/09::4::—::—::—|Soja::18/03::09/09::175::3.850 m³::12,1%::610 h" data-motivo-nota="Janela de 30 dias: 25/09 a hoje. Culturas que entraram antes aparecem com a data real de entrada."><i class="legend-dot legend-dot--milho"></i>Milho<span class="sa-umi">umid. 13,2%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 78%"></div></div>
@@ -3013,7 +2994,7 @@
                                 <span class="sa-aer-badge" data-aer-badge>--</span>
                                 <span class="sa-aer-info" data-aer-info>--</span>
                             </div>
-                            <div class="sa-aer-clima" title="Estação meteorológica da unidade, no momento em que a aeração ligou">ao ligar: <b>28,9 °C</b><span class="sa-aer-clima-ur">umidade relativa <b>45%</b></span></div>
+                            <div class="sa-aer-clima" title="Estação meteorológica da unidade, no momento em que a aeração ligou (UR = umidade relativa)"><span class="sa-aer-clima-rotulo">temperatura ao ligar:</span> <span class="sa-aer-clima-ur"><b>28,9 °C</b> · UR <b>45%</b></span></div>
                             <div class="sa-aer-horas">
                                 <div class="sa-aer-dado" title="Horas de aeração desde que o milho entrou (há 42 dias); zera na troca de cultura">
                                     <span>cultura</span><b data-aer-cultura>--</b>
@@ -3032,7 +3013,7 @@
                             data-temps-dia="24.6,24.6,24.5,24.4,24.2,24.2,24.2,24.2,24.1,24.0,23.9,23.8,23.7,23.8,23.7,23.7,23.5,23.4,23.3,23.3,23.2,23.3,23.2,23.1,22.9,22.9,22.8,22.8,22.8,22.8,22.6,22.6,22.4,22.4,22.4,22.4,22.3,22.2,22.1,22.1,22.0,22.0,21.9,21.9,21.8,21.7,21.6,21.6,21.6,21.6,21.5,21.4,21.3,21.3,21.2,21.2,21.2,21.2,21.1,21.0,21.0">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 2</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho<span class="sa-umi">umid. 13,0%</span></span>
+                                <span class="sa-cultura" tabindex="0" data-motivo data-motivo-titulo="Silo 2 · histórico de culturas" data-motivo-resumo="Sem troca de cultura nos últimos 30 dias: milho desde 08/09" data-motivo-tabela="Cultura::Entrada::Saída::Dias::Volume máx.::Umid. média::Aeração|*Milho (atual)::08/09::no silo::47::3.680 m³::13,0%::296 h|Vazio (limpeza)::05/09::08/09::3::—::—::—|Soja::25/03::05/09::164::3.920 m³::12,3%::575 h" data-motivo-nota="Janela de 30 dias: 25/09 a hoje. Culturas que entraram antes aparecem com a data real de entrada."><i class="legend-dot legend-dot--milho"></i>Milho<span class="sa-umi">umid. 13,0%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 92%"></div></div>
@@ -3055,7 +3036,7 @@
                                 <span class="sa-aer-badge" data-aer-badge>--</span>
                                 <span class="sa-aer-info" data-aer-info>--</span>
                             </div>
-                            <div class="sa-aer-clima" title="Estação meteorológica da unidade, no momento em que a aeração ligou">na última: <b>17,8 °C</b><span class="sa-aer-clima-ur">umidade relativa <b>72%</b></span></div>
+                            <div class="sa-aer-clima" title="Estação meteorológica da unidade, na última medição: a hora em que a aeração desligou (UR = umidade relativa)"><span class="sa-aer-clima-rotulo">temperatura na última medição:</span> <span class="sa-aer-clima-ur"><b>15,9 °C</b> · UR <b>81%</b></span></div>
                             <div class="sa-aer-horas">
                                 <div class="sa-aer-dado" title="Horas de aeração desde que o milho entrou (há 47 dias); zera na troca de cultura">
                                     <span>cultura</span><b data-aer-cultura>--</b>
@@ -3074,7 +3055,7 @@
                             data-temps-dia="23.9,23.9,23.8,23.7,23.7,23.7,23.6,23.6,23.5,23.5,23.4,23.4,23.3,23.3,23.3,23.2,23.1,23.1,23.1">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 3</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo<span class="sa-umi">umid. 13,4%</span></span>
+                                <span class="sa-cultura" tabindex="0" data-motivo data-motivo-titulo="Silo 3 · histórico de culturas" data-motivo-resumo="1 troca de cultura nos últimos 30 dias: milho saiu, sorgo entrou" data-motivo-tabela="Cultura::Entrada::Saída::Dias::Volume máx.::Umid. média::Aeração|*Sorgo (atual)::16/10::no silo::9::1.800 m³::13,4%::62 h|Vazio (limpeza)::12/10::16/10::4::—::—::—|Milho::02/07::12/10::102::3.400 m³::13,1%::420 h" data-motivo-nota="Janela de 30 dias: 25/09 a hoje. Culturas que entraram antes aparecem com a data real de entrada."><i class="legend-dot legend-dot--sorgo"></i>Sorgo<span class="sa-umi">umid. 13,4%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 45%"></div></div>
@@ -3097,7 +3078,7 @@
                                 <span class="sa-aer-badge" data-aer-badge>--</span>
                                 <span class="sa-aer-info" data-aer-info>--</span>
                             </div>
-                            <div class="sa-aer-clima" title="Estação meteorológica da unidade, no momento em que a aeração ligou">ao ligar: <b>29,9 °C</b><span class="sa-aer-clima-ur">umidade relativa <b>41%</b></span></div>
+                            <div class="sa-aer-clima" title="Estação meteorológica da unidade, no momento em que a aeração ligou (UR = umidade relativa)"><span class="sa-aer-clima-rotulo">temperatura ao ligar:</span> <span class="sa-aer-clima-ur"><b>29,9 °C</b> · UR <b>41%</b></span></div>
                             <div class="sa-aer-horas">
                                 <div class="sa-aer-dado" title="Horas de aeração desde que o sorgo entrou (há 9 dias); zera na troca de cultura">
                                     <span>cultura</span><b data-aer-cultura>--</b>
@@ -3116,7 +3097,7 @@
                             data-temps-dia="23.9,23.8,23.7,23.8,23.8,23.8,23.7,23.7,23.6,23.6,23.5,23.6,23.5,23.6,23.4,23.4,23.3,23.4,23.3,23.4,23.3,23.3,23.1,23.1,23.1,23.2,23.1,23.1,23.0,23.0,22.9,22.9,22.9,22.9,22.9,22.8,22.7,22.7,22.7,22.7,22.7,22.7,22.6,22.6,22.5,22.5,22.5,22.5,22.5,22.5,22.4,22.4,22.3,22.4,22.3,22.3,22.3,22.2,22.2,22.2,22.2">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 4</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--trigo"></i>Trigo<span class="sa-umi">umid. 12,6%</span></span>
+                                <span class="sa-cultura" tabindex="0" data-motivo data-motivo-titulo="Silo 4 · histórico de culturas" data-motivo-resumo="Sem troca de cultura nos últimos 30 dias: trigo desde 25/08" data-motivo-tabela="Cultura::Entrada::Saída::Dias::Volume máx.::Umid. média::Aeração|*Trigo (atual)::25/08::no silo::61::2.810 m³::12,6%::388 h|Vazio (limpeza)::20/08::25/08::5::—::—::—|Soja::10/03::20/08::163::3.700 m³::12,0%::540 h" data-motivo-nota="Janela de 30 dias: 25/09 a hoje. Culturas que entraram antes aparecem com a data real de entrada."><i class="legend-dot legend-dot--trigo"></i>Trigo<span class="sa-umi">umid. 12,6%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 68%"></div></div>
@@ -3139,7 +3120,7 @@
                                 <span class="sa-aer-badge" data-aer-badge>--</span>
                                 <span class="sa-aer-info" data-aer-info>--</span>
                             </div>
-                            <div class="sa-aer-clima" title="Estação meteorológica da unidade, no momento em que a aeração ligou">na última: <b>21,4 °C</b><span class="sa-aer-clima-ur">umidade relativa <b>71%</b></span></div>
+                            <div class="sa-aer-clima" title="Estação meteorológica da unidade, na última medição: a hora em que a aeração desligou (UR = umidade relativa)"><span class="sa-aer-clima-rotulo">temperatura na última medição:</span> <span class="sa-aer-clima-ur"><b>25,8 °C</b> · UR <b>55%</b></span></div>
                             <div class="sa-aer-horas">
                                 <div class="sa-aer-dado" title="Horas de aeração desde que o trigo entrou (há 61 dias); zera na troca de cultura">
                                     <span>cultura</span><b data-aer-cultura>--</b>
@@ -3158,7 +3139,7 @@
                             data-temps-dia="22.6,22.6,22.6,22.6,22.6,22.6,22.6,22.6,22.6,22.6,22.6,22.6,22.6,22.5,22.5,22.5,22.5,22.5,22.5,22.5,22.5,22.5,22.5,22.5,22.5,22.5,22.5,22.5,22.5,22.5,22.5,22.5,22.5,22.5,22.5,22.5,22.5,22.4,22.4,22.4,22.4,22.4,22.4,22.4,22.4,22.4,22.4,22.4,22.4,22.4,22.4,22.4,22.4,22.4,22.4,22.4,22.4,22.6,23.1,23.7,24.3">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 5</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--milho"></i>Milho<span class="sa-umi">umid. 13,3%</span></span>
+                                <span class="sa-cultura" tabindex="0" data-motivo data-motivo-titulo="Silo 5 · histórico de culturas" data-motivo-resumo="Sem troca de cultura nos últimos 30 dias: milho desde 16/09" data-motivo-tabela="Cultura::Entrada::Saída::Dias::Volume máx.::Umid. média::Aeração|*Milho (atual)::16/09::no silo::39::3.360 m³::13,3%::171 h|Vazio (limpeza)::11/09::16/09::5::—::—::—|Trigo::15/10/2025::11/09::331::3.950 m³::12,8%::1.020 h" data-motivo-nota="Janela de 30 dias: 25/09 a hoje. Culturas que entraram antes aparecem com a data real de entrada."><i class="legend-dot legend-dot--milho"></i>Milho<span class="sa-umi">umid. 13,3%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 84%"></div></div>
@@ -3181,7 +3162,7 @@
                                 <span class="sa-aer-badge" data-aer-badge>--</span>
                                 <span class="sa-aer-info" data-aer-info>--</span>
                             </div>
-                            <div class="sa-aer-clima" title="Estação meteorológica da unidade, no momento em que a aeração ligou">ao ligar: <b>27,8 °C</b><span class="sa-aer-clima-ur">umidade relativa <b>48%</b></span></div>
+                            <div class="sa-aer-clima" title="Estação meteorológica da unidade, no momento em que a aeração ligou (UR = umidade relativa)"><span class="sa-aer-clima-rotulo">temperatura ao ligar:</span> <span class="sa-aer-clima-ur"><b>27,8 °C</b> · UR <b>48%</b></span></div>
                             <div class="sa-aer-horas">
                                 <div class="sa-aer-dado" title="Horas de aeração desde que o milho entrou (há 39 dias); zera na troca de cultura">
                                     <span>cultura</span><b data-aer-cultura>--</b>
@@ -3200,7 +3181,7 @@
                             data-temps-dia="21.0,21.0,20.9,20.8,20.7,20.7,20.6,20.6,20.6,20.5,20.4,20.4,20.3,20.3,20.3,20.3,20.2">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 6</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--sorgo"></i>Sorgo<span class="sa-umi sa-umi--alto" title="Acima do limite de 14% para armazenagem">umid. 14,3%</span></span>
+                                <span class="sa-cultura" tabindex="0" data-motivo data-motivo-titulo="Silo 6 · histórico de culturas" data-motivo-resumo="1 troca de cultura nos últimos 30 dias: milho saiu, sorgo entrou" data-motivo-tabela="Cultura::Entrada::Saída::Dias::Volume máx.::Umid. média::Aeração|*Sorgo (atual)::17/10::no silo::8::2.280 m³::14,3%::48 h|Vazio (limpeza)::14/10::17/10::3::—::—::—|Milho::20/06::14/10::116::3.600 m³::13,2%::455 h" data-motivo-nota="Janela de 30 dias: 25/09 a hoje. Culturas que entraram antes aparecem com a data real de entrada."><i class="legend-dot legend-dot--sorgo"></i>Sorgo<span class="sa-umi sa-umi--alto" title="Acima do limite de 14% para armazenagem">umid. 14,3%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 57%"></div></div>
@@ -3223,7 +3204,7 @@
                                 <span class="sa-aer-badge" data-aer-badge>--</span>
                                 <span class="sa-aer-info" data-aer-info>--</span>
                             </div>
-                            <div class="sa-aer-clima" title="Estação meteorológica da unidade, no momento em que a aeração ligou">na última: <b>24,5 °C</b><span class="sa-aer-clima-ur">umidade relativa <b>58%</b></span></div>
+                            <div class="sa-aer-clima" title="Estação meteorológica da unidade, na última medição: a hora em que a aeração desligou (UR = umidade relativa)"><span class="sa-aer-clima-rotulo">temperatura na última medição:</span> <span class="sa-aer-clima-ur"><b>19,2 °C</b> · UR <b>70%</b></span></div>
                             <div class="sa-aer-horas">
                                 <div class="sa-aer-dado" title="Horas de aeração desde que o sorgo entrou (há 8 dias); zera na troca de cultura">
                                     <span>cultura</span><b data-aer-cultura>--</b>
@@ -3242,7 +3223,7 @@
                             data-temps-dia="25.6,25.6,25.5,25.5,25.4,25.3,25.2,25.3,25.2,25.2,25.1,25.1,24.9,24.9,24.9,24.9,24.9,24.8,24.7,24.7,24.6,24.6,24.5,24.6,24.5,24.4,24.3,24.3,24.2,24.3,24.2,24.2,24.1,24.0,23.9,24.0,23.9,23.9,23.8,23.8,23.7,23.7,23.6,23.7,23.6,23.6,23.5,23.4,23.4,23.4,23.3,23.3,23.3,23.2,23.1,23.1,23.1,23.1,23.1,23.1,23.0">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 7</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--trigo"></i>Trigo<span class="sa-umi">umid. 12,4%</span></span>
+                                <span class="sa-cultura" tabindex="0" data-motivo data-motivo-titulo="Silo 7 · histórico de culturas" data-motivo-resumo="Sem troca de cultura nos últimos 30 dias: trigo desde 30/08" data-motivo-tabela="Cultura::Entrada::Saída::Dias::Volume máx.::Umid. média::Aeração|*Trigo (atual)::30/08::no silo::56::2.890 m³::12,4%::342 h|Vazio (limpeza)::26/08::30/08::4::—::—::—|Sorgo::05/05::26/08::113::3.300 m³::13,5%::470 h" data-motivo-nota="Janela de 30 dias: 25/09 a hoje. Culturas que entraram antes aparecem com a data real de entrada."><i class="legend-dot legend-dot--trigo"></i>Trigo<span class="sa-umi">umid. 12,4%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 71%"></div></div>
@@ -3265,7 +3246,7 @@
                                 <span class="sa-aer-badge" data-aer-badge>--</span>
                                 <span class="sa-aer-info" data-aer-info>--</span>
                             </div>
-                            <div class="sa-aer-clima" title="Estação meteorológica da unidade, no momento em que a aeração ligou">ao ligar: <b>29,6 °C</b><span class="sa-aer-clima-ur">umidade relativa <b>42%</b></span></div>
+                            <div class="sa-aer-clima" title="Estação meteorológica da unidade, no momento em que a aeração ligou (UR = umidade relativa)"><span class="sa-aer-clima-rotulo">temperatura ao ligar:</span> <span class="sa-aer-clima-ur"><b>29,6 °C</b> · UR <b>42%</b></span></div>
                             <div class="sa-aer-horas">
                                 <div class="sa-aer-dado" title="Horas de aeração desde que o trigo entrou (há 56 dias); zera na troca de cultura">
                                     <span>cultura</span><b data-aer-cultura>--</b>
@@ -3284,7 +3265,7 @@
                             data-temps-dia="21.0,21.1,21.0,21.0,20.9,21.0,21.0,21.1,21.1,21.1,21.0,21.0,21.0,21.1,21.1,21.1,21.1,21.1,21.0,21.0,21.0,21.1,21.1,21.1,21.0,21.1,21.0,21.1,21.1,21.2,21.1,21.1,21.1,21.1,21.1,21.2,21.2,21.2,21.1,21.1,21.1,21.2,21.2,21.2,21.2,21.2,21.1,21.2,21.2,21.2,21.2,21.2,21.2,21.2,21.1,21.2,21.2,21.2,21.2,21.2,21.2">
                             <div class="sa-head">
                                 <span class="sa-name">SILO 8</span>
-                                <span class="sa-cultura"><i class="legend-dot legend-dot--soja"></i>Soja<span class="sa-umi">umid. 11,8%</span></span>
+                                <span class="sa-cultura" tabindex="0" data-motivo data-motivo-titulo="Silo 8 · histórico de culturas" data-motivo-resumo="Sem troca de cultura nos últimos 30 dias: soja desde 04/09" data-motivo-tabela="Cultura::Entrada::Saída::Dias::Volume máx.::Umid. média::Aeração|*Soja (atual)::04/09::no silo::51::1.540 m³::11,8%::236 h|Vazio (limpeza)::31/08::04/09::4::—::—::—|Milho::28/06::31/08::64::2.900 m³::13,4%::260 h" data-motivo-nota="Janela de 30 dias: 25/09 a hoje. Culturas que entraram antes aparecem com a data real de entrada."><i class="legend-dot legend-dot--soja"></i>Soja<span class="sa-umi">umid. 11,8%</span></span>
                             </div>
                             <div class="sa-body">
                                 <div class="silo-visual"><div class="silo-fill" style="height: 36%"></div></div>
@@ -3307,7 +3288,7 @@
                                 <span class="sa-aer-badge" data-aer-badge>--</span>
                                 <span class="sa-aer-info" data-aer-info>--</span>
                             </div>
-                            <div class="sa-aer-clima" title="Estação meteorológica da unidade, no momento em que a aeração ligou">na última: <b>16,4 °C</b><span class="sa-aer-clima-ur">umidade relativa <b>76%</b></span></div>
+                            <div class="sa-aer-clima" title="Estação meteorológica da unidade, na última medição: a hora em que a aeração desligou (UR = umidade relativa)"><span class="sa-aer-clima-rotulo">temperatura na última medição:</span> <span class="sa-aer-clima-ur"><b>19,7 °C</b> · UR <b>65%</b></span></div>
                             <div class="sa-aer-horas">
                                 <div class="sa-aer-dado" title="Horas de aeração desde que o soja entrou (há 51 dias); zera na troca de cultura">
                                     <span>cultura</span><b data-aer-cultura>--</b>
@@ -3378,15 +3359,23 @@
                                            "-" = cabo fora do produto, fica de fora
                    data-temps / data-temps-dia  média do armazém hora a hora (24 h)
                                            e nas leituras das 06h e 18h (30 dias)
-                 PROVISÓRIO: setores e motores são estimativa da reunião (mínimo
-                 5 setores, ~25 motores laterais) até chegar o mapa de aeração
-                 da unidade; é só trocar os atributos. -->
+                 Setores: área 1 com 6, área 2 com 4 (validação do COE). A
+                 divisão de motores entre os setores ainda é estimativa até
+                 chegar o mapa de aeração da unidade; é só trocar os atributos.
+                 No canto superior da tela, a temperatura e a umidade relativa
+                 de agora, da estação meteorológica da unidade (a mesma leitura
+                 da tela de previsão do tempo). -->
             <section class="screen screen--armazem" id="screen-6">
                 <div class="screen-header">
                     <div class="screen-badge">08</div>
                     <div class="screen-title-section">
                         <h2>Armazém</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">6</span>s</div>
+                    </div>
+                    <div class="arm-clima" title="Estação meteorológica da unidade; lê a cada 15 minutos">
+                        <span class="arm-clima-rot">Estação · agora<small>leitura das 14:30</small></span>
+                        <span class="arm-clima-val"><b>26,4<small>°C</small></b>temperatura</span>
+                        <span class="arm-clima-val"><b>58<small>%</small></b>umidade relativa</span>
                     </div>
                 </div>
 
@@ -3409,7 +3398,7 @@
                         <!-- Área 1: aeração ligada em quase todo o armazém; A1, B1 e B6 desligados -->
                         <article class="sa-card arm-card" data-armazem data-aer="on" data-aer-desde-min="96" data-pausa-ponta="1"
                             data-arm-motores="13" data-arm-cols-por-motor="2" data-arm-linhas="3"
-                            data-arm-setores="3,3,2,3,2"
+                            data-arm-setores="2,2,2,3,2,2"
                             data-arm-motores-on="A2-A13,B2-B5,B7-B13"
                             data-arm-celulas="-,21.5,22.1,21.7,21.6,22.0,21.7,21.6,21.9,21.9,21.7,21.8,22.2,22.3,22.0,22.0,22.7,22.7,22.3,22.7,22.6,22.9,23.4,23.0,23.2,-;21.7,21.6,21.5,21.5,21.7,21.7,21.3,21.3,21.6,21.3,21.2,21.2,21.7,21.6,22.0,21.8,22.4,22.5,22.0,22.1,22.3,22.3,22.8,22.7,23.1,22.6;21.4,21.4,21.6,21.7,21.5,21.3,21.3,21.2,21.3,21.3,21.3,21.4,21.8,21.6,22.0,21.7,22.5,22.3,22.3,22.3,22.3,22.4,23.1,22.8,23.0,22.7;21.5,21.4,21.4,21.4,21.6,21.7,21.1,21.6,21.1,21.3,21.2,21.1,22.1,21.6,21.8,21.5,22.2,22.3,22.0,22.5,22.5,22.5,23.1,23.1,23.0,22.7;21.2,21.3,21.2,21.2,21.5,21.3,21.5,21.4,21.5,21.2,21.6,21.2,21.7,22.0,21.5,21.8,22.0,22.5,22.3,22.5,22.0,22.5,22.7,23.1,22.9,23.0;-,21.7,21.6,21.6,21.9,21.5,21.9,21.8,21.8,21.7,21.4,21.5,22.4,21.9,22.2,22.3,22.3,22.8,22.8,22.9,22.9,22.8,23.2,23.1,23.3,-"
                             data-temps="22.9,22.9,22.8,22.8,22.7,22.7,22.7,22.6,22.6,22.5,22.5,22.5,22.4,22.4,22.3,22.3,22.3,22.2,22.2,22.2,22.3,22.2,22.1,22.0"
@@ -3470,7 +3459,7 @@
                              no setor 3, perto do túnel do lado B, e média subindo na última semana -->
                         <article class="sa-card arm-card" data-armazem data-aer="on" data-aer-desde-min="52" data-pausa-ponta="1"
                             data-arm-motores="10" data-arm-cols-por-motor="2" data-arm-linhas="3"
-                            data-arm-setores="2,2,2,2,2"
+                            data-arm-setores="2,2,3,3"
                             data-arm-motores-on="A1-A7,A9-A10,B1,B3-B10"
                             data-arm-celulas="-,21.4,21.1,21.0,21.3,21.6,21.4,21.2,22.1,22.2,21.9,22.2,21.6,21.4,21.5,21.9,21.5,21.3,21.4,-;21.0,20.6,20.9,20.6,21.0,21.0,21.2,21.3,21.8,21.6,21.8,21.6,21.4,21.3,21.3,21.3,21.0,20.8,21.0,20.6;20.7,20.8,20.6,20.9,20.9,20.8,21.2,21.3,22.1,22.8,22.9,22.6,21.9,21.5,21.6,21.0,21.0,20.9,21.0,21.1;20.5,20.6,20.5,20.5,20.7,20.8,21.3,22.1,23.2,23.9,24.0,23.5,22.0,21.5,21.6,21.2,21.0,21.0,20.8,20.8;20.5,20.6,21.0,21.1,20.8,21.3,21.3,21.6,23.2,24.2,24.0,23.2,22.0,21.7,21.4,21.3,21.2,20.6,20.8,20.8;-,20.8,20.8,21.1,21.1,21.2,21.7,21.8,22.9,23.0,23.2,23.0,22.1,21.8,21.7,21.5,21.2,21.2,21.2,-"
                             data-temps="20.8,20.8,20.8,20.9,20.9,20.9,21.0,21.0,21.0,21.1,21.1,21.1,21.2,21.2,21.2,21.3,21.3,21.3,21.3,21.4,21.2,21.3,21.4,21.5"
@@ -3835,9 +3824,9 @@
                      qualquer periodo. As escondidas nao ocupam celula da grade.
                      % dosado = toneladas de residuo dosadas / volume carregado. Na
                      expedicao o caminhao carrega e so depois classifica, entao a
-                     impureza da classificacao ja inclui o residuo: do armazem =
-                     impureza - % dosado, margem = 1% - impureza (ex.: dosou 0,4%,
-                     classificacao 0,8% -> 0,4% do armazem, margem 0,2). Por enquanto so
+                     impureza da classificacao ja inclui o residuo: margem = 1% -
+                     impureza (ex.: classificacao 0,8% -> margem 0,2). A coluna "do
+                     armazem" saiu na validacao do COE. Por enquanto so
                      o numero: a faixa de alerta (entre 0,4% e 0,6%) sera definida depois
                      de ver os dados. A quantidade dosada e' digitada pelo operador do
                      CCO e gravada no banco de dados (no videowall nao da para digitar).
@@ -3859,16 +3848,15 @@
                                     <th>AVAR.</th>
                                     <th>DOSADO</th>
                                     <th title="Toneladas de resíduo dosadas ÷ volume carregado">% DOSADO</th>
-                                    <th title="Impureza da classificação menos o % dosado: o que veio do próprio armazém">DO ARMAZÉM</th>
                                     <th title="Limite de 1% menos a impureza da classificação">MARGEM ATÉ 1%</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr data-cultura="milho"><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>620 t</td><td>15</td><td class="class-val class-val--atencao">13,1%</td><td>0,8%</td><td>3,4%</td><td class="dos-col">2,8 t</td><td class="dos-pct">0,45%</td><td>0,35%</td><td>0,2%</td></tr>
-                                <tr data-cultura="sorgo"><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>260 t</td><td>7</td><td>12,4%</td><td class="class-val class-val--atencao">0,9%</td><td>2,9%</td><td class="dos-col">1,0 t</td><td class="dos-pct">0,38%</td><td>0,52%</td><td>0,1%</td></tr>
-                                <tr data-cultura="trigo"><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>140 t</td><td>3</td><td>12,0%</td><td>0,6%</td><td>2,1%</td><td class="dos-col">0,4 t</td><td class="dos-pct">0,30%</td><td>0,30%</td><td>0,4%</td></tr>
-                                <tr data-cultura="soja"><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>100 t</td><td>3</td><td>12,7%</td><td>0,8%</td><td class="class-val class-val--atencao">3,6%</td><td class="dos-col">0,3 t</td><td class="dos-pct">0,35%</td><td>0,45%</td><td>0,2%</td></tr>
-                                <tr class="exp-qual-geral"><td><i class="legend-dot legend-dot--geral"></i>Geral</td><td>1.120 t</td><td>28</td><td>12,8%</td><td>0,8%</td><td>3,1%</td><td class="dos-col">4,5 t</td><td class="dos-pct">0,41%</td><td>0,39%</td><td>0,2%</td></tr>
+                                <tr data-cultura="milho"><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>620 t</td><td>15</td><td class="class-val class-val--atencao">13,1%</td><td>0,8%</td><td>3,4%</td><td class="dos-col">2,8 t</td><td class="dos-pct">0,45%</td><td>0,2%</td></tr>
+                                <tr data-cultura="sorgo"><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>260 t</td><td>7</td><td>12,4%</td><td class="class-val class-val--atencao">0,9%</td><td>2,9%</td><td class="dos-col">1,0 t</td><td class="dos-pct">0,38%</td><td>0,1%</td></tr>
+                                <tr data-cultura="trigo"><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>140 t</td><td>3</td><td>12,0%</td><td>0,6%</td><td>2,1%</td><td class="dos-col">0,4 t</td><td class="dos-pct">0,30%</td><td>0,4%</td></tr>
+                                <tr data-cultura="soja"><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>100 t</td><td>3</td><td>12,7%</td><td>0,8%</td><td class="class-val class-val--atencao">3,6%</td><td class="dos-col">0,3 t</td><td class="dos-pct">0,35%</td><td>0,2%</td></tr>
+                                <tr class="exp-qual-geral"><td><i class="legend-dot legend-dot--geral"></i>Geral</td><td>1.120 t</td><td>28</td><td>12,8%</td><td>0,8%</td><td>3,1%</td><td class="dos-col">4,5 t</td><td class="dos-pct">0,41%</td><td>0,2%</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -3889,16 +3877,15 @@
                                     <th>AVAR.</th>
                                     <th>DOSADO</th>
                                     <th title="Toneladas de resíduo dosadas ÷ volume carregado">% DOSADO</th>
-                                    <th title="Impureza da classificação menos o % dosado: o que veio do próprio armazém">DO ARMAZÉM</th>
                                     <th title="Limite de 1% menos a impureza da classificação">MARGEM ATÉ 1%</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr data-cultura="milho"><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>3.560 t</td><td>89</td><td class="class-val class-val--atencao">13,0%</td><td>0,8%</td><td>3,2%</td><td class="dos-col">15,7 t</td><td class="dos-pct">0,44%</td><td>0,36%</td><td>0,2%</td></tr>
-                                <tr data-cultura="sorgo"><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>1.520 t</td><td>38</td><td>12,5%</td><td class="class-val class-val--atencao">0,9%</td><td>3,0%</td><td class="dos-col">6,1 t</td><td class="dos-pct">0,40%</td><td>0,50%</td><td>0,1%</td></tr>
-                                <tr data-cultura="trigo"><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>820 t</td><td>21</td><td>12,1%</td><td>0,6%</td><td>2,3%</td><td class="dos-col">2,6 t</td><td class="dos-pct">0,32%</td><td>0,28%</td><td>0,4%</td></tr>
-                                <tr data-cultura="soja"><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>580 t</td><td>14</td><td>12,6%</td><td>0,7%</td><td>3,4%</td><td class="dos-col">2,1 t</td><td class="dos-pct">0,36%</td><td>0,34%</td><td>0,3%</td></tr>
-                                <tr class="exp-qual-geral"><td><i class="legend-dot legend-dot--geral"></i>Geral</td><td>6.480 t</td><td>162</td><td>12,8%</td><td>0,8%</td><td>3,1%</td><td class="dos-col">26,5 t</td><td class="dos-pct">0,41%</td><td>0,39%</td><td>0,2%</td></tr>
+                                <tr data-cultura="milho"><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>3.560 t</td><td>89</td><td class="class-val class-val--atencao">13,0%</td><td>0,8%</td><td>3,2%</td><td class="dos-col">15,7 t</td><td class="dos-pct">0,44%</td><td>0,2%</td></tr>
+                                <tr data-cultura="sorgo"><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>1.520 t</td><td>38</td><td>12,5%</td><td class="class-val class-val--atencao">0,9%</td><td>3,0%</td><td class="dos-col">6,1 t</td><td class="dos-pct">0,40%</td><td>0,1%</td></tr>
+                                <tr data-cultura="trigo"><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>820 t</td><td>21</td><td>12,1%</td><td>0,6%</td><td>2,3%</td><td class="dos-col">2,6 t</td><td class="dos-pct">0,32%</td><td>0,4%</td></tr>
+                                <tr data-cultura="soja"><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>580 t</td><td>14</td><td>12,6%</td><td>0,7%</td><td>3,4%</td><td class="dos-col">2,1 t</td><td class="dos-pct">0,36%</td><td>0,3%</td></tr>
+                                <tr class="exp-qual-geral"><td><i class="legend-dot legend-dot--geral"></i>Geral</td><td>6.480 t</td><td>162</td><td>12,8%</td><td>0,8%</td><td>3,1%</td><td class="dos-col">26,5 t</td><td class="dos-pct">0,41%</td><td>0,2%</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -3919,16 +3906,15 @@
                                     <th>AVAR.</th>
                                     <th>DOSADO</th>
                                     <th title="Toneladas de resíduo dosadas ÷ volume carregado">% DOSADO</th>
-                                    <th title="Impureza da classificação menos o % dosado: o que veio do próprio armazém">DO ARMAZÉM</th>
                                     <th title="Limite de 1% menos a impureza da classificação">MARGEM ATÉ 1%</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr data-cultura="milho"><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>14.520 t</td><td>363</td><td class="class-val class-val--atencao">13,2%</td><td>0,9%</td><td>3,3%</td><td class="dos-col">62,4 t</td><td class="dos-pct">0,43%</td><td>0,47%</td><td>0,1%</td></tr>
-                                <tr data-cultura="sorgo"><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>6.160 t</td><td>154</td><td>12,6%</td><td class="class-val class-val--atencao">0,9%</td><td>3,1%</td><td class="dos-col">24,0 t</td><td class="dos-pct">0,39%</td><td>0,51%</td><td>0,1%</td></tr>
-                                <tr data-cultura="trigo"><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>3.300 t</td><td>83</td><td>12,2%</td><td>0,7%</td><td>2,4%</td><td class="dos-col">10,2 t</td><td class="dos-pct">0,31%</td><td>0,39%</td><td>0,3%</td></tr>
-                                <tr data-cultura="soja"><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>2.420 t</td><td>60</td><td>12,5%</td><td>0,8%</td><td>3,5%</td><td class="dos-col">8,5 t</td><td class="dos-pct">0,35%</td><td>0,45%</td><td>0,2%</td></tr>
-                                <tr class="exp-qual-geral"><td><i class="legend-dot legend-dot--geral"></i>Geral</td><td>26.400 t</td><td>660</td><td>12,9%</td><td>0,8%</td><td>3,2%</td><td class="dos-col">105 t</td><td class="dos-pct">0,40%</td><td>0,40%</td><td>0,2%</td></tr>
+                                <tr data-cultura="milho"><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>14.520 t</td><td>363</td><td class="class-val class-val--atencao">13,2%</td><td>0,9%</td><td>3,3%</td><td class="dos-col">62,4 t</td><td class="dos-pct">0,43%</td><td>0,1%</td></tr>
+                                <tr data-cultura="sorgo"><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>6.160 t</td><td>154</td><td>12,6%</td><td class="class-val class-val--atencao">0,9%</td><td>3,1%</td><td class="dos-col">24,0 t</td><td class="dos-pct">0,39%</td><td>0,1%</td></tr>
+                                <tr data-cultura="trigo"><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>3.300 t</td><td>83</td><td>12,2%</td><td>0,7%</td><td>2,4%</td><td class="dos-col">10,2 t</td><td class="dos-pct">0,31%</td><td>0,3%</td></tr>
+                                <tr data-cultura="soja"><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>2.420 t</td><td>60</td><td>12,5%</td><td>0,8%</td><td>3,5%</td><td class="dos-col">8,5 t</td><td class="dos-pct">0,35%</td><td>0,2%</td></tr>
+                                <tr class="exp-qual-geral"><td><i class="legend-dot legend-dot--geral"></i>Geral</td><td>26.400 t</td><td>660</td><td>12,9%</td><td>0,8%</td><td>3,2%</td><td class="dos-col">105 t</td><td class="dos-pct">0,40%</td><td>0,2%</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -3949,16 +3935,15 @@
                                     <th>AVAR.</th>
                                     <th>DOSADO</th>
                                     <th title="Toneladas de resíduo dosadas ÷ volume carregado">% DOSADO</th>
-                                    <th title="Impureza da classificação menos o % dosado: o que veio do próprio armazém">DO ARMAZÉM</th>
                                     <th title="Limite de 1% menos a impureza da classificação">MARGEM ATÉ 1%</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr data-cultura="milho"><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>118.000 t</td><td>2.948</td><td class="class-val class-val--atencao">13,1%</td><td>0,8%</td><td>3,3%</td><td class="dos-col">496 t</td><td class="dos-pct">0,42%</td><td>0,38%</td><td>0,2%</td></tr>
-                                <tr data-cultura="sorgo"><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>50.100 t</td><td>1.252</td><td>12,5%</td><td class="class-val class-val--atencao">0,9%</td><td>3,0%</td><td class="dos-col">200 t</td><td class="dos-pct">0,40%</td><td>0,50%</td><td>0,1%</td></tr>
-                                <tr data-cultura="trigo"><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>26.800 t</td><td>670</td><td>12,1%</td><td>0,6%</td><td>2,3%</td><td class="dos-col">80,4 t</td><td class="dos-pct">0,30%</td><td>0,30%</td><td>0,4%</td></tr>
-                                <tr data-cultura="soja"><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>19.600 t</td><td>490</td><td>12,6%</td><td>0,8%</td><td>3,4%</td><td class="dos-col">70,6 t</td><td class="dos-pct">0,36%</td><td>0,44%</td><td>0,2%</td></tr>
-                                <tr class="exp-qual-geral"><td><i class="legend-dot legend-dot--geral"></i>Geral</td><td>214.500 t</td><td>5.360</td><td>12,8%</td><td>0,8%</td><td>3,2%</td><td class="dos-col">847 t</td><td class="dos-pct">0,39%</td><td>0,41%</td><td>0,2%</td></tr>
+                                <tr data-cultura="milho"><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>118.000 t</td><td>2.948</td><td class="class-val class-val--atencao">13,1%</td><td>0,8%</td><td>3,3%</td><td class="dos-col">496 t</td><td class="dos-pct">0,42%</td><td>0,2%</td></tr>
+                                <tr data-cultura="sorgo"><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>50.100 t</td><td>1.252</td><td>12,5%</td><td class="class-val class-val--atencao">0,9%</td><td>3,0%</td><td class="dos-col">200 t</td><td class="dos-pct">0,40%</td><td>0,1%</td></tr>
+                                <tr data-cultura="trigo"><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>26.800 t</td><td>670</td><td>12,1%</td><td>0,6%</td><td>2,3%</td><td class="dos-col">80,4 t</td><td class="dos-pct">0,30%</td><td>0,4%</td></tr>
+                                <tr data-cultura="soja"><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>19.600 t</td><td>490</td><td>12,6%</td><td>0,8%</td><td>3,4%</td><td class="dos-col">70,6 t</td><td class="dos-pct">0,36%</td><td>0,2%</td></tr>
+                                <tr class="exp-qual-geral"><td><i class="legend-dot legend-dot--geral"></i>Geral</td><td>214.500 t</td><td>5.360</td><td>12,8%</td><td>0,8%</td><td>3,2%</td><td class="dos-col">847 t</td><td class="dos-pct">0,39%</td><td>0,2%</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -4116,64 +4101,64 @@
                                     <th>DESTINO</th>
                                     <th>FRETE</th>
                                     <th>VOLUME</th>
-                                    <th title="Resíduo dosado na carga, % sobre o volume e a impureza da classificação">DOSADO</th>
+                                    <th title="Resíduo dosado na carga e o % sobre o volume">DOSADO</th>
                                     <th>HORÁRIO</th>
                                     <th>TEMPO</th>
                                     <th>STATUS</th>
                                 </tr>
                             </thead>
                             <tbody class="exp-cargas-corpo" data-periodo="dia">
-                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD126174</span></td><td>Carlos Menezes</td><td>QXA2B71</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td class="exp-fonte-multi">Silo 3 + Silo 1<small>28,4 t · 12,8 t</small></td><td>Porto de Santos</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>41,2 <small>t</small></td><td class="dos-carga">195 <small>kg</small><small class="dos-carga-folga">0,47% · classif. 0,9%</small></td><td>13:52 – 14:10</td><td>18 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="sorgo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD0FED74</span></td><td>Ana Paula Ribeiro</td><td>NZV1545</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 5</td><td>Porto de Paranaguá</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>38,6 <small>t</small></td><td class="dos-carga">165 <small>kg</small><small class="dos-carga-folga">0,43% · classif. 0,8%</small></td><td>13:41 – 13:57</td><td>16 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FDE16474</span></td><td>João Batista</td><td>MZX3B39</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Coop. Holambra</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>40,4 <small>t</small></td><td class="dos-carga">175 <small>kg</small><small class="dos-carga-folga">0,43% · classif. 0,7%</small></td><td>13:30 – 13:55</td><td class="class-val class-val--atencao">25 min</td><td><span class="class-status class-status--fora">Reprovada · umidade 14,6%</span></td></tr>
-                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000050136FD4DCA74</span></td><td>Marcos Vieira</td><td>PZA4275</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td class="exp-fonte-multi">Silo 7 + Silo 4<small>24,0 t · 13,8 t</small></td><td>Ind. Moinho Sul</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>37,8 <small>t</small></td><td class="dos-carga">115 <small>kg</small><small class="dos-carga-folga">0,30% · classif. 0,9%</small></td><td>13:18 – 13:35</td><td>17 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="soja" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD253074</span></td><td>Rafael Souza</td><td>BXE8A75</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Frig. Aurora</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>36,5 <small>t</small></td><td class="dos-carga">140 <small>kg</small><small class="dos-carga-folga">0,38% · classif. 0,8%</small></td><td>13:05 – 13:26</td><td>21 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD7A2C74</span></td><td>Luciana Prado</td><td>KLM4C22</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 3</td><td>Porto de Santos</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>42,1 <small>t</small></td><td class="dos-carga">170 <small>kg</small><small class="dos-carga-folga">0,40% · classif. 0,6%</small></td><td>12:48 – 13:04</td><td>16 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="sorgo" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD9B1E74</span></td><td>Pedro Almeida</td><td>HJK7D18</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td class="exp-fonte-multi">Silo 5 + Silo 6<small>22,5 t · 16,8 t</small></td><td>Fáb. Ração Nutriave</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>39,3 <small>t</small></td><td class="dos-carga">155 <small>kg</small><small class="dos-carga-folga">0,39% · classif. 1,3%</small></td><td>12:31 – 12:58</td><td class="class-val class-val--atencao">27 min</td><td><span class="class-status class-status--fora">Reprovada · impureza 1,3%</span></td></tr>
-                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD3C8874</span></td><td>Sérgio Tavares</td><td>RTY1E90</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td class="exp-fonte-multi">Silo 1 + Silo 2<small>30,0 t · 10,8 t</small></td><td>Porto de Santos</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>40,8 <small>t</small></td><td class="dos-carga">165 <small>kg</small><small class="dos-carga-folga">0,40% · classif. 0,8%</small></td><td>12:20 – 12:39</td><td>19 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="soja" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD61F074</span></td><td>Fernanda Lima</td><td>WER5F63</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Frig. Aurora</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>35,9 <small>t</small></td><td class="dos-carga">135 <small>kg</small><small class="dos-carga-folga">0,38% · classif. 0,7%</small></td><td>12:02 – 12:31</td><td class="class-val class-val--fora">29 min</td><td><span class="class-status class-status--fora">Reprovada · avariados 7,1%</span></td></tr>
-                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD84D274</span></td><td>Roberto Nunes</td><td>UIO9G47</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Porto de Paranaguá</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>38,2 <small>t</small></td><td class="dos-carga">135 <small>kg</small><small class="dos-carga-folga">0,35% · classif. 0,8%</small></td><td>11:50 – 12:06</td><td>16 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FDA31B74</span></td><td>Cláudio Ferreira</td><td>ASD3H55</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Coop. Holambra</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>41,7 <small>t</small></td><td class="dos-carga">180 <small>kg</small><small class="dos-carga-folga">0,43% · classif. 0,9%</small></td><td>11:36 – 11:59</td><td>23 min</td><td><span class="class-status class-status--fora">Reprovada · umidade 14,9%</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD126174</span></td><td>Carlos Menezes</td><td>QXA2B71</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td class="exp-fonte-multi">Silo 3 + Silo 1<small>28,4 t · 12,8 t</small></td><td>Porto de Santos</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>41,2 <small>t</small></td><td class="dos-carga">195 <small>kg</small><small class="dos-carga-folga">0,47%</small></td><td>13:52 – 14:10</td><td>18 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="sorgo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD0FED74</span></td><td>Ana Paula Ribeiro</td><td>NZV1545</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 5</td><td>Porto de Paranaguá</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>38,6 <small>t</small></td><td class="dos-carga">165 <small>kg</small><small class="dos-carga-folga">0,43%</small></td><td>13:41 – 13:57</td><td>16 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FDE16474</span></td><td>João Batista</td><td>MZX3B39</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Coop. Holambra</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>40,4 <small>t</small></td><td class="dos-carga">175 <small>kg</small><small class="dos-carga-folga">0,43%</small></td><td>13:30 – 13:55</td><td class="class-val class-val--atencao">25 min</td><td><span class="class-status class-status--fora">Reprovada · umidade 14,6%</span></td></tr>
+                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000050136FD4DCA74</span></td><td>Marcos Vieira</td><td>PZA4275</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td class="exp-fonte-multi">Silo 7 + Silo 4<small>24,0 t · 13,8 t</small></td><td>Ind. Moinho Sul</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>37,8 <small>t</small></td><td class="dos-carga">115 <small>kg</small><small class="dos-carga-folga">0,30%</small></td><td>13:18 – 13:35</td><td>17 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="soja" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD253074</span></td><td>Rafael Souza</td><td>BXE8A75</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Frig. Aurora</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>36,5 <small>t</small></td><td class="dos-carga">140 <small>kg</small><small class="dos-carga-folga">0,38%</small></td><td>13:05 – 13:26</td><td>21 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD7A2C74</span></td><td>Luciana Prado</td><td>KLM4C22</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 3</td><td>Porto de Santos</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>42,1 <small>t</small></td><td class="dos-carga">170 <small>kg</small><small class="dos-carga-folga">0,40%</small></td><td>12:48 – 13:04</td><td>16 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="sorgo" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD9B1E74</span></td><td>Pedro Almeida</td><td>HJK7D18</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td class="exp-fonte-multi">Silo 5 + Silo 6<small>22,5 t · 16,8 t</small></td><td>Fáb. Ração Nutriave</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>39,3 <small>t</small></td><td class="dos-carga">155 <small>kg</small><small class="dos-carga-folga">0,39%</small></td><td>12:31 – 12:58</td><td class="class-val class-val--atencao">27 min</td><td><span class="class-status class-status--fora">Reprovada · impureza 1,3%</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD3C8874</span></td><td>Sérgio Tavares</td><td>RTY1E90</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td class="exp-fonte-multi">Silo 1 + Silo 2<small>30,0 t · 10,8 t</small></td><td>Porto de Santos</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>40,8 <small>t</small></td><td class="dos-carga">165 <small>kg</small><small class="dos-carga-folga">0,40%</small></td><td>12:20 – 12:39</td><td>19 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="soja" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD61F074</span></td><td>Fernanda Lima</td><td>WER5F63</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Frig. Aurora</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>35,9 <small>t</small></td><td class="dos-carga">135 <small>kg</small><small class="dos-carga-folga">0,38%</small></td><td>12:02 – 12:31</td><td class="class-val class-val--fora">29 min</td><td><span class="class-status class-status--fora">Reprovada · avariados 7,1%</span></td></tr>
+                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD84D274</span></td><td>Roberto Nunes</td><td>UIO9G47</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Porto de Paranaguá</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>38,2 <small>t</small></td><td class="dos-carga">135 <small>kg</small><small class="dos-carga-folga">0,35%</small></td><td>11:50 – 12:06</td><td>16 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FDA31B74</span></td><td>Cláudio Ferreira</td><td>ASD3H55</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Coop. Holambra</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>41,7 <small>t</small></td><td class="dos-carga">180 <small>kg</small><small class="dos-carga-folga">0,43%</small></td><td>11:36 – 11:59</td><td>23 min</td><td><span class="class-status class-status--fora">Reprovada · umidade 14,9%</span></td></tr>
 
                             </tbody>
                             <tbody class="exp-cargas-corpo" data-periodo="semana">
-                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD13E674</span></td><td>Marta Siqueira</td><td>WER5F63</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 1</td><td>Porto de Santos</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>40,0 <small>t</small></td><td class="dos-carga">180 <small>kg</small><small class="dos-carga-folga">0,45% · classif. 0,7%</small></td><td><small>22/09</small> 07:05 – 07:28</td><td class="class-val class-val--atencao">23 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="sorgo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD151D74</span></td><td>Elias Moreira</td><td>UIO9G47</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 6</td><td>Coop. Holambra</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>40,7 <small>t</small></td><td class="dos-carga">165 <small>kg</small><small class="dos-carga-folga">0,41% · classif. 0,8%</small></td><td><small>22/09</small> 08:18 – 08:46</td><td class="class-val class-val--atencao">28 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD165474</span></td><td>Tânia Rocha</td><td>ASD3H55</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 5</td><td>Fáb. Ração Nutriave</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>41,4 <small>t</small></td><td class="dos-carga">165 <small>kg</small><small class="dos-carga-folga">0,40% · classif. 0,9%</small></td><td><small>21/09</small> 09:31 – 09:52</td><td>21 min</td><td><span class="class-status class-status--fora">Reprovada · umidade 14,6%</span></td></tr>
-                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD178B74</span></td><td>Nelson Vidal</td><td>FGH6J24</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Porto de Santos</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>42,1 <small>t</small></td><td class="dos-carga">130 <small>kg</small><small class="dos-carga-folga">0,31% · classif. 0,8%</small></td><td><small>21/09</small> 10:44 – 11:10</td><td class="class-val class-val--atencao">26 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="soja" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD18C274</span></td><td>Carlos Menezes</td><td>ZXC8K13</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Coop. Holambra</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>38,8 <small>t</small></td><td class="dos-carga">120 <small>kg</small><small class="dos-carga-folga">0,31% · classif. 0,7%</small></td><td><small>20/09</small> 11:57 – 12:16</td><td>19 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD19F974</span></td><td>Ana Paula Ribeiro</td><td>VBN2L07</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 5</td><td>Fáb. Ração Nutriave</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>39,5 <small>t</small></td><td class="dos-carga">185 <small>kg</small><small class="dos-carga-folga">0,47% · classif. 0,9%</small></td><td><small>19/09</small> 12:10 – 12:34</td><td class="class-val class-val--atencao">24 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="sorgo" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD1B3074</span></td><td>João Batista</td><td>TYU5M81</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 3</td><td>Porto de Santos</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>40,2 <small>t</small></td><td class="dos-carga">175 <small>kg</small><small class="dos-carga-folga">0,44% · classif. 1,3%</small></td><td><small>19/09</small> 13:23 – 13:40</td><td>17 min</td><td><span class="class-status class-status--fora">Reprovada · impureza 1,3%</span></td></tr>
-                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1C6774</span></td><td>Marcos Vieira</td><td>GHJ4N36</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Coop. Holambra</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>40,9 <small>t</small></td><td class="dos-carga">175 <small>kg</small><small class="dos-carga-folga">0,43% · classif. 0,6%</small></td><td><small>18/09</small> 14:36 – 14:58</td><td>22 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="soja" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD1D9E74</span></td><td>Rafael Souza</td><td>QWE7P52</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Fáb. Ração Nutriave</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>41,6 <small>t</small></td><td class="dos-carga">145 <small>kg</small><small class="dos-carga-folga">0,35% · classif. 0,9%</small></td><td><small>18/09</small> 15:49 – 16:16</td><td class="class-val class-val--atencao">27 min</td><td><span class="class-status class-status--fora">Reprovada · avariados 6,4%</span></td></tr>
-                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1ED574</span></td><td>Luciana Prado</td><td>RFV9Q18</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Porto de Santos</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>38,3 <small>t</small></td><td class="dos-carga">125 <small>kg</small><small class="dos-carga-folga">0,33% · classif. 0,8%</small></td><td><small>17/09</small> 07:02 – 07:22</td><td>20 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD200C74</span></td><td>Pedro Almeida</td><td>EDC3R64</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Coop. Holambra</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>39,0 <small>t</small></td><td class="dos-carga">155 <small>kg</small><small class="dos-carga-folga">0,40% · classif. 0,7%</small></td><td><small>17/09</small> 08:15 – 08:40</td><td class="class-val class-val--atencao">25 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD13E674</span></td><td>Marta Siqueira</td><td>WER5F63</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 1</td><td>Porto de Santos</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>40,0 <small>t</small></td><td class="dos-carga">180 <small>kg</small><small class="dos-carga-folga">0,45%</small></td><td><small>22/09</small> 07:05 – 07:28</td><td class="class-val class-val--atencao">23 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="sorgo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD151D74</span></td><td>Elias Moreira</td><td>UIO9G47</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 6</td><td>Coop. Holambra</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>40,7 <small>t</small></td><td class="dos-carga">165 <small>kg</small><small class="dos-carga-folga">0,41%</small></td><td><small>22/09</small> 08:18 – 08:46</td><td class="class-val class-val--atencao">28 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD165474</span></td><td>Tânia Rocha</td><td>ASD3H55</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 5</td><td>Fáb. Ração Nutriave</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>41,4 <small>t</small></td><td class="dos-carga">165 <small>kg</small><small class="dos-carga-folga">0,40%</small></td><td><small>21/09</small> 09:31 – 09:52</td><td>21 min</td><td><span class="class-status class-status--fora">Reprovada · umidade 14,6%</span></td></tr>
+                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD178B74</span></td><td>Nelson Vidal</td><td>FGH6J24</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Porto de Santos</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>42,1 <small>t</small></td><td class="dos-carga">130 <small>kg</small><small class="dos-carga-folga">0,31%</small></td><td><small>21/09</small> 10:44 – 11:10</td><td class="class-val class-val--atencao">26 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="soja" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD18C274</span></td><td>Carlos Menezes</td><td>ZXC8K13</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Coop. Holambra</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>38,8 <small>t</small></td><td class="dos-carga">120 <small>kg</small><small class="dos-carga-folga">0,31%</small></td><td><small>20/09</small> 11:57 – 12:16</td><td>19 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD19F974</span></td><td>Ana Paula Ribeiro</td><td>VBN2L07</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 5</td><td>Fáb. Ração Nutriave</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>39,5 <small>t</small></td><td class="dos-carga">185 <small>kg</small><small class="dos-carga-folga">0,47%</small></td><td><small>19/09</small> 12:10 – 12:34</td><td class="class-val class-val--atencao">24 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="sorgo" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD1B3074</span></td><td>João Batista</td><td>TYU5M81</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 3</td><td>Porto de Santos</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>40,2 <small>t</small></td><td class="dos-carga">175 <small>kg</small><small class="dos-carga-folga">0,44%</small></td><td><small>19/09</small> 13:23 – 13:40</td><td>17 min</td><td><span class="class-status class-status--fora">Reprovada · impureza 1,3%</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1C6774</span></td><td>Marcos Vieira</td><td>GHJ4N36</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Coop. Holambra</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>40,9 <small>t</small></td><td class="dos-carga">175 <small>kg</small><small class="dos-carga-folga">0,43%</small></td><td><small>18/09</small> 14:36 – 14:58</td><td>22 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="soja" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD1D9E74</span></td><td>Rafael Souza</td><td>QWE7P52</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Fáb. Ração Nutriave</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>41,6 <small>t</small></td><td class="dos-carga">145 <small>kg</small><small class="dos-carga-folga">0,35%</small></td><td><small>18/09</small> 15:49 – 16:16</td><td class="class-val class-val--atencao">27 min</td><td><span class="class-status class-status--fora">Reprovada · avariados 6,4%</span></td></tr>
+                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1ED574</span></td><td>Luciana Prado</td><td>RFV9Q18</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Porto de Santos</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>38,3 <small>t</small></td><td class="dos-carga">125 <small>kg</small><small class="dos-carga-folga">0,33%</small></td><td><small>17/09</small> 07:02 – 07:22</td><td>20 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD200C74</span></td><td>Pedro Almeida</td><td>EDC3R64</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Coop. Holambra</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>39,0 <small>t</small></td><td class="dos-carga">155 <small>kg</small><small class="dos-carga-folga">0,40%</small></td><td><small>17/09</small> 08:15 – 08:40</td><td class="class-val class-val--atencao">25 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
                             </tbody>
                             <tbody class="exp-cargas-corpo" data-periodo="mes">
-                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD12F374</span></td><td>Roberto Nunes</td><td>GHJ4N36</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 1</td><td>Frig. Aurora</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>39,1 <small>t</small></td><td class="dos-carga">180 <small>kg</small><small class="dos-carga-folga">0,46% · classif. 0,8%</small></td><td><small>22/09</small> 07:05 – 07:25</td><td>20 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="sorgo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD142A74</span></td><td>Cláudio Ferreira</td><td>QWE7P52</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 6</td><td>Ind. Moinho Sul</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>39,8 <small>t</small></td><td class="dos-carga">135 <small>kg</small><small class="dos-carga-folga">0,34% · classif. 0,9%</small></td><td><small>20/09</small> 08:18 – 08:43</td><td class="class-val class-val--atencao">25 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD156174</span></td><td>Vera Antunes</td><td>RFV9Q18</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 5</td><td>Porto de Paranaguá</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>40,5 <small>t</small></td><td class="dos-carga">190 <small>kg</small><small class="dos-carga-folga">0,47% · classif. 0,7%</small></td><td><small>18/09</small> 09:31 – 09:49</td><td>18 min</td><td><span class="class-status class-status--fora">Reprovada · umidade 14,6%</span></td></tr>
-                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD169874</span></td><td>Diego Matos</td><td>EDC3R64</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Frig. Aurora</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>41,2 <small>t</small></td><td class="dos-carga">145 <small>kg</small><small class="dos-carga-folga">0,35% · classif. 0,8%</small></td><td><small>16/09</small> 10:44 – 11:07</td><td class="class-val class-val--atencao">23 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="soja" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD17CF74</span></td><td>Helena Braga</td><td>XSW6T29</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Ind. Moinho Sul</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>41,9 <small>t</small></td><td class="dos-carga">140 <small>kg</small><small class="dos-carga-folga">0,33% · classif. 0,9%</small></td><td><small>15/09</small> 11:57 – 12:25</td><td class="class-val class-val--atencao">28 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD190674</span></td><td>Otávio Pinto</td><td>CDE1U73</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 5</td><td>Porto de Paranaguá</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>38,6 <small>t</small></td><td class="dos-carga">175 <small>kg</small><small class="dos-carga-folga">0,45% · classif. 0,8%</small></td><td><small>12/09</small> 12:10 – 12:31</td><td>21 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="sorgo" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD1A3D74</span></td><td>Simone Duarte</td><td>BGT8V45</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 3</td><td>Frig. Aurora</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>39,3 <small>t</small></td><td class="dos-carga">160 <small>kg</small><small class="dos-carga-folga">0,41% · classif. 1,3%</small></td><td><small>10/09</small> 13:23 – 13:49</td><td class="class-val class-val--atencao">26 min</td><td><span class="class-status class-status--fora">Reprovada · impureza 1,3%</span></td></tr>
-                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1B7474</span></td><td>Alan Ribeiro</td><td>QXA2B71</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Ind. Moinho Sul</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>40,0 <small>t</small></td><td class="dos-carga">160 <small>kg</small><small class="dos-carga-folga">0,40% · classif. 0,9%</small></td><td><small>08/09</small> 14:36 – 14:55</td><td>19 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="soja" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD1CAB74</span></td><td>Bruno Carvalho</td><td>NZV1545</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Porto de Paranaguá</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>40,7 <small>t</small></td><td class="dos-carga">145 <small>kg</small><small class="dos-carga-folga">0,36% · classif. 0,8%</small></td><td><small>05/09</small> 15:49 – 16:13</td><td class="class-val class-val--atencao">24 min</td><td><span class="class-status class-status--fora">Reprovada · avariados 6,4%</span></td></tr>
-                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1DE274</span></td><td>Marta Siqueira</td><td>MZX3B39</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Frig. Aurora</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>41,4 <small>t</small></td><td class="dos-carga">110 <small>kg</small><small class="dos-carga-folga">0,27% · classif. 0,6%</small></td><td><small>03/09</small> 07:02 – 07:19</td><td>17 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1F1974</span></td><td>Elias Moreira</td><td>PZA4275</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Ind. Moinho Sul</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>42,1 <small>t</small></td><td class="dos-carga">200 <small>kg</small><small class="dos-carga-folga">0,48% · classif. 0,9%</small></td><td><small>02/09</small> 08:15 – 08:37</td><td>22 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD12F374</span></td><td>Roberto Nunes</td><td>GHJ4N36</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 1</td><td>Frig. Aurora</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>39,1 <small>t</small></td><td class="dos-carga">180 <small>kg</small><small class="dos-carga-folga">0,46%</small></td><td><small>22/09</small> 07:05 – 07:25</td><td>20 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="sorgo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD142A74</span></td><td>Cláudio Ferreira</td><td>QWE7P52</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 6</td><td>Ind. Moinho Sul</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>39,8 <small>t</small></td><td class="dos-carga">135 <small>kg</small><small class="dos-carga-folga">0,34%</small></td><td><small>20/09</small> 08:18 – 08:43</td><td class="class-val class-val--atencao">25 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD156174</span></td><td>Vera Antunes</td><td>RFV9Q18</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 5</td><td>Porto de Paranaguá</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>40,5 <small>t</small></td><td class="dos-carga">190 <small>kg</small><small class="dos-carga-folga">0,47%</small></td><td><small>18/09</small> 09:31 – 09:49</td><td>18 min</td><td><span class="class-status class-status--fora">Reprovada · umidade 14,6%</span></td></tr>
+                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD169874</span></td><td>Diego Matos</td><td>EDC3R64</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Frig. Aurora</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>41,2 <small>t</small></td><td class="dos-carga">145 <small>kg</small><small class="dos-carga-folga">0,35%</small></td><td><small>16/09</small> 10:44 – 11:07</td><td class="class-val class-val--atencao">23 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="soja" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD17CF74</span></td><td>Helena Braga</td><td>XSW6T29</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Ind. Moinho Sul</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>41,9 <small>t</small></td><td class="dos-carga">140 <small>kg</small><small class="dos-carga-folga">0,33%</small></td><td><small>15/09</small> 11:57 – 12:25</td><td class="class-val class-val--atencao">28 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD190674</span></td><td>Otávio Pinto</td><td>CDE1U73</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 5</td><td>Porto de Paranaguá</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>38,6 <small>t</small></td><td class="dos-carga">175 <small>kg</small><small class="dos-carga-folga">0,45%</small></td><td><small>12/09</small> 12:10 – 12:31</td><td>21 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="sorgo" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD1A3D74</span></td><td>Simone Duarte</td><td>BGT8V45</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 3</td><td>Frig. Aurora</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>39,3 <small>t</small></td><td class="dos-carga">160 <small>kg</small><small class="dos-carga-folga">0,41%</small></td><td><small>10/09</small> 13:23 – 13:49</td><td class="class-val class-val--atencao">26 min</td><td><span class="class-status class-status--fora">Reprovada · impureza 1,3%</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1B7474</span></td><td>Alan Ribeiro</td><td>QXA2B71</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Ind. Moinho Sul</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>40,0 <small>t</small></td><td class="dos-carga">160 <small>kg</small><small class="dos-carga-folga">0,40%</small></td><td><small>08/09</small> 14:36 – 14:55</td><td>19 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="soja" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD1CAB74</span></td><td>Bruno Carvalho</td><td>NZV1545</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Porto de Paranaguá</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>40,7 <small>t</small></td><td class="dos-carga">145 <small>kg</small><small class="dos-carga-folga">0,36%</small></td><td><small>05/09</small> 15:49 – 16:13</td><td class="class-val class-val--atencao">24 min</td><td><span class="class-status class-status--fora">Reprovada · avariados 6,4%</span></td></tr>
+                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1DE274</span></td><td>Marta Siqueira</td><td>MZX3B39</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Frig. Aurora</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>41,4 <small>t</small></td><td class="dos-carga">110 <small>kg</small><small class="dos-carga-folga">0,27%</small></td><td><small>03/09</small> 07:02 – 07:19</td><td>17 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1F1974</span></td><td>Elias Moreira</td><td>PZA4275</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Ind. Moinho Sul</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>42,1 <small>t</small></td><td class="dos-carga">200 <small>kg</small><small class="dos-carga-folga">0,48%</small></td><td><small>02/09</small> 08:15 – 08:37</td><td>22 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
                             </tbody>
                             <tbody class="exp-cargas-corpo" data-periodo="ano">
-                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD12F374</span></td><td>Roberto Nunes</td><td>GHJ4N36</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 1</td><td>Frig. Aurora</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>39,1 <small>t</small></td><td class="dos-carga">195 <small>kg</small><small class="dos-carga-folga">0,50% · classif. 0,8%</small></td><td><small>22/09</small> 07:05 – 07:25</td><td>20 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="sorgo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD142A74</span></td><td>Cláudio Ferreira</td><td>QWE7P52</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 6</td><td>Ind. Moinho Sul</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>39,8 <small>t</small></td><td class="dos-carga">145 <small>kg</small><small class="dos-carga-folga">0,36% · classif. 0,7%</small></td><td><small>14/08</small> 08:18 – 08:43</td><td class="class-val class-val--atencao">25 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD156174</span></td><td>Vera Antunes</td><td>RFV9Q18</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 5</td><td>Porto de Paranaguá</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>40,5 <small>t</small></td><td class="dos-carga">180 <small>kg</small><small class="dos-carga-folga">0,44% · classif. 0,8%</small></td><td><small>30/07</small> 09:31 – 09:49</td><td>18 min</td><td><span class="class-status class-status--fora">Reprovada · umidade 14,6%</span></td></tr>
-                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD169874</span></td><td>Diego Matos</td><td>EDC3R64</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Frig. Aurora</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>41,2 <small>t</small></td><td class="dos-carga">135 <small>kg</small><small class="dos-carga-folga">0,33% · classif. 0,9%</small></td><td><small>19/06</small> 10:44 – 11:07</td><td class="class-val class-val--atencao">23 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="soja" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD17CF74</span></td><td>Helena Braga</td><td>XSW6T29</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Ind. Moinho Sul</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>41,9 <small>t</small></td><td class="dos-carga">125 <small>kg</small><small class="dos-carga-folga">0,30% · classif. 0,7%</small></td><td><small>28/05</small> 11:57 – 12:25</td><td class="class-val class-val--atencao">28 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD190674</span></td><td>Otávio Pinto</td><td>CDE1U73</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 5</td><td>Porto de Paranaguá</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>38,6 <small>t</small></td><td class="dos-carga">180 <small>kg</small><small class="dos-carga-folga">0,47% · classif. 0,8%</small></td><td><small>07/05</small> 12:10 – 12:31</td><td>21 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="sorgo" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD1A3D74</span></td><td>Simone Duarte</td><td>BGT8V45</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 3</td><td>Frig. Aurora</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>39,3 <small>t</small></td><td class="dos-carga">135 <small>kg</small><small class="dos-carga-folga">0,34% · classif. 1,3%</small></td><td><small>16/04</small> 13:23 – 13:49</td><td class="class-val class-val--atencao">26 min</td><td><span class="class-status class-status--fora">Reprovada · impureza 1,3%</span></td></tr>
-                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1B7474</span></td><td>Alan Ribeiro</td><td>QXA2B71</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Ind. Moinho Sul</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>40,0 <small>t</small></td><td class="dos-carga">190 <small>kg</small><small class="dos-carga-folga">0,47% · classif. 0,8%</small></td><td><small>25/03</small> 14:36 – 14:55</td><td>19 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="soja" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD1CAB74</span></td><td>Bruno Carvalho</td><td>NZV1545</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Porto de Paranaguá</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>40,7 <small>t</small></td><td class="dos-carga">165 <small>kg</small><small class="dos-carga-folga">0,41% · classif. 0,7%</small></td><td><small>11/03</small> 15:49 – 16:13</td><td class="class-val class-val--atencao">24 min</td><td><span class="class-status class-status--fora">Reprovada · avariados 6,4%</span></td></tr>
-                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1DE274</span></td><td>Marta Siqueira</td><td>MZX3B39</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Frig. Aurora</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>41,4 <small>t</small></td><td class="dos-carga">115 <small>kg</small><small class="dos-carga-folga">0,28% · classif. 0,9%</small></td><td><small>20/02</small> 07:02 – 07:19</td><td>17 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
-                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1F1974</span></td><td>Elias Moreira</td><td>PZA4275</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Ind. Moinho Sul</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>42,1 <small>t</small></td><td class="dos-carga">190 <small>kg</small><small class="dos-carga-folga">0,45% · classif. 0,8%</small></td><td><small>05/02</small> 08:15 – 08:37</td><td>22 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD12F374</span></td><td>Roberto Nunes</td><td>GHJ4N36</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 1</td><td>Frig. Aurora</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>39,1 <small>t</small></td><td class="dos-carga">195 <small>kg</small><small class="dos-carga-folga">0,50%</small></td><td><small>22/09</small> 07:05 – 07:25</td><td>20 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="sorgo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD142A74</span></td><td>Cláudio Ferreira</td><td>QWE7P52</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 6</td><td>Ind. Moinho Sul</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>39,8 <small>t</small></td><td class="dos-carga">145 <small>kg</small><small class="dos-carga-folga">0,36%</small></td><td><small>14/08</small> 08:18 – 08:43</td><td class="class-val class-val--atencao">25 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD156174</span></td><td>Vera Antunes</td><td>RFV9Q18</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 5</td><td>Porto de Paranaguá</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>40,5 <small>t</small></td><td class="dos-carga">180 <small>kg</small><small class="dos-carga-folga">0,44%</small></td><td><small>30/07</small> 09:31 – 09:49</td><td>18 min</td><td><span class="class-status class-status--fora">Reprovada · umidade 14,6%</span></td></tr>
+                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD169874</span></td><td>Diego Matos</td><td>EDC3R64</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Frig. Aurora</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>41,2 <small>t</small></td><td class="dos-carga">135 <small>kg</small><small class="dos-carga-folga">0,33%</small></td><td><small>19/06</small> 10:44 – 11:07</td><td class="class-val class-val--atencao">23 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="soja" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD17CF74</span></td><td>Helena Braga</td><td>XSW6T29</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Ind. Moinho Sul</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>41,9 <small>t</small></td><td class="dos-carga">125 <small>kg</small><small class="dos-carga-folga">0,30%</small></td><td><small>28/05</small> 11:57 – 12:25</td><td class="class-val class-val--atencao">28 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD190674</span></td><td>Otávio Pinto</td><td>CDE1U73</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 5</td><td>Porto de Paranaguá</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>38,6 <small>t</small></td><td class="dos-carga">180 <small>kg</small><small class="dos-carga-folga">0,47%</small></td><td><small>07/05</small> 12:10 – 12:31</td><td>21 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="sorgo" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD1A3D74</span></td><td>Simone Duarte</td><td>BGT8V45</td><td><i class="legend-dot legend-dot--sorgo"></i>Sorgo</td><td>Silo 3</td><td>Frig. Aurora</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>39,3 <small>t</small></td><td class="dos-carga">135 <small>kg</small><small class="dos-carga-folga">0,34%</small></td><td><small>16/04</small> 13:23 – 13:49</td><td class="class-val class-val--atencao">26 min</td><td><span class="class-status class-status--fora">Reprovada · impureza 1,3%</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1B7474</span></td><td>Alan Ribeiro</td><td>QXA2B71</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Ind. Moinho Sul</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>40,0 <small>t</small></td><td class="dos-carga">190 <small>kg</small><small class="dos-carga-folga">0,47%</small></td><td><small>25/03</small> 14:36 – 14:55</td><td>19 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="soja" data-status="fora"><td><span class="fluxo-tag">E2806995000050136FD1CAB74</span></td><td>Bruno Carvalho</td><td>NZV1545</td><td><i class="legend-dot legend-dot--soja"></i>Soja</td><td>Silo 8</td><td>Porto de Paranaguá</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>40,7 <small>t</small></td><td class="dos-carga">165 <small>kg</small><small class="dos-carga-folga">0,41%</small></td><td><small>11/03</small> 15:49 – 16:13</td><td class="class-val class-val--atencao">24 min</td><td><span class="class-status class-status--fora">Reprovada · avariados 6,4%</span></td></tr>
+                                <tr data-cultura="trigo" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1DE274</span></td><td>Marta Siqueira</td><td>MZX3B39</td><td><i class="legend-dot legend-dot--trigo"></i>Trigo</td><td>Silo 7</td><td>Frig. Aurora</td><td><span class="exp-frete exp-frete--fob">FOB</span></td><td>41,4 <small>t</small></td><td class="dos-carga">115 <small>kg</small><small class="dos-carga-folga">0,28%</small></td><td><small>20/02</small> 07:02 – 07:19</td><td>17 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
+                                <tr data-cultura="milho" data-status="ok"><td><span class="fluxo-tag">E2806995000040136FD1F1974</span></td><td>Elias Moreira</td><td>PZA4275</td><td><i class="legend-dot legend-dot--milho"></i>Milho</td><td>Silo 2</td><td>Ind. Moinho Sul</td><td><span class="exp-frete exp-frete--cif">CIF</span></td><td>42,1 <small>t</small></td><td class="dos-carga">190 <small>kg</small><small class="dos-carga-folga">0,45%</small></td><td><small>05/02</small> 08:15 – 08:37</td><td>22 min</td><td><span class="class-status class-status--ok">Liberada</span></td></tr>
                             </tbody>
                         </table>
                     </div>
