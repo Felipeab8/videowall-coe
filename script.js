@@ -5400,33 +5400,53 @@ function desenharSparkline(svg, hist, proj, slots = SPARK_SLOTS) {
         `<circle class="sa-spark-ponto" cx="${xa}" cy="${ay.toFixed(2)}" r="2"></circle>`;
 }
 
+function periodoSilos(svg) {
+    const tela = svg.closest('.screen') || document;
+    const btn = tela.querySelector(
+        '.fluxo-periodo-btn.is-active[data-silo-periodo], .fluxo-periodo-btn[aria-pressed="true"][data-silo-periodo]'
+    );
+    if (btn) return btn.dataset.siloPeriodo;
+    const sec = svg.closest('[data-silo-periodo]');
+    return sec ? sec.dataset.siloPeriodo : '24h';
+}
+
 function desenharSpark3Pontos(svg, hist) {
     const W = SPARK_W;
     const H = SPARK_H;
     const card = svg.closest('[data-silo]');
+    const periodo = periodoSilos(svg);
+    const longo = periodo === '7d' || periodo === '30d';
 
     const vals = (hist || []).map(Number).filter(Number.isFinite);
     if (!vals.length) { svg.innerHTML = ''; return; }
 
-    // Usa as 3 medições: se vierem mais valores, pega o primeiro, o do meio e o último
+    // 24 h / turnos: 3 medições do dia | 7 e 30 dias: todas as medições
     const n = vals.length;
-    const tres = n <= 3 ? vals : [vals[0], vals[Math.floor((n - 1) / 2)], vals[n - 1]];
+    const serie = longo || n <= 3
+        ? vals
+        : [vals[0], vals[Math.floor((n - 1) / 2)], vals[n - 1]];
 
-    let min = Math.min(...tres);
-    let max = Math.max(...tres);
+    let min = Math.min(...serie);
+    let max = Math.max(...serie);
     if (max - min < 0.6) { const m = (max + min) / 2; min = m - 0.3; max = m + 0.3; }
 
     const mx = 3;
-    const xs = tres.length === 1
+    const xs = serie.length === 1
         ? [W / 2]
-        : tres.map((_, i) => mx + i * (W - 2 * mx) / (tres.length - 1));
-    const ys = tres.map(v => (H - 4) - (v - min) / (max - min) * (H - 8));
+        : serie.map((_, i) => mx + i * (W - 2 * mx) / (serie.length - 1));
+    const ys = serie.map(v => (H - 4) - (v - min) / (max - min) * (H - 8));
 
     const linha = xs.map((x, i) => `${i ? 'L' : 'M'}${x.toFixed(2)} ${ys[i].toFixed(2)}`).join(' ');
     const area = `${linha} L${xs[xs.length - 1].toFixed(2)} ${H} L${xs[0].toFixed(2)} ${H} Z`;
-    const marcas = xs.map(x => `M${x.toFixed(2)} ${H - 3} L${x.toFixed(2)} ${H + 3}`).join(' ');
-    const bolinhas = xs.map((x, i) =>
-        `<circle class="sa-spark-ponto" cx="${x.toFixed(2)}" cy="${ys[i].toFixed(2)}" r="2"></circle>`).join('');
+
+    // Marcas do eixo: uma por medição (24 h) ou início/meio/fim (7 e 30 dias)
+    const posMarcas = longo ? [0, W / 2, W] : xs;
+    const marcas = posMarcas.map(x => `M${x.toFixed(2)} ${H - 3} L${x.toFixed(2)} ${H + 3}`).join(' ');
+
+    // Bolinhas: em todas as medições até 31 pontos; acima disso, só na última
+    const comBolinha = serie.length <= 31 ? xs.map((_, i) => i) : [serie.length - 1];
+    const bolinhas = comBolinha.map(i =>
+        `<circle class="sa-spark-ponto" cx="${xs[i].toFixed(2)}" cy="${ys[i].toFixed(2)}" r="2"></circle>`).join('');
 
     svg.innerHTML =
         `<path class="sa-spark-area" d="${area}"></path>` +
@@ -5436,12 +5456,11 @@ function desenharSpark3Pontos(svg, hist) {
 
     if (!card) return;
 
-    // Esconde a projeção, porque não há projeção com 3 medições
     const proj = card.querySelector('[data-temp-proj]');
-    if (proj) proj.style.display = 'none';
+    if (proj) proj.style.display = longo ? '' : 'none';
 
-    // Horários das medições (opcional: data-horarios="07:00,15:00,23:00" no <article>)
-    if (card.dataset.horarios) {
+    // Horários das medições só no 24 h / turnos
+    if (!longo && card.dataset.horarios) {
         const h = card.dataset.horarios.split(',');
         const ini = card.querySelector('[data-hora-inicio]');
         const meio = card.querySelector('[data-hora-meio]');
@@ -5451,7 +5470,6 @@ function desenharSpark3Pontos(svg, hist) {
         if (fim && h[2]) fim.textContent = h[2].trim();
     }
 }
-
 // Taxa das últimas 3 horas: leitura atual menos a de 3h atrás, por hora.
 function taxaTemperatura(temps) {
     if (temps.length < 4) return 0;
