@@ -5488,21 +5488,19 @@ function curvaBlocos24h(alvo, temps, card) {
 }
 
 // ============================================
-// SILOS · 3 MEDIÇÕES POR DIA
-// A termometria do silo mede 3 vezes ao dia. O gráfico mostra só essas
+// SILOS · MEDIÇÕES A CADA 12 H (00h e 12h)
+// A termometria do silo mede às 00h e às 12h. O gráfico mostra só as
 // medições, sem projeção:
-//   24 h        as 3 últimas medições, com o valor em cima de cada ponto
-//   turnos      as mesmas 3, com o ponto do turno escolhido em destaque
-//   7 / 30 dias todas as medições do período em data-temps-dia
-//               (3 por dia: 21 em 7 dias, 90 em 30 dias)
+//   24 h / turnos  3 pontos: 00h · 12h · 00h (as 3 últimas medições)
+//   7 / 30 dias    todas as medições de data-temps-dia (2 por dia:
+//                  15 pontos em 7 dias, 61 em 30 dias)
 // data-temps aceita só as 3 medições (ex.: "23.6,23.1,22.4") ou a série
-// horária antiga (24 valores, o último é a hora atual): nesse caso pega a
-// leitura de cada horário de medição.
-// Horários: HORARIOS_MEDICAO_SILO, ou data-horarios="00:00,12:00,00:00"
-// no <article> para um silo específico.
+// horária (24 valores, o último é a hora atual): nesse caso pega a leitura
+// das 00h e 12h.
 // ============================================
-const HORARIOS_MEDICAO_SILO = ['00:00', '12:00', '00:00'];
-const MEDICOES_POR_DIA = 3;
+const INTERVALO_MEDICAO_H = 12;
+const MEDICOES_POR_DIA = 24 / INTERVALO_MEDICAO_H;
+const PONTOS_24H = 3;
 const DIAS_SILO = { '7d': 7, '30d': 30 };
 
 function periodoDoSilo(card) {
@@ -5510,65 +5508,58 @@ function periodoDoSilo(card) {
     return tela ? tela.dataset.siloPeriodo : '24h';
 }
 
-function horariosDoSilo(card) {
-    const proprios = (card.dataset.horarios || '').split(',').map((h) => h.trim()).filter(Boolean);
-    return proprios.length === MEDICOES_POR_DIA ? proprios : HORARIOS_MEDICAO_SILO;
-}
-
 // 1 casa decimal: medições iguais ficam exatamente na mesma altura
 function arred1(v) {
     return Math.round(v * 10) / 10;
 }
 
-// as 3 medições mais recentes: [{ v, rotulo, min }] (min = minuto do dia)
+// as 3 últimas medições: [{ v, rotulo, hora }]
 function medicoesDoDia(card, agora) {
     const temps = numeros(card.dataset.temps).map(arred1);
-    const horarios = horariosDoSilo(card);
     if (!temps.length) return [];
-    if (temps.length <= MEDICOES_POR_DIA) {
-        return temps.map((v, i) => {
-            const rotulo = horarios[i] || `T${i + 1}`;
-            return { v, rotulo, min: minutosDoDia(rotulo) };
-        });
-    }
-    // série horária: a última leitura é a hora atual
     const base = new Date(agora);
     base.setMinutes(0, 0, 0);
-    const momentos = [];
-    for (let d = 1; d >= 0; d -= 1) {
-        horarios.forEach((h) => {
-            const m = new Date(base);
-            m.setDate(m.getDate() - d);
-            const min = minutosDoDia(h);
-            m.setHours(Math.floor(min / 60), min % 60, 0, 0);
-            if (m <= agora) momentos.push({ m, h, min });
-        });
+    // hora da última medição (00h ou 12h) que já aconteceu
+    const desdeUltima = base.getHours() % INTERVALO_MEDICAO_H;
+    const ultima = new Date(base.getTime() - desdeUltima * HORA_MS);
+    const momento = (k) => new Date(ultima.getTime() - k * INTERVALO_MEDICAO_H * HORA_MS);
+    let valores;
+    if (temps.length <= PONTOS_24H) {
+        valores = temps;
+    } else {
+        const fim = temps.length - 1 - desdeUltima;
+        valores = [];
+        for (let k = PONTOS_24H - 1; k >= 0; k -= 1) {
+            // série curta (24 valores): a medição mais antiga usa a primeira leitura
+            const i = Math.min(temps.length - 1, Math.max(0, fim - k * INTERVALO_MEDICAO_H));
+            valores.push(temps[i]);
+        }
     }
-    momentos.sort((a, b) => a.m - b.m);
-    return momentos.slice(-MEDICOES_POR_DIA).map(({ m, h, min }) => {
-        const horasAtras = Math.round((base - m) / HORA_MS);
-        const i = Math.max(0, temps.length - 1 - horasAtras);
-        return { v: temps[i], rotulo: h, min };
+    const n = valores.length;
+    return valores.map((v, i) => {
+        const m = momento(n - 1 - i);
+        return { v, rotulo: formatarHora(m), hora: m.getHours() };
     });
 }
 
-// todas as medições do período (3 por dia), a última é a mais recente
+// todas as medições do período (2 por dia), a última é a mais recente
 function medicoesDoPeriodo(card, periodo, agora) {
     const dia = numeros(card.dataset.tempsDia).map(arred1);
-    const serie = dia.slice(-((DIAS_SILO[periodo] || 7) * MEDICOES_POR_DIA));
+    const serie = dia.slice(-((DIAS_SILO[periodo] || 7) * MEDICOES_POR_DIA + 1));
+    const ultima = new Date(agora);
+    ultima.setMinutes(0, 0, 0);
+    ultima.setHours(agora.getHours() - (agora.getHours() % INTERVALO_MEDICAO_H));
     const n = serie.length;
-    return serie.map((v, i) => {
-        const diasAtras = Math.floor((n - 1 - i) / MEDICOES_POR_DIA);
-        return { v, rotulo: formatarData(new Date(agora.getTime() - diasAtras * 24 * HORA_MS)) };
-    });
+    return serie.map((v, i) => ({
+        v,
+        rotulo: formatarData(new Date(ultima.getTime() - (n - 1 - i) * INTERVALO_MEDICAO_H * HORA_MS)),
+    }));
 }
 
-// °C/h entre as duas últimas medições do dia
+// °C/h entre as duas últimas medições (12 h de intervalo)
 function taxaEntreMedicoes(pontos) {
     const n = pontos.length;
-    if (n < 2) return 0;
-    const horas = (((pontos[n - 1].min - pontos[n - 2].min) % 1440) + 1440) % 1440 / 60;
-    return horas > 0 ? (pontos[n - 1].v - pontos[n - 2].v) / horas : 0;
+    return n < 2 ? 0 : (pontos[n - 1].v - pontos[n - 2].v) / INTERVALO_MEDICAO_H;
 }
 
 function desenharSilo3(card, pontos, opcoes) {
@@ -5668,7 +5659,7 @@ function prepararSilo(card) {
         unidade = 'dia';
     } else if (TURNOS_SILO[periodo]) {
         pontos.forEach((p, i) => {
-            if (noTurno(Math.floor(p.min / 60), TURNOS_SILO[periodo])) destaque = i;
+            if (noTurno(p.hora, TURNOS_SILO[periodo])) destaque = i;
         });
     }
     if (!pontos.length) return;
@@ -5682,8 +5673,8 @@ function prepararSilo(card) {
         escreverTexto(rate, formatarTaxa(taxa).replace('°C/h', `°C/${unidade}`));
         rate.dataset.tendencia = tendencia;
         rate.title = unidade === 'dia'
-            ? 'Variação média por dia no período (3 medições por dia)'
-            : 'Variação por hora entre as duas últimas medições';
+            ? 'Variação média por dia no período (medições das 00h e 12h)'
+            : 'Variação por hora entre as duas últimas medições (00h e 12h)';
     }
 }
 
