@@ -5498,10 +5498,10 @@ function curvaBlocos24h(alvo, temps, card) {
 // data-temps aceita só as 3 medições (ex.: "23.6,23.1,22.4") ou a série
 // horária antiga (24 valores, o último é a hora atual): nesse caso pega a
 // leitura de cada horário de medição.
-// Horários: HORARIOS_MEDICAO_SILO, ou data-horarios="08:00,17:00,23:00"
+// Horários: HORARIOS_MEDICAO_SILO, ou data-horarios="00:00,12:00,00:00"
 // no <article> para um silo específico.
 // ============================================
-const HORARIOS_MEDICAO_SILO = ['08:00', '17:00', '23:00'];
+const HORARIOS_MEDICAO_SILO = ['00:00', '12:00', '00:00'];
 const MEDICOES_POR_DIA = 3;
 const DIAS_SILO = { '7d': 7, '30d': 30 };
 
