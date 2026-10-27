@@ -5489,19 +5489,21 @@ function curvaBlocos24h(alvo, temps, card) {
 
 // ============================================
 // SILOS · MEDIÇÕES A CADA 12 H (00h e 12h)
-// A termometria do silo mede às 00h e às 12h. O gráfico mostra só as
-// medições, sem projeção:
-//   24 h / turnos  3 pontos: 00h · 12h · 00h (as 3 últimas medições)
-//   7 / 30 dias    todas as medições de data-temps-dia (2 por dia:
-//                  15 pontos em 7 dias, 61 em 30 dias)
+// A termometria do silo mede às 00h e às 12h. Todos os períodos usam o
+// mesmo gráfico: linha + área, sem bolinhas, só um marcador no valor atual.
+//   24 h / turnos  3 medições (00h · 12h · 00h) com o valor em cima e uma
+//                  guia tracejada até o eixo em cada medição
+//   7 / 30 dias    todas as medições de data-temps-dia (2 por dia), com o
+//                  eixo fixo na janela; silo que encheu há menos tempo
+//                  começa a curva no meio do eixo
 // data-temps aceita só as 3 medições (ex.: "23.6,23.1,22.4") ou a série
-// horária (24 valores, o último é a hora atual): nesse caso pega a leitura
-// das 00h e 12h.
+// horária (24 valores, o último é a hora atual).
 // ============================================
 const INTERVALO_MEDICAO_H = 12;
 const MEDICOES_POR_DIA = 24 / INTERVALO_MEDICAO_H;
 const PONTOS_24H = 3;
 const DIAS_SILO = { '7d': 7, '30d': 30 };
+const MARCAR_ATUAL = true; // false = sem nenhum marcador no gráfico
 
 function periodoDoSilo(card) {
     const tela = card.closest('[data-silo-periodo]');
@@ -5513,16 +5515,19 @@ function arred1(v) {
     return Math.round(v * 10) / 10;
 }
 
-// as 3 últimas medições: [{ v, rotulo, hora }]
+function ultimaMedicao(agora) {
+    const m = new Date(agora);
+    m.setMinutes(0, 0, 0);
+    m.setHours(m.getHours() - (m.getHours() % INTERVALO_MEDICAO_H));
+    return m;
+}
+
+// as 3 últimas medições: [{ v, rotulo, hora, slot }]
 function medicoesDoDia(card, agora) {
     const temps = numeros(card.dataset.temps).map(arred1);
     if (!temps.length) return [];
-    const base = new Date(agora);
-    base.setMinutes(0, 0, 0);
-    // hora da última medição (00h ou 12h) que já aconteceu
-    const desdeUltima = base.getHours() % INTERVALO_MEDICAO_H;
-    const ultima = new Date(base.getTime() - desdeUltima * HORA_MS);
-    const momento = (k) => new Date(ultima.getTime() - k * INTERVALO_MEDICAO_H * HORA_MS);
+    const ultima = ultimaMedicao(agora);
+    const desdeUltima = Math.round((new Date(agora).setMinutes(0, 0, 0) - ultima) / HORA_MS);
     let valores;
     if (temps.length <= PONTOS_24H) {
         valores = temps;
@@ -5537,23 +5542,31 @@ function medicoesDoDia(card, agora) {
     }
     const n = valores.length;
     return valores.map((v, i) => {
-        const m = momento(n - 1 - i);
-        return { v, rotulo: formatarHora(m), hora: m.getHours() };
+        const m = new Date(ultima.getTime() - (n - 1 - i) * INTERVALO_MEDICAO_H * HORA_MS);
+        return { v, rotulo: formatarHora(m), hora: m.getHours(), slot: PONTOS_24H - n + i };
     });
 }
 
-// todas as medições do período (2 por dia), a última é a mais recente
+// medições do período (2 por dia) na janela fixa de 7 ou 30 dias
 function medicoesDoPeriodo(card, periodo, agora) {
-    const dia = numeros(card.dataset.tempsDia).map(arred1);
-    const serie = dia.slice(-((DIAS_SILO[periodo] || 7) * MEDICOES_POR_DIA + 1));
-    const ultima = new Date(agora);
-    ultima.setMinutes(0, 0, 0);
-    ultima.setHours(agora.getHours() - (agora.getHours() % INTERVALO_MEDICAO_H));
+    const slots = (DIAS_SILO[periodo] || 7) * MEDICOES_POR_DIA + 1;
+    const serie = numeros(card.dataset.tempsDia).map(arred1).slice(-slots);
     const n = serie.length;
-    return serie.map((v, i) => ({
-        v,
-        rotulo: formatarData(new Date(ultima.getTime() - (n - 1 - i) * INTERVALO_MEDICAO_H * HORA_MS)),
-    }));
+    return serie.map((v, i) => ({ v, slot: slots - n + i }));
+}
+
+function eixoDoPeriodo(periodo, agora) {
+    const dias = DIAS_SILO[periodo] || 7;
+    const fim = ultimaMedicao(agora);
+    const dia = 24 * HORA_MS;
+    return {
+        slots: dias * MEDICOES_POR_DIA + 1,
+        rotulos: [
+            formatarData(new Date(fim.getTime() - dias * dia)),
+            formatarData(new Date(fim.getTime() - (dias / 2) * dia)),
+            formatarData(fim),
+        ],
+    };
 }
 
 // °C/h entre as duas últimas medições (12 h de intervalo)
@@ -5580,24 +5593,27 @@ function desenharSilo3(card, pontos, opcoes) {
         hi = meio + 0.5;
     }
     const MX = 4;
-    const TOPO = 6;
+    const TOPO = 7;
     const BASE = 4;
-    const xs = pontos.map((_, i) => (n === 1 ? W / 2 : MX + (i * (W - 2 * MX)) / (n - 1)));
+    const slots = opcoes.slots;
+    const xs = pontos.map((p) => (slots <= 1 ? W / 2 : MX + (p.slot * (W - 2 * MX)) / (slots - 1)));
     const ys = vals.map((v) => TOPO + (1 - (v - lo) / (hi - lo)) * (H - TOPO - BASE));
+    const f = (v) => v.toFixed(2);
 
     const linha = caminho(xs.map((x, i) => [x, ys[i]]));
-    const area = `${linha} L${xs[n - 1].toFixed(2)} ${H} L${xs[0].toFixed(2)} ${H} Z`;
-    const marcasX = opcoes.longo ? [0, W / 2, W] : xs;
-    const marcas = marcasX.map((x) => `M${x.toFixed(2)} ${H - 3} L${x.toFixed(2)} ${H + 3}`).join(' ');
-    const comPonto = n <= 31 ? xs.map((_, i) => i) : [n - 1];
-    const bolinhas = comPonto.map((i) =>
-        `<circle class="sa-spark-ponto" cx="${xs[i].toFixed(2)}" cy="${ys[i].toFixed(2)}" r="${i === opcoes.destaque ? 3.2 : 2}"></circle>`
+    const area = `${linha} L${f(xs[n - 1])} ${H} L${f(xs[0])} ${H} Z`;
+    const marcasX = [MX, W / 2, W - MX];
+    const marcas = marcasX.map((x) => `M${f(x)} ${H - 3} L${f(x)} ${H + 3}`).join(' ');
+    // guias tracejadas do ponto até o eixo, só nas 3 medições do dia
+    const guias = opcoes.longo ? '' : xs.map((x, i) =>
+        `<path class="sa-spark-eixo" d="M${f(x)} ${f(ys[i])} L${f(x)} ${H}" `
+        + 'style="stroke-dasharray:1.5 1.5;opacity:.45" vector-effect="non-scaling-stroke"></path>'
     ).join('');
     svg.innerHTML =
         `<path class="sa-spark-area" d="${area}"></path>` +
         `<path class="sa-spark-eixo" d="M0 ${H} L${W} ${H} ${marcas}"></path>` +
-        `<path class="sa-spark-line" d="${linha}"></path>` +
-        bolinhas;
+        guias +
+        `<path class="sa-spark-line" d="${linha}" style="stroke-linejoin:round;stroke-linecap:round"></path>`;
     svg.dataset.bloco = '';
 
     // os rótulos antigos (início / atual / projeção) saem de cena
@@ -5606,13 +5622,13 @@ function desenharSilo3(card, pontos, opcoes) {
         if (el) el.style.display = 'none';
     });
 
-    // horários (24 h / turnos) ou datas (7 / 30 dias) embaixo do eixo
-    const meio = Math.floor((n - 1) / 2);
-    escreverTexto(card.querySelector('[data-hora-inicio]'), pontos[0].rotulo);
-    escreverTexto(card.querySelector('[data-hora-meio]'), n > 2 ? pontos[meio].rotulo : '');
-    escreverTexto(card.querySelector('[data-hora-fim]'), pontos[n - 1].rotulo);
+    // eixo: sempre 3 rótulos no início, meio e fim
+    const rot = opcoes.rotulosEixo;
+    escreverTexto(card.querySelector('[data-hora-inicio]'), rot[0]);
+    escreverTexto(card.querySelector('[data-hora-meio]'), rot[1]);
+    escreverTexto(card.querySelector('[data-hora-fim]'), rot[2]);
 
-    // valor em cima de cada ponto, com o mesmo número da bolinha
+    // valores em cima da curva: as 3 medições (24 h) ou primeira e atual (7 / 30 dias)
     let camada = wrap.querySelector('.sa-rotulos3');
     if (!camada) {
         camada = document.createElement('div');
@@ -5625,14 +5641,23 @@ function desenharSilo3(card, pontos, opcoes) {
     const rw = wrap.getBoundingClientRect();
     const rs = svg.getBoundingClientRect();
     if (!rw.width || !rs.width || !rs.height) return; // tela fora do ar: escreve no próximo segundo
-    const indices = opcoes.longo ? [0, n - 1] : xs.map((_, i) => i);
-    camada.innerHTML = indices.map((i) => {
-        const left = ((rs.left - rw.left + (xs[i] / W) * rs.width) / rw.width) * 100;
-        const top = ((rs.top - rw.top + (ys[i] / H) * rs.height) / rw.height) * 100;
-        const tx = n === 1 ? '-50%' : i === 0 ? '0%' : i === n - 1 ? '-100%' : '-50%';
+    const indices = opcoes.longo ? (n > 1 ? [0, n - 1] : [0]) : xs.map((_, i) => i);
+    const posX = (i) => ((rs.left - rw.left + (xs[i] / W) * rs.width) / rw.width) * 100;
+    const posY = (i) => ((rs.top - rw.top + (ys[i] / H) * rs.height) / rw.height) * 100;
+    // marcador do valor atual em HTML: fica redondo mesmo com o SVG esticado
+    const cor = getComputedStyle(svg.querySelector('.sa-spark-line')).stroke || '#fff';
+    const marcador = MARCAR_ATUAL
+        ? `<i style="position:absolute;left:${posX(n - 1).toFixed(2)}%;top:${posY(n - 1).toFixed(2)}%;`
+          + `width:7px;height:7px;border-radius:50%;background:${cor};transform:translate(-50%,-50%);`
+          + `box-shadow:0 0 0 3px color-mix(in srgb, ${cor} 30%, transparent);"></i>`
+        : '';
+    camada.innerHTML = marcador + indices.map((i) => {
+        const left = posX(i);
+        const top = posY(i);
+        const tx = xs[i] < W * 0.2 ? '-12%' : xs[i] > W * 0.8 ? '-88%' : '-50%';
         return `<b class="sa-temp-ponto sa-temp-ponto--3" style="display:block;position:absolute;`
             + `left:${left.toFixed(2)}%;top:${top.toFixed(2)}%;right:auto;bottom:auto;margin:0;`
-            + `transform:translate(${tx},-135%);white-space:nowrap;">${formatarTemperatura(vals[i])}</b>`;
+            + `transform:translate(${tx},-150%);white-space:nowrap;">${formatarTemperatura(vals[i])}</b>`;
     }).join('');
 }
 
@@ -5648,22 +5673,33 @@ function prepararSilo(card) {
     const wrap = card.querySelector('[data-spark-wrap]');
     if (wrap) wrap.dataset.modo = 'serie';
 
-    let pontos = doDia;
-    let taxa = taxaDia;
-    let unidade = 'h';
-    let destaque = -1;
+    // a legenda "tracejado = projeção" não vale mais: não há projeção
+    const secao = card.closest('.sa-section');
+    const dica = secao && secao.querySelector('.stack-hint');
+    if (dica) escreverTexto(dica, 'medições às 00h e 12h');
+
+    let pontos;
+    let taxa;
+    let unidade;
+    let opcoes;
     if (longo) {
         pontos = medicoesDoPeriodo(card, periodo, agora);
+        const eixo = eixoDoPeriodo(periodo, agora);
         const n = pontos.length;
         taxa = n > 1 ? (pontos[n - 1].v - pontos[0].v) / ((n - 1) / MEDICOES_POR_DIA) : 0;
         unidade = 'dia';
-    } else if (TURNOS_SILO[periodo]) {
-        pontos.forEach((p, i) => {
-            if (noTurno(p.hora, TURNOS_SILO[periodo])) destaque = i;
-        });
+        opcoes = { longo, slots: eixo.slots, rotulosEixo: eixo.rotulos };
+    } else {
+        pontos = doDia;
+        taxa = taxaDia;
+        unidade = 'h';
+        const ultima = ultimaMedicao(agora);
+        const rotulos = [2, 1, 0].map((k) =>
+            formatarHora(new Date(ultima.getTime() - k * INTERVALO_MEDICAO_H * HORA_MS)));
+        opcoes = { longo, slots: PONTOS_24H, rotulosEixo: rotulos };
     }
     if (!pontos.length) return;
-    desenharSilo3(card, pontos, { longo, destaque });
+    desenharSilo3(card, pontos, opcoes);
 
     const tendencia = unidade === 'dia'
         ? (taxa >= 1 ? 'alerta' : taxa > 0.1 ? 'sobe' : taxa < -0.1 ? 'desce' : 'estavel')
