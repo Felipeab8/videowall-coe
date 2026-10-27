@@ -546,6 +546,7 @@ const EDITABLE_SELECTORS = [
     '.secador-eixo span',
     '.secador-eixo-cap',
     '.serie-legenda-item',
+    '.fase-legenda-item',
     '.rank-nome',
     '.rank-valor',
     '.donut-nome',
@@ -4144,11 +4145,14 @@ document.addEventListener('keydown', (e) => {
 function limparFiltrosFluxo() {
     // o periodo tambem volta para "hoje": as contagens dos selos sao escritas
     // pelo filtro e o HTML guardado precisa sair com os valores de origem
-    const botaoHoje = document.querySelector('#screen-fluxo .fluxo-periodo-btn[data-fluxo-periodo="hoje"]');
-    if (botaoHoje && !botaoHoje.classList.contains('is-active')) escolherPeriodoFluxo(botaoHoje);
+    // (vale para as duas telas de fluxo, recepcao e expedicao)
+    document.querySelectorAll('.fluxo-periodo-btn[data-fluxo-periodo="hoje"]').forEach((botaoHoje) => {
+        if (!botaoHoje.classList.contains('is-active')) escolherPeriodoFluxo(botaoHoje);
+    });
     // a cultura tambem volta para "todas" pelo mesmo motivo
-    const botaoTodas = document.querySelector('#screen-fluxo button[data-fluxo-cultura="todas"]');
-    if (botaoTodas && !botaoTodas.classList.contains('is-active')) escolherCulturaFluxo(botaoTodas);
+    document.querySelectorAll('button[data-fluxo-cultura="todas"]').forEach((botaoTodas) => {
+        if (!botaoTodas.classList.contains('is-active')) escolherCulturaFluxo(botaoTodas);
+    });
     document.querySelectorAll('.content-section[data-fluxo-etapa]').forEach((secao) => {
         if (secao.dataset.fluxoEtapa !== 'todos') filtrarFluxo(secao, 'todos');
     });
@@ -4458,15 +4462,16 @@ function limparFiltrosClassificacao() {
 // MOEGAS · FILTRO
 // Período é da tela: a section guarda a escolha em data-moega-periodo e vale
 // para as seis moegas de uma vez — o CSS troca o bloco "Saiu", a entrada/saída
-// (ao vivo no turno, média nos demais) e as trocas de cultura que entram no
-// período. Delegado no documento porque o editor remonta o palco.
+// (ao vivo no 1º turno, média nos demais) e as trocas de cultura que entram no
+// período. Turnos t1/t2/t3 e hoje/7/30 dias, nos mesmos botões do fluxo.
+// Delegado no documento porque o editor remonta o palco.
 // ============================================
 function escolherPeriodoMoega(alvo) {
     const tela = alvo.closest('.screen--moegas');
     const periodo = alvo.dataset.moegaPeriodo;
     if (!tela || !periodo) return;
     tela.dataset.moegaPeriodo = periodo;
-    tela.querySelectorAll('.moega-periodo-btn').forEach((btn) => {
+    tela.querySelectorAll('button[data-moega-periodo]').forEach((btn) => {
         const ativo = btn.dataset.moegaPeriodo === periodo;
         btn.classList.toggle('is-active', ativo);
         btn.setAttribute('aria-pressed', String(ativo));
@@ -4515,8 +4520,11 @@ const NOME_PERIODO_FLUXO = {
 };
 const NOME_CULTURA_FLUXO = { milho: 'milho', sorgo: 'sorgo', trigo: 'trigo', soja: 'soja' };
 
+// as duas telas de fluxo (recepcao e expedicao) usam o mesmo filtro
+const TELAS_FLUXO = '#screen-fluxo, #screen-exp-fluxo';
+
 function escolherPeriodoFluxo(alvo) {
-    const tela = alvo.closest('#screen-fluxo');
+    const tela = alvo.closest(TELAS_FLUXO);
     const periodo = alvo.dataset.fluxoPeriodo;
     if (!tela || !periodo) return;
     tela.dataset.fluxoPeriodo = periodo;
@@ -4538,7 +4546,7 @@ function escolherPeriodoFluxo(alvo) {
 // e para a contagem dos selos; os cartoes de etapa continuam no periodo, que
 // e' a foto da planta inteira. Delegado no documento, como o periodo.
 function escolherCulturaFluxo(alvo) {
-    const tela = alvo.closest('#screen-fluxo');
+    const tela = alvo.closest(TELAS_FLUXO);
     const cultura = alvo.dataset.fluxoCultura;
     if (!tela || !cultura) return;
     tela.dataset.fluxoCultura = cultura;
@@ -4679,28 +4687,40 @@ function escolherPeriodoExp(alvo) {
 // ============================================
 // PRODUTIVIDADE · PERIODO DOS KPIs E CARTOES
 // Mesmo mecanismo do fluxo: data-prod-periodo na section, CSS mostra so
-// os blocos .prod-periodo-bloco do periodo. O grafico por hora nao muda.
+// os blocos .prod-periodo-bloco do periodo. Turno (t1/t2/t3) tambem leva o
+// grafico por hora para aquele turno; hoje/7/30 dias deixam o grafico no
+// ultimo turno escolhido.
 // ============================================
 function escolherPeriodoProd(alvo) {
     const tela = alvo.closest('#screen-4');
     const periodo = alvo.dataset.prodPeriodo;
     if (!tela || !periodo) return;
     tela.dataset.prodPeriodo = periodo;
-    tela.querySelectorAll('[data-prod-periodo]').forEach((btn) => {
+    tela.querySelectorAll('button[data-prod-periodo]').forEach((btn) => {
         const ativo = btn.dataset.prodPeriodo === periodo;
         btn.classList.toggle('is-active', ativo);
         btn.setAttribute('aria-pressed', String(ativo));
     });
+    if (/^t\d$/.test(periodo)) {
+        tela.querySelectorAll('.prod-grafico').forEach((secao) => {
+            secao.dataset.prodTurno = periodo;
+            montarGraficoProd(secao);
+        });
+    }
     scheduleFit();
 }
 
 // ============================================
 // PRODUTIVIDADE · SECAGEM POR HORA, POR TURNO
 // Um grafico por secador, dentro do cartao dele ([data-prod-grafico="s1"]),
-// mostrando um turno por vez (data-prod-turno na secao). Monta do JSON em
+// mostrando um turno por vez (data-prod-turno na secao, escolhido pelo
+// filtro de turno do cabecalho da tela). Monta do JSON em
 // [data-prod-dados]: por hora, o secado de cada secador (s1, s2), a meta de
-// operacao (m1, m2), os minutos da hora que contam (min, 60 se faltar),
-// parada {sec, min, motivo}, agora/futuro. Duas linhas no grafico: a
+// operacao (m1, m2), a umidade media de entrada da hora (u1, u2, em %; a
+// projecao nao tem), os minutos da hora que contam (min, 60 se faltar),
+// parada {sec, min, motivo}, agora/futuro. A umidade vai embaixo da hora:
+// e' o que explica o secador abaixo do nominal com a temperatura ja no
+// maximo (grao mais umido seca mais devagar). Duas linhas no grafico: a
 // capacidade nominal (tracejada) e a meta de operacao (cheia, em degraus,
 // hora a hora); os dois graficos usam a mesma escala (max). Embaixo de cada
 // um, o fim do turno: secado contra o que o nominal permitiria nas horas
@@ -4708,10 +4728,30 @@ function escolherPeriodoProd(alvo) {
 // toneladas perdidas.
 // ============================================
 const PROD_SECADORES = [
-    { chave: 's1', meta: 'm1' },
-    { chave: 's2', meta: 'm2' },
+    { chave: 's1', meta: 'm1', umi: 'u1' },
+    { chave: 's2', meta: 'm2', umi: 'u2' },
 ];
 const PROD_TOLERANCIA = 0.9; // ate 10% abaixo do nominal e' normal
+
+// umidade media da hora, "18,2%"; vazio quando a hora nao tem (projecao)
+function umidadeDaHora(hora, s) {
+    const u = hora[s.umi];
+    return typeof u === 'number' ? `${u.toFixed(1).replace('.', ',')}%` : '';
+}
+
+// cada hora e' rotulada pelo inicio: "07h" (das 7h as 8h) vira "7h"
+function rotuloHora(hora) {
+    return `${parseInt(hora.h, 10)}h`;
+}
+
+// intervalo da hora para o tooltip: "das 7h às 8h"; hora que nao conta
+// inteira (min < 60) termina antes: "das 16h às 16h20"
+function intervaloHora(hora) {
+    const ini = parseInt(hora.h, 10);
+    const min = hora.min || 60;
+    const fim = min < 60 ? `${ini}h${String(min).padStart(2, '0')}` : `${(ini + 1) % 24}h`;
+    return `das ${ini}h às ${fim}`;
+}
 
 function dadosProd(secao) {
     const fonte = secao.querySelector('[data-prod-dados]');
@@ -4746,10 +4786,11 @@ function graficoProd(dados, turno, s) {
         const parcial = min < 60 && !hora.futuro;
         const parada = paradaDoSecador(hora, s);
         const v = hora[s.chave];
-        let dia = hora.h;
+        let dia = intervaloHora(hora);
         if (hora.futuro) dia += ' · projeção';
-        else if (parcial) dia += ` · ${min} min`;
         if (parada) dia += ` · parado ${parada.min} min (${parada.motivo})`;
+        const umidade = umidadeDaHora(hora, s);
+        if (umidade) dia += ` · umidade ${umidade}`;
         // o tooltip pinta as duas linhas na cor do secador (--sec do cartao)
         const attrs = [
             `data-dia="${dia}"`,
@@ -4801,7 +4842,9 @@ function graficoProd(dados, turno, s) {
             // duas linhas curtas: a coluna de um secador so e' estreita
             nota = `<small>parcial<br>${min} min</small>`;
         }
-        return `<span class="${cls.join(' ')}">${hora.h.toUpperCase()}${nota}</span>`;
+        const umidade = umidadeDaHora(hora, s);
+        const umi = umidade ? `<small class="prod-umi" title="Umidade média de entrada na hora">${umidade}</small>` : '';
+        return `<span class="${cls.join(' ')}"><span class="prod-hora">${rotuloHora(hora)}</span>${umi}${nota}</span>`;
     }).join('');
 
     return `<div class="forecast-chart forecast-chart--horas forecast-chart--turno" style="--chart-cols: ${n}" data-chart-max="${max}">`
@@ -4813,7 +4856,7 @@ function graficoProd(dados, turno, s) {
         + rotulo
         + '</div>'
         + `<div class="forecast-xaxis">${eixoX}</div>`
-        + '<span class="forecast-unit">t/h</span>'
+        + '<span class="forecast-unit">t/h<small class="prod-umi-rotulo">umid. média</small></span>'
         + '</div>';
 }
 
@@ -4861,19 +4904,6 @@ function montarGraficoProd(secao) {
     secao.querySelectorAll('[data-prod-turno-nome]').forEach((el) => {
         el.textContent = `${turno.nome} · ${turno.quando}`;
     });
-    secao.querySelectorAll('button[data-prod-turno]').forEach((btn) => {
-        const ativo = btn.dataset.prodTurno === chave;
-        btn.classList.toggle('is-active', ativo);
-        btn.setAttribute('aria-pressed', String(ativo));
-    });
-}
-
-function escolherTurnoProd(alvo) {
-    const secao = alvo.closest('.prod-grafico');
-    if (!secao) return;
-    secao.dataset.prodTurno = alvo.dataset.prodTurno;
-    montarGraficoProd(secao);
-    scheduleFit();
 }
 
 function montarProdutividade(raiz) {
@@ -4931,13 +4961,6 @@ document.addEventListener('click', (e) => {
         escolherPeriodoProd(periodoProd);
         return;
     }
-    // turno do grafico por hora da produtividade: usa a pilula do fluxo
-    const turnoProd = e.target.closest('button[data-prod-turno]');
-    if (turnoProd) {
-        e.preventDefault();
-        escolherTurnoProd(turnoProd);
-        return;
-    }
     // a vista do grafico de chuva tambem usa a pilula do fluxo
     const vistaChuva = e.target.closest('button[data-pv-chuva]');
     if (vistaChuva) {
@@ -4952,6 +4975,13 @@ document.addEventListener('click', (e) => {
         escolherPeriodoSilo(periodoSilo);
         return;
     }
+    // os das moegas tambem
+    const periodoMoega = e.target.closest('button[data-moega-periodo]');
+    if (periodoMoega) {
+        e.preventDefault();
+        escolherPeriodoMoega(periodoMoega);
+        return;
+    }
     const periodoFluxo = e.target.closest('.fluxo-periodo-btn');
     if (periodoFluxo) {
         e.preventDefault();
@@ -4962,12 +4992,6 @@ document.addEventListener('click', (e) => {
     if (culturaFluxo) {
         e.preventDefault();
         escolherCulturaFluxo(culturaFluxo);
-        return;
-    }
-    const periodo = e.target.closest('.moega-periodo-btn');
-    if (periodo) {
-        e.preventDefault();
-        escolherPeriodoMoega(periodo);
         return;
     }
     const culturaMoega = e.target.closest('button[data-moega-cultura]');
@@ -5497,7 +5521,8 @@ function curvaBlocos24h(alvo, temps, card) {
 //                  eixo fixo na janela; silo que encheu há menos tempo
 //                  começa a curva no meio do eixo
 // data-temps aceita só as 3 medições (ex.: "23.6,23.1,22.4") ou a série
-// horária (24 valores, o último é a hora atual).
+// horária (24 ou mais valores, o último é a hora atual; com 36 a medição
+// mais antiga das 24 h não cai na primeira leitura).
 // ============================================
 const INTERVALO_MEDICAO_H = 12;
 const MEDICOES_POR_DIA = 24 / INTERVALO_MEDICAO_H;
@@ -5600,8 +5625,12 @@ function desenharSilo3(card, pontos, opcoes) {
     const ys = vals.map((v) => TOPO + (1 - (v - lo) / (hi - lo)) * (H - TOPO - BASE));
     const f = (v) => v.toFixed(2);
 
-    const linha = caminho(xs.map((x, i) => [x, ys[i]]));
-    const area = `${linha} L${f(xs[n - 1])} ${H} L${f(xs[0])} ${H} Z`;
+    // 24 h: depois da medição do meio a curva é projeção (tracejada, sem área)
+    const corte = !opcoes.longo && n > 1 ? n - 2 : n - 1;
+    const pares = xs.map((x, i) => [x, ys[i]]);
+    const linha = caminho(pares.slice(0, corte + 1));
+    const proj = corte < n - 1 ? caminho(pares.slice(corte)) : '';
+    const area = `${linha} L${f(xs[corte])} ${H} L${f(xs[0])} ${H} Z`;
     const marcasX = [MX, W / 2, W - MX];
     const marcas = marcasX.map((x) => `M${f(x)} ${H - 3} L${f(x)} ${H + 3}`).join(' ');
     // guias tracejadas do ponto até o eixo, só nas 3 medições do dia
@@ -5613,6 +5642,7 @@ function desenharSilo3(card, pontos, opcoes) {
         `<path class="sa-spark-area" d="${area}"></path>` +
         `<path class="sa-spark-eixo" d="M0 ${H} L${W} ${H} ${marcas}"></path>` +
         guias +
+        (proj ? `<path class="sa-spark-proj" d="${proj}"></path>` : '') +
         `<path class="sa-spark-line" d="${linha}" style="stroke-linejoin:round;stroke-linecap:round"></path>`;
     svg.dataset.bloco = '';
 
@@ -5673,10 +5703,10 @@ function prepararSilo(card) {
     const wrap = card.querySelector('[data-spark-wrap]');
     if (wrap) wrap.dataset.modo = 'serie';
 
-    // a legenda "tracejado = projeção" não vale mais: não há projeção
+    // nas 24 h o último trecho é projeção (tracejado)
     const secao = card.closest('.sa-section');
     const dica = secao && secao.querySelector('.stack-hint');
-    if (dica) escreverTexto(dica, 'medições às 00h e 12h');
+    if (dica) escreverTexto(dica, longo ? '' : 'tracejado = projeção');
 
     let pontos;
     let taxa;
@@ -5741,6 +5771,107 @@ function formatarData(data) {
     return `${String(data.getDate()).padStart(2, '0')}/${String(data.getMonth() + 1).padStart(2, '0')}`;
 }
 
+// ============================================
+// SILOS · CLIMA DA AERACAO E UMIDADE DE EQUILIBRIO
+// O cartao traz as leituras da estacao (a cada 15 min) do periodo em que a
+// aeracao ficou ligada: o de agora, ou o da ultima vez quando esta
+// desligada (data-aer-clima "t/ur,t/ur,..."). A media de temperatura e
+// umidade relativa entra na tabela higroscopica da cultura e sai a umidade
+// de equilibrio do grao; contra a umidade do silo (data-umidade) diz se o
+// ar esta secando ou umedecendo o produto (ate 0,3 ponto: neutro).
+// TABELA DE EXEMPLO (Henderson modificado, ASAE D245, calibrada para o
+// exemplo da unidade: milho a 28 °C e 45% de UR = 12,8%; sorgo = milho -0,4;
+// trigo = milho -0,2):
+// trocar pela tabela higroscopica que a unidade usa.
+// ============================================
+const TABELA_HIGROSCOPICA = {
+    temps: [10, 15, 20, 25, 30, 35],
+    urs: [30, 40, 50, 60, 70, 80, 90],
+    milho: [
+        [11.6, 13.3, 15.0, 16.7, 18.5, 20.7, 23.7],
+        [11.3, 12.9, 14.5, 16.2, 17.9, 20.1, 23.0],
+        [11.0, 12.6, 14.1, 15.7, 17.4, 19.5, 22.3],
+        [10.7, 12.2, 13.7, 15.3, 17.0, 19.0, 21.8],
+        [10.5, 12.0, 13.4, 14.9, 16.6, 18.5, 21.2],
+        [10.2, 11.7, 13.1, 14.6, 16.2, 18.1, 20.7],
+    ],
+    sorgo: [
+        [11.2, 12.9, 14.6, 16.3, 18.1, 20.3, 23.3],
+        [10.9, 12.5, 14.1, 15.8, 17.5, 19.7, 22.6],
+        [10.6, 12.2, 13.7, 15.3, 17.0, 19.1, 21.9],
+        [10.3, 11.8, 13.3, 14.9, 16.6, 18.6, 21.4],
+        [10.1, 11.6, 13.0, 14.5, 16.2, 18.1, 20.8],
+        [9.8, 11.3, 12.7, 14.2, 15.8, 17.7, 20.3],
+    ],
+    trigo: [
+        [11.4, 13.1, 14.8, 16.5, 18.3, 20.5, 23.5],
+        [11.1, 12.7, 14.3, 16.0, 17.7, 19.9, 22.8],
+        [10.8, 12.4, 13.9, 15.5, 17.2, 19.3, 22.1],
+        [10.5, 12.0, 13.5, 15.1, 16.8, 18.8, 21.6],
+        [10.3, 11.8, 13.2, 14.7, 16.4, 18.3, 21.0],
+        [10.0, 11.5, 12.9, 14.4, 16.0, 17.9, 20.5],
+    ],
+    soja: [
+        [8.1, 9.8, 11.6, 13.6, 16.0, 19.0, 23.4],
+        [8.0, 9.6, 11.4, 13.4, 15.7, 18.6, 22.9],
+        [7.8, 9.4, 11.2, 13.1, 15.4, 18.2, 22.5],
+        [7.7, 9.3, 11.0, 12.9, 15.1, 17.9, 22.1],
+        [7.6, 9.1, 10.8, 12.6, 14.8, 17.6, 21.7],
+        [7.5, 9.0, 10.6, 12.4, 14.6, 17.3, 21.3],
+    ],
+};
+const EQUILIBRIO_NEUTRO = 0.3; // pontos de umidade: ate aqui o ar nem seca nem umedece
+
+// posicao de um valor numa escala crescente: indice de baixo e a fracao ate o de cima
+function posicaoNaEscala(escala, valor) {
+    const v = Math.min(Math.max(valor, escala[0]), escala[escala.length - 1]);
+    let i = 0;
+    while (i < escala.length - 2 && v > escala[i + 1]) i += 1;
+    return [i, (v - escala[i]) / (escala[i + 1] - escala[i])];
+}
+
+// umidade de equilibrio (% base umida) por interpolacao bilinear na tabela
+function umidadeEquilibrio(cultura, temp, ur) {
+    const tabela = TABELA_HIGROSCOPICA[cultura];
+    if (!tabela) return null;
+    const [it, ft] = posicaoNaEscala(TABELA_HIGROSCOPICA.temps, temp);
+    const [iu, fu] = posicaoNaEscala(TABELA_HIGROSCOPICA.urs, ur);
+    const linha = (i) => tabela[i][iu] + (tabela[i][iu + 1] - tabela[i][iu]) * fu;
+    return linha(it) + (linha(it + 1) - linha(it)) * ft;
+}
+
+const umPonto = (v) => v.toFixed(1).replace('.', ',');
+
+function escreverClimaAeracao(card, ligado) {
+    const leituras = (card.dataset.aerClima || '').split(',')
+        .map((par) => par.split('/').map(Number))
+        .filter(([t, ur]) => Number.isFinite(t) && Number.isFinite(ur));
+    if (!leituras.length) return;
+    const temp = leituras.reduce((s, [t]) => s + t, 0) / leituras.length;
+    const ur = leituras.reduce((s, [, u]) => s + u, 0) / leituras.length;
+    const duracao = (leituras.length - 1) * 15;
+    const tempo = `${Math.floor(duracao / 60)}h${String(duracao % 60).padStart(2, '0')}`;
+    escreverTexto(card.querySelector('[data-clima-rotulo]'), ligado
+        ? `média desde que ligou · ${tempo}`
+        : `média da última aeração · ${card.dataset.aerRodou || tempo}`);
+    escreverTexto(card.querySelector('[data-clima-valor]'), `${umPonto(temp)} °C · UR ${Math.round(ur)}%`);
+
+    const equilibrio = umidadeEquilibrio(card.dataset.cultura, temp, ur);
+    const grao = paraNumero(card.dataset.umidade);
+    const alvoEquil = card.querySelector('[data-clima-equil]');
+    const alvoEfeito = card.querySelector('[data-clima-efeito]');
+    if (equilibrio === null || !Number.isFinite(grao)) {
+        escreverTexto(alvoEquil, '');
+        escreverTexto(alvoEfeito, '');
+        return;
+    }
+    escreverTexto(alvoEquil, `equilíbrio ${umPonto(equilibrio)}% · grão ${umPonto(grao)}%`);
+    const diferenca = equilibrio - grao;
+    const efeito = diferenca < -EQUILIBRIO_NEUTRO ? 'secando' : diferenca > EQUILIBRIO_NEUTRO ? 'umedecendo' : 'neutro';
+    escreverTexto(alvoEfeito, efeito);
+    if (alvoEfeito) alvoEfeito.dataset.efeito = efeito;
+}
+
 function atualizarSilosAeracao() {
     const dentroPonta = emPonta(new Date());
     const decorrido = (Date.now() - SILOS_INICIO) / 1000;
@@ -5767,6 +5898,7 @@ function atualizarSilosAeracao() {
         card.dataset.aerEstado = estado;
         escreverTexto(card.querySelector('[data-aer-badge]'), selo);
         escreverTexto(card.querySelector('[data-aer-info]'), info);
+        escreverClimaAeracao(card, ligado);
 
         // horas na cultura atual (zera na troca), total do silo e o consumo
         // da cultura; ligado, os tres andam junto com o "ligado há"
