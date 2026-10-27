@@ -893,7 +893,8 @@ body.sidebar-collapsed .sidebar-reveal {
 
 /* em grade de 4 colunas o card fica mais estreito: o destaque encolhe para
    caber na mesma linha do valor principal */
-.kpi-grid--four .kpi-value-ref--destaque {
+.kpi-grid--four .kpi-value-ref--destaque,
+.kpi-grid--five .kpi-value-ref--destaque {
     font-size: 1.4rem;
     margin-left: 0.5rem;
     padding-left: 0.875rem;
@@ -3120,6 +3121,12 @@ body.theme-light {
 
 .kpi-grid--three {
     grid-template-columns: repeat(3, 1fr);
+}
+
+
+
+.kpi-grid--five {
+    grid-template-columns: repeat(5, 1fr);
 }
 
 
@@ -11795,11 +11802,11 @@ body.theme-light .sa-mov-saldo--sobe {
 
 
 /* ============================================
-   ARMAZÉM · PLANTA POR SETOR
+   ARMAZÉM · PLANTA POR CANALETA
    Um cartão largo por armazém, um embaixo do outro. A planta (montada
    pelo script) é um tabuleiro: os motores na parede do lado A, as
    fileiras de cabos do lado A, o túnel central, as do lado B e os
-   motores do lado B. Cada setor é uma coluna própria, com média, máxima e
+   motores do lado B. Cada canaleta é uma coluna própria, com média, máxima e
    motores ligados no topo; a coluna de rótulos à esquerda usa as mesmas
    linhas da grade para ficar alinhada. À direita, as três tendências.
    ============================================ */
@@ -11914,19 +11921,71 @@ body.theme-light .sa-mov-saldo--sobe {
 
 
 
-.screen--armazem [data-faixa="1"] { --faixa-bg: color-mix(in srgb, var(--accent) 10%, transparent); --faixa-ink: var(--text); }
-.screen--armazem [data-faixa="2"] { --faixa-bg: color-mix(in srgb, var(--accent) 26%, transparent); --faixa-ink: var(--text); }
-.screen--armazem [data-faixa="3"] { --faixa-bg: color-mix(in srgb, var(--accent) 50%, transparent); --faixa-ink: #fff; }
-.screen--armazem [data-faixa="4"] { --faixa-bg: color-mix(in srgb, var(--accent) 78%, transparent); --faixa-ink: #fff; }
-.screen--armazem [data-faixa="5"] { --faixa-bg: color-mix(in srgb, var(--accent) 100%, transparent); --faixa-ink: #fff; }
+/* com produto: todo cabo com grao e' um bloco cheio, ate o mais frio (a
+   faixa 1 ja comeca com cor de verdade), e a cor ganha forca com a
+   temperatura. Sem produto: vazado, so o hachurado e o contorno tracejado.
+   Assim o "tem grao ou nao" se le antes da temperatura. */
+.screen--armazem [data-faixa="1"] { --faixa-bg: color-mix(in srgb, var(--accent) 24%, var(--card-bg-bottom)); --faixa-ink: var(--text); }
+.screen--armazem [data-faixa="2"] { --faixa-bg: color-mix(in srgb, var(--accent) 40%, var(--card-bg-bottom)); --faixa-ink: var(--text); }
+.screen--armazem [data-faixa="3"] { --faixa-bg: color-mix(in srgb, var(--accent) 58%, var(--card-bg-bottom)); --faixa-ink: #fff; }
+.screen--armazem [data-faixa="4"] { --faixa-bg: color-mix(in srgb, var(--accent) 80%, var(--card-bg-bottom)); --faixa-ink: #fff; }
+.screen--armazem [data-faixa="5"] { --faixa-bg: var(--accent); --faixa-ink: #fff; }
 /* no claro a faixa 3 ainda é clara: o número volta para a tinta escura */
 body.theme-light .screen--armazem [data-faixa="3"] { --faixa-ink: var(--text); }
 .screen--armazem [data-faixa="atencao"] { --faixa-bg: var(--warn); --faixa-ink: #1b1300; }
 .screen--armazem [data-faixa="alerta"] { --faixa-bg: var(--danger); --faixa-ink: #fff; }
 
 .screen--armazem [data-faixa="fora"] {
-    --faixa-bg: repeating-linear-gradient(135deg, var(--row-line) 0 2px, transparent 2px 5px);
+    --faixa-bg: repeating-linear-gradient(135deg, color-mix(in srgb, var(--muted) 45%, transparent) 0 1.5px, transparent 1.5px 5px);
     --faixa-ink: var(--faint);
+}
+
+
+
+/* contorno: cheio e na cor da faixa com produto, tracejado sem produto */
+.screen--armazem .arm-cel:not([data-faixa="fora"]),
+.screen--armazem .arm-leg-cel:not([data-faixa="fora"]) {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+
+
+.screen--armazem .arm-cel[data-faixa="atencao"],
+.screen--armazem .arm-cel[data-faixa="alerta"] {
+    box-shadow: none;
+}
+
+
+
+.screen--armazem .arm-cel[data-faixa="fora"],
+.screen--armazem .arm-leg-cel[data-faixa="fora"] {
+    outline: 1px dashed color-mix(in srgb, var(--muted) 60%, transparent);
+    outline-offset: -1px;
+}
+
+
+
+/* cabo sem produto que le o ar acima do grao: escrito "vazio" no proprio
+   quadradinho e a temperatura embaixo, clara e em negrito como a dos cabos
+   com produto, sobre o hachurado (o numero nao e' do grao, entao nao ganha
+   cor de faixa nem entra na media) */
+.screen--armazem .arm-cel--vazio {
+    flex-direction: column;
+    gap: 0;
+    line-height: 1.05;
+    font-weight: 800;
+    color: var(--text);
+}
+
+
+
+.screen--armazem .arm-cel--vazio small {
+    font-size: 0.42rem;
+    font-style: normal;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
 }
 
 
@@ -12204,7 +12263,7 @@ body.theme-light .screen--armazem [data-faixa="3"] { --faixa-ink: var(--text); }
 
 
 
-/* setor com algum motor ligado: a linha de baixo do cabeçalho fica verde */
+/* canaleta com algum motor ligado: a linha de baixo do cabeçalho fica verde */
 .arm-setor:not([data-ligados="0"]) .arm-setor-head {
     border-bottom-color: rgba(46, 204, 113, 0.6);
 }
@@ -12350,7 +12409,7 @@ body.theme-light .screen--armazem [data-faixa="3"] { --faixa-ink: var(--text); }
     min-width: 0;
     overflow: hidden;
     font-style: normal;
-    font-size: 0.52rem;
+    font-size: 0.6rem;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     color: var(--faixa-ink);
@@ -13734,6 +13793,7 @@ body.edit-mode .fluxo-etapa[data-fluxo-filtro] {
     .kpi-grid--two,
     .kpi-grid--three,
     .kpi-grid--four,
+    .kpi-grid--five,
     .kpi-grid--six,
     .kpi-grid--seven,
     .kpi-grid--eight,
@@ -15599,6 +15659,34 @@ body.theme-light .kpi-flag--info {
 
 
 
+/* cavaco: pontos de umidade que cada secador tirou, com o rotulo numa linha
+   so em cima e a faixa de umidade (entrada -> saida) discreta ao lado */
+.kpi-sub--pontos .kpi-sub-rotulo {
+    flex: 0 0 100%;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+
+
+.kpi-sub--pontos .kpi-sub-item:nth-child(2) {
+    padding-left: 0;
+    border-left: none;
+}
+
+
+
+.kpi-sub--pontos .kpi-sub-item small {
+    font-size: 0.66rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+
+
 .kpi-sub-item b {
     font-size: 0.58rem;
     color: var(--muted);
@@ -15643,6 +15731,15 @@ body.theme-light .kpi-flag--info {
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--faint);
+}
+
+
+
+/* metade com o mesmo peso da primeira (cargas retornadas: custo | cargas que
+   voltaram): so a linha divisoria, sem apagar o numero */
+.kpi-tag-bloco--igual {
+    padding-left: 0.875rem;
+    border-left: 1px solid var(--card-border);
 }
 
 
@@ -19053,6 +19150,14 @@ body.theme-light #screen-4 {
 
 
 .prod-col--paradas .manut-kpi:first-child {
+    grid-column: 1 / -1;
+}
+
+
+
+/* tempo medio de limpeza: linha inteira no fim, com a quebra por turno
+   embaixo (o turno manda no tempo: 1o com 5 pessoas, 3o com 2) */
+.prod-col--paradas .manut-kpi--limpeza {
     grid-column: 1 / -1;
 }
 

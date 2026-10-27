@@ -5638,9 +5638,14 @@ function desenharSilo3(card, pontos, opcoes) {
         `<path class="sa-spark-eixo" d="M${f(x)} ${f(ys[i])} L${f(x)} ${H}" `
         + 'style="stroke-dasharray:1.5 1.5;opacity:.45" vector-effect="non-scaling-stroke"></path>'
     ).join('');
+    // a base acompanha a curva: cheia ate a medicao do meio e pontilhada na
+    // projecao (as marcas das tres medicoes continuam cheias)
+    const baseFim = proj ? xs[corte] : W;
+    const baseProj = proj ? `<path class="sa-spark-eixo-proj" d="M${f(baseFim)} ${H} L${W} ${H}"></path>` : '';
     svg.innerHTML =
         `<path class="sa-spark-area" d="${area}"></path>` +
-        `<path class="sa-spark-eixo" d="M0 ${H} L${W} ${H} ${marcas}"></path>` +
+        `<path class="sa-spark-eixo" d="M0 ${H} L${f(baseFim)} ${H} ${marcas}"></path>` +
+        baseProj +
         guias +
         (proj ? `<path class="sa-spark-proj" d="${proj}"></path>` : '') +
         `<path class="sa-spark-line" d="${linha}" style="stroke-linejoin:round;stroke-linecap:round"></path>`;
@@ -5956,12 +5961,12 @@ function limparFiltrosSilo() {
 
 
 // ============================================
-// ARMAZÉM · PLANTA POR SETOR
+// ARMAZÉM · PLANTA POR CANALETA
 // Cada cartão [data-armazem] vira um tabuleiro: um quadradinho por cabo de
 // termometria, o túnel central separando o lado A (em cima) do lado B
 // (embaixo) e os motores de aeração na parede de cada lado, alinhados com
-// os quadradinhos que atendem. Os quadradinhos são agrupados por setor de
-// aeração, com média, máxima e motores ligados no topo. Os atributos estão
+// os quadradinhos que atendem. Os quadradinhos são agrupados por canaleta de
+// aeração (no código, "setor"), com média, máxima e motores ligados no topo. Os atributos estão
 // descritos no comentário da tela 6, no index.html. A planta é montada uma
 // vez; a cada segundo só mudam o estado da aeração e as tendências (estas
 // só são redesenhadas quando vira a hora ou a leitura das 06h/18h).
@@ -5996,11 +6001,15 @@ function motoresLigados(texto) {
     return ligados;
 }
 
-// linhas separadas por ";" e valores por ","; "-" (ou vazio) = fora do produto
+// linhas separadas por ";" e valores por ","; cada cabo vira { t, vazio }:
+// "22.4" = com produto, "v26.8" = sem produto (o cabo le o ar acima do grao),
+// "-" (ou vazio) = sem produto e sem leitura
 function celulasArmazem(texto) {
     return (texto || '').split(';').map((linha) => linha.split(',').map((v) => {
-        const n = Number.parseFloat(v);
-        return Number.isFinite(n) ? n : null;
+        const bruto = v.trim();
+        const vazio = /^v/i.test(bruto) || bruto === '-' || bruto === '';
+        const n = Number.parseFloat(bruto.replace(/^v/i, ''));
+        return { t: Number.isFinite(n) ? n : null, vazio };
     }));
 }
 
@@ -6016,9 +6025,10 @@ function montarArmazem(card) {
     const linhas = Math.max(1, paraNumero(card.dataset.armLinhas) || 1);
     const ligados = motoresLigados(card.dataset.armMotoresOn);
     const celulas = celulasArmazem(card.dataset.armCelulas);
-    const valor = (linha, col) => (celulas[linha] && celulas[linha][col] !== undefined ? celulas[linha][col] : null);
+    const valor = (linha, col) => (celulas[linha] && celulas[linha][col] !== undefined
+        ? celulas[linha][col] : { t: null, vazio: true });
 
-    // setores em posições de motor; se a soma não fecha, o último absorve a diferença
+    // canaletas ("setores" no codigo) em posições de motor; se a soma não fecha, a última absorve a diferença
     const setores = numeros(card.dataset.armSetores).filter((n) => n > 0);
     if (!setores.length) setores.push(motores);
     const soma = setores.reduce((a, b) => a + b, 0);
@@ -6045,13 +6055,18 @@ function montarArmazem(card) {
             let h = '';
             for (let l = de; l < ate; l += 1) {
                 for (let c = c0; c < c0 + cols; c += 1) {
-                    const t = valor(l, c);
-                    if (t !== null) doSetor.push(t);
+                    const { t, vazio } = valor(l, c);
+                    // so o cabo com produto entra na media e na maxima: o vazio le o ar
+                    if (!vazio && t !== null) doSetor.push(t);
                     const cabo = `cabo ${l + 1}.${c + 1}`;
                     const motorDe = `${nomeLado}${Math.floor(c / cpm) + 1}`;
-                    h += t === null
-                        ? `<i class="arm-cel" data-faixa="fora" title="Setor ${s + 1} · ${cabo} · fora do produto"></i>`
-                        : `<i class="arm-cel" data-faixa="${faixaArmazem(t)}" title="Setor ${s + 1} · lado ${nomeLado} · ${cabo} · motor ${motorDe} · ${formatarGrau(t)} °C">${formatarGrau(t)}</i>`;
+                    if (vazio) {
+                        const ar = t === null ? 'sem leitura' : `temperatura do ar ${formatarGrau(t)} °C`;
+                        h += `<i class="arm-cel arm-cel--vazio" data-faixa="fora" title="Canaleta ${s + 1} · ${cabo} · sem produto (cabo vazio) · ${ar}">`
+                            + `<small>vazio</small>${t === null ? '' : formatarGrau(t)}</i>`;
+                    } else {
+                        h += `<i class="arm-cel" data-faixa="${faixaArmazem(t)}" title="Canaleta ${s + 1} · com produto · lado ${nomeLado} · ${cabo} · motor ${motorDe} · ${formatarGrau(t)} °C">${formatarGrau(t)}</i>`;
+                    }
                 }
             }
             return `<div class="arm-celulas">${h}</div>`;
@@ -6064,10 +6079,10 @@ function montarArmazem(card) {
         todas.push(...doSetor);
         html += `<div class="arm-setor" style="--cols: ${cols}; flex-grow: ${cols}" data-ligados="${on}">`
             + '<div class="arm-setor-head">'
-            + `<span class="arm-setor-nome">SETOR ${s + 1}</span>`
-            + `<span class="arm-setor-motores" title="Motores ligados no setor (lados A e B)">${on}/${qtd * 2} motores</span>`
-            + `<b class="arm-setor-media" data-faixa="${m === null ? 'fora' : faixaArmazem(m)}" title="Média dos cabos do setor">${m === null ? '--' : `${formatarGrau(m)}°`}</b>`
-            + `<span class="arm-setor-max" title="Cabo mais quente do setor">máx ${max === null ? '--' : `${formatarGrau(max)}°`}</span>`
+            + `<span class="arm-setor-nome">CANALETA ${s + 1}</span>`
+            + `<span class="arm-setor-motores" title="Motores ligados na canaleta (lados A e B)">${on}/${qtd * 2} motores</span>`
+            + `<b class="arm-setor-media" data-faixa="${m === null ? 'fora' : faixaArmazem(m)}" title="Média dos cabos com produto da canaleta">${m === null ? '--' : `${formatarGrau(m)}°`}</b>`
+            + `<span class="arm-setor-max" title="Cabo mais quente da canaleta">máx ${max === null ? '--' : `${formatarGrau(max)}°`}</span>`
             + '</div>'
             + `<div class="arm-setor-corpo" style="--linhas: ${linhas}">${corpo}</div>`
             + '</div>';
@@ -6080,7 +6095,7 @@ function montarArmazem(card) {
     const m = media(todas);
     escreverTexto(card.querySelector('[data-arm-media]'), m === null ? '--' : formatarTemperatura(m));
     card.dataset.armMax = todas.length ? String(Math.max(...todas)) : '';
-    mapa.setAttribute('aria-label', `${mapa.getAttribute('aria-label').split(':')[0]}: ${setores.length} setores, `
+    mapa.setAttribute('aria-label', `${mapa.getAttribute('aria-label').split(':')[0]}: ${setores.length} canaletas, `
         + `${ligados.size} de ${total} motores ligados, média ${m === null ? '--' : formatarTemperatura(m)}`);
 }
 
@@ -6114,21 +6129,30 @@ function escreverTaxaArmazem(item, taxa, unidade) {
         rate.dataset.tendencia = tendencia;
         rate.title = unidade === 'dia'
             ? 'Variação média por dia no período (leituras das 06h e 18h)'
-            : 'Variação média por hora nas últimas 3 horas';
+            : 'Variação por hora entre as duas últimas medições (00h e 12h)';
     }
     return tendencia;
 }
 
 function tendenciasArmazem(card) {
     const agora = new Date();
-    const temps = numeros(card.dataset.temps);
     const dia = numeros(card.dataset.tempsDia);
     let alerta = false;
     card.querySelectorAll('[data-arm-tend]').forEach((item) => {
         const periodo = item.dataset.armTend;
         let tendencia = 'estavel';
         if (periodo === '24h') {
-            if (curvaBlocos24h(item, temps, card)) tendencia = escreverTaxaArmazem(item, taxaTemperatura(temps), 'h');
+            // igual aos silos: so as tres medicoes (00h, 12h, 00h), com o valor
+            // em cada uma e a projecao tracejada depois da do meio
+            const pontos = medicoesDoDia(card, agora);
+            if (!pontos.length) return;
+            const ultima = ultimaMedicao(agora);
+            const rotulos = [2, 1, 0].map((k) =>
+                formatarHora(new Date(ultima.getTime() - k * INTERVALO_MEDICAO_H * HORA_MS)));
+            const wrap = item.querySelector('[data-spark-wrap]');
+            if (wrap) wrap.dataset.modo = 'serie';
+            desenharSilo3(item, pontos, { longo: false, slots: PONTOS_24H, rotulosEixo: rotulos });
+            tendencia = escreverTaxaArmazem(item, taxaEntreMedicoes(pontos), 'h');
         } else {
             const passos = LEITURAS_SILO[periodo] || 14;
             const hist = dia.slice(-(passos + 1));

@@ -12,7 +12,7 @@
          não carrega e a tela usa o mapa esquemático em SVG. -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css">
-    <link rel="stylesheet" href="style.css?v=20261027j">
+    <link rel="stylesheet" href="style.css?v=20261027q">
 </head>
 <body class="theme-dark">
 
@@ -590,7 +590,7 @@
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">5</span>s</div>
                     </div>
                 </div>
-                <div class="kpi-grid kpi-grid--four">
+                <div class="kpi-grid kpi-grid--five">
                     <div data-codigo="AVR-REC-A" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Por que a fila está em 15 caminhões"
@@ -614,6 +614,35 @@
                                 <span class="kpi-tag-rotulo">Sem tag</span>
                                 <div class="kpi-value">3</div>
                             </div>
+                        </div>
+                    </div>
+                    <!-- Cargas que o porto nao recebeu como estavam, no mes: o terminal
+                         aceitou descarregar com desconto, ou a carga voltou e gerou frete de
+                         retorno. O numero grande e' o custo do frete de retorno (a unidade
+                         pediu para nao deixar passar: e' o unico custo no videowall). A
+                         lista do balao traz cada ocorrencia. Fonte a confirmar com a
+                         logistica (frete e desconto lancados por carga). -->
+                    <div data-codigo="AVR-REC-G" class="kpi-card kpi-card--meta kpi-card--motivo alert" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Cargas retornadas do porto em setembro"
+                        data-motivo-resumo="4 cargas: 3 descarregadas com desconto · 1 voltou com frete de R$ 4.860"
+                        data-motivo-lista="23/09 · Milho · Porto de Santos::voltou::avariados 6,4% no terminal · frete de retorno R$ 4.860::ruim|19/09 · Milho · Porto de Paranaguá::com desconto::umidade 14,4% · desconto de R$ 1.130::atencao|12/09 · Soja · Porto de Santos::com desconto::avariados 8,3% · desconto de R$ 860::atencao|05/09 · Milho · Porto de Santos::com desconto::impureza 1,2% · desconto de R$ 540::atencao"
+                        data-motivo-nota="Descontos no mês: R$ 2.530. Somado ao frete de retorno, as cargas retornadas custaram R$ 7.390.">
+                        <div class="kpi-label">CARGAS RETORNADAS DO PORTO · MÊS</div>
+                        <!-- o custo e as cargas que voltaram com o mesmo peso, lado a lado;
+                             embaixo, as que o terminal aceitou com desconto -->
+                        <div class="kpi-tag-split">
+                            <div class="kpi-tag-bloco">
+                                <span class="kpi-tag-rotulo">Frete de retorno</span>
+                                <div class="kpi-value"><span class="kpi-value-unit">R$</span> 4.860</div>
+                            </div>
+                            <div class="kpi-tag-bloco kpi-tag-bloco--igual">
+                                <span class="kpi-tag-rotulo">Cargas voltaram</span>
+                                <div class="kpi-value">1</div>
+                            </div>
+                        </div>
+                        <div class="kpi-sub">
+                            <span class="kpi-sub-item"><b>Descarregadas com desconto</b> 3 · R$ 2.530</span>
                         </div>
                     </div>
                     <!-- Espera e' so o trecho da portaria ate a 1a pesagem (o segmento
@@ -2479,7 +2508,7 @@
                     </div>
                 </div>
 
-                <div class="kpi-grid kpi-grid--tres prod-periodo-bloco" data-periodo="t1">
+                <div class="kpi-grid kpi-grid--four prod-periodo-bloco" data-periodo="t1">
                     <div data-codigo="AVR-SPD-A" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Secado por secador · turno"
@@ -2522,9 +2551,35 @@
                             <span class="kpi-flag kpi-flag--atencao">S2 ABAIXO DO NECESSÁRIO</span>
                         </div>
                     </div>
+                    <!-- cavaco do periodo: entrada (recebido no patio) | saida (consumido
+                         nas fornalhas) e o consumo especifico = cavaco consumido / (t
+                         secadas x pontos de umidade retirados) -->
+                    <div data-codigo="AVR-SPD-K" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Cavaco · 1º turno"
+                        data-motivo-resumo="21,9 t consumidas para 858 t secadas · 4.207 t·ponto"
+                        data-motivo-lista="Entrada (recebido no pátio)::56 t::2 carretas::neutro|Saída (consumido nas fornalhas)::21,9 t::S1 13,8 t · S2 8,1 t::neutro|Secador 1 (milho)::521 t · 5,1 pontos::18,6% → 13,5%::neutro|Secador 2 (sorgo)::337 t · 4,6 pontos::17,6% → 13,0%::neutro|Consumo específico::5,2 kg::por t secada e ponto de umidade · ref. até 5,5::bom"
+                        data-motivo-nota="Consumo específico = cavaco consumido ÷ (t secadas × pontos de umidade retirados). Referência de 5,5 kg a confirmar com a unidade.">
+                        <div class="kpi-label">CAVACO</div>
+                        <div class="kpi-tag-split">
+                            <div class="kpi-tag-bloco">
+                                <span class="kpi-tag-rotulo">Entrada</span>
+                                <div class="kpi-value">56 <span class="kpi-value-unit">t</span></div>
+                            </div>
+                            <div class="kpi-tag-bloco kpi-tag-bloco--igual">
+                                <span class="kpi-tag-rotulo">Saída · consumo</span>
+                                <div class="kpi-value">21,9 <span class="kpi-value-unit">t</span></div>
+                            </div>
+                        </div>
+                        <div class="kpi-sub kpi-sub--pontos"><span class="kpi-sub-rotulo">Umidade retirada</span><span class="kpi-sub-item" title="Secador 1 (milho): umidade de 18,6% na entrada e 13,5% na saída"><b>S1</b> 5,1 pontos <small>18,6→13,5%</small></span><span class="kpi-sub-item" title="Secador 2 (sorgo): umidade de 17,6% na entrada e 13,0% na saída"><b>S2</b> 4,6 pontos <small>17,6→13,0%</small></span></div>
+                        <div class="kpi-meta-row">
+                            <span class="kpi-flag kpi-flag--ok">5,2 KG / T · PONTO</span>
+                            <span class="kpi-meta-ref">por t secada e ponto de umidade</span>
+                        </div>
+                    </div>
                 </div>
                 <!-- 2o turno (ontem 16:00–22:20), ja fechado: resultado contra a meta -->
-                <div class="kpi-grid kpi-grid--tres prod-periodo-bloco" data-periodo="t2">
+                <div class="kpi-grid kpi-grid--four prod-periodo-bloco" data-periodo="t2">
                     <div data-codigo="AVR-SPD-A" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Secado por secador · 2º turno (ontem)"
@@ -2566,9 +2621,35 @@
                             <span class="kpi-flag kpi-flag--atencao">ABAIXO DE 90% DO NOMINAL</span>
                         </div>
                     </div>
+                    <!-- cavaco do periodo: entrada (recebido no patio) | saida (consumido
+                         nas fornalhas) e o consumo especifico = cavaco consumido / (t
+                         secadas x pontos de umidade retirados) -->
+                    <div data-codigo="AVR-SPD-K" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Cavaco · 2º turno (ontem)"
+                        data-motivo-resumo="16,1 t consumidas para 622 t secadas · 2.981 t·ponto"
+                        data-motivo-lista="Entrada (recebido no pátio)::28 t::1 carreta::neutro|Saída (consumido nas fornalhas)::16,1 t::S1 9,8 t · S2 6,3 t::neutro|Secador 1 (milho)::364 t · 5,0 pontos::18,5% → 13,5%::neutro|Secador 2 (sorgo)::258 t · 4,5 pontos::17,5% → 13,0%::neutro|Consumo específico::5,4 kg::por t secada e ponto de umidade · ref. até 5,5::bom"
+                        data-motivo-nota="Consumo específico = cavaco consumido ÷ (t secadas × pontos de umidade retirados). Referência de 5,5 kg a confirmar com a unidade.">
+                        <div class="kpi-label">CAVACO</div>
+                        <div class="kpi-tag-split">
+                            <div class="kpi-tag-bloco">
+                                <span class="kpi-tag-rotulo">Entrada</span>
+                                <div class="kpi-value">28 <span class="kpi-value-unit">t</span></div>
+                            </div>
+                            <div class="kpi-tag-bloco kpi-tag-bloco--igual">
+                                <span class="kpi-tag-rotulo">Saída · consumo</span>
+                                <div class="kpi-value">16,1 <span class="kpi-value-unit">t</span></div>
+                            </div>
+                        </div>
+                        <div class="kpi-sub kpi-sub--pontos"><span class="kpi-sub-rotulo">Umidade retirada</span><span class="kpi-sub-item" title="Secador 1 (milho): umidade de 18,5% na entrada e 13,5% na saída"><b>S1</b> 5,0 pontos <small>18,5→13,5%</small></span><span class="kpi-sub-item" title="Secador 2 (sorgo): umidade de 17,5% na entrada e 13,0% na saída"><b>S2</b> 4,5 pontos <small>17,5→13,0%</small></span></div>
+                        <div class="kpi-meta-row">
+                            <span class="kpi-flag kpi-flag--ok">5,4 KG / T · PONTO</span>
+                            <span class="kpi-meta-ref">por t secada e ponto de umidade</span>
+                        </div>
+                    </div>
                 </div>
                 <!-- 3o turno (esta noite 22:00–07:00), ja fechado -->
-                <div class="kpi-grid kpi-grid--tres prod-periodo-bloco" data-periodo="t3">
+                <div class="kpi-grid kpi-grid--four prod-periodo-bloco" data-periodo="t3">
                     <div data-codigo="AVR-SPD-A" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Secado por secador · 3º turno (esta noite)"
@@ -2610,8 +2691,34 @@
                             <span class="kpi-flag kpi-flag--atencao">ABAIXO DE 90% DO NOMINAL</span>
                         </div>
                     </div>
+                    <!-- cavaco do periodo: entrada (recebido no patio) | saida (consumido
+                         nas fornalhas) e o consumo especifico = cavaco consumido / (t
+                         secadas x pontos de umidade retirados) -->
+                    <div data-codigo="AVR-SPD-K" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Cavaco · 3º turno (esta noite)"
+                        data-motivo-resumo="22,5 t consumidas para 907 t secadas · 4.494 t·ponto"
+                        data-motivo-lista="Entrada (recebido no pátio)::0 t::nenhuma carreta::neutro|Saída (consumido nas fornalhas)::22,5 t::S1 14,0 t · S2 8,5 t::neutro|Secador 1 (milho)::537 t · 5,2 pontos::18,7% → 13,5%::neutro|Secador 2 (sorgo)::370 t · 4,6 pontos::17,6% → 13,0%::neutro|Consumo específico::5,0 kg::por t secada e ponto de umidade · ref. até 5,5::bom"
+                        data-motivo-nota="Consumo específico = cavaco consumido ÷ (t secadas × pontos de umidade retirados). Referência de 5,5 kg a confirmar com a unidade.">
+                        <div class="kpi-label">CAVACO</div>
+                        <div class="kpi-tag-split">
+                            <div class="kpi-tag-bloco">
+                                <span class="kpi-tag-rotulo">Entrada</span>
+                                <div class="kpi-value">0 <span class="kpi-value-unit">t</span></div>
+                            </div>
+                            <div class="kpi-tag-bloco kpi-tag-bloco--igual">
+                                <span class="kpi-tag-rotulo">Saída · consumo</span>
+                                <div class="kpi-value">22,5 <span class="kpi-value-unit">t</span></div>
+                            </div>
+                        </div>
+                        <div class="kpi-sub kpi-sub--pontos"><span class="kpi-sub-rotulo">Umidade retirada</span><span class="kpi-sub-item" title="Secador 1 (milho): umidade de 18,7% na entrada e 13,5% na saída"><b>S1</b> 5,2 pontos <small>18,7→13,5%</small></span><span class="kpi-sub-item" title="Secador 2 (sorgo): umidade de 17,6% na entrada e 13,0% na saída"><b>S2</b> 4,6 pontos <small>17,6→13,0%</small></span></div>
+                        <div class="kpi-meta-row">
+                            <span class="kpi-flag kpi-flag--ok">5,0 KG / T · PONTO</span>
+                            <span class="kpi-meta-ref">por t secada e ponto de umidade</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="kpi-grid kpi-grid--tres prod-periodo-bloco" data-periodo="hoje">
+                <div class="kpi-grid kpi-grid--four prod-periodo-bloco" data-periodo="hoje">
                     <div data-codigo="AVR-SPD-D" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Secado por secador · hoje"
@@ -2653,8 +2760,34 @@
                             <span class="kpi-meta-ref">S1 97% · S2 92% da capacidade de placa</span>
                         </div>
                     </div>
+                    <!-- cavaco do periodo: entrada (recebido no patio) | saida (consumido
+                         nas fornalhas) e o consumo especifico = cavaco consumido / (t
+                         secadas x pontos de umidade retirados) -->
+                    <div data-codigo="AVR-SPD-K" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Cavaco · hoje"
+                        data-motivo-resumo="41,8 t consumidas para 1.640 t secadas · 8.032 t·ponto"
+                        data-motivo-lista="Entrada (recebido no pátio)::84 t::3 carretas::neutro|Saída (consumido nas fornalhas)::41,8 t::S1 25,9 t · S2 15,9 t::neutro|Secador 1 (milho)::975 t · 5,1 pontos::18,6% → 13,5%::neutro|Secador 2 (sorgo)::665 t · 4,6 pontos::17,6% → 13,0%::neutro|Consumo específico::5,2 kg::por t secada e ponto de umidade · ref. até 5,5::bom"
+                        data-motivo-nota="Consumo específico = cavaco consumido ÷ (t secadas × pontos de umidade retirados). Referência de 5,5 kg a confirmar com a unidade.">
+                        <div class="kpi-label">CAVACO</div>
+                        <div class="kpi-tag-split">
+                            <div class="kpi-tag-bloco">
+                                <span class="kpi-tag-rotulo">Entrada</span>
+                                <div class="kpi-value">84 <span class="kpi-value-unit">t</span></div>
+                            </div>
+                            <div class="kpi-tag-bloco kpi-tag-bloco--igual">
+                                <span class="kpi-tag-rotulo">Saída · consumo</span>
+                                <div class="kpi-value">41,8 <span class="kpi-value-unit">t</span></div>
+                            </div>
+                        </div>
+                        <div class="kpi-sub kpi-sub--pontos"><span class="kpi-sub-rotulo">Umidade retirada</span><span class="kpi-sub-item" title="Secador 1 (milho): umidade de 18,6% na entrada e 13,5% na saída"><b>S1</b> 5,1 pontos <small>18,6→13,5%</small></span><span class="kpi-sub-item" title="Secador 2 (sorgo): umidade de 17,6% na entrada e 13,0% na saída"><b>S2</b> 4,6 pontos <small>17,6→13,0%</small></span></div>
+                        <div class="kpi-meta-row">
+                            <span class="kpi-flag kpi-flag--ok">5,2 KG / T · PONTO</span>
+                            <span class="kpi-meta-ref">por t secada e ponto de umidade</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="kpi-grid kpi-grid--tres prod-periodo-bloco" data-periodo="7d">
+                <div class="kpi-grid kpi-grid--four prod-periodo-bloco" data-periodo="7d">
                     <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Secado por secador · 7 dias"
@@ -2697,8 +2830,34 @@
                             <span class="kpi-meta-ref">S1 93% · S2 88% da capacidade de placa</span>
                         </div>
                     </div>
+                    <!-- cavaco do periodo: entrada (recebido no patio) | saida (consumido
+                         nas fornalhas) e o consumo especifico = cavaco consumido / (t
+                         secadas x pontos de umidade retirados) -->
+                    <div data-codigo="AVR-SPD-K" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Cavaco · 7 dias"
+                        data-motivo-resumo="391 t consumidas para 15.430 t secadas · 73.714 t·ponto"
+                        data-motivo-lista="Entrada (recebido no pátio)::420 t::15 carretas::neutro|Saída (consumido nas fornalhas)::391 t::S1 237 t · S2 154 t::neutro|Secador 1 (milho)::9.120 t · 4,9 pontos::18,4% → 13,5%::neutro|Secador 2 (sorgo)::6.310 t · 4,6 pontos::17,6% → 13,0%::neutro|Consumo específico::5,3 kg::por t secada e ponto de umidade · ref. até 5,5::bom"
+                        data-motivo-nota="Consumo específico = cavaco consumido ÷ (t secadas × pontos de umidade retirados). Referência de 5,5 kg a confirmar com a unidade.">
+                        <div class="kpi-label">CAVACO</div>
+                        <div class="kpi-tag-split">
+                            <div class="kpi-tag-bloco">
+                                <span class="kpi-tag-rotulo">Entrada</span>
+                                <div class="kpi-value">420 <span class="kpi-value-unit">t</span></div>
+                            </div>
+                            <div class="kpi-tag-bloco kpi-tag-bloco--igual">
+                                <span class="kpi-tag-rotulo">Saída · consumo</span>
+                                <div class="kpi-value">391 <span class="kpi-value-unit">t</span></div>
+                            </div>
+                        </div>
+                        <div class="kpi-sub kpi-sub--pontos"><span class="kpi-sub-rotulo">Umidade retirada</span><span class="kpi-sub-item" title="Secador 1 (milho): umidade de 18,4% na entrada e 13,5% na saída"><b>S1</b> 4,9 pontos <small>18,4→13,5%</small></span><span class="kpi-sub-item" title="Secador 2 (sorgo): umidade de 17,6% na entrada e 13,0% na saída"><b>S2</b> 4,6 pontos <small>17,6→13,0%</small></span></div>
+                        <div class="kpi-meta-row">
+                            <span class="kpi-flag kpi-flag--ok">5,3 KG / T · PONTO</span>
+                            <span class="kpi-meta-ref">por t secada e ponto de umidade</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="kpi-grid kpi-grid--tres prod-periodo-bloco" data-periodo="30d">
+                <div class="kpi-grid kpi-grid--four prod-periodo-bloco" data-periodo="30d">
                     <div class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
                         data-motivo
                         data-motivo-titulo="Secado por secador · 30 dias"
@@ -2740,6 +2899,32 @@
                         <div class="kpi-meta-row">
                             <span class="kpi-flag kpi-flag--atencao">S2 ABAIXO DE 90%</span>
                             <span class="kpi-meta-ref">S1 90% · S2 85% da capacidade de placa</span>
+                        </div>
+                    </div>
+                    <!-- cavaco do periodo: entrada (recebido no patio) | saida (consumido
+                         nas fornalhas) e o consumo especifico = cavaco consumido / (t
+                         secadas x pontos de umidade retirados) -->
+                    <div data-codigo="AVR-SPD-K" class="kpi-card kpi-card--meta kpi-card--motivo" tabindex="0"
+                        data-motivo
+                        data-motivo-titulo="Cavaco · 30 dias"
+                        data-motivo-resumo="1.640 t consumidas para 63.900 t secadas · 309.380 t·ponto"
+                        data-motivo-lista="Entrada (recebido no pátio)::1.680 t::60 carretas::neutro|Saída (consumido nas fornalhas)::1.640 t::S1 1.023 t · S2 617 t::neutro|Secador 1 (milho)::38.600 t · 5,0 pontos::18,5% → 13,5%::neutro|Secador 2 (sorgo)::25.300 t · 4,6 pontos::17,6% → 13,0%::neutro|Consumo específico::5,3 kg::por t secada e ponto de umidade · ref. até 5,5::bom"
+                        data-motivo-nota="Consumo específico = cavaco consumido ÷ (t secadas × pontos de umidade retirados). Referência de 5,5 kg a confirmar com a unidade.">
+                        <div class="kpi-label">CAVACO</div>
+                        <div class="kpi-tag-split">
+                            <div class="kpi-tag-bloco">
+                                <span class="kpi-tag-rotulo">Entrada</span>
+                                <div class="kpi-value">1.680 <span class="kpi-value-unit">t</span></div>
+                            </div>
+                            <div class="kpi-tag-bloco kpi-tag-bloco--igual">
+                                <span class="kpi-tag-rotulo">Saída · consumo</span>
+                                <div class="kpi-value">1.640 <span class="kpi-value-unit">t</span></div>
+                            </div>
+                        </div>
+                        <div class="kpi-sub kpi-sub--pontos"><span class="kpi-sub-rotulo">Umidade retirada</span><span class="kpi-sub-item" title="Secador 1 (milho): umidade de 18,5% na entrada e 13,5% na saída"><b>S1</b> 5,0 pontos <small>18,5→13,5%</small></span><span class="kpi-sub-item" title="Secador 2 (sorgo): umidade de 17,6% na entrada e 13,0% na saída"><b>S2</b> 4,6 pontos <small>17,6→13,0%</small></span></div>
+                        <div class="kpi-meta-row">
+                            <span class="kpi-flag kpi-flag--ok">5,3 KG / T · PONTO</span>
+                            <span class="kpi-meta-ref">por t secada e ponto de umidade</span>
                         </div>
                     </div>
                 </div>
@@ -3046,6 +3231,7 @@
                                 <span class="manut-kpi"><b>PARADAS</b>1<em>programada</em></span>
                                 <span class="manut-kpi"><b>MTTR</b>34<small>min</small><em>tempo médio de reparo</em></span>
                                 <span class="manut-kpi"><b>MTBF</b>15h05<em>tempo médio entre falhas</em></span>
+                                <span class="manut-kpi manut-kpi--limpeza" title="Média das últimas 6 limpezas dos dois secadores (lista na tela de Secagem). O turno manda no tempo: o 1º tem 5 pessoas, o 3º tem 2"><b>LIMPEZA · TEMPO MÉDIO</b>3h36<em>1º turno 2h05 · 3º turno 5h07 · últimas 6</em></span>
                             </div>
                             <div class="manut-secadores">
                                 <div class="manut-disp-linha">
@@ -3072,6 +3258,7 @@
                                 <span class="manut-kpi"><b>PARADAS</b>2<em>1 programada · 1 não</em></span>
                                 <span class="manut-kpi"><b>MTTR</b>34<small>min</small><em>tempo médio de reparo</em></span>
                                 <span class="manut-kpi"><b>MTBF</b>5h47<em>tempo médio entre falhas</em></span>
+                                <span class="manut-kpi manut-kpi--limpeza" title="Média das últimas 6 limpezas dos dois secadores (lista na tela de Secagem). O turno manda no tempo: o 1º tem 5 pessoas, o 3º tem 2"><b>LIMPEZA · TEMPO MÉDIO</b>3h36<em>1º turno 2h05 · 3º turno 5h07 · últimas 6</em></span>
                             </div>
                             <div class="manut-secadores">
                                 <div class="manut-disp-linha">
@@ -3098,6 +3285,7 @@
                                 <span class="manut-kpi"><b>PARADAS</b>2<em>1 programada · 1 não</em></span>
                                 <span class="manut-kpi"><b>MTTR</b>30<small>min</small><em>tempo médio de reparo</em></span>
                                 <span class="manut-kpi"><b>MTBF</b>8h31<em>tempo médio entre falhas</em></span>
+                                <span class="manut-kpi manut-kpi--limpeza" title="Média das últimas 6 limpezas dos dois secadores (lista na tela de Secagem). O turno manda no tempo: o 1º tem 5 pessoas, o 3º tem 2"><b>LIMPEZA · TEMPO MÉDIO</b>3h36<em>1º turno 2h05 · 3º turno 5h07 · últimas 6</em></span>
                             </div>
                             <div class="manut-secadores">
                                 <div class="manut-disp-linha">
@@ -3122,6 +3310,7 @@
                                 <span class="manut-kpi"><b>PARADAS</b>3<em>todas programadas</em></span>
                                 <span class="manut-kpi"><b>MTTR</b>28<small>min</small><em>tempo médio de reparo</em></span>
                                 <span class="manut-kpi"><b>MTBF</b>7h55<em>tempo médio entre falhas</em></span>
+                                <span class="manut-kpi manut-kpi--limpeza" title="Média das últimas 6 limpezas dos dois secadores (lista na tela de Secagem). O turno manda no tempo: o 1º tem 5 pessoas, o 3º tem 2"><b>LIMPEZA · TEMPO MÉDIO</b>3h36<em>1º turno 2h05 · 3º turno 5h07 · últimas 6</em></span>
                             </div>
                             <div class="manut-secadores">
                                 <div class="manut-disp-linha">
@@ -3146,6 +3335,7 @@
                                 <span class="manut-kpi"><b>PARADAS</b>10<em>7 programadas · 3 não programadas</em></span>
                                 <span class="manut-kpi"><b>MTTR</b>53<small>min</small><em>tempo médio de reparo</em></span>
                                 <span class="manut-kpi"><b>MTBF</b>13h50<em>tempo médio entre falhas</em></span>
+                                <span class="manut-kpi manut-kpi--limpeza" title="Média das últimas 6 limpezas dos dois secadores (lista na tela de Secagem). O turno manda no tempo: o 1º tem 5 pessoas, o 3º tem 2"><b>LIMPEZA · TEMPO MÉDIO</b>3h36<em>1º turno 2h05 · 3º turno 5h07 · últimas 6</em></span>
                             </div>
                             <div class="manut-secadores">
                                 <div class="manut-disp-linha">
@@ -3170,6 +3360,7 @@
                                 <span class="manut-kpi"><b>PARADAS</b>37<em>19 programadas · 18 não programadas</em></span>
                                 <span class="manut-kpi"><b>MTTR</b>1h06<em>tempo médio de reparo</em></span>
                                 <span class="manut-kpi"><b>MTBF</b>11h45<em>tempo médio entre falhas</em></span>
+                                <span class="manut-kpi manut-kpi--limpeza" title="Média das últimas 6 limpezas dos dois secadores (lista na tela de Secagem). O turno manda no tempo: o 1º tem 5 pessoas, o 3º tem 2"><b>LIMPEZA · TEMPO MÉDIO</b>3h36<em>1º turno 2h05 · 3º turno 5h07 · últimas 6</em></span>
                             </div>
                             <div class="manut-secadores">
                                 <div class="manut-disp-linha">
@@ -3625,23 +3816,25 @@
                  dos sensores dentro do grão; o túnel central divide o armazém
                  em lado A (em cima) e lado B (embaixo) e cada motor de aeração
                  fica na parede do seu lado, em cima dos quadradinhos que atende.
-                 Os quadradinhos são agrupados por setor de aeração; no topo de
-                 cada setor, a temperatura média, a máxima e quantos motores
+                 Os quadradinhos são agrupados por canaleta de aeração (o nome que a
+                 equipe usa; no código ficou "setor"); no topo de cada canaleta, a temperatura média, a máxima e quantos motores
                  estão ligados. À direita, as três tendências fixas (24 h,
                  7 dias e 30 dias) da média do armazém.
                  O script monta a planta a partir dos atributos do cartão:
                    data-arm-motores        motores por lado (posições ao longo do armazém)
                    data-arm-cols-por-motor quadradinhos que cada motor atende ao longo do comprimento
                    data-arm-linhas         fileiras de quadradinhos em cada lado do túnel
-                   data-arm-setores        motores (posições) de cada setor, em ordem
+                   data-arm-setores        motores (posições) de cada canaleta, em ordem
                    data-arm-motores-on     motores ligados (A1-A13 = faixa; B4 = um só)
                    data-arm-celulas        temperaturas: uma linha por fileira (";"),
                                            da parede do lado A até a parede do lado B;
-                                           "-" = cabo fora do produto, fica de fora
+                                           "v26.8" = cabo sem produto (le o ar acima
+                                           do grao: aparece hachurado, com "vazio", e
+                                           fica fora da media); "-" = sem produto e sem leitura
                    data-temps / data-temps-dia  média do armazém hora a hora (24 h)
                                            e nas leituras das 06h e 18h (30 dias)
-                 Setores: área 1 com 6, área 2 com 4 (validação do COE). A
-                 divisão de motores entre os setores ainda é estimativa até
+                 Canaletas: área 1 com 6, área 2 com 4 (validação do COE). A
+                 divisão de motores entre as canaletas ainda é estimativa até
                  chegar o mapa de aeração da unidade; é só trocar os atributos.
                  No canto superior da tela, a temperatura e a umidade relativa
                  de agora, da estação meteorológica da unidade (a mesma leitura
@@ -3662,7 +3855,7 @@
 
                 <div data-codigo="AVR-ARM-A" class="content-section sa-section">
                     <div class="section-head">
-                        <h3>ARMAZÉNS GRANELEIROS · TEMPERATURA E AERAÇÃO POR SETOR</h3>
+                        <h3>ARMAZÉNS GRANELEIROS · TEMPERATURA E AERAÇÃO POR CANALETA</h3>
                         <span class="arm-legenda" aria-label="Legenda">
                             <span class="arm-legenda-grupo">
                                 <i class="arm-leg-cel" data-faixa="1"></i><i class="arm-leg-cel" data-faixa="2"></i><i class="arm-leg-cel" data-faixa="3"></i><i class="arm-leg-cel" data-faixa="4"></i><i class="arm-leg-cel" data-faixa="5"></i>
@@ -3670,7 +3863,8 @@
                             </span>
                             <span class="arm-legenda-grupo"><i class="arm-leg-cel" data-faixa="atencao"></i>28–32</span>
                             <span class="arm-legenda-grupo"><i class="arm-leg-cel" data-faixa="alerta"></i>≥ 32</span>
-                            <span class="arm-legenda-grupo"><i class="arm-leg-cel" data-faixa="fora"></i>fora do produto</span>
+                            <span class="arm-legenda-grupo"><i class="arm-leg-cel" data-faixa="2"></i>com produto</span>
+                            <span class="arm-legenda-grupo"><i class="arm-leg-cel" data-faixa="fora"></i>sem produto · temperatura do ar</span>
                             <span class="arm-legenda-grupo"><i class="arm-leg-motor" data-motor="on"></i>motor ligado</span>
                             <span class="arm-legenda-grupo"><i class="arm-leg-motor" data-motor="off"></i>desligado</span>
                         </span>
@@ -3681,7 +3875,7 @@
                             data-arm-motores="13" data-arm-cols-por-motor="2" data-arm-linhas="3"
                             data-arm-setores="2,2,2,3,2,2"
                             data-arm-motores-on="A2-A13,B2-B5,B7-B13"
-                            data-arm-celulas="-,21.5,22.1,21.7,21.6,22.0,21.7,21.6,21.9,21.9,21.7,21.8,22.2,22.3,22.0,22.0,22.7,22.7,22.3,22.7,22.6,22.9,23.4,23.0,23.2,-;21.7,21.6,21.5,21.5,21.7,21.7,21.3,21.3,21.6,21.3,21.2,21.2,21.7,21.6,22.0,21.8,22.4,22.5,22.0,22.1,22.3,22.3,22.8,22.7,23.1,22.6;21.4,21.4,21.6,21.7,21.5,21.3,21.3,21.2,21.3,21.3,21.3,21.4,21.8,21.6,22.0,21.7,22.5,22.3,22.3,22.3,22.3,22.4,23.1,22.8,23.0,22.7;21.5,21.4,21.4,21.4,21.6,21.7,21.1,21.6,21.1,21.3,21.2,21.1,22.1,21.6,21.8,21.5,22.2,22.3,22.0,22.5,22.5,22.5,23.1,23.1,23.0,22.7;21.2,21.3,21.2,21.2,21.5,21.3,21.5,21.4,21.5,21.2,21.6,21.2,21.7,22.0,21.5,21.8,22.0,22.5,22.3,22.5,22.0,22.5,22.7,23.1,22.9,23.0;-,21.7,21.6,21.6,21.9,21.5,21.9,21.8,21.8,21.7,21.4,21.5,22.4,21.9,22.2,22.3,22.3,22.8,22.8,22.9,22.9,22.8,23.2,23.1,23.3,-"
+                            data-arm-celulas="v27.1,v27.8,v27.2,21.7,21.6,22.0,21.7,21.6,21.9,21.9,21.7,21.8,22.2,22.3,22.0,22.0,22.7,22.7,22.3,22.7,22.6,22.9,23.4,v27.7,v27.3,v27.0;v25.4,21.6,21.5,21.5,21.7,21.7,21.3,21.3,21.6,21.3,21.2,21.2,21.7,21.6,22.0,21.8,22.4,22.5,22.0,22.1,22.3,22.3,22.8,22.7,23.1,v25.6;21.4,21.4,21.6,21.7,21.5,21.3,21.3,21.2,21.3,21.3,21.3,21.4,21.8,21.6,22.0,21.7,22.5,22.3,22.3,22.3,22.3,22.4,23.1,22.8,23.0,22.7;21.5,21.4,21.4,21.4,21.6,21.7,21.1,21.6,21.1,21.3,21.2,21.1,22.1,21.6,21.8,21.5,22.2,22.3,22.0,22.5,22.5,22.5,23.1,23.1,23.0,22.7;v27.0,21.3,21.2,21.2,21.5,21.3,21.5,21.4,21.5,21.2,21.6,21.2,21.7,22.0,21.5,21.8,22.0,22.5,22.3,22.5,22.0,22.5,22.7,23.1,22.9,v26.1;v26.6,v27.6,v27.2,21.6,21.9,21.5,21.9,21.8,21.8,21.7,21.4,21.5,22.4,21.9,22.2,22.3,22.3,22.8,22.8,22.9,22.9,22.8,23.2,v27.8,v26.6,v27.4"
                             data-temps="22.9,22.9,22.8,22.8,22.7,22.7,22.7,22.6,22.6,22.5,22.5,22.5,22.4,22.4,22.3,22.3,22.3,22.2,22.2,22.2,22.3,22.2,22.1,22.0"
                             data-temps-dia="25.6,25.6,25.5,25.4,25.3,25.3,25.2,25.2,25.0,24.9,25.0,24.9,24.7,24.6,24.6,24.7,24.6,24.5,24.5,24.4,24.2,24.1,24.2,24.0,24.1,24.0,23.9,23.9,23.8,23.7,23.8,23.6,23.6,23.4,23.5,23.4,23.3,23.2,23.2,23.1,23.2,23.1,22.9,23.0,23.0,22.7,22.7,22.8,22.5,22.5,22.5,22.4,22.5,22.5,22.2,22.2,22.3,22.2,22.0,22.0,22.0">
                             <div class="arm-head">
@@ -3700,7 +3894,7 @@
                                 </span>
                             </div>
                             <div class="arm-body">
-                                <div class="arm-mapa" data-arm-mapa role="img" aria-label="Planta do armazém da área 1 por setor"></div>
+                                <div class="arm-mapa" data-arm-mapa role="img" aria-label="Planta do armazém da área 1 por canaleta"></div>
                                 <div class="arm-tend">
                                     <div class="arm-tend-item" data-arm-tend="24h">
                                         <div class="arm-tend-head"><span class="arm-tend-nome">24 h</span><span class="sa-temp-rate" data-temp-taxa>--</span></div>
@@ -3737,12 +3931,12 @@
                         </article>
 
                         <!-- Área 2: aeração ligada há pouco, só A8 e B2 desligados; foco quente
-                             no setor 3, perto do túnel do lado B, e média subindo na última semana -->
+                             na canaleta 3, perto do túnel do lado B, e média subindo na última semana -->
                         <article class="sa-card arm-card" data-armazem data-aer="on" data-aer-desde-min="52" data-pausa-ponta="1"
                             data-arm-motores="10" data-arm-cols-por-motor="2" data-arm-linhas="3"
                             data-arm-setores="2,2,3,3"
                             data-arm-motores-on="A1-A7,A9-A10,B1,B3-B10"
-                            data-arm-celulas="-,21.4,21.1,21.0,21.3,21.6,21.4,21.2,22.1,22.2,21.9,22.2,21.6,21.4,21.5,21.9,21.5,21.3,21.4,-;21.0,20.6,20.9,20.6,21.0,21.0,21.2,21.3,21.8,21.6,21.8,21.6,21.4,21.3,21.3,21.3,21.0,20.8,21.0,20.6;20.7,20.8,20.6,20.9,20.9,20.8,21.2,21.3,22.1,22.8,22.9,22.6,21.9,21.5,21.6,21.0,21.0,20.9,21.0,21.1;20.5,20.6,20.5,20.5,20.7,20.8,21.3,22.1,23.2,23.9,24.0,23.5,22.0,21.5,21.6,21.2,21.0,21.0,20.8,20.8;20.5,20.6,21.0,21.1,20.8,21.3,21.3,21.6,23.2,24.2,24.0,23.2,22.0,21.7,21.4,21.3,21.2,20.6,20.8,20.8;-,20.8,20.8,21.1,21.1,21.2,21.7,21.8,22.9,23.0,23.2,23.0,22.1,21.8,21.7,21.5,21.2,21.2,21.2,-"
+                            data-arm-celulas="v27.7,v27.1,v26.7,21.0,21.3,21.6,21.4,21.2,22.1,22.2,21.9,22.2,21.6,21.4,v26.9,v26.7,v27.5,v27.8,v27.7,v27.1;v26.8,20.6,20.9,20.6,21.0,21.0,21.2,21.3,21.8,21.6,21.8,21.6,21.4,21.3,21.3,21.3,v26.4,v26.9,v26.6,v25.6;20.7,20.8,20.6,20.9,20.9,20.8,21.2,21.3,22.1,22.8,22.9,22.6,21.9,21.5,21.6,21.0,21.0,20.9,21.0,21.1;20.5,20.6,20.5,20.5,20.7,20.8,21.3,22.1,23.2,23.9,24.0,23.5,22.0,21.5,21.6,21.2,21.0,21.0,20.8,20.8;v26.3,20.6,21.0,21.1,20.8,21.3,21.3,21.6,23.2,24.2,24.0,23.2,22.0,21.7,21.4,21.3,v26.8,v26.6,v26.6,v26.6;v27.7,v27.9,v27.5,21.1,21.1,21.2,21.7,21.8,22.9,23.0,23.2,23.0,22.1,21.8,v27.7,v27.2,v26.6,v26.6,v27.7,v27.3"
                             data-temps="20.8,20.8,20.8,20.9,20.9,20.9,21.0,21.0,21.0,21.1,21.1,21.1,21.2,21.2,21.2,21.3,21.3,21.3,21.3,21.4,21.2,21.3,21.4,21.5"
                             data-temps-dia="20.6,20.5,20.7,20.6,20.7,20.6,20.6,20.7,20.7,20.7,20.7,20.7,20.7,20.7,20.7,20.6,20.6,20.7,20.6,20.7,20.6,20.6,20.7,20.7,20.8,20.7,20.8,20.6,20.8,20.7,20.8,20.8,20.8,20.7,20.8,20.8,20.8,20.8,20.8,20.8,20.8,20.9,20.9,20.7,20.8,20.8,20.8,21.0,21.0,20.9,21.0,21.1,21.2,21.3,21.3,21.3,21.3,21.3,21.4,21.5,21.5">
                             <div class="arm-head">
@@ -3761,7 +3955,7 @@
                                 </span>
                             </div>
                             <div class="arm-body">
-                                <div class="arm-mapa" data-arm-mapa role="img" aria-label="Planta do armazém da área 2 por setor"></div>
+                                <div class="arm-mapa" data-arm-mapa role="img" aria-label="Planta do armazém da área 2 por canaleta"></div>
                                 <div class="arm-tend">
                                     <div class="arm-tend-item" data-arm-tend="24h">
                                         <div class="arm-tend-head"><span class="arm-tend-nome">24 h</span><span class="sa-temp-rate" data-temp-taxa>--</span></div>
@@ -7208,7 +7402,7 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.1.4/leaflet-maplibre-gl.js"></script>
-    <script src="script.js?v=20261027d"></script>
+    <script src="script.js?v=20261027h"></script>
 
 </body>
 </html>
