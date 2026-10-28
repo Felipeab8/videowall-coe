@@ -18899,20 +18899,13 @@ body.theme-light .class-val--fora {
 /* ============================================
    SECAGEM · PRODUTIVIDADE — COLUNA DE PARADAS
    Paradas e disponibilidade fisica (manutencao). A cor identifica o
-   ESTADO da hora de equipamento: operando (neutro), parada programada
-   (amarelo) e nao programada (vermelho) — o que a tela quer destacar
-   e o tempo parado, nao o tempo rodando.
+   ESTADO da hora de equipamento: operando (verde, a barra "cheia" do
+   disponivel), parada programada (amarelo) e nao programada (vermelho).
    ============================================ */
 #screen-4 {
-    --manut-op: rgba(120, 160, 210, 0.3);
+    --manut-op: var(--ok);
     --manut-prog: var(--warn);
     --manut-nprog: var(--danger);
-}
-
-
-
-body.theme-light #screen-4 {
-    --manut-op: rgba(60, 70, 80, 0.22);
 }
 
 
@@ -19102,6 +19095,13 @@ body.theme-light #screen-4 {
 
 .manut-seg--op {
     background: var(--manut-op);
+}
+
+/* fresta entre operando e parada: verde e amarelo encostados se confundem
+   para quem nao distingue bem as cores */
+.manut-seg + .manut-seg {
+    box-sizing: border-box;
+    border-left: 2px solid var(--bg-bottom);
 }
 
 
