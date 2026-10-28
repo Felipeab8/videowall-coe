@@ -6170,18 +6170,19 @@ function escreverClimaAeracao(card, ligado) {
 
     const equilibrio = umidadeEquilibrio(card.dataset.cultura, temp, ur);
     const grao = paraNumero(card.dataset.umidade);
-    const alvoEquil = card.querySelector('[data-clima-equil]');
     const alvoEfeito = card.querySelector('[data-clima-efeito]');
     if (equilibrio === null || !Number.isFinite(grao)) {
-        escreverTexto(alvoEquil, '');
         escreverTexto(alvoEfeito, '');
         return;
     }
-    escreverTexto(alvoEquil, `equilíbrio ${umPonto(equilibrio)}% · grão ${umPonto(grao)}%`);
     const diferenca = equilibrio - grao;
     const efeito = diferenca < -EQUILIBRIO_NEUTRO ? 'secando' : diferenca > EQUILIBRIO_NEUTRO ? 'umedecendo' : 'neutro';
     escreverTexto(alvoEfeito, efeito);
-    if (alvoEfeito) alvoEfeito.dataset.efeito = efeito;
+    // no cartao fica so o selo; equilibrio e grao vao no tooltip dele
+    if (alvoEfeito) {
+        alvoEfeito.dataset.efeito = efeito;
+        alvoEfeito.title = `equilíbrio ${umPonto(equilibrio)}% · grão ${umPonto(grao)}%`;
+    }
 }
 
 function atualizarSilosAeracao() {

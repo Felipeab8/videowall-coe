@@ -11446,25 +11446,18 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 
 
 /* silos: media do periodo ligado (o script escreve) com o efeito do ar ao
-   lado - secando (verde), umedecendo (ambar) ou neutro - e, embaixo, a umidade
-   de equilibrio contra a do grao. O selo fica na linha curta da media: na
-   do equilibrio ele nao cabia na largura do cartao */
+   lado - secando (verde), umedecendo (ambar) ou neutro. A umidade de
+   equilibrio contra a do grao, que decide o selo, fica no tooltip dele.
+   Sem largura para os dois, o selo desce para a linha de baixo em vez de
+   ser cortado na borda do cartao */
 .sa-card .sa-aer-clima-ur {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.15rem 0.4rem;
     color: var(--text);
     font-weight: 800;
     white-space: nowrap;
-}
-
-
-
-.sa-aer-equil {
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 
@@ -21953,7 +21946,7 @@ body.theme-light .du-proj-sel option {
 
     /* rótulos que no monitor ficam numa linha só (com reticências quando
        não cabem): na TV quebram, para nenhum número sumir */
-    html.tv :is(.gv-kpi-label, .gv-meter-label, .gv-meter-lim, .trigo-tipo-lim, .conc-num-sub, .sa-aer-equil, .sa-aer-clima-rotulo, .sa-aer-clima-ur, .pv-fact) {
+    html.tv :is(.gv-kpi-label, .gv-meter-label, .gv-meter-lim, .trigo-tipo-lim, .conc-num-sub, .sa-aer-clima-rotulo, .sa-aer-clima-ur, .pv-fact) {
         white-space: normal;
         text-overflow: clip;
         overflow: visible;
