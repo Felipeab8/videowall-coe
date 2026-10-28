@@ -12,7 +12,7 @@
          não carrega e a tela usa o mapa esquemático em SVG. -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css">
-    <link rel="stylesheet" href="style.css?v=20261028j">
+    <link rel="stylesheet" href="style.css?v=20261028l">
 </head>
 <body class="theme-dark">
 
@@ -3503,8 +3503,9 @@
                     </div>
                     <!-- o ar de agora, da estacao da unidade (mesmo bloco e mesma leitura
                          do armazem e da previsao do tempo): da para comparar com a media
-                         da aeracao de cada silo -->
-                    <div class="arm-clima" title="Estação meteorológica da unidade; lê a cada 15 minutos">
+                         da aeracao de cada silo. data-estacao-temp/-ur sao a mesma leitura
+                         para o script calcular a faixa de ar que seca cada silo -->
+                    <div class="arm-clima" title="Estação meteorológica da unidade; lê a cada 15 minutos" data-estacao-temp="26.4" data-estacao-ur="58">
                         <span class="arm-clima-rot">Estação · agora<small>leitura das 14:30</small></span>
                         <span class="arm-clima-val"><b>26,4<small>°C</small></b>temperatura</span>
                         <span class="arm-clima-val"><b>58<small>%</small></b>umidade relativa</span>
@@ -3553,6 +3554,7 @@
                                 </div>
                                 <div class="sa-spark-horas" aria-hidden="true"><span data-hora-inicio>--</span><span data-hora-meio>--</span><span data-hora-fim>--</span></div>
                             </div>
+                            <div class="sa-ar" data-ar-secar></div>
                             <div class="sa-aer">
                                 <span class="sa-aer-badge" data-aer-badge>--</span>
                                 <span class="sa-aer-info" data-aer-info>--</span>
@@ -3591,6 +3593,7 @@
                                 </div>
                                 <div class="sa-spark-horas" aria-hidden="true"><span data-hora-inicio>--</span><span data-hora-meio>--</span><span data-hora-fim>--</span></div>
                             </div>
+                            <div class="sa-ar" data-ar-secar></div>
                             <div class="sa-aer">
                                 <span class="sa-aer-badge" data-aer-badge>--</span>
                                 <span class="sa-aer-info" data-aer-info>--</span>
@@ -3629,6 +3632,7 @@
                                 </div>
                                 <div class="sa-spark-horas" aria-hidden="true"><span data-hora-inicio>--</span><span data-hora-meio>--</span><span data-hora-fim>--</span></div>
                             </div>
+                            <div class="sa-ar" data-ar-secar></div>
                             <div class="sa-aer">
                                 <span class="sa-aer-badge" data-aer-badge>--</span>
                                 <span class="sa-aer-info" data-aer-info>--</span>
@@ -3667,6 +3671,7 @@
                                 </div>
                                 <div class="sa-spark-horas" aria-hidden="true"><span data-hora-inicio>--</span><span data-hora-meio>--</span><span data-hora-fim>--</span></div>
                             </div>
+                            <div class="sa-ar" data-ar-secar></div>
                             <div class="sa-aer">
                                 <span class="sa-aer-badge" data-aer-badge>--</span>
                                 <span class="sa-aer-info" data-aer-info>--</span>
@@ -3705,6 +3710,7 @@
                                 </div>
                                 <div class="sa-spark-horas" aria-hidden="true"><span data-hora-inicio>--</span><span data-hora-meio>--</span><span data-hora-fim>--</span></div>
                             </div>
+                            <div class="sa-ar" data-ar-secar></div>
                             <div class="sa-aer">
                                 <span class="sa-aer-badge" data-aer-badge>--</span>
                                 <span class="sa-aer-info" data-aer-info>--</span>
@@ -3743,6 +3749,7 @@
                                 </div>
                                 <div class="sa-spark-horas" aria-hidden="true"><span data-hora-inicio>--</span><span data-hora-meio>--</span><span data-hora-fim>--</span></div>
                             </div>
+                            <div class="sa-ar" data-ar-secar></div>
                             <div class="sa-aer">
                                 <span class="sa-aer-badge" data-aer-badge>--</span>
                                 <span class="sa-aer-info" data-aer-info>--</span>
@@ -3781,6 +3788,7 @@
                                 </div>
                                 <div class="sa-spark-horas" aria-hidden="true"><span data-hora-inicio>--</span><span data-hora-meio>--</span><span data-hora-fim>--</span></div>
                             </div>
+                            <div class="sa-ar" data-ar-secar></div>
                             <div class="sa-aer">
                                 <span class="sa-aer-badge" data-aer-badge>--</span>
                                 <span class="sa-aer-info" data-aer-info>--</span>
@@ -3819,6 +3827,7 @@
                                 </div>
                                 <div class="sa-spark-horas" aria-hidden="true"><span data-hora-inicio>--</span><span data-hora-meio>--</span><span data-hora-fim>--</span></div>
                             </div>
+                            <div class="sa-ar" data-ar-secar></div>
                             <div class="sa-aer">
                                 <span class="sa-aer-badge" data-aer-badge>--</span>
                                 <span class="sa-aer-info" data-aer-info>--</span>
@@ -7466,7 +7475,7 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.1.4/leaflet-maplibre-gl.js"></script>
-    <script src="script.js?v=20261028i"></script>
+    <script src="script.js?v=20261028l"></script>
 
 </body>
 </html>

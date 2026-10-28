@@ -210,9 +210,9 @@ function fitTargets() {
     // (lista longa de caminhoes): fica fora da conta. Bloco com overflow
     // visivel tambem sai: o que passa dele ja aparece na medida da tela, e
     // um menu aberto por cima (contratos da expedicao) nao e transbordo.
-    // O cartao do secador (produtividade) corta o que passa da fileira dele,
-    // sem a secao perceber: entra na conta para nada sumir.
-    const blocos = active.querySelectorAll('.content-section:not(.content-section--livre), .table-scroll:not(.table-scroll--livre), .alerts-list, .geral-grid, .prod-secador');
+    // O cartao do secador (produtividade) e o do silo cortam o que passa da
+    // fileira deles, sem a secao perceber: entram na conta para nada sumir.
+    const blocos = active.querySelectorAll('.content-section:not(.content-section--livre), .table-scroll:not(.table-scroll--livre), .alerts-list, .geral-grid, .prod-secador, .sa-card[data-silo]');
     return [active, ...Array.prototype.filter.call(blocos, (el) => getComputedStyle(el).overflowY !== 'visible')];
 }
 
@@ -6154,6 +6154,94 @@ function umidadeEquilibrio(cultura, temp, ur) {
 
 const umPonto = (v) => v.toFixed(1).replace('.', ',');
 
+// ---- Ar para a aeracao secar: temperatura minima, ideal e maxima ----
+// Na tabela a umidade de equilibrio depende muito mais da UR que da
+// temperatura; so que o ar que esquenta, com o mesmo vapor, baixa a UR.
+// Entao, da leitura da estacao (temperatura e UR de agora) sai a umidade
+// absoluta do ar; cada temperatura tem a sua UR (Magnus) e dai a umidade de
+// equilibrio da cultura. Contra a umidade interna do grao (data-umidade):
+//   MIN    a partir daqui o ar seca (equilibrio abaixo do grao alem do neutro)
+//   IDEAL  seca de 0,5 a 1,5 ponto
+//   MAX    acima, seca mais de 2 pontos: a camada de baixo passa do ponto
+// A faixa muda com o ar: e' a de agora, para a leitura da estacao.
+const AR_SECAGEM = { ideal: [0.5, 1.5], max: 2.0, passo: 0.1, teto: 60 };
+
+function pressaoSaturacao(t) {
+    return 6.112 * Math.exp((17.62 * t) / (243.12 + t));
+}
+
+function faixaArSecagem(cultura, grao, tAgora, urAgora) {
+    const vapor = (urAgora / 100) * pressaoSaturacao(tAgora);
+    // pontos de umidade que o ar a t °C tira do grao (negativo = umedece)
+    const seca = (t) => {
+        const ur = Math.min(100, (vapor / pressaoSaturacao(t)) * 100);
+        const eq = umidadeEquilibrio(cultura, t, ur);
+        return eq === null ? null : grao - eq;
+    };
+    // primeira temperatura em que o ar tira pelo menos "pontos" do grao
+    const apartir = (pontos) => {
+        for (let t = 0; t <= AR_SECAGEM.teto; t += AR_SECAGEM.passo) {
+            const s = seca(t);
+            if (s !== null && s >= pontos) return t;
+        }
+        return null;
+    };
+    return {
+        min: apartir(EQUILIBRIO_NEUTRO),
+        ideal: AR_SECAGEM.ideal.map(apartir),
+        max: apartir(AR_SECAGEM.max),
+    };
+}
+
+// situacao do ar de agora na faixa: icone + texto, nunca so a cor
+function estadoArSecagem(t, faixa) {
+    const [lo, hi] = faixa.ideal;
+    if (faixa.min === null || t < faixa.min) return { estado: 'nao', icone: '▼', texto: 'não seca' };
+    if (lo !== null && t < lo) return { estado: 'pouco', icone: '●', texto: 'seca pouco' };
+    if (hi === null || t <= hi) return { estado: 'ideal', icone: '●', texto: 'no ideal' };
+    if (faixa.max === null || t <= faixa.max) return { estado: 'acima', icone: '▲', texto: 'acima do ideal' };
+    return { estado: 'demais', icone: '▲', texto: 'seca demais' };
+}
+
+function escreverArSecagem(card) {
+    const alvo = card.querySelector('[data-ar-secar]');
+    const tela = card.closest('.screen');
+    const estacao = tela && tela.querySelector('[data-estacao-temp]');
+    if (!alvo || !estacao) return;
+    const tAgora = paraNumero(estacao.dataset.estacaoTemp);
+    const urAgora = paraNumero(estacao.dataset.estacaoUr);
+    const grao = paraNumero(card.dataset.umidade);
+    const chave = [card.dataset.cultura, grao, tAgora, urAgora].join('|');
+    if (alvo.dataset.chave === chave) return; // so refaz quando o ar ou o grao mudam
+    alvo.dataset.chave = chave;
+    if (![tAgora, urAgora, grao].every(Number.isFinite)) {
+        alvo.innerHTML = '';
+        return;
+    }
+    const f = faixaArSecagem(card.dataset.cultura, grao, tAgora, urAgora);
+    const grau = (v) => (v === null ? '—' : String(Math.round(v)));
+    const [lo, hi] = f.ideal;
+    const situacao = estadoArSecagem(tAgora, f);
+
+    // regua: um pouco abaixo da minima ate um pouco acima da maxima
+    const ini = (f.min === null ? tAgora : Math.min(f.min, tAgora)) - 4;
+    const fim = Math.max(f.max === null ? AR_SECAGEM.teto : f.max, tAgora) + 3;
+    const pos = (v) => `${(((Math.min(Math.max(v, ini), fim) - ini) / (fim - ini)) * 100).toFixed(1)}%`;
+    const trecho = (a, b, cls) => (a === null || b === null || b <= a ? ''
+        : `<i class="sa-ar-faixa sa-ar-faixa--${cls}" style="left: ${pos(a)}; width: calc(${pos(b)} - ${pos(a)})"></i>`);
+    const regua = trecho(f.min, lo, 'pouco') + trecho(lo, hi, 'ideal') + trecho(hi, f.max, 'acima')
+        + trecho(f.max, fim, 'demais')
+        + `<i class="sa-ar-agora" style="left: ${pos(tAgora)}"></i>`;
+
+    alvo.title = `Temperatura do ar para a aeração secar a umidade interna do grão (${umPonto(grao)}%), `
+        + `com a umidade do ar de agora (estação: ${umPonto(tAgora)} °C, UR ${Math.round(urAgora)}%). `
+        + 'Mín: a partir dela o ar seca; ideal: seca de 0,5 a 1,5 ponto; máx: acima, seca demais a camada de baixo.';
+    alvo.innerHTML = '<div class="sa-ar-head"><span class="sa-ar-tit">Ar p/ secar</span>'
+        + `<span class="sa-ar-ref">mín ${grau(f.min)} · ideal ${grau(lo)}–${grau(hi)} · máx ${grau(f.max)} °C</span></div>`
+        + `<div class="sa-ar-regua" aria-hidden="true">${regua}</div>`
+        + `<div class="sa-ar-status" data-estado="${situacao.estado}"><b>${situacao.icone}</b> ar agora ${umPonto(tAgora)} °C · ${situacao.texto}</div>`;
+}
+
 function escreverClimaAeracao(card, ligado) {
     const leituras = (card.dataset.aerClima || '').split(',')
         .map((par) => par.split('/').map(Number))
@@ -6191,6 +6279,7 @@ function atualizarSilosAeracao() {
 
     document.querySelectorAll('[data-silo]').forEach((card) => {
         prepararSilo(card);
+        escreverArSecagem(card);
 
         const ligado = card.dataset.aer === 'on';
         const pausado = ligado && card.dataset.pausaPonta === '1' && dentroPonta;

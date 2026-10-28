@@ -11011,6 +11011,13 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     position: relative;
 }
 
+/* o tanque do silo nao some: faltando altura no cartao, ele transborda e o
+   ajuste a tela encolhe tudo (o cartao entra na conta do fitTargets), em vez
+   de o % e o m3 subirem por cima do cabecalho */
+.sa-card[data-silo] .sa-body {
+    min-height: 3.75rem;
+}
+
 
 
 .sa-card .silo-visual {
@@ -11444,6 +11451,109 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 }
 
 
+
+/* silos: ar para a aeracao secar a umidade interna do grao (o script
+   calcula da leitura da estacao e da tabela higroscopica). Texto com a
+   faixa, regua com os trechos (seca pouco, ideal, acima, seca demais) e o
+   marcador do ar de agora, e a situacao com icone e cor */
+.sa-ar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.sa-ar:empty {
+    display: none;
+}
+
+.sa-ar-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.1rem 0.4rem;
+    font-size: max(0.58rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.sa-ar-tit {
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+.sa-ar-ref {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.sa-ar-regua {
+    position: relative;
+    height: 0.4rem;
+    margin: 0.2rem 0;
+    border-radius: 999px;
+    background: var(--row-line);
+}
+
+.sa-ar-faixa {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+}
+
+.sa-ar-faixa--pouco {
+    background: color-mix(in srgb, var(--ok) 35%, transparent);
+}
+
+.sa-ar-faixa--ideal {
+    background: var(--ok);
+}
+
+.sa-ar-faixa--acima {
+    background: var(--warn);
+}
+
+.sa-ar-faixa--demais {
+    background: var(--danger);
+    border-radius: 0 999px 999px 0;
+}
+
+/* ar de agora: traco alto na cor do texto, com anel para soltar da regua */
+.sa-ar-agora {
+    position: absolute;
+    top: 50%;
+    width: 0.2rem;
+    height: 0.9rem;
+    border-radius: 2px;
+    background: var(--text);
+    box-shadow: 0 0 0 2px var(--bg-bottom);
+    transform: translate(-50%, -50%);
+}
+
+.sa-ar-status {
+    font-size: max(0.6rem, var(--fs-texto, 0px));
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.sa-ar-status b {
+    color: var(--muted);
+}
+
+.sa-ar-status[data-estado="nao"] b,
+.sa-ar-status[data-estado="acima"] b {
+    color: var(--warn);
+}
+
+.sa-ar-status[data-estado="ideal"] b {
+    color: var(--ok);
+}
+
+.sa-ar-status[data-estado="demais"] b {
+    color: var(--danger);
+}
 
 /* silos: media do periodo ligado (o script escreve) com o efeito do ar ao
    lado - secando (verde), umedecendo (ambar) ou neutro. A umidade de
