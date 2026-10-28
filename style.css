@@ -18782,7 +18782,7 @@ body.theme-light .class-val--fora {
 }
 
 .exp-table .exp-tag .fluxo-tag {
-    max-width: 8.5rem;
+    max-width: 12rem;
     font-size: max(0.6rem, var(--fs-texto, 0px));
     letter-spacing: 0.02em;
     word-break: break-all;
@@ -22222,6 +22222,13 @@ body.theme-light .du-proj-sel option {
 
     html.tv .sa-stock span {
         color: var(--text);
+    }
+
+    /* tabelas de caminhoes (12 colunas na expedicao): cabecalho sem o
+       espacamento extra entre letras, para os nomes caberem na coluna */
+    html.tv .data-table--fluxo thead th {
+        letter-spacing: 0;
+        white-space: normal;
     }
 
     /* pressão dos secadores: curva do quadro mais grossa para ler de longe */
