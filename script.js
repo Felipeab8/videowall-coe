@@ -5051,19 +5051,30 @@ montarProdutividade();
 
 // ============================================
 // PRESSAO DOS SECADORES · DEPRESSAO POR PONTO
-// Um painel por ponto de pressao (P1 a P5), cada um com os dois secadores:
-// valor da ultima hora e media do turno em cima, a hora a hora embaixo.
-// Monta do JSON em [data-pressao-dados]: horas [{h, s1, s2, min?, agora?}],
-// com s1/s2 = [P1..P5] em mmH2O, e paradas [{sec, h, min, motivo}].
-// Todos os paineis dividem a mesma escala (0 ate o minimo arredondado), para
-// os pontos se compararem. As linhas vao num SVG esticado; rotulos, pontos
-// finais e eixos sao HTML por cima, para a letra nao deformar.
+// Um cartao por secador com o desenho da torre de cavaletes, no estilo da
+// especificacao de engenharia (EE-206 · Medicao em Secadores): camara de ar
+// quente em escada (ar de secagem), cavaletes (secagem), camara de ar
+// saturado com o ventilador no topo e o resfriamento embaixo (ar ambiente).
+// Cada ponto de pressao fica marcado no lugar da medicao e ligado a um quadro
+// com o local, o valor da ultima hora, a media do turno e a curva do turno.
+// Monta do JSON em [data-pressao-dados]: secadores {s1, s2: nome, tipo,
+// cultura}, pontos [{id, local}], horas [{h, s1, s2, min?, agora?}] com
+// s1/s2 = [P1..P5] em mmH2O, e paradas [{sec, h, min, motivo}].
+// O desenho e' SVG em coordenadas fixas (800 x 640); os quadros e rotulos
+// sao HTML posicionados em % dessas coordenadas, para a letra nao escalar
+// com o desenho e seguir o piso de fonte do modo TV.
 // ============================================
-const PRESSAO_SECADORES = [
-    { chave: 's1', nome: 'S1' },
-    { chave: 's2', nome: 'S2' },
+const PRESSAO_SECADORES = ['s1', 's2'];
+const PRESSAO_DESENHO = { w: 800, h: 640, quadroEsq: 195, quadroDir: 595 };
+// lugar de cada ponto no desenho (marca) e altura do quadro dele; os da
+// camara de ar quente e da fornalha ficam a esquerda, os outros a direita
+const PRESSAO_LUGARES = [
+    { x: 315, y: 120, lado: 'esq', qy: 110 },   // P1 camara de ar quente, topo
+    { x: 222, y: 440, lado: 'esq', qy: 315 },   // P2 camara de ar quente, base
+    { x: 497, y: 150, lado: 'dir', qy: 180 },   // P3 camara de ar saturado (exaustao)
+    { x: 400, y: 518, lado: 'dir', qy: 470 },   // P4 resfriamento
+    { x: 255, y: 530, lado: 'esq', qy: 530 },   // P5 duto de ar quente, saida da fornalha
 ];
-const PRESSAO_ROTULO_DIST = 13; // % da altura entre os rotulos do fim da linha
 
 // mmH2O com o sinal de menos tipografico: "−32"
 function formatarPressao(v) {
@@ -5080,84 +5091,96 @@ function dadosPressao(secao) {
     }
 }
 
-// fim da escala: o valor mais baixo arredondado para baixo, com folga de 10
-function pisoPressao(dados) {
-    let menor = 0;
-    dados.horas.forEach((hora) => PRESSAO_SECADORES.forEach((s) => {
-        (hora[s.chave] || []).forEach((v) => { menor = Math.min(menor, v); });
-    }));
-    return Math.floor(menor / 10) * 10 - 10;
+function setaPressao(x1, y1, x2, y2, tipo, sufixo) {
+    return `<line class="pr-d-seta pr-d-seta--${tipo}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" marker-end="url(#pr-ponta-${tipo}-${sufixo})"></line>`;
 }
 
-// rotulos do fim da linha (S1, S2) com distancia minima: se as linhas
-// terminam perto, os dois se afastam igualmente do meio
-function afastarRotulos(ys) {
-    if (ys.length !== 2 || Math.abs(ys[0] - ys[1]) >= PRESSAO_ROTULO_DIST) return ys;
-    const meio = (ys[0] + ys[1]) / 2;
-    const meia = PRESSAO_ROTULO_DIST / 2;
-    return ys[0] <= ys[1] ? [meio - meia, meio + meia] : [meio + meia, meio - meia];
+// torre de cavaletes: o ar quente sai da fornalha, sobe pela camara em
+// escada, atravessa os cavaletes, cai na camara de ar saturado e sai pelo
+// ventilador no topo; embaixo o resfriamento puxa ar ambiente. "por cima"
+// entra por ultimo no SVG (marcas dos pontos e guias)
+function desenhoCavaletes(sufixo, porCima) {
+    const tipos = ['quente', 'secagem', 'saturado', 'ambiente'];
+    const pontas = tipos.map((t) => `<marker id="pr-ponta-${t}-${sufixo}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path class="pr-d-ponta pr-d-ponta--${t}" d="M0,0 L10,5 L0,10 z"></path></marker>`).join('');
+    const partes = [];
+    // fornalha e duto de ar quente ate a camara
+    partes.push('<rect class="pr-d-fornalha" x="197" y="580" width="136" height="44" rx="6"></rect>');
+    partes.push('<rect class="pr-d-zona pr-d-zona--quente" x="230" y="470" width="50" height="110"></rect>');
+    partes.push(setaPressao(255, 572, 255, 482, 'quente', sufixo));
+    // camara de ar quente em escada, mais larga embaixo
+    partes.push('<polygon class="pr-d-zona pr-d-zona--quente" points="330,80 305,80 305,160 280,160 280,240 255,240 255,320 230,320 230,400 205,400 205,470 330,470"></polygon>');
+    [[120, 305], [200, 280], [280, 255], [360, 230], [440, 205]].forEach(([y, x]) => {
+        partes.push(setaPressao(x + 10, y, 324, y, 'quente', sufixo));
+    });
+    // torre com os cavaletes (ar de secagem atravessando o grao)
+    partes.push('<polygon class="pr-d-torre" points="322,60 400,24 478,60"></polygon>');
+    partes.push('<rect class="pr-d-torre" x="330" y="60" width="140" height="500"></rect>');
+    for (let y = 82; y <= 460; y += 27) partes.push(setaPressao(342, y, 456, y, 'secagem', sufixo));
+    // resfriamento: ar ambiente entra por baixo e atravessa o grao
+    partes.push('<rect class="pr-d-zona pr-d-zona--ambiente" x="331" y="478" width="138" height="81"></rect>');
+    [496, 540].forEach((y) => partes.push(setaPressao(288, y, 324, y, 'ambiente', sufixo)));
+    [496, 518, 540].forEach((y) => partes.push(setaPressao(342, y, 456, y, 'ambiente', sufixo)));
+    // camara de ar saturado e ventilador no topo
+    partes.push('<rect class="pr-d-zona pr-d-zona--saturado" x="470" y="60" width="55" height="499"></rect>');
+    partes.push(setaPressao(497, 545, 497, 78, 'saturado', sufixo));
+    partes.push('<circle class="pr-d-vent" cx="497" cy="40" r="14"></circle>');
+    partes.push(setaPressao(497, 24, 497, 4, 'saturado', sufixo));
+    return `<svg class="pr-d" viewBox="0 0 ${PRESSAO_DESENHO.w} ${PRESSAO_DESENHO.h}" aria-hidden="true">`
+        + `<defs>${pontas}</defs>${partes.join('')}${porCima || ''}</svg>`;
 }
 
-function painelPressao(dados, i, piso) {
+// curva do turno no quadro do ponto, na escala do proprio ponto
+function curvaPressao(serie) {
+    const min = Math.min(...serie);
+    const max = Math.max(...serie);
+    const faixa = max - min || 1;
+    const pts = serie.map((v, k) => {
+        const x = serie.length > 1 ? (k / (serie.length - 1)) * 100 : 50;
+        const y = 2 + ((max - v) / faixa) * 16;
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
+    return `<svg class="pr-curva" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}"></polyline></svg>`;
+}
+
+function cartaoPressao(dados, sec) {
+    const meta = (dados.secadores && dados.secadores[sec]) || { nome: sec.toUpperCase() };
     const horas = dados.horas;
     const n = horas.length;
-    const x = (k) => ((k + 0.5) / n) * 100;
-    const y = (v) => (v / piso) * 100;
-    const ultima = horas[n - 1];
+    const pct = (v, total) => `${((v / total) * 100).toFixed(2)}%`;
+    const { w, h } = PRESSAO_DESENHO;
 
-    const valores = PRESSAO_SECADORES.map((s) => {
-        const serie = horas.map((hora) => hora[s.chave][i]);
+    // marcas no desenho e guias ate o quadro de cada ponto
+    const marcas = PRESSAO_LUGARES.map((l) => {
+        const ax = l.lado === 'esq' ? PRESSAO_DESENHO.quadroEsq : PRESSAO_DESENHO.quadroDir;
+        return `<line class="pr-d-guia" x1="${l.x}" y1="${l.y}" x2="${ax}" y2="${l.qy}"></line>`
+            + `<circle class="pr-d-marca" cx="${l.x}" cy="${l.y}" r="10"></circle>`;
+    }).join('');
+
+    const quadros = dados.pontos.map((ponto, i) => {
+        const l = PRESSAO_LUGARES[i];
+        if (!l) return '';
+        const serie = horas.map((hora) => hora[sec][i]);
         const media = serie.reduce((a, v) => a + v, 0) / serie.length;
-        return `<div class="pr-valor"><i class="pr-leg pr-leg--${s.chave}" aria-hidden="true"></i>`
-            + `<span class="pr-valor-sec">${s.nome}</span><b>${formatarPressao(serie[n - 1])}</b>`
-            + `<small>média ${formatarPressao(media)}</small></div>`;
+        const lado = l.lado === 'esq'
+            ? `left: 0; width: ${pct(PRESSAO_DESENHO.quadroEsq, w)}`
+            : `right: 0; width: ${pct(w - PRESSAO_DESENHO.quadroDir, w)}`;
+        const turno = horas.map((hora, k) => `${rotuloHora(hora)} ${formatarPressao(serie[k])}`).join(' · ');
+        return `<div class="pr-quadro pr-quadro--${l.lado}" style="${lado}; top: ${pct(l.qy, h)}" title="${ponto.id} · ${ponto.local} · ${turno} mmH₂O">`
+            + `<div class="pr-quadro-head"><span class="pr-quadro-id">${ponto.id}</span><span class="pr-quadro-local">${ponto.local}</span></div>`
+            + `<div class="pr-quadro-valor"><b>${formatarPressao(serie[n - 1])}</b><small>mmH₂O</small></div>`
+            + `<div class="pr-quadro-sub">${curvaPressao(serie)}<span>média ${formatarPressao(media)}</span></div>`
+            + '</div>';
     }).join('');
 
-    // faixa da parada, na hora em que o secador parou (as duas linhas passam
-    // por ela; o rotulo da ocorrencia diz qual secador)
-    const faixas = (dados.paradas || []).map((p) => {
-        const k = horas.findIndex((hora) => hora.h === p.h);
-        if (k < 0) return '';
-        return `<i class="pr-parada" style="left: ${((k / n) * 100).toFixed(2)}%; width: ${((1 / n) * 100).toFixed(2)}%" aria-hidden="true"></i>`;
-    }).join('');
+    const rotulos = `<span class="pr-d-rotulo" style="left: ${pct(265, w)}; top: ${pct(602, h)}">Fornalha</span>`
+        + `<span class="pr-d-rotulo pr-d-rotulo--esq" style="left: ${pct(518, w)}; top: ${pct(40, h)}">Ventilador</span>`;
 
-    const linhas = PRESSAO_SECADORES.map((s) => {
-        const pts = horas.map((hora, k) => `${x(k).toFixed(2)},${y(hora[s.chave][i]).toFixed(2)}`).join(' ');
-        return `<polyline class="pr-linha pr-linha--${s.chave}" points="${pts}"></polyline>`;
-    }).join('');
-
-    const ysFim = afastarRotulos(PRESSAO_SECADORES.map((s) => y(ultima[s.chave][i])));
-    const fins = PRESSAO_SECADORES.map((s, k) => {
-        const yFim = y(ultima[s.chave][i]).toFixed(2);
-        return `<i class="pr-fim-ponto pr-fim-ponto--${s.chave}" style="left: ${x(n - 1).toFixed(2)}%; top: ${yFim}%" aria-hidden="true"></i>`
-            + `<span class="pr-fim-rotulo" style="top: ${ysFim[k].toFixed(2)}%">${s.nome}</span>`;
-    }).join('');
-
-    // uma faixa invisivel por hora, para o valor das duas linhas no tooltip
-    const alvos = horas.map((hora, k) => {
-        const txt = `${rotuloHora(hora)} · ${PRESSAO_SECADORES.map((s) => `${s.nome} ${formatarPressao(hora[s.chave][i])}`).join(' · ')} mmH₂O`;
-        return `<span class="pr-hora" style="left: ${((k / n) * 100).toFixed(2)}%; width: ${((1 / n) * 100).toFixed(2)}%" title="${txt}"></span>`;
-    }).join('');
-
-    // eixo X enxuto: primeira e ultima hora, mais as horas de parada
-    const marcas = horas.map((hora, k) => {
-        const parada = (dados.paradas || []).some((p) => p.h === hora.h);
-        if (k !== 0 && k !== n - 1 && !parada) return '';
-        return `<span${parada ? ' class="is-parada"' : ''} style="left: ${x(k).toFixed(2)}%">${rotuloHora(hora)}</span>`;
-    }).join('');
-
-    const nome = dados.pontos[i];
-    const resumo = PRESSAO_SECADORES.map((s) => `${s.nome} ${formatarPressao(ultima[s.chave][i])}`).join(', ');
-    return `<article class="pr-ponto" aria-label="${nome}: ${resumo} mmH₂O">`
-        + `<div class="pr-ponto-head"><span class="pr-ponto-nome">${nome}</span><span class="pr-ponto-un">mmH₂O</span></div>`
-        + `<div class="pr-valores">${valores}</div>`
-        + '<div class="pr-grafico">'
-        + `<div class="pr-eixo-y" aria-hidden="true"><span>0</span><span>${formatarPressao(piso / 2)}</span><span>${formatarPressao(piso)}</span></div>`
-        + `<div class="pr-plot">${faixas}`
-        + `<svg class="pr-linhas" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${linhas}</svg>`
-        + `${fins}${alvos}</div>`
-        + `<div class="pr-eixo-x" aria-hidden="true">${marcas}</div>`
-        + '</div></article>';
+    const detalhe = [meta.tipo && `secador de ${meta.tipo}`, meta.cultura].filter(Boolean).join(' · ');
+    return `<article class="pr-sec pr-sec--${sec}">`
+        + `<div class="pr-sec-head"><i class="pr-leg pr-leg--${sec}" aria-hidden="true"></i>`
+        + `<span class="pr-sec-nome">${meta.nome}</span><span class="pr-sec-meta">${detalhe}</span></div>`
+        + `<div class="pr-corpo"><div class="pr-desenho">${desenhoCavaletes(sec, marcas)}${rotulos}${quadros}</div></div>`
+        + '</article>';
 }
 
 // ocorrencias do turno, com as mesmas marcas e selos da produtividade
@@ -5168,9 +5191,9 @@ function eventosPressao(dados) {
         itens.push('<span class="prod-evento prod-evento--ok"><b>Sem paradas</b> no turno</span>');
     }
     paradas.forEach((p) => {
-        const s = PRESSAO_SECADORES.find((sec) => sec.chave === p.sec);
+        const meta = (dados.secadores && dados.secadores[p.sec]) || { nome: p.sec };
         itens.push('<span class="prod-evento prod-evento--parada"><i class="prod-leg-parada" aria-hidden="true"></i>'
-            + `<b>${s ? s.nome : p.sec} · ${parseInt(p.h, 10)}h · parado ${p.min} min</b> ${p.motivo} · a depressão cai com o secador parado</span>`);
+            + `<b>${meta.nome} · ${parseInt(p.h, 10)}h · parado ${p.min} min</b> ${p.motivo} · a depressão cai com o secador parado</span>`);
     });
     const agora = dados.horas.find((hora) => hora.agora);
     if (agora) {
@@ -5183,10 +5206,9 @@ function eventosPressao(dados) {
 function montarPressao(raiz) {
     (raiz || document).querySelectorAll('.pr-section').forEach((secao) => {
         const dados = dadosPressao(secao);
-        const grade = secao.querySelector('[data-pressao-grid]');
-        if (!dados || !grade || !dados.horas.length) return;
-        const piso = pisoPressao(dados);
-        grade.innerHTML = dados.pontos.map((_, i) => painelPressao(dados, i, piso)).join('');
+        const alvo = secao.querySelector('[data-pressao-secadores]');
+        if (!dados || !alvo || !dados.horas.length) return;
+        alvo.innerHTML = PRESSAO_SECADORES.map((sec) => cartaoPressao(dados, sec)).join('');
         const eventos = secao.querySelector('[data-pressao-eventos]');
         if (eventos) eventos.innerHTML = eventosPressao(dados);
         secao.querySelectorAll('[data-pressao-turno]').forEach((el) => {

@@ -21543,15 +21543,21 @@ body.theme-light .du-proj-sel option {
 
 /* ============================================
    PRESSAO DOS SECADORES (tela 06B)
-   Cinco paineis lado a lado (P1 a P5), cada um com o valor dos dois
-   secadores em cima e a hora a hora embaixo. As linhas usam as cores dos
-   secadores da produtividade, no tom medio (validado como marca sobre os
-   fundos escuro, claro e da TV); numeros e rotulos ficam nas cores de
-   texto, e a marca colorida ao lado diz de qual secador e'.
+   No estilo da especificacao de engenharia EE-206 (Medicao em Secadores):
+   um cartao por secador com o desenho da torre de cavaletes, o fluxo de ar
+   nas cores do documento e os pontos de pressao marcados no lugar da
+   medicao, cada um ligado ao quadro com o valor. As zonas levam uma tinta
+   leve da cor do ar e as setas a cor cheia; numeros e rotulos ficam nas
+   cores de texto. A curva do quadro usa a cor do secador da produtividade
+   (validada como marca sobre os fundos escuro, claro e da TV).
    ============================================ */
 .screen--pressao {
     --pr-s1: #3b82f6;
     --pr-s2: #e26a22;
+    --pr-quente: #e0483e;
+    --pr-secagem: #3b82f6;
+    --pr-saturado: #e5b02a;
+    --pr-ambiente: #22a35a;
 }
 
 .screen > .pr-section {
@@ -21560,85 +21566,45 @@ body.theme-light .du-proj-sel option {
     gap: 0.625rem;
 }
 
-.pr-grid {
+.pr-secadores {
     flex: 1 1 auto;
     min-height: 0;
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.75rem;
 }
 
-.pr-ponto {
+.pr-sec {
     display: flex;
     flex-direction: column;
-    gap: 0.625rem;
+    gap: 0.5rem;
     min-width: 0;
     min-height: 0;
-    padding: 0.75rem 0.875rem 0.625rem;
+    padding: 0.75rem 0.875rem;
     background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
     border: 1px solid var(--card-border);
     border-radius: 12px;
 }
 
-.pr-ponto-head {
+.pr-sec-head {
     display: flex;
-    align-items: baseline;
-    justify-content: space-between;
+    align-items: center;
     gap: 0.5rem;
 }
 
-.pr-ponto-nome {
-    font-size: 1.5rem;
+.pr-sec-nome {
+    font-size: 1.15rem;
     font-weight: 800;
-    letter-spacing: 0.02em;
     color: var(--text);
 }
 
-.pr-ponto-un {
-    font-size: max(0.66rem, var(--fs-texto, 0px));
-    font-weight: 700;
-    color: var(--muted);
-}
-
-/* um secador por linha: marca, nome, valor grande e media do turno */
-.pr-valores {
-    display: grid;
-    gap: 0.25rem;
-}
-
-.pr-valor {
-    display: grid;
-    grid-template-columns: auto auto minmax(0, 1fr) auto;
-    align-items: baseline;
-    column-gap: 0.4rem;
-    font-variant-numeric: tabular-nums;
-}
-
-.pr-valor .pr-leg {
-    align-self: center;
-}
-
-.pr-valor-sec {
+.pr-sec-meta {
     font-size: max(0.72rem, var(--fs-texto, 0px));
-    font-weight: 800;
-    color: var(--muted);
-}
-
-.pr-valor b {
-    font-size: 1.75rem;
-    font-weight: 800;
-    line-height: 1.1;
-    color: var(--text);
-}
-
-.pr-valor small {
-    font-size: max(0.66rem, var(--fs-texto, 0px));
     font-weight: 600;
     color: var(--muted);
-    white-space: nowrap;
 }
 
-/* marca do secador: um traco na cor da linha */
+/* marca do secador: um traco na cor da curva dele */
 .pr-leg {
     display: inline-block;
     width: 1rem;
@@ -21651,36 +21617,22 @@ body.theme-light .du-proj-sel option {
     background: var(--pr-s2);
 }
 
-/* grafico: eixo Y estreito a esquerda, plot, horas embaixo; a calha da
-   direita guarda os rotulos S1/S2 do fim das linhas */
-.pr-grafico {
+/* o desenho ocupa o maior retangulo 800 x 640 que cabe no cartao; quadros
+   e rotulos vao em % dele, entao acompanham o desenho em qualquer tela */
+.pr-corpo {
     flex: 1 1 auto;
-    min-height: 6rem;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    grid-template-rows: minmax(4rem, 1fr) auto;
-    column-gap: 0.4rem;
+    min-height: 0;
+    container-type: size;
 }
 
-.pr-eixo-y {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-end;
-    font-size: max(0.6rem, var(--fs-texto, 0px));
-    font-weight: 600;
-    line-height: 1;
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-}
-
-.pr-plot {
+.pr-desenho {
     position: relative;
-    margin-right: 1.75rem;
-    border-bottom: 1px solid var(--row-line);
+    width: min(100cqw, 125cqh);
+    aspect-ratio: 800 / 640;
+    margin: 0 auto;
 }
 
-.pr-linhas {
+.pr-d {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -21688,90 +21640,207 @@ body.theme-light .du-proj-sel option {
     overflow: visible;
 }
 
-.pr-linha {
+.pr-d-torre {
+    fill: color-mix(in srgb, var(--muted) 10%, transparent);
+    stroke: var(--muted);
+    stroke-width: 2;
+}
+
+.pr-d-zona {
+    stroke-width: 2;
+}
+
+.pr-d-zona--quente {
+    fill: color-mix(in srgb, var(--pr-quente) 22%, transparent);
+    stroke: var(--pr-quente);
+}
+
+.pr-d-zona--saturado {
+    fill: color-mix(in srgb, var(--pr-saturado) 22%, transparent);
+    stroke: var(--pr-saturado);
+}
+
+.pr-d-zona--ambiente {
+    fill: color-mix(in srgb, var(--pr-ambiente) 22%, transparent);
+    stroke: var(--pr-ambiente);
+}
+
+.pr-d-fornalha {
+    fill: color-mix(in srgb, var(--pr-quente) 40%, transparent);
+    stroke: var(--pr-quente);
+    stroke-width: 2;
+}
+
+.pr-d-vent {
     fill: none;
-    stroke-width: 2.5px;
-    stroke-linejoin: round;
+    stroke: var(--pr-saturado);
+    stroke-width: 3;
+}
+
+.pr-d-seta {
+    stroke-width: 4;
     stroke-linecap: round;
-    vector-effect: non-scaling-stroke;
 }
 
-.pr-linha--s1 {
-    stroke: var(--pr-s1);
+.pr-d-seta--quente { stroke: var(--pr-quente); }
+.pr-d-seta--secagem { stroke: var(--pr-secagem); }
+.pr-d-seta--saturado { stroke: var(--pr-saturado); }
+.pr-d-seta--ambiente { stroke: var(--pr-ambiente); }
+.pr-d-ponta--quente { fill: var(--pr-quente); }
+.pr-d-ponta--secagem { fill: var(--pr-secagem); }
+.pr-d-ponta--saturado { fill: var(--pr-saturado); }
+.pr-d-ponta--ambiente { fill: var(--pr-ambiente); }
+
+/* ponto de pressao: bolinha na cor do texto com anel escuro, e a guia
+   tracejada ate o quadro */
+.pr-d-guia {
+    stroke: var(--text);
+    stroke-width: 1.5;
+    stroke-dasharray: 5 4;
+    opacity: 0.75;
 }
 
-.pr-linha--s2 {
-    stroke: var(--pr-s2);
+.pr-d-marca {
+    fill: var(--text);
+    stroke: var(--bg-bottom);
+    stroke-width: 4;
 }
 
-/* ponto final de cada linha, com anel na cor do cartao para se soltar da linha */
-.pr-fim-ponto {
+.pr-d-rotulo {
     position: absolute;
-    width: 0.55rem;
-    height: 0.55rem;
-    border-radius: 50%;
-    background: var(--pr-s1);
-    box-shadow: 0 0 0 2px var(--card-bg-bottom);
     transform: translate(-50%, -50%);
-    pointer-events: none;
-}
-
-.pr-fim-ponto--s2 {
-    background: var(--pr-s2);
-}
-
-.pr-fim-rotulo {
-    position: absolute;
-    left: calc(100% + 0.35rem);
-    transform: translateY(-50%);
-    font-size: max(0.66rem, var(--fs-texto, 0px));
-    font-weight: 800;
-    line-height: 1;
-    color: var(--text);
-    pointer-events: none;
-}
-
-/* hora da parada: a mesma hachura da legenda, mais leve atras das linhas */
-.pr-parada {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    background: repeating-linear-gradient(135deg, rgba(231, 76, 60, 0.3) 0 3px, rgba(231, 76, 60, 0.08) 3px 6px);
-    border-left: 1px solid rgba(231, 76, 60, 0.45);
-    border-right: 1px solid rgba(231, 76, 60, 0.45);
-}
-
-/* alvo do tooltip de cada hora: maior que a linha, realca a coluna */
-.pr-hora {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-}
-
-.pr-hora:hover {
-    background: var(--hover);
-}
-
-/* horas no centro da coluna de cada uma: primeira, ultima e as de parada */
-.pr-eixo-x {
-    grid-column: 2;
-    position: relative;
-    height: 1.5em;
-    margin-right: 1.75rem;
-    padding-top: 0.2rem;
-    font-size: max(0.6rem, var(--fs-texto, 0px));
+    font-size: max(0.62rem, var(--fs-texto, 0px));
     font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--muted);
+    pointer-events: none;
+}
+
+.pr-d-rotulo--esq {
+    transform: translate(0, -50%);
+}
+
+/* quadro de cada ponto: id e local, valor grande, curva e media do turno */
+.pr-quadro {
+    position: absolute;
+    box-sizing: border-box;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.4rem 0.55rem;
+    background: var(--section-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+}
+
+.pr-quadro-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.1rem 0.4rem;
+}
+
+.pr-quadro-id {
+    font-size: max(0.9rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    color: var(--text);
+}
+
+.pr-quadro-local {
+    font-size: max(0.62rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    line-height: 1.2;
     color: var(--muted);
 }
 
-.pr-eixo-x span {
-    position: absolute;
-    transform: translateX(-50%);
+.pr-quadro-valor {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+}
+
+.pr-quadro-valor b {
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1.05;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.pr-quadro-valor small,
+.pr-quadro-sub {
+    font-size: max(0.62rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.pr-quadro-sub {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.15rem 0.4rem;
+}
+
+.pr-quadro-sub span {
     white-space: nowrap;
 }
 
-.pr-eixo-x span.is-parada {
-    color: var(--danger);
+.pr-curva {
+    flex: 0 0 auto;
+    width: 3.25rem;
+    height: 1rem;
+    overflow: visible;
+}
+
+.pr-curva polyline {
+    fill: none;
+    stroke: var(--pr-s1);
+    stroke-width: 2px;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.pr-sec--s2 .pr-curva polyline {
+    stroke: var(--pr-s2);
+}
+
+/* legenda dos tipos de ar: seta curta na cor de cada um, como no documento */
+.pr-leg-ar {
+    --c: var(--pr-quente);
+    position: relative;
+    display: inline-block;
+    width: 0.9rem;
+    height: 0.25rem;
+    margin-right: 0.4rem;
+    border-radius: 2px;
+    background: var(--c);
+}
+
+.pr-leg-ar::after {
+    content: "";
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border-left: 0.4rem solid var(--c);
+    border-top: 0.3rem solid transparent;
+    border-bottom: 0.3rem solid transparent;
+}
+
+.pr-leg-ar--secagem { --c: var(--pr-secagem); }
+.pr-leg-ar--saturado { --c: var(--pr-saturado); }
+.pr-leg-ar--ambiente { --c: var(--pr-ambiente); }
+
+.pr-leg-marca {
+    display: inline-block;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    background: var(--text);
+    box-shadow: 0 0 0 2px var(--card-border);
 }
 
 
@@ -21975,15 +22044,9 @@ body.theme-light .du-proj-sel option {
         color: var(--text);
     }
 
-    /* pressão dos secadores: linha grossa para ler de longe (4px em 1080p,
-       acompanhando a escala no 4K) */
-    html.tv .pr-linha {
-        stroke-width: max(4px, 0.2rem);
-    }
-
-    html.tv .pr-fim-ponto {
-        width: 0.75rem;
-        height: 0.75rem;
+    /* pressão dos secadores: curva do quadro mais grossa para ler de longe */
+    html.tv .pr-curva polyline {
+        stroke-width: max(3px, 0.15rem);
     }
 
     html.tv .stack-seg--stock {
