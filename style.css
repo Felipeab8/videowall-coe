@@ -11595,6 +11595,19 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     color: var(--danger);
 }
 
+/* armazem: o mesmo bloco no alto da coluna de tendencias, separado delas;
+   a coluna ganha uma linha do tamanho dele antes das tres tendencias, que
+   nao encolhem abaixo do que precisam: faltando altura, o cartao transborda
+   e o ajuste a tela encolhe tudo (o cartao entra na conta do fitTargets) */
+.arm-tend:has(> .arm-ar) {
+    grid-template-rows: auto repeat(3, minmax(4.75rem, 1fr));
+}
+
+.arm-tend .arm-ar {
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--row-line);
+}
+
 /* silos: media do periodo ligado (o script escreve) com o efeito do ar ao
    lado - secando (verde), umedecendo (ambar) ou neutro. A umidade de
    equilibrio contra a do grao, que decide o selo, fica no tooltip dele.
@@ -18853,8 +18866,8 @@ body.theme-light .class-val--fora {
 
 
 
-/* linha da cultura: o periodo inteiro dela, em destaque, abrindo o grupo
-   das cargas que vem embaixo; Geral fecha a tabela */
+/* linha Geral: os totais do periodo, em destaque, fechando a tabela (as
+   linhas por cultura sairam a pedido da unidade) */
 .exp-table tr.exp-cult-resumo td {
     background: var(--row-bg);
     border-top: 1px solid var(--card-border);

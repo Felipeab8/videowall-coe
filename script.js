@@ -210,9 +210,10 @@ function fitTargets() {
     // (lista longa de caminhoes): fica fora da conta. Bloco com overflow
     // visivel tambem sai: o que passa dele ja aparece na medida da tela, e
     // um menu aberto por cima (contratos da expedicao) nao e transbordo.
-    // O cartao do secador (produtividade) e o do silo cortam o que passa da
-    // fileira deles, sem a secao perceber: entram na conta para nada sumir.
-    const blocos = active.querySelectorAll('.content-section:not(.content-section--livre), .table-scroll:not(.table-scroll--livre), .alerts-list, .geral-grid, .prod-secador, .sa-card[data-silo]');
+    // O cartao do secador (produtividade), o do silo e o do armazem cortam o
+    // que passa da fileira deles, sem a secao perceber: entram na conta para
+    // nada sumir.
+    const blocos = active.querySelectorAll('.content-section:not(.content-section--livre), .table-scroll:not(.table-scroll--livre), .alerts-list, .geral-grid, .prod-secador, .sa-card[data-silo], .sa-card[data-armazem]');
     return [active, ...Array.prototype.filter.call(blocos, (el) => getComputedStyle(el).overflowY !== 'visible')];
 }
 
@@ -6156,6 +6157,9 @@ function umidadeEquilibrio(cultura, temp, ur) {
 const umPonto = (v) => v.toFixed(1).replace('.', ',');
 
 // ---- Aeracao de conservacao: quando ligar, com o ar de agora ----
+// Vale para os silos e para as areas do armazem: o cartao traz a cultura,
+// a umidade do grao (data-umidade) e as leituras de temperatura (data-temps,
+// a ultima e' a atual); a estacao vem do bloco data-estacao-* da tela.
 // Diretrizes do Manejo da Aeracao (ABRAPOS) e do Guia de Secagem e
 // Armazenagem do RS:
 // - a massa de graos o mais fria possivel: ideal abaixo de 16 °C, bom
@@ -6267,7 +6271,7 @@ function escreverAeracao(card) {
         + `<i class="sa-ar-grao" style="left: ${pos(tGrao)}" title="grão ${umPonto(tGrao)} °C"></i>`
         + `<i class="sa-ar-agora" style="left: ${pos(tAgora)}"></i>`;
 
-    alvo.title = `Quando aerar este silo com o ar de agora (estação: ${umPonto(tAgora)} °C, UR ${Math.round(urAgora)}%). `
+    alvo.title = `Quando aerar com o ar de agora (estação: ${umPonto(tAgora)} °C, UR ${Math.round(urAgora)}%). `
         + `Grão a ${umPonto(tGrao)} °C com ${umPonto(grao)}% de umidade. Máx: o ar ${AERACAO.resfriaMin} °C abaixo do grão `
         + `(ideal ${AERACAO.resfriaIdeal} °C abaixo); mín: abaixo dela o ar, aquecido ${AERACAO.aquecimento} °C pelo ventilador, `
         + `umedece o grão. Massa: ideal até ${AERACAO.massa.ideal} °C, bom até ${AERACAO.massa.bom} °C, aceitável até ${AERACAO.massa.tropical} °C. `
@@ -6646,6 +6650,7 @@ function atualizarArmazens() {
     const dentroPonta = emPonta(new Date());
     const decorrido = (Date.now() - SILOS_INICIO) / 1000;
     document.querySelectorAll('[data-armazem]').forEach((card) => {
+        escreverAeracao(card);
         const subindo = tendenciasArmazem(card);
         const quente = paraNumero(card.dataset.armMax) >= ARM_ALERTA;
         card.dataset.alerta = subindo || quente ? '1' : '0';
