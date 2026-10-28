@@ -10,6 +10,8 @@ function updateLiveTime() {
     if (liveTime) {
         liveTime.textContent = `ÚLTIMA ATUALIZAÇÃO: ${hours}:${minutes}:${seconds}`;
     }
+    // modo TV: o "Atualizado às HH:MM" de cada tela sai desta variável
+    document.documentElement.style.setProperty('--tv-hora', `"${hours}:${minutes}"`);
 }
 
 setInterval(updateLiveTime, 1000);
@@ -157,6 +159,11 @@ function isMobile() {
     return mobileQuery.matches;
 }
 
+// modo TV (ver MODO TV mais abaixo): a classe fica no <html>
+function modoTv() {
+    return document.documentElement.classList.contains('tv');
+}
+
 // O cabecalho quebra em duas linhas no celular; a gaveta do menu precisa
 // da altura real dele, medida aqui (--header-real), nao da travada no CSS.
 const headerEl = document.querySelector('.header');
@@ -187,6 +194,18 @@ function fitTargets() {
         ? alertsPage
         : document.querySelector('.screen.active');
     if (!active) return [];
+    // Modo TV: o piso de fonte faz o texto crescer dentro de caixas que
+    // cortam caladas (cartões de silo e moega, células, rótulos com
+    // reticências). Ali qualquer bloco que corte conteúdo entra na conta,
+    // menos o que rola de propósito e os mapas (painéis maiores por natureza).
+    if (modoTv()) {
+        const cortam = Array.prototype.filter.call(active.querySelectorAll('*'), (el) => {
+            const cs = getComputedStyle(el);
+            return (cs.overflowX !== 'visible' || cs.overflowY !== 'visible')
+                && !el.closest('.table-scroll--livre, .content-section--livre, .leaflet-container');
+        });
+        return [active, ...cortam];
+    }
     // .table-scroll--livre rola por dentro em vez de encolher a tela inteira
     // (lista longa de caminhoes): fica fora da conta. Bloco com overflow
     // visivel tambem sai: o que passa dele ja aparece na medida da tela, e
@@ -199,8 +218,9 @@ function fitTargets() {
 
 function fitOverflow(targets) {
     let worst = 0;
+    const largura = modoTv();
     for (const el of targets) {
-        const over = el.scrollHeight - el.clientHeight;
+        const over = Math.max(el.scrollHeight - el.clientHeight, largura ? el.scrollWidth - el.clientWidth : 0);
         if (over > worst) worst = over;
     }
     return worst;
@@ -237,6 +257,97 @@ window.addEventListener('load', scheduleFit);
 if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(scheduleFit);
 }
+
+// ============================================
+// MODO TV (computador ligado na TV por HDMI)
+// ?tv=1 liga e ?tv=0 desliga; a escolha fica gravada no aparelho, então
+// a TV volta sempre no modo certo. Tecla T alterna; as setas (ou
+// PageUp/PageDown do controle) trocam de tela na ordem do menu, que no
+// modo TV fica escondido. A aparência toda está no CSS (html.tv).
+// ============================================
+const TV_STORAGE_KEY = 'videowall:modo-tv';
+
+function tvInicial() {
+    const pedido = new URLSearchParams(location.search).get('tv');
+    try {
+        if (pedido !== null) localStorage.setItem(TV_STORAGE_KEY, pedido === '0' ? '0' : '1');
+        return localStorage.getItem(TV_STORAGE_KEY) === '1';
+    } catch (err) {
+        return pedido !== null && pedido !== '0';
+    }
+}
+
+function setModoTv(ligado) {
+    if (ligado && isEditing()) toggleEditMode();
+    document.documentElement.classList.toggle('tv', ligado);
+    try {
+        localStorage.setItem(TV_STORAGE_KEY, ligado ? '1' : '0');
+    } catch (err) {
+        // sem armazenamento: vale só para esta visita
+    }
+    scheduleFit();
+}
+
+function irParaTelaVizinha(passo) {
+    const itens = Array.prototype.filter.call(
+        document.querySelectorAll('.menu-item[data-screen]'),
+        (item) => document.getElementById('screen-' + item.getAttribute('data-screen'))
+    );
+    if (!itens.length) return;
+    const atual = itens.findIndex((item) => item.classList.contains('active'));
+    itens[(atual + passo + itens.length) % itens.length].click();
+}
+
+document.documentElement.classList.toggle('tv', tvInicial());
+
+// Listas longas (caminhões, cargas) rolam por dentro no monitor; na TV
+// ninguém rola, então descem sozinhas, devagar, param no fim e voltam ao
+// topo. O passo acompanha a altura da tela para ter a mesma velocidade no 4K.
+const TV_ROLAGEM_PAUSA = 4000;   // ms parada no topo e no fim
+const rolagemTv = new WeakMap();
+
+function rolarListasTv() {
+    if (!modoTv()) return;
+    const agora = Date.now();
+    const passo = Math.max(1, Math.round(window.innerHeight / 1080));
+    document.querySelectorAll('.screen.active .table-scroll--livre').forEach((lista) => {
+        if (lista.scrollHeight - lista.clientHeight < 2) return;
+        let estado = rolagemTv.get(lista);
+        if (!estado) {
+            estado = { espera: agora + TV_ROLAGEM_PAUSA, voltar: false };
+            rolagemTv.set(lista, estado);
+        }
+        if (agora < estado.espera) return;
+        if (estado.voltar) {
+            lista.scrollTop = 0;
+            estado.voltar = false;
+            estado.espera = agora + TV_ROLAGEM_PAUSA;
+            return;
+        }
+        lista.scrollTop += passo;
+        if (lista.scrollTop + lista.clientHeight >= lista.scrollHeight - 1) {
+            estado.voltar = true;
+            estado.espera = agora + TV_ROLAGEM_PAUSA;
+        }
+    });
+}
+
+setInterval(rolarListasTv, 40);
+
+document.addEventListener('keydown', (event) => {
+    if (event.ctrlKey || event.metaKey || event.altKey) return;
+    const alvo = event.target;
+    if (alvo instanceof Element && alvo.closest('input, textarea, select, [contenteditable="true"]')) return;
+    if (event.key === 't' || event.key === 'T') {
+        setModoTv(!modoTv());
+        return;
+    }
+    if (!modoTv()) return;
+    const passo = { ArrowRight: 1, PageDown: 1, ArrowLeft: -1, PageUp: -1 }[event.key];
+    if (!passo) return;
+    event.preventDefault();
+    irParaTelaVizinha(passo);
+});
 
 // ============================================
 // MENU RECOLHÍVEL (tela cheia)
