@@ -12,7 +12,7 @@
          não carrega e a tela usa o mapa esquemático em SVG. -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css">
-    <link rel="stylesheet" href="style.css?v=20261028d">
+    <link rel="stylesheet" href="style.css?v=20261028e">
 </head>
 <body class="theme-dark">
 
@@ -153,6 +153,7 @@
                     <div class="submenu" id="submenu-3" hidden>
                         <button class="menu-item" data-screen="3"><span class="menu-text">Tela da secagem</span></button>
                         <button class="menu-item" data-screen="4"><span class="menu-text">Produtividade da secagem</span></button>
+                        <button class="menu-item" data-screen="pressao"><span class="menu-text">Pressão dos secadores</span></button>
                     </div>
                 </div>
                 <div class="menu-group" data-group="5">
@@ -3381,6 +3382,58 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            <!-- Pressao dos secadores: a depressao (mmH2O) nos 5 pontos de pressao
+                 de cada secador, no turno em andamento. Um painel por ponto (P1 a
+                 P5), com os dois secadores no mesmo painel nas cores da
+                 produtividade (S1 azul, S2 laranja): em cima o valor da ultima hora
+                 e a media do turno, embaixo a hora a hora. Todos os paineis usam a
+                 mesma escala, para os pontos se compararem entre si. Paradas e a
+                 hora em andamento vao na linha de ocorrencias, embaixo.
+                 O script monta tudo a partir do JSON em data-pressao-dados: por
+                 hora, s1 e s2 com os 5 pontos [P1..P5] em mmH2O; paradas com
+                 secador, hora, minutos e motivo. Valores de exemplo ate ligar a
+                 fonte real (CLP/supervisorio). -->
+            <section class="screen screen--pressao" id="screen-pressao">
+                <div class="screen-header">
+                    <div class="screen-badge">06B</div>
+                    <div class="screen-title-section">
+                        <h2>Pressão dos Secadores</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">4</span>s</div>
+                    </div>
+                </div>
+                <div data-codigo="AVR-PRS-A" class="content-section pr-section">
+                    <div class="section-head">
+                        <h3>DEPRESSÃO POR PONTO · mmH₂O <span class="fluxo-periodo-atual">· <span data-pressao-turno>turno</span></span></h3>
+                        <div class="chart-legend chart-legend--inline">
+                            <span class="legend-item"><i class="pr-leg pr-leg--s1"></i>Secador 1</span>
+                            <span class="legend-item"><i class="pr-leg pr-leg--s2"></i>Secador 2</span>
+                            <span class="legend-item"><i class="prod-leg-parada"></i>Parada</span>
+                        </div>
+                    </div>
+                    <div class="pr-grid" data-pressao-grid></div>
+                    <div class="prod-eventos" data-pressao-eventos></div>
+                    <script type="application/json" data-pressao-dados>
+{
+  "turno": "1º turno 07:00–16:20", "quando": "hoje",
+  "pontos": ["P1", "P2", "P3", "P4", "P5"],
+  "horas": [
+    { "h": "07h", "s1": [-33, -44, -58, -43, -26], "s2": [-30, -45, -54, -40, -23] },
+    { "h": "08h", "s1": [-31, -47, -56, -41, -29], "s2": [-28, -43, -57, -38, -26] },
+    { "h": "09h", "s1": [-34, -45, -59, -39, -27], "s2": [-31, -41, -55, -41, -24] },
+    { "h": "10h", "s1": [-32, -48, -57, -42, -25], "s2": [-29, -44, -53, -39, -27] },
+    { "h": "11h", "s1": [-30, -46, -60, -40, -28], "s2": [-32, -42, -56, -37, -25] },
+    { "h": "12h", "s1": [-33, -44, -58, -43, -26], "s2": [-16, -25, -30, -22, -13] },
+    { "h": "13h", "s1": [-31, -47, -56, -41, -29], "s2": [-28, -43, -57, -38, -26] },
+    { "h": "14h", "min": 50, "agora": true, "s1": [-34, -45, -59, -39, -27], "s2": [-31, -41, -55, -41, -24] }
+  ],
+  "paradas": [
+    { "sec": "s2", "h": "12h", "min": 34, "motivo": "descarga e recarga" }
+  ]
+}
+                    </script>
                 </div>
             </section>
 
@@ -7405,7 +7458,7 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.1.4/leaflet-maplibre-gl.js"></script>
-    <script src="script.js?v=20261028d"></script>
+    <script src="script.js?v=20261028e"></script>
 
 </body>
 </html>

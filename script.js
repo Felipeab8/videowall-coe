@@ -2774,6 +2774,7 @@ function remontar() {
         montarArmazens(palco);
         montarSecagem(palco);
         montarProdutividade(palco);
+        montarPressao(palco);
     });
     applyEditMode(isEditing());
     scheduleFit();
@@ -5047,6 +5048,154 @@ function montarProdutividade(raiz) {
 }
 
 montarProdutividade();
+
+// ============================================
+// PRESSAO DOS SECADORES · DEPRESSAO POR PONTO
+// Um painel por ponto de pressao (P1 a P5), cada um com os dois secadores:
+// valor da ultima hora e media do turno em cima, a hora a hora embaixo.
+// Monta do JSON em [data-pressao-dados]: horas [{h, s1, s2, min?, agora?}],
+// com s1/s2 = [P1..P5] em mmH2O, e paradas [{sec, h, min, motivo}].
+// Todos os paineis dividem a mesma escala (0 ate o minimo arredondado), para
+// os pontos se compararem. As linhas vao num SVG esticado; rotulos, pontos
+// finais e eixos sao HTML por cima, para a letra nao deformar.
+// ============================================
+const PRESSAO_SECADORES = [
+    { chave: 's1', nome: 'S1' },
+    { chave: 's2', nome: 'S2' },
+];
+const PRESSAO_ROTULO_DIST = 13; // % da altura entre os rotulos do fim da linha
+
+// mmH2O com o sinal de menos tipografico: "−32"
+function formatarPressao(v) {
+    return String(Math.round(v)).replace('-', '−');
+}
+
+function dadosPressao(secao) {
+    const fonte = secao.querySelector('[data-pressao-dados]');
+    if (!fonte) return null;
+    try {
+        return JSON.parse(fonte.textContent);
+    } catch (err) {
+        return null;
+    }
+}
+
+// fim da escala: o valor mais baixo arredondado para baixo, com folga de 10
+function pisoPressao(dados) {
+    let menor = 0;
+    dados.horas.forEach((hora) => PRESSAO_SECADORES.forEach((s) => {
+        (hora[s.chave] || []).forEach((v) => { menor = Math.min(menor, v); });
+    }));
+    return Math.floor(menor / 10) * 10 - 10;
+}
+
+// rotulos do fim da linha (S1, S2) com distancia minima: se as linhas
+// terminam perto, os dois se afastam igualmente do meio
+function afastarRotulos(ys) {
+    if (ys.length !== 2 || Math.abs(ys[0] - ys[1]) >= PRESSAO_ROTULO_DIST) return ys;
+    const meio = (ys[0] + ys[1]) / 2;
+    const meia = PRESSAO_ROTULO_DIST / 2;
+    return ys[0] <= ys[1] ? [meio - meia, meio + meia] : [meio + meia, meio - meia];
+}
+
+function painelPressao(dados, i, piso) {
+    const horas = dados.horas;
+    const n = horas.length;
+    const x = (k) => ((k + 0.5) / n) * 100;
+    const y = (v) => (v / piso) * 100;
+    const ultima = horas[n - 1];
+
+    const valores = PRESSAO_SECADORES.map((s) => {
+        const serie = horas.map((hora) => hora[s.chave][i]);
+        const media = serie.reduce((a, v) => a + v, 0) / serie.length;
+        return `<div class="pr-valor"><i class="pr-leg pr-leg--${s.chave}" aria-hidden="true"></i>`
+            + `<span class="pr-valor-sec">${s.nome}</span><b>${formatarPressao(serie[n - 1])}</b>`
+            + `<small>média ${formatarPressao(media)}</small></div>`;
+    }).join('');
+
+    // faixa da parada, na hora em que o secador parou (as duas linhas passam
+    // por ela; o rotulo da ocorrencia diz qual secador)
+    const faixas = (dados.paradas || []).map((p) => {
+        const k = horas.findIndex((hora) => hora.h === p.h);
+        if (k < 0) return '';
+        return `<i class="pr-parada" style="left: ${((k / n) * 100).toFixed(2)}%; width: ${((1 / n) * 100).toFixed(2)}%" aria-hidden="true"></i>`;
+    }).join('');
+
+    const linhas = PRESSAO_SECADORES.map((s) => {
+        const pts = horas.map((hora, k) => `${x(k).toFixed(2)},${y(hora[s.chave][i]).toFixed(2)}`).join(' ');
+        return `<polyline class="pr-linha pr-linha--${s.chave}" points="${pts}"></polyline>`;
+    }).join('');
+
+    const ysFim = afastarRotulos(PRESSAO_SECADORES.map((s) => y(ultima[s.chave][i])));
+    const fins = PRESSAO_SECADORES.map((s, k) => {
+        const yFim = y(ultima[s.chave][i]).toFixed(2);
+        return `<i class="pr-fim-ponto pr-fim-ponto--${s.chave}" style="left: ${x(n - 1).toFixed(2)}%; top: ${yFim}%" aria-hidden="true"></i>`
+            + `<span class="pr-fim-rotulo" style="top: ${ysFim[k].toFixed(2)}%">${s.nome}</span>`;
+    }).join('');
+
+    // uma faixa invisivel por hora, para o valor das duas linhas no tooltip
+    const alvos = horas.map((hora, k) => {
+        const txt = `${rotuloHora(hora)} · ${PRESSAO_SECADORES.map((s) => `${s.nome} ${formatarPressao(hora[s.chave][i])}`).join(' · ')} mmH₂O`;
+        return `<span class="pr-hora" style="left: ${((k / n) * 100).toFixed(2)}%; width: ${((1 / n) * 100).toFixed(2)}%" title="${txt}"></span>`;
+    }).join('');
+
+    // eixo X enxuto: primeira e ultima hora, mais as horas de parada
+    const marcas = horas.map((hora, k) => {
+        const parada = (dados.paradas || []).some((p) => p.h === hora.h);
+        if (k !== 0 && k !== n - 1 && !parada) return '';
+        return `<span${parada ? ' class="is-parada"' : ''} style="left: ${x(k).toFixed(2)}%">${rotuloHora(hora)}</span>`;
+    }).join('');
+
+    const nome = dados.pontos[i];
+    const resumo = PRESSAO_SECADORES.map((s) => `${s.nome} ${formatarPressao(ultima[s.chave][i])}`).join(', ');
+    return `<article class="pr-ponto" aria-label="${nome}: ${resumo} mmH₂O">`
+        + `<div class="pr-ponto-head"><span class="pr-ponto-nome">${nome}</span><span class="pr-ponto-un">mmH₂O</span></div>`
+        + `<div class="pr-valores">${valores}</div>`
+        + '<div class="pr-grafico">'
+        + `<div class="pr-eixo-y" aria-hidden="true"><span>0</span><span>${formatarPressao(piso / 2)}</span><span>${formatarPressao(piso)}</span></div>`
+        + `<div class="pr-plot">${faixas}`
+        + `<svg class="pr-linhas" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${linhas}</svg>`
+        + `${fins}${alvos}</div>`
+        + `<div class="pr-eixo-x" aria-hidden="true">${marcas}</div>`
+        + '</div></article>';
+}
+
+// ocorrencias do turno, com as mesmas marcas e selos da produtividade
+function eventosPressao(dados) {
+    const itens = [];
+    const paradas = dados.paradas || [];
+    if (!paradas.length) {
+        itens.push('<span class="prod-evento prod-evento--ok"><b>Sem paradas</b> no turno</span>');
+    }
+    paradas.forEach((p) => {
+        const s = PRESSAO_SECADORES.find((sec) => sec.chave === p.sec);
+        itens.push('<span class="prod-evento prod-evento--parada"><i class="prod-leg-parada" aria-hidden="true"></i>'
+            + `<b>${s ? s.nome : p.sec} · ${parseInt(p.h, 10)}h · parado ${p.min} min</b> ${p.motivo} · a depressão cai com o secador parado</span>`);
+    });
+    const agora = dados.horas.find((hora) => hora.agora);
+    if (agora) {
+        itens.push('<span class="prod-evento"><i class="prod-evento-parcial" aria-hidden="true"></i>'
+            + `<b>${rotuloHora(agora)}</b> em andamento${agora.min ? ` · ${agora.min} min` : ''} · valores da hora atual</span>`);
+    }
+    return itens.join('');
+}
+
+function montarPressao(raiz) {
+    (raiz || document).querySelectorAll('.pr-section').forEach((secao) => {
+        const dados = dadosPressao(secao);
+        const grade = secao.querySelector('[data-pressao-grid]');
+        if (!dados || !grade || !dados.horas.length) return;
+        const piso = pisoPressao(dados);
+        grade.innerHTML = dados.pontos.map((_, i) => painelPressao(dados, i, piso)).join('');
+        const eventos = secao.querySelector('[data-pressao-eventos]');
+        if (eventos) eventos.innerHTML = eventosPressao(dados);
+        secao.querySelectorAll('[data-pressao-turno]').forEach((el) => {
+            el.textContent = `${dados.turno} · ${dados.quando}`;
+        });
+    });
+}
+
+montarPressao();
 
 // ============================================
 // DEMAIS UNIDADES · PERIODO DO RECEBIDO POR CULTURA

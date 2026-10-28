@@ -21542,6 +21542,241 @@ body.theme-light .du-proj-sel option {
 
 
 /* ============================================
+   PRESSAO DOS SECADORES (tela 06B)
+   Cinco paineis lado a lado (P1 a P5), cada um com o valor dos dois
+   secadores em cima e a hora a hora embaixo. As linhas usam as cores dos
+   secadores da produtividade, no tom medio (validado como marca sobre os
+   fundos escuro, claro e da TV); numeros e rotulos ficam nas cores de
+   texto, e a marca colorida ao lado diz de qual secador e'.
+   ============================================ */
+.screen--pressao {
+    --pr-s1: #3b82f6;
+    --pr-s2: #e26a22;
+}
+
+.screen > .pr-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+}
+
+.pr-grid {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.pr-ponto {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    min-width: 0;
+    min-height: 0;
+    padding: 0.75rem 0.875rem 0.625rem;
+    background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+}
+
+.pr-ponto-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.pr-ponto-nome {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    color: var(--text);
+}
+
+.pr-ponto-un {
+    font-size: max(0.66rem, var(--fs-texto, 0px));
+    font-weight: 700;
+    color: var(--muted);
+}
+
+/* um secador por linha: marca, nome, valor grande e media do turno */
+.pr-valores {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.pr-valor {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    align-items: baseline;
+    column-gap: 0.4rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.pr-valor .pr-leg {
+    align-self: center;
+}
+
+.pr-valor-sec {
+    font-size: max(0.72rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    color: var(--muted);
+}
+
+.pr-valor b {
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text);
+}
+
+.pr-valor small {
+    font-size: max(0.66rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+/* marca do secador: um traco na cor da linha */
+.pr-leg {
+    display: inline-block;
+    width: 1rem;
+    height: 0.25rem;
+    border-radius: 2px;
+    background: var(--pr-s1);
+}
+
+.pr-leg--s2 {
+    background: var(--pr-s2);
+}
+
+/* grafico: eixo Y estreito a esquerda, plot, horas embaixo; a calha da
+   direita guarda os rotulos S1/S2 do fim das linhas */
+.pr-grafico {
+    flex: 1 1 auto;
+    min-height: 6rem;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: minmax(4rem, 1fr) auto;
+    column-gap: 0.4rem;
+}
+
+.pr-eixo-y {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-size: max(0.6rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    line-height: 1;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.pr-plot {
+    position: relative;
+    margin-right: 1.75rem;
+    border-bottom: 1px solid var(--row-line);
+}
+
+.pr-linhas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.pr-linha {
+    fill: none;
+    stroke-width: 2.5px;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.pr-linha--s1 {
+    stroke: var(--pr-s1);
+}
+
+.pr-linha--s2 {
+    stroke: var(--pr-s2);
+}
+
+/* ponto final de cada linha, com anel na cor do cartao para se soltar da linha */
+.pr-fim-ponto {
+    position: absolute;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--pr-s1);
+    box-shadow: 0 0 0 2px var(--card-bg-bottom);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.pr-fim-ponto--s2 {
+    background: var(--pr-s2);
+}
+
+.pr-fim-rotulo {
+    position: absolute;
+    left: calc(100% + 0.35rem);
+    transform: translateY(-50%);
+    font-size: max(0.66rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    line-height: 1;
+    color: var(--text);
+    pointer-events: none;
+}
+
+/* hora da parada: a mesma hachura da legenda, mais leve atras das linhas */
+.pr-parada {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(135deg, rgba(231, 76, 60, 0.3) 0 3px, rgba(231, 76, 60, 0.08) 3px 6px);
+    border-left: 1px solid rgba(231, 76, 60, 0.45);
+    border-right: 1px solid rgba(231, 76, 60, 0.45);
+}
+
+/* alvo do tooltip de cada hora: maior que a linha, realca a coluna */
+.pr-hora {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+}
+
+.pr-hora:hover {
+    background: var(--hover);
+}
+
+/* horas no centro da coluna de cada uma: primeira, ultima e as de parada */
+.pr-eixo-x {
+    grid-column: 2;
+    position: relative;
+    height: 1.5em;
+    margin-right: 1.75rem;
+    padding-top: 0.2rem;
+    font-size: max(0.6rem, var(--fs-texto, 0px));
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.pr-eixo-x span {
+    position: absolute;
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+.pr-eixo-x span.is-parada {
+    color: var(--danger);
+}
+
+
+
+/* ============================================
    MODO TV — computador ligado por HDMI na TV de 55", vista a ~5 m
    Liga com ?tv=1 na URL (fica gravado no aparelho; ?tv=0 desliga) ou
    com a tecla T; as setas trocam de tela. Mesmas telas do monitor: o
@@ -21738,6 +21973,17 @@ body.theme-light .du-proj-sel option {
 
     html.tv .sa-stock span {
         color: var(--text);
+    }
+
+    /* pressão dos secadores: linha grossa para ler de longe (4px em 1080p,
+       acompanhando a escala no 4K) */
+    html.tv .pr-linha {
+        stroke-width: max(4px, 0.2rem);
+    }
+
+    html.tv .pr-fim-ponto {
+        width: 0.75rem;
+        height: 0.75rem;
     }
 
     html.tv .stack-seg--stock {
