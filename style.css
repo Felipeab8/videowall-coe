@@ -11084,25 +11084,6 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 
 
 
-/* densidade (digitada na termometria) e as toneladas que ela da: numa linha
-   logo abaixo do desenho, no fundo do cartao (por cima do preenchimento
-   colorido ela nao se lia). Dentro do silo fica so o % e o m3, que segue
-   como unidade principal */
-.sa-card .sa-dens {
-    flex: 0 0 auto;
-    margin-top: 0.25rem;
-    font-size: max(0.62rem, var(--fs-texto, 0px));
-    font-weight: 600;
-    color: var(--muted);
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-variant-numeric: tabular-nums;
-}
-
-
-
 .sa-temp {
     flex: 0 0 auto;
     display: flex;
@@ -21972,7 +21953,7 @@ body.theme-light .du-proj-sel option {
 
     /* rótulos que no monitor ficam numa linha só (com reticências quando
        não cabem): na TV quebram, para nenhum número sumir */
-    html.tv :is(.gv-kpi-label, .gv-meter-label, .gv-meter-lim, .trigo-tipo-lim, .conc-num-sub, .sa-dens, .sa-aer-equil, .sa-aer-clima-rotulo, .sa-aer-clima-ur, .pv-fact) {
+    html.tv :is(.gv-kpi-label, .gv-meter-label, .gv-meter-lim, .trigo-tipo-lim, .conc-num-sub, .sa-aer-equil, .sa-aer-clima-rotulo, .sa-aer-clima-ur, .pv-fact) {
         white-space: normal;
         text-overflow: clip;
         overflow: visible;
