@@ -12,7 +12,7 @@
          não carrega e a tela usa o mapa esquemático em SVG. -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css">
-    <link rel="stylesheet" href="style.css?v=20261028b">
+    <link rel="stylesheet" href="style.css?v=20261028c">
 </head>
 <body class="theme-dark">
 
@@ -2941,7 +2941,8 @@
                                        e desconta o aquecimento (ao menos 30 min ate 100 °C)
                                        depois de cada recarga
                          Os dois graficos usam a mesma escala, para as barras se compararem.
-                         Parada fica em vermelho atras da barra, com o motivo embaixo da hora.
+                         Parada fica em vermelho atras da barra; o motivo vai na linha de
+                         ocorrencias do secador, entre o grafico e o fim do turno.
                          Embaixo de cada grafico, o fim do turno: secado contra o que poderia
                          ter secado no nominal; ate 10% abaixo e' normal, mais que isso
                          alerta e mostra as toneladas perdidas. O t/h com o secador rodando
@@ -2967,6 +2968,7 @@
                             <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec1">
                                 <div class="prod-secador-grafico">
                                     <div class="prod-grafico-corpo" data-prod-grafico="s1"></div>
+                                    <div class="prod-eventos" data-prod-eventos="s1"></div>
                                     <div class="prod-fim" data-prod-fim="s1"></div>
                                 </div>
                                 <div class="prod-secador-info">
@@ -3063,6 +3065,7 @@
                             <div data-codigo="AVR-SPD-H" class="prod-secador prod-secador--sec2">
                                 <div class="prod-secador-grafico">
                                     <div class="prod-grafico-corpo" data-prod-grafico="s2"></div>
+                                    <div class="prod-eventos" data-prod-eventos="s2"></div>
                                     <div class="prod-fim" data-prod-fim="s2"></div>
                                 </div>
                                 <div class="prod-secador-info">
@@ -7403,7 +7406,7 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.1.4/leaflet-maplibre-gl.js"></script>
-    <script src="script.js?v=20261028b"></script>
+    <script src="script.js?v=20261028c"></script>
 
 </body>
 </html>

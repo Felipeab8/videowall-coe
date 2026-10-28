@@ -4953,28 +4953,20 @@ function graficoProd(dados, turno, s) {
     const rotulo = `<span class="prod-meta-tag prod-meta-tag--${s.chave}" style="bottom: ${pct(nominal).toFixed(1)}%">`
         + `nominal<b>${nominal} t/h</b></span>`;
 
+    // embaixo de cada hora so a tabela (hora, umidade, P1..P5), sempre nas
+    // mesmas linhas; parada com motivo, hora parcial e projecao vao para a
+    // linha de ocorrencias do secador (eventosProd)
     const eixoX = horas.map((hora) => {
-        const min = hora.min || 60;
-        const parada = paradaDoSecador(hora, s);
         const cls = ['forecast-day'];
         if (hora.agora) cls.push('is-agora');
         if (hora.futuro) cls.push('is-futuro');
-        let nota = '';
-        if (parada) {
-            nota = `<small class="is-parada">parado ${parada.min} min<br>${parada.motivo}</small>`;
-        } else if (hora.futuro) {
-            nota = '<small>projeção</small>';
-        } else if (min < 60) {
-            // duas linhas curtas: a coluna de um secador so e' estreita
-            nota = `<small>parcial<br>${min} min</small>`;
-        }
         const umidade = umidadeDaHora(hora, s);
         const umi = umidade ? `<small class="prod-umi" title="Umidade média de entrada na hora">${umidade}</small>` : '';
         const depressao = depressaoDaHora(hora, s);
         const depr = depressao
             ? depressao.map((v, i) => `<small class="prod-umi prod-depr" title="Depressão no ponto ${PROD_PONTOS_PRESSAO[i]} (mmH₂O)">${v}</small>`).join('')
             : '';
-        return `<span class="${cls.join(' ')}"><span class="prod-hora">${rotuloHora(hora)}</span>${umi}${depr}${nota}</span>`;
+        return `<span class="${cls.join(' ')}"><span class="prod-hora">${rotuloHora(hora)}</span>${umi}${depr}</span>`;
     }).join('');
     const rotulosDepr = PROD_PONTOS_PRESSAO.map((p) => `<small class="prod-umi-rotulo prod-depr-rotulo">${p}</small>`).join('');
 
@@ -4989,6 +4981,36 @@ function graficoProd(dados, turno, s) {
         + `<div class="forecast-xaxis">${eixoX}</div>`
         + `<span class="forecast-unit">t/h<small class="prod-umi-rotulo">umid. média</small>${rotulosDepr}</span>`
         + '</div>';
+}
+
+// ocorrencias do turno de um secador, numa linha propria entre o grafico e o
+// fim do turno: cada parada com o motivo (o que mais importa achar na
+// tela), a hora parcial ou em andamento e as horas projetadas. Cada selo
+// leva a mesma marca da legenda do grafico
+function eventosProd(turno, s) {
+    const itens = [];
+    const paradas = turno.horas.filter((hora) => paradaDoSecador(hora, s));
+    if (!paradas.length) {
+        itens.push('<span class="prod-evento prod-evento--ok"><b>Sem paradas</b> no turno</span>');
+    }
+    paradas.forEach((hora) => {
+        const parada = paradaDoSecador(hora, s);
+        itens.push('<span class="prod-evento prod-evento--parada"><i class="prod-leg-parada" aria-hidden="true"></i>'
+            + `<b>${rotuloHora(hora)} · parado ${parada.min} min</b> ${parada.motivo}</span>`);
+    });
+    const parcial = turno.horas.find((hora) => !hora.futuro && (hora.min || 60) < 60);
+    if (parcial) {
+        itens.push('<span class="prod-evento"><i class="prod-evento-parcial" aria-hidden="true"></i>'
+            + `<b>${rotuloHora(parcial)}</b> ${parcial.agora ? 'em andamento' : 'parcial'} · ${parcial.min} min</span>`);
+    }
+    const futuras = turno.horas.filter((hora) => hora.futuro);
+    if (futuras.length) {
+        const ini = rotuloHora(futuras[0]);
+        const faixa = futuras.length > 1 ? `${ini}–${rotuloHora(futuras[futuras.length - 1])}` : ini;
+        itens.push('<span class="prod-evento"><i class="legend-dot legend-dot--proj-key" aria-hidden="true"></i>'
+            + `<b>${faixa}</b> projeção</span>`);
+    }
+    return itens.join('');
 }
 
 // fim do turno de um secador: o que secou contra o que o nominal permitiria
@@ -5025,7 +5047,9 @@ function montarGraficoProd(secao) {
     PROD_SECADORES.forEach((s) => {
         const alvo = secao.querySelector(`[data-prod-grafico="${s.chave}"]`);
         const fim = secao.querySelector(`[data-prod-fim="${s.chave}"]`);
+        const eventos = secao.querySelector(`[data-prod-eventos="${s.chave}"]`);
         if (alvo) alvo.innerHTML = graficoProd(dados, turno, s);
+        if (eventos) eventos.innerHTML = eventosProd(turno, s);
         if (fim) {
             const resumo = fimDoTurnoProd(dados, turno, s);
             fim.innerHTML = resumo.html;
