@@ -6,3 +6,6 @@ desktop.ini
 # Editores
 .vscode/
 .idea/
+
+# Screenshots de verificação do modo TV (gerados pelo Playwright)
+screenshots/

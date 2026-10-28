@@ -10,6 +10,8 @@ function updateLiveTime() {
     if (liveTime) {
         liveTime.textContent = `ÚLTIMA ATUALIZAÇÃO: ${hours}:${minutes}:${seconds}`;
     }
+    // modo TV: o "Atualizado às HH:MM" de cada tela sai desta variável
+    document.documentElement.style.setProperty('--tv-hora', `"${hours}:${minutes}"`);
 }
 
 setInterval(updateLiveTime, 1000);
@@ -157,6 +159,11 @@ function isMobile() {
     return mobileQuery.matches;
 }
 
+// modo TV (ver MODO TV mais abaixo): a classe fica no <html>
+function modoTv() {
+    return document.documentElement.classList.contains('tv');
+}
+
 // O cabecalho quebra em duas linhas no celular; a gaveta do menu precisa
 // da altura real dele, medida aqui (--header-real), nao da travada no CSS.
 const headerEl = document.querySelector('.header');
@@ -187,20 +194,34 @@ function fitTargets() {
         ? alertsPage
         : document.querySelector('.screen.active');
     if (!active) return [];
+    // Modo TV: o piso de fonte faz o texto crescer dentro de caixas que
+    // cortam caladas (cartões de silo e moega, células, rótulos com
+    // reticências). Ali qualquer bloco que corte conteúdo entra na conta,
+    // menos o que rola de propósito e os mapas (painéis maiores por natureza).
+    if (modoTv()) {
+        const cortam = Array.prototype.filter.call(active.querySelectorAll('*'), (el) => {
+            const cs = getComputedStyle(el);
+            return (cs.overflowX !== 'visible' || cs.overflowY !== 'visible')
+                && !el.closest('.table-scroll--livre, .content-section--livre, .leaflet-container');
+        });
+        return [active, ...cortam];
+    }
     // .table-scroll--livre rola por dentro em vez de encolher a tela inteira
     // (lista longa de caminhoes): fica fora da conta. Bloco com overflow
     // visivel tambem sai: o que passa dele ja aparece na medida da tela, e
     // um menu aberto por cima (contratos da expedicao) nao e transbordo.
-    // O cartao do secador (produtividade) corta o que passa da fileira dele,
-    // sem a secao perceber: entra na conta para nada sumir.
-    const blocos = active.querySelectorAll('.content-section:not(.content-section--livre), .table-scroll:not(.table-scroll--livre), .alerts-list, .geral-grid, .prod-secador');
+    // O cartao do secador (produtividade), o do silo e o do armazem cortam o
+    // que passa da fileira deles, sem a secao perceber: entram na conta para
+    // nada sumir.
+    const blocos = active.querySelectorAll('.content-section:not(.content-section--livre), .table-scroll:not(.table-scroll--livre), .alerts-list, .geral-grid, .prod-secador, .sa-card[data-silo], .sa-card[data-armazem]');
     return [active, ...Array.prototype.filter.call(blocos, (el) => getComputedStyle(el).overflowY !== 'visible')];
 }
 
 function fitOverflow(targets) {
     let worst = 0;
+    const largura = modoTv();
     for (const el of targets) {
-        const over = el.scrollHeight - el.clientHeight;
+        const over = Math.max(el.scrollHeight - el.clientHeight, largura ? el.scrollWidth - el.clientWidth : 0);
         if (over > worst) worst = over;
     }
     return worst;
@@ -237,6 +258,97 @@ window.addEventListener('load', scheduleFit);
 if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(scheduleFit);
 }
+
+// ============================================
+// MODO TV (computador ligado na TV por HDMI)
+// ?tv=1 liga e ?tv=0 desliga; a escolha fica gravada no aparelho, então
+// a TV volta sempre no modo certo. Tecla T alterna; as setas (ou
+// PageUp/PageDown do controle) trocam de tela na ordem do menu, que no
+// modo TV fica escondido. A aparência toda está no CSS (html.tv).
+// ============================================
+const TV_STORAGE_KEY = 'videowall:modo-tv';
+
+function tvInicial() {
+    const pedido = new URLSearchParams(location.search).get('tv');
+    try {
+        if (pedido !== null) localStorage.setItem(TV_STORAGE_KEY, pedido === '0' ? '0' : '1');
+        return localStorage.getItem(TV_STORAGE_KEY) === '1';
+    } catch (err) {
+        return pedido !== null && pedido !== '0';
+    }
+}
+
+function setModoTv(ligado) {
+    if (ligado && isEditing()) toggleEditMode();
+    document.documentElement.classList.toggle('tv', ligado);
+    try {
+        localStorage.setItem(TV_STORAGE_KEY, ligado ? '1' : '0');
+    } catch (err) {
+        // sem armazenamento: vale só para esta visita
+    }
+    scheduleFit();
+}
+
+function irParaTelaVizinha(passo) {
+    const itens = Array.prototype.filter.call(
+        document.querySelectorAll('.menu-item[data-screen]'),
+        (item) => document.getElementById('screen-' + item.getAttribute('data-screen'))
+    );
+    if (!itens.length) return;
+    const atual = itens.findIndex((item) => item.classList.contains('active'));
+    itens[(atual + passo + itens.length) % itens.length].click();
+}
+
+document.documentElement.classList.toggle('tv', tvInicial());
+
+// Listas longas (caminhões, cargas) rolam por dentro no monitor; na TV
+// ninguém rola, então descem sozinhas, devagar, param no fim e voltam ao
+// topo. O passo acompanha a altura da tela para ter a mesma velocidade no 4K.
+const TV_ROLAGEM_PAUSA = 4000;   // ms parada no topo e no fim
+const rolagemTv = new WeakMap();
+
+function rolarListasTv() {
+    if (!modoTv()) return;
+    const agora = Date.now();
+    const passo = Math.max(1, Math.round(window.innerHeight / 1080));
+    document.querySelectorAll('.screen.active .table-scroll--livre').forEach((lista) => {
+        if (lista.scrollHeight - lista.clientHeight < 2) return;
+        let estado = rolagemTv.get(lista);
+        if (!estado) {
+            estado = { espera: agora + TV_ROLAGEM_PAUSA, voltar: false };
+            rolagemTv.set(lista, estado);
+        }
+        if (agora < estado.espera) return;
+        if (estado.voltar) {
+            lista.scrollTop = 0;
+            estado.voltar = false;
+            estado.espera = agora + TV_ROLAGEM_PAUSA;
+            return;
+        }
+        lista.scrollTop += passo;
+        if (lista.scrollTop + lista.clientHeight >= lista.scrollHeight - 1) {
+            estado.voltar = true;
+            estado.espera = agora + TV_ROLAGEM_PAUSA;
+        }
+    });
+}
+
+setInterval(rolarListasTv, 40);
+
+document.addEventListener('keydown', (event) => {
+    if (event.ctrlKey || event.metaKey || event.altKey) return;
+    const alvo = event.target;
+    if (alvo instanceof Element && alvo.closest('input, textarea, select, [contenteditable="true"]')) return;
+    if (event.key === 't' || event.key === 'T') {
+        setModoTv(!modoTv());
+        return;
+    }
+    if (!modoTv()) return;
+    const passo = { ArrowRight: 1, PageDown: 1, ArrowLeft: -1, PageUp: -1 }[event.key];
+    if (!passo) return;
+    event.preventDefault();
+    irParaTelaVizinha(passo);
+});
 
 // ============================================
 // MENU RECOLHÍVEL (tela cheia)
@@ -2663,6 +2775,8 @@ function remontar() {
         montarArmazens(palco);
         montarSecagem(palco);
         montarProdutividade(palco);
+        montarPressao(palco);
+        rotularChuva(palco);
     });
     applyEditMode(isEditing());
     scheduleFit();
@@ -4739,6 +4853,7 @@ function umidadeDaHora(hora, s) {
     return typeof u === 'number' ? `${u.toFixed(1).replace('.', ',')}%` : '';
 }
 
+
 // cada hora e' rotulada pelo inicio: "07h" (das 7h as 8h) vira "7h"
 function rotuloHora(hora) {
     return `${parseInt(hora.h, 10)}h`;
@@ -4827,24 +4942,16 @@ function graficoProd(dados, turno, s) {
     const rotulo = `<span class="prod-meta-tag prod-meta-tag--${s.chave}" style="bottom: ${pct(nominal).toFixed(1)}%">`
         + `nominal<b>${nominal} t/h</b></span>`;
 
+    // embaixo de cada hora so a hora e a umidade, sempre nas
+    // mesmas linhas; parada com motivo, hora parcial e projecao vao para a
+    // linha de ocorrencias do secador (eventosProd)
     const eixoX = horas.map((hora) => {
-        const min = hora.min || 60;
-        const parada = paradaDoSecador(hora, s);
         const cls = ['forecast-day'];
         if (hora.agora) cls.push('is-agora');
         if (hora.futuro) cls.push('is-futuro');
-        let nota = '';
-        if (parada) {
-            nota = `<small class="is-parada">parado ${parada.min} min<br>${parada.motivo}</small>`;
-        } else if (hora.futuro) {
-            nota = '<small>projeção</small>';
-        } else if (min < 60) {
-            // duas linhas curtas: a coluna de um secador so e' estreita
-            nota = `<small>parcial<br>${min} min</small>`;
-        }
         const umidade = umidadeDaHora(hora, s);
         const umi = umidade ? `<small class="prod-umi" title="Umidade média de entrada na hora">${umidade}</small>` : '';
-        return `<span class="${cls.join(' ')}"><span class="prod-hora">${rotuloHora(hora)}</span>${umi}${nota}</span>`;
+        return `<span class="${cls.join(' ')}"><span class="prod-hora">${rotuloHora(hora)}</span>${umi}</span>`;
     }).join('');
 
     return `<div class="forecast-chart forecast-chart--horas forecast-chart--turno" style="--chart-cols: ${n}" data-chart-max="${max}">`
@@ -4858,6 +4965,36 @@ function graficoProd(dados, turno, s) {
         + `<div class="forecast-xaxis">${eixoX}</div>`
         + '<span class="forecast-unit">t/h<small class="prod-umi-rotulo">umid. média</small></span>'
         + '</div>';
+}
+
+// ocorrencias do turno de um secador, numa linha propria entre o grafico e o
+// fim do turno: cada parada com o motivo (o que mais importa achar na
+// tela), a hora parcial ou em andamento e as horas projetadas. Cada selo
+// leva a mesma marca da legenda do grafico
+function eventosProd(turno, s) {
+    const itens = [];
+    const paradas = turno.horas.filter((hora) => paradaDoSecador(hora, s));
+    if (!paradas.length) {
+        itens.push('<span class="prod-evento prod-evento--ok"><b>Sem paradas</b> no turno</span>');
+    }
+    paradas.forEach((hora) => {
+        const parada = paradaDoSecador(hora, s);
+        itens.push('<span class="prod-evento prod-evento--parada"><i class="prod-leg-parada" aria-hidden="true"></i>'
+            + `<b>${rotuloHora(hora)} · parado ${parada.min} min</b> ${parada.motivo}</span>`);
+    });
+    const parcial = turno.horas.find((hora) => !hora.futuro && (hora.min || 60) < 60);
+    if (parcial) {
+        itens.push('<span class="prod-evento"><i class="prod-evento-parcial" aria-hidden="true"></i>'
+            + `<b>${rotuloHora(parcial)}</b> ${parcial.agora ? 'em andamento' : 'parcial'} · ${parcial.min} min</span>`);
+    }
+    const futuras = turno.horas.filter((hora) => hora.futuro);
+    if (futuras.length) {
+        const ini = rotuloHora(futuras[0]);
+        const faixa = futuras.length > 1 ? `${ini}–${rotuloHora(futuras[futuras.length - 1])}` : ini;
+        itens.push('<span class="prod-evento"><i class="legend-dot legend-dot--proj-key" aria-hidden="true"></i>'
+            + `<b>${faixa}</b> projeção</span>`);
+    }
+    return itens.join('');
 }
 
 // fim do turno de um secador: o que secou contra o que o nominal permitiria
@@ -4894,7 +5031,9 @@ function montarGraficoProd(secao) {
     PROD_SECADORES.forEach((s) => {
         const alvo = secao.querySelector(`[data-prod-grafico="${s.chave}"]`);
         const fim = secao.querySelector(`[data-prod-fim="${s.chave}"]`);
+        const eventos = secao.querySelector(`[data-prod-eventos="${s.chave}"]`);
         if (alvo) alvo.innerHTML = graficoProd(dados, turno, s);
+        if (eventos) eventos.innerHTML = eventosProd(turno, s);
         if (fim) {
             const resumo = fimDoTurnoProd(dados, turno, s);
             fim.innerHTML = resumo.html;
@@ -4911,6 +5050,176 @@ function montarProdutividade(raiz) {
 }
 
 montarProdutividade();
+
+// ============================================
+// PRESSAO DOS SECADORES · DEPRESSAO POR PONTO
+// Um cartao por secador com o desenho da torre de cavaletes, no estilo da
+// especificacao de engenharia (EE-206 · Medicao em Secadores): camara de ar
+// quente em escada (ar de secagem), cavaletes (secagem), camara de ar
+// saturado com o ventilador no topo e o resfriamento embaixo (ar ambiente).
+// Cada ponto de pressao fica marcado no lugar da medicao e ligado a um quadro
+// com o local, o valor da ultima hora, a media do turno e a curva do turno.
+// Monta do JSON em [data-pressao-dados]: secadores {s1, s2: nome, tipo,
+// cultura}, pontos [{id, local}], horas [{h, s1, s2, min?, agora?}] com
+// s1/s2 = [P1..P5] em mmH2O, e paradas [{sec, h, min, motivo}].
+// O desenho e' SVG em coordenadas fixas (800 x 640); os quadros e rotulos
+// sao HTML posicionados em % dessas coordenadas, para a letra nao escalar
+// com o desenho e seguir o piso de fonte do modo TV.
+// ============================================
+const PRESSAO_SECADORES = ['s1', 's2'];
+const PRESSAO_DESENHO = { w: 800, h: 640, quadroEsq: 195, quadroDir: 595 };
+// lugar de cada ponto no desenho (marca) e altura do quadro dele; os da
+// camara de ar quente e da fornalha ficam a esquerda, os outros a direita
+const PRESSAO_LUGARES = [
+    { x: 315, y: 120, lado: 'esq', qy: 110 },   // P1 camara de ar quente, topo
+    { x: 222, y: 440, lado: 'esq', qy: 315 },   // P2 camara de ar quente, base
+    { x: 497, y: 150, lado: 'dir', qy: 180 },   // P3 camara de ar saturado (exaustao)
+    { x: 400, y: 518, lado: 'dir', qy: 470 },   // P4 resfriamento
+    { x: 255, y: 530, lado: 'esq', qy: 530 },   // P5 duto de ar quente, saida da fornalha
+];
+
+// mmH2O com o sinal de menos tipografico: "−32"
+function formatarPressao(v) {
+    return String(Math.round(v)).replace('-', '−');
+}
+
+function dadosPressao(secao) {
+    const fonte = secao.querySelector('[data-pressao-dados]');
+    if (!fonte) return null;
+    try {
+        return JSON.parse(fonte.textContent);
+    } catch (err) {
+        return null;
+    }
+}
+
+function setaPressao(x1, y1, x2, y2, tipo, sufixo) {
+    return `<line class="pr-d-seta pr-d-seta--${tipo}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" marker-end="url(#pr-ponta-${tipo}-${sufixo})"></line>`;
+}
+
+// torre de cavaletes: o ar quente sai da fornalha, sobe pela camara em
+// escada, atravessa os cavaletes, cai na camara de ar saturado e sai pelo
+// ventilador no topo; embaixo o resfriamento puxa ar ambiente. "por cima"
+// entra por ultimo no SVG (marcas dos pontos e guias)
+function desenhoCavaletes(sufixo, porCima) {
+    const tipos = ['quente', 'secagem', 'saturado', 'ambiente'];
+    const pontas = tipos.map((t) => `<marker id="pr-ponta-${t}-${sufixo}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path class="pr-d-ponta pr-d-ponta--${t}" d="M0,0 L10,5 L0,10 z"></path></marker>`).join('');
+    const partes = [];
+    // fornalha e duto de ar quente ate a camara
+    partes.push('<rect class="pr-d-fornalha" x="197" y="580" width="136" height="44" rx="6"></rect>');
+    partes.push('<rect class="pr-d-zona pr-d-zona--quente" x="230" y="470" width="50" height="110"></rect>');
+    partes.push(setaPressao(255, 572, 255, 482, 'quente', sufixo));
+    // camara de ar quente em escada, mais larga embaixo
+    partes.push('<polygon class="pr-d-zona pr-d-zona--quente" points="330,80 305,80 305,160 280,160 280,240 255,240 255,320 230,320 230,400 205,400 205,470 330,470"></polygon>');
+    [[120, 305], [200, 280], [280, 255], [360, 230], [440, 205]].forEach(([y, x]) => {
+        partes.push(setaPressao(x + 10, y, 324, y, 'quente', sufixo));
+    });
+    // torre com os cavaletes (ar de secagem atravessando o grao)
+    partes.push('<polygon class="pr-d-torre" points="322,60 400,24 478,60"></polygon>');
+    partes.push('<rect class="pr-d-torre" x="330" y="60" width="140" height="500"></rect>');
+    for (let y = 82; y <= 460; y += 27) partes.push(setaPressao(342, y, 456, y, 'secagem', sufixo));
+    // resfriamento: ar ambiente entra por baixo e atravessa o grao
+    partes.push('<rect class="pr-d-zona pr-d-zona--ambiente" x="331" y="478" width="138" height="81"></rect>');
+    [496, 540].forEach((y) => partes.push(setaPressao(288, y, 324, y, 'ambiente', sufixo)));
+    [496, 518, 540].forEach((y) => partes.push(setaPressao(342, y, 456, y, 'ambiente', sufixo)));
+    // camara de ar saturado e ventilador no topo
+    partes.push('<rect class="pr-d-zona pr-d-zona--saturado" x="470" y="60" width="55" height="499"></rect>');
+    partes.push(setaPressao(497, 545, 497, 78, 'saturado', sufixo));
+    partes.push('<circle class="pr-d-vent" cx="497" cy="40" r="14"></circle>');
+    partes.push(setaPressao(497, 24, 497, 4, 'saturado', sufixo));
+    return `<svg class="pr-d" viewBox="0 0 ${PRESSAO_DESENHO.w} ${PRESSAO_DESENHO.h}" aria-hidden="true">`
+        + `<defs>${pontas}</defs>${partes.join('')}${porCima || ''}</svg>`;
+}
+
+// curva do turno no quadro do ponto, na escala do proprio ponto
+function curvaPressao(serie) {
+    const min = Math.min(...serie);
+    const max = Math.max(...serie);
+    const faixa = max - min || 1;
+    const pts = serie.map((v, k) => {
+        const x = serie.length > 1 ? (k / (serie.length - 1)) * 100 : 50;
+        const y = 2 + ((max - v) / faixa) * 16;
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
+    return `<svg class="pr-curva" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}"></polyline></svg>`;
+}
+
+function cartaoPressao(dados, sec) {
+    const meta = (dados.secadores && dados.secadores[sec]) || { nome: sec.toUpperCase() };
+    const horas = dados.horas;
+    const n = horas.length;
+    const pct = (v, total) => `${((v / total) * 100).toFixed(2)}%`;
+    const { w, h } = PRESSAO_DESENHO;
+
+    // marcas no desenho e guias ate o quadro de cada ponto
+    const marcas = PRESSAO_LUGARES.map((l) => {
+        const ax = l.lado === 'esq' ? PRESSAO_DESENHO.quadroEsq : PRESSAO_DESENHO.quadroDir;
+        return `<line class="pr-d-guia" x1="${l.x}" y1="${l.y}" x2="${ax}" y2="${l.qy}"></line>`
+            + `<circle class="pr-d-marca" cx="${l.x}" cy="${l.y}" r="10"></circle>`;
+    }).join('');
+
+    const quadros = dados.pontos.map((ponto, i) => {
+        const l = PRESSAO_LUGARES[i];
+        if (!l) return '';
+        const serie = horas.map((hora) => hora[sec][i]);
+        const media = serie.reduce((a, v) => a + v, 0) / serie.length;
+        const lado = l.lado === 'esq'
+            ? `left: 0; width: ${pct(PRESSAO_DESENHO.quadroEsq, w)}`
+            : `right: 0; width: ${pct(w - PRESSAO_DESENHO.quadroDir, w)}`;
+        const turno = horas.map((hora, k) => `${rotuloHora(hora)} ${formatarPressao(serie[k])}`).join(' · ');
+        return `<div class="pr-quadro pr-quadro--${l.lado}" style="${lado}; top: ${pct(l.qy, h)}" title="${ponto.id} · ${ponto.local} · ${turno} mmH₂O">`
+            + `<div class="pr-quadro-head"><span class="pr-quadro-id">${ponto.id}</span><span class="pr-quadro-local">${ponto.local}</span></div>`
+            + `<div class="pr-quadro-valor"><b>${formatarPressao(serie[n - 1])}</b><small>mmH₂O</small></div>`
+            + `<div class="pr-quadro-sub">${curvaPressao(serie)}<span>média ${formatarPressao(media)}</span></div>`
+            + '</div>';
+    }).join('');
+
+    const rotulos = `<span class="pr-d-rotulo" style="left: ${pct(265, w)}; top: ${pct(602, h)}">Fornalha</span>`
+        + `<span class="pr-d-rotulo pr-d-rotulo--esq" style="left: ${pct(518, w)}; top: ${pct(40, h)}">Ventilador</span>`;
+
+    const detalhe = [meta.tipo && `secador de ${meta.tipo}`, meta.cultura].filter(Boolean).join(' · ');
+    return `<article class="pr-sec pr-sec--${sec}">`
+        + `<div class="pr-sec-head"><i class="pr-leg pr-leg--${sec}" aria-hidden="true"></i>`
+        + `<span class="pr-sec-nome">${meta.nome}</span><span class="pr-sec-meta">${detalhe}</span></div>`
+        + `<div class="pr-corpo"><div class="pr-desenho">${desenhoCavaletes(sec, marcas)}${rotulos}${quadros}</div></div>`
+        + '</article>';
+}
+
+// ocorrencias do turno, com as mesmas marcas e selos da produtividade
+function eventosPressao(dados) {
+    const itens = [];
+    const paradas = dados.paradas || [];
+    if (!paradas.length) {
+        itens.push('<span class="prod-evento prod-evento--ok"><b>Sem paradas</b> no turno</span>');
+    }
+    paradas.forEach((p) => {
+        const meta = (dados.secadores && dados.secadores[p.sec]) || { nome: p.sec };
+        itens.push('<span class="prod-evento prod-evento--parada"><i class="prod-leg-parada" aria-hidden="true"></i>'
+            + `<b>${meta.nome} · ${parseInt(p.h, 10)}h · parado ${p.min} min</b> ${p.motivo} · a depressão cai com o secador parado</span>`);
+    });
+    const agora = dados.horas.find((hora) => hora.agora);
+    if (agora) {
+        itens.push('<span class="prod-evento"><i class="prod-evento-parcial" aria-hidden="true"></i>'
+            + `<b>${rotuloHora(agora)}</b> em andamento${agora.min ? ` · ${agora.min} min` : ''} · valores da hora atual</span>`);
+    }
+    return itens.join('');
+}
+
+function montarPressao(raiz) {
+    (raiz || document).querySelectorAll('.pr-section').forEach((secao) => {
+        const dados = dadosPressao(secao);
+        const alvo = secao.querySelector('[data-pressao-secadores]');
+        if (!dados || !alvo || !dados.horas.length) return;
+        alvo.innerHTML = PRESSAO_SECADORES.map((sec) => cartaoPressao(dados, sec)).join('');
+        const eventos = secao.querySelector('[data-pressao-eventos]');
+        if (eventos) eventos.innerHTML = eventosPressao(dados);
+        secao.querySelectorAll('[data-pressao-turno]').forEach((el) => {
+            el.textContent = `${dados.turno} · ${dados.quando}`;
+        });
+    });
+}
+
+montarPressao();
 
 // ============================================
 // DEMAIS UNIDADES · PERIODO DO RECEBIDO POR CULTURA
@@ -5847,6 +6156,133 @@ function umidadeEquilibrio(cultura, temp, ur) {
 
 const umPonto = (v) => v.toFixed(1).replace('.', ',');
 
+// ---- Aeracao de conservacao: quando ligar, com o ar de agora ----
+// Vale para os silos e para as areas do armazem: o cartao traz a cultura,
+// a umidade do grao (data-umidade) e as leituras de temperatura (data-temps,
+// a ultima e' a atual); a estacao vem do bloco data-estacao-* da tela.
+// Diretrizes do Manejo da Aeracao (ABRAPOS) e do Guia de Secagem e
+// Armazenagem do RS:
+// - a massa de graos o mais fria possivel: ideal abaixo de 16 °C, bom
+//   abaixo de 20 °C; em clima tropical, 17 a 22 °C para ciclos longos;
+// - o ar ambiente pelo menos 3 °C (ideal 5 °C) abaixo da temperatura do
+//   grao, para resfriar;
+// - a UR do ar em equilibrio com a umidade do grao: o ar insuflado (o
+//   ambiente aquecido pelo ventilador) nao pode umedecer o grao.
+// Da leitura da estacao sai a umidade absoluta do ar de agora; cada
+// temperatura ambiente tem a sua UR (Magnus), aquecida pelo ventilador vira
+// a UR do ar insuflado, e a tabela higroscopica da a umidade de equilibrio.
+//   MAX    temperatura do grao - 3 °C: acima, o ar nao resfria
+//   IDEAL  ate a temperatura do grao - 5 °C
+//   MIN    abaixo, o ar insuflado umedece o grao (equilibrio acima da
+//          umidade do grao alem do neutro)
+// Minima acima da maxima: com o ar de agora nao da para resfriar sem molhar.
+const AERACAO = {
+    resfriaMin: 3,     // °C abaixo do grao para resfriar
+    resfriaIdeal: 5,   // °C abaixo do grao para resfriar bem
+    aquecimento: 6,    // °C que o ventilador soma ao ar ambiente
+    massa: { ideal: 16, bom: 20, tropical: 22 },
+    passo: 0.1,
+    piso: -10,
+};
+
+function pressaoSaturacao(t) {
+    return 6.112 * Math.exp((17.62 * t) / (243.12 + t));
+}
+
+function janelaAeracao(cultura, grao, tGrao, tAgora, urAgora) {
+    const vapor = (urAgora / 100) * pressaoSaturacao(tAgora);
+    // pontos de umidade que o ar insuflado poe no grao (positivo = umedece)
+    const umedece = (tAmb) => {
+        const tIns = tAmb + AERACAO.aquecimento;
+        const ur = Math.min(100, (vapor / pressaoSaturacao(tIns)) * 100);
+        const eq = umidadeEquilibrio(cultura, tIns, ur);
+        return eq === null ? null : eq - grao;
+    };
+    const max = tGrao - AERACAO.resfriaMin;
+    let min = null;
+    for (let t = AERACAO.piso; t <= max + 10; t += AERACAO.passo) {
+        const u = umedece(t);
+        if (u !== null && u <= EQUILIBRIO_NEUTRO) {
+            min = t;
+            break;
+        }
+    }
+    return { min, idealAte: tGrao - AERACAO.resfriaIdeal, max, aberta: min !== null && min <= max };
+}
+
+// situacao do ar de agora na janela: icone + texto, nunca so a cor
+function estadoAeracao(t, j) {
+    if (t > j.max) return { estado: 'quente', icone: '▲', texto: 'não resfria' };
+    if (j.min === null || t < j.min) return { estado: 'umido', icone: '▼', texto: 'umedece o grão' };
+    if (t <= j.idealAte) return { estado: 'ideal', icone: '●', texto: 'pode aerar' };
+    return { estado: 'pouco', icone: '●', texto: 'resfria pouco' };
+}
+
+// temperatura da massa contra as faixas das diretrizes
+function estadoMassa(t) {
+    const m = AERACAO.massa;
+    if (t <= m.ideal) return { estado: 'ideal', icone: '●', texto: 'ideal' };
+    if (t <= m.bom) return { estado: 'bom', icone: '●', texto: 'bom' };
+    if (t <= m.tropical) return { estado: 'tropical', icone: '●', texto: 'aceitável' };
+    return { estado: 'quente', icone: '▲', texto: 'quente' };
+}
+
+function escreverAeracao(card) {
+    const alvo = card.querySelector('[data-ar-janela]');
+    const tela = card.closest('.screen');
+    const estacao = tela && tela.querySelector('[data-estacao-temp]');
+    if (!alvo || !estacao) return;
+    const tAgora = paraNumero(estacao.dataset.estacaoTemp);
+    const urAgora = paraNumero(estacao.dataset.estacaoUr);
+    const grao = paraNumero(card.dataset.umidade);
+    const temps = numeros(card.dataset.temps);
+    const tGrao = temps.length ? temps[temps.length - 1] : NaN; // a ultima leitura e' a atual
+    const chave = [card.dataset.cultura, grao, tGrao, tAgora, urAgora].join('|');
+    if (alvo.dataset.chave === chave) return; // so refaz quando o ar ou o grao mudam
+    alvo.dataset.chave = chave;
+    if (![tAgora, urAgora, grao, tGrao].every(Number.isFinite)) {
+        alvo.innerHTML = '';
+        return;
+    }
+    const j = janelaAeracao(card.dataset.cultura, grao, tGrao, tAgora, urAgora);
+    const grau = (v) => String(Math.round(v));
+    const ar = estadoAeracao(tAgora, j);
+    const massa = estadoMassa(tGrao);
+    let ref;
+    if (!j.aberta) {
+        ref = `janela fechada · máx ${grau(j.max)} °C`;
+    } else if (j.min <= j.idealAte) {
+        ref = `mín ${grau(j.min)} · ideal ${grau(j.min)}–${grau(j.idealAte)} · máx ${grau(j.max)} °C`;
+    } else {
+        ref = `mín ${grau(j.min)} · máx ${grau(j.max)} °C`;
+    }
+
+    // regua do ar ambiente: umedece | ideal | resfria pouco | nao resfria,
+    // com o ar de agora (traco) e o grao (anel)
+    const ini = Math.min(j.min === null ? tAgora : j.min, tAgora, tGrao - 10) - 2;
+    const fim = Math.max(tAgora, tGrao) + 2;
+    const pos = (v) => `${(((Math.min(Math.max(v, ini), fim) - ini) / (fim - ini)) * 100).toFixed(1)}%`;
+    const trecho = (a, b, cls) => (b <= a ? ''
+        : `<i class="sa-ar-faixa sa-ar-faixa--${cls}" style="left: ${pos(a)}; width: calc(${pos(b)} - ${pos(a)})"></i>`);
+    const corteUmido = j.min === null ? fim : Math.min(j.min, j.max);
+    const regua = trecho(ini, corteUmido, 'umido')
+        + (j.aberta ? trecho(j.min, Math.min(j.idealAte, j.max), 'ideal') + trecho(Math.max(j.min, j.idealAte), j.max, 'pouco') : '')
+        + trecho(j.max, fim, 'quente')
+        + `<i class="sa-ar-grao" style="left: ${pos(tGrao)}" title="grão ${umPonto(tGrao)} °C"></i>`
+        + `<i class="sa-ar-agora" style="left: ${pos(tAgora)}"></i>`;
+
+    alvo.title = `Quando aerar com o ar de agora (estação: ${umPonto(tAgora)} °C, UR ${Math.round(urAgora)}%). `
+        + `Grão a ${umPonto(tGrao)} °C com ${umPonto(grao)}% de umidade. Máx: o ar ${AERACAO.resfriaMin} °C abaixo do grão `
+        + `(ideal ${AERACAO.resfriaIdeal} °C abaixo); mín: abaixo dela o ar, aquecido ${AERACAO.aquecimento} °C pelo ventilador, `
+        + `umedece o grão. Massa: ideal até ${AERACAO.massa.ideal} °C, bom até ${AERACAO.massa.bom} °C, aceitável até ${AERACAO.massa.tropical} °C. `
+        + 'Diretrizes do Manejo da Aeração (ABRAPOS) e do Guia de Secagem e Armazenagem do RS.';
+    alvo.innerHTML = '<div class="sa-ar-head"><span class="sa-ar-tit">Quando aerar</span>'
+        + `<span class="sa-ar-ref">${ref}</span></div>`
+        + `<div class="sa-ar-regua" aria-hidden="true">${regua}</div>`
+        + `<div class="sa-ar-status" data-estado="${ar.estado}"><b>${ar.icone}</b> ar ${umPonto(tAgora)} °C · ${ar.texto}</div>`
+        + `<div class="sa-ar-status" data-estado="${massa.estado}"><b>${massa.icone}</b> massa ${umPonto(tGrao)} °C · ${massa.texto}</div>`;
+}
+
 function escreverClimaAeracao(card, ligado) {
     const leituras = (card.dataset.aerClima || '').split(',')
         .map((par) => par.split('/').map(Number))
@@ -5863,18 +6299,19 @@ function escreverClimaAeracao(card, ligado) {
 
     const equilibrio = umidadeEquilibrio(card.dataset.cultura, temp, ur);
     const grao = paraNumero(card.dataset.umidade);
-    const alvoEquil = card.querySelector('[data-clima-equil]');
     const alvoEfeito = card.querySelector('[data-clima-efeito]');
     if (equilibrio === null || !Number.isFinite(grao)) {
-        escreverTexto(alvoEquil, '');
         escreverTexto(alvoEfeito, '');
         return;
     }
-    escreverTexto(alvoEquil, `equilíbrio ${umPonto(equilibrio)}% · grão ${umPonto(grao)}%`);
     const diferenca = equilibrio - grao;
     const efeito = diferenca < -EQUILIBRIO_NEUTRO ? 'secando' : diferenca > EQUILIBRIO_NEUTRO ? 'umedecendo' : 'neutro';
     escreverTexto(alvoEfeito, efeito);
-    if (alvoEfeito) alvoEfeito.dataset.efeito = efeito;
+    // no cartao fica so o selo; equilibrio e grao vao no tooltip dele
+    if (alvoEfeito) {
+        alvoEfeito.dataset.efeito = efeito;
+        alvoEfeito.title = `equilíbrio ${umPonto(equilibrio)}% · grão ${umPonto(grao)}%`;
+    }
 }
 
 function atualizarSilosAeracao() {
@@ -5883,6 +6320,7 @@ function atualizarSilosAeracao() {
 
     document.querySelectorAll('[data-silo]').forEach((card) => {
         prepararSilo(card);
+        escreverAeracao(card);
 
         const ligado = card.dataset.aer === 'on';
         const pausado = ligado && card.dataset.pausaPonta === '1' && dentroPonta;
@@ -5952,6 +6390,38 @@ function escolherVistaChuva(alvo) {
         btn.setAttribute('aria-pressed', String(ativo));
     });
 }
+
+// Previsao do tempo: o mm de cada barra do grafico de chuva, escrito em cima
+// dela. Sai do title da barra ("8 mm caídos", "18 mm previstos", "48 mm caídos
+// + 30 mm previstos"); previsto leva "~", como as projecoes do resto do site.
+// O editor salva o HTML como esta, entao o rotulo e' atualizado, nunca somado.
+const MM_CAIDO = /([\d.,]+) mm caídos/;
+const MM_PREVISTO = /([\d.,]+) mm previstos/;
+
+function rotularChuva(raiz) {
+    (raiz || document).querySelectorAll('.pv-chuva-col').forEach((col) => {
+        const barra = col.querySelector('.pv-chuva-barra');
+        if (!barra) return;
+        const titulo = col.getAttribute('title') || '';
+        const caido = MM_CAIDO.test(titulo) ? paraNumero(titulo.match(MM_CAIDO)[1]) : 0;
+        const previsto = MM_PREVISTO.test(titulo) ? paraNumero(titulo.match(MM_PREVISTO)[1]) : 0;
+        let rotulo = barra.querySelector('.pv-chuva-mm');
+        if (!caido && !previsto) {
+            if (rotulo) rotulo.remove();
+            return;
+        }
+        if (!rotulo) {
+            rotulo = document.createElement('b');
+            rotulo.className = 'pv-chuva-mm';
+            barra.appendChild(rotulo);
+        }
+        const fmt = (v) => v.toLocaleString('pt-BR');
+        rotulo.textContent = caido && previsto ? `${fmt(caido)}+${fmt(previsto)}` : caido ? fmt(caido) : `~${fmt(previsto)}`;
+        rotulo.classList.toggle('is-previsto', !caido);
+    });
+}
+
+rotularChuva();
 
 // o editor salva o HTML como esta: a tela volta para o padrao (24 h)
 function limparFiltrosSilo() {
@@ -6180,6 +6650,7 @@ function atualizarArmazens() {
     const dentroPonta = emPonta(new Date());
     const decorrido = (Date.now() - SILOS_INICIO) / 1000;
     document.querySelectorAll('[data-armazem]').forEach((card) => {
+        escreverAeracao(card);
         const subindo = tendenciasArmazem(card);
         const quente = paraNumero(card.dataset.armMax) >= ARM_ALERTA;
         card.dataset.alerta = subindo || quente ? '1' : '0';
