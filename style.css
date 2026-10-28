@@ -15735,8 +15735,8 @@ body.theme-light .kpi-flag--info {
 
 
 
-/* metade com o mesmo peso da primeira (cargas retornadas: custo | cargas que
-   voltaram): so a linha divisoria, sem apagar o numero */
+/* metade com o mesmo peso da primeira (cargas retornadas: hoje | no mes):
+   so a linha divisoria, sem apagar o numero */
 .kpi-tag-bloco--igual {
     padding-left: 0.875rem;
     border-left: 1px solid var(--card-border);
