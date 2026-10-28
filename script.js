@@ -4831,9 +4831,7 @@ function escolherPeriodoProd(alvo) {
 // projecao nao tem), os minutos da hora que contam (min, 60 se faltar),
 // parada {sec, min, motivo}, agora/futuro. A umidade vai embaixo da hora:
 // e' o que explica o secador abaixo do nominal com a temperatura ja no
-// maximo (grao mais umido seca mais devagar). Abaixo dela, a depressao nos
-// 5 pontos de pressao do secador (d1, d2: [P1..P5] em mmH2O; a projecao
-// nao tem), uma linha por ponto. Duas linhas no grafico: a
+// maximo (grao mais umido seca mais devagar). Duas linhas no grafico: a
 // capacidade nominal (tracejada) e a meta de operacao (cheia, em degraus,
 // hora a hora); os dois graficos usam a mesma escala (max). Embaixo de cada
 // um, o fim do turno: secado contra o que o nominal permitiria nas horas
@@ -4841,11 +4839,10 @@ function escolherPeriodoProd(alvo) {
 // toneladas perdidas.
 // ============================================
 const PROD_SECADORES = [
-    { chave: 's1', meta: 'm1', umi: 'u1', depr: 'd1' },
-    { chave: 's2', meta: 'm2', umi: 'u2', depr: 'd2' },
+    { chave: 's1', meta: 'm1', umi: 'u1' },
+    { chave: 's2', meta: 'm2', umi: 'u2' },
 ];
 const PROD_TOLERANCIA = 0.9; // ate 10% abaixo do nominal e' normal
-const PROD_PONTOS_PRESSAO = ['P1', 'P2', 'P3', 'P4', 'P5'];
 
 // umidade media da hora, "18,2%"; vazio quando a hora nao tem (projecao)
 function umidadeDaHora(hora, s) {
@@ -4853,13 +4850,6 @@ function umidadeDaHora(hora, s) {
     return typeof u === 'number' ? `${u.toFixed(1).replace('.', ',')}%` : '';
 }
 
-// depressao da hora nos 5 pontos, ja escrita com o sinal de menos
-// tipografico ("−32"); null quando a hora nao tem (projecao)
-function depressaoDaHora(hora, s) {
-    const d = hora[s.depr];
-    if (!Array.isArray(d) || d.length !== PROD_PONTOS_PRESSAO.length) return null;
-    return d.map((v) => String(Math.round(v)).replace('-', '−'));
-}
 
 // cada hora e' rotulada pelo inicio: "07h" (das 7h as 8h) vira "7h"
 function rotuloHora(hora) {
@@ -4913,10 +4903,6 @@ function graficoProd(dados, turno, s) {
         if (parada) dia += ` · parado ${parada.min} min (${parada.motivo})`;
         const umidade = umidadeDaHora(hora, s);
         if (umidade) dia += ` · umidade ${umidade}`;
-        const depressao = depressaoDaHora(hora, s);
-        if (depressao) {
-            dia += ` · depressão ${depressao.map((v, i) => `${PROD_PONTOS_PRESSAO[i]} ${v}`).join(' · ')} mmH₂O`;
-        }
         // o tooltip pinta as duas linhas na cor do secador (--sec do cartao)
         const attrs = [
             `data-dia="${dia}"`,
@@ -4953,7 +4939,7 @@ function graficoProd(dados, turno, s) {
     const rotulo = `<span class="prod-meta-tag prod-meta-tag--${s.chave}" style="bottom: ${pct(nominal).toFixed(1)}%">`
         + `nominal<b>${nominal} t/h</b></span>`;
 
-    // embaixo de cada hora so a tabela (hora, umidade, P1..P5), sempre nas
+    // embaixo de cada hora so a hora e a umidade, sempre nas
     // mesmas linhas; parada com motivo, hora parcial e projecao vao para a
     // linha de ocorrencias do secador (eventosProd)
     const eixoX = horas.map((hora) => {
@@ -4962,13 +4948,8 @@ function graficoProd(dados, turno, s) {
         if (hora.futuro) cls.push('is-futuro');
         const umidade = umidadeDaHora(hora, s);
         const umi = umidade ? `<small class="prod-umi" title="Umidade média de entrada na hora">${umidade}</small>` : '';
-        const depressao = depressaoDaHora(hora, s);
-        const depr = depressao
-            ? depressao.map((v, i) => `<small class="prod-umi prod-depr" title="Depressão no ponto ${PROD_PONTOS_PRESSAO[i]} (mmH₂O)">${v}</small>`).join('')
-            : '';
-        return `<span class="${cls.join(' ')}"><span class="prod-hora">${rotuloHora(hora)}</span>${umi}${depr}</span>`;
+        return `<span class="${cls.join(' ')}"><span class="prod-hora">${rotuloHora(hora)}</span>${umi}</span>`;
     }).join('');
-    const rotulosDepr = PROD_PONTOS_PRESSAO.map((p) => `<small class="prod-umi-rotulo prod-depr-rotulo">${p}</small>`).join('');
 
     return `<div class="forecast-chart forecast-chart--horas forecast-chart--turno" style="--chart-cols: ${n}" data-chart-max="${max}">`
         + `<div class="forecast-yaxis"><span>${max}</span><span>${max * 0.75}</span><span>${max / 2}</span><span>${max / 4}</span><span>0</span></div>`
@@ -4979,7 +4960,7 @@ function graficoProd(dados, turno, s) {
         + rotulo
         + '</div>'
         + `<div class="forecast-xaxis">${eixoX}</div>`
-        + `<span class="forecast-unit">t/h<small class="prod-umi-rotulo">umid. média</small>${rotulosDepr}</span>`
+        + '<span class="forecast-unit">t/h<small class="prod-umi-rotulo">umid. média</small></span>'
         + '</div>';
 }
 

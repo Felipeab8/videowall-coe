@@ -8469,9 +8469,9 @@ body.theme-light .forecast-chart--turno .forecast-bar--hora.is-stack {
 
 .prod-grafico-corpo {
     flex: 1 1 auto;
-    /* nao encolhe abaixo do grafico (barras + eixo com os 5 pontos de
-       depressao): faltando altura, o cartao do secador transborda e o ajuste
-       a tela percebe, em vez de o grafico passar por cima do fim do turno */
+    /* nao encolhe abaixo do grafico (barras + eixo): faltando altura, o
+       cartao do secador transborda e o ajuste a tela percebe, em vez de o
+       grafico passar por cima das ocorrencias e do fim do turno */
     min-height: min-content;
     display: flex;
     flex-direction: column;
@@ -8483,26 +8483,16 @@ body.theme-light .forecast-chart--turno .forecast-bar--hora.is-stack {
 .prod-grafico-corpo > .forecast-chart {
     flex: 1 1 auto;
     min-height: 6.5rem;
-    /* as barras nunca somem: com o eixo alto (umidade + 5 pontos de
-       depressao), faltando altura o cartao transborda e o ajuste a tela
-       encolhe tudo, em vez de espremer a area das barras a zero */
+    /* as barras nunca somem: faltando altura, o cartao transborda e o
+       ajuste a tela encolhe tudo, em vez de espremer a area das barras */
     grid-template-rows: minmax(5rem, 1fr) auto;
 }
 
 
 
-/* o eixo e' so a tabela da hora (hora + umidade + 5 pontos de depressao),
-   com as mesmas linhas nos dois secadores: as barras ficam da mesma altura
-   sem reservar espaco para nota (ocorrencias vao em .prod-eventos) */
-
-
-
-/* depressao P1..P5: linhas mais juntas que a umidade, que sao cinco; o
-   rotulo do canto usa a mesma altura para ficar na linha do valor */
-.forecast-chart--turno .forecast-day small.prod-depr,
-.prod-grafico-corpo .forecast-unit .prod-depr-rotulo {
-    line-height: 1.2;
-}
+/* o eixo e' so a hora e a umidade, com as mesmas linhas nos dois
+   secadores: as barras ficam da mesma altura sem reservar espaco para nota
+   (ocorrencias vao em .prod-eventos) */
 
 
 
