@@ -6154,92 +6154,128 @@ function umidadeEquilibrio(cultura, temp, ur) {
 
 const umPonto = (v) => v.toFixed(1).replace('.', ',');
 
-// ---- Ar para a aeracao secar: temperatura minima, ideal e maxima ----
-// Na tabela a umidade de equilibrio depende muito mais da UR que da
-// temperatura; so que o ar que esquenta, com o mesmo vapor, baixa a UR.
-// Entao, da leitura da estacao (temperatura e UR de agora) sai a umidade
-// absoluta do ar; cada temperatura tem a sua UR (Magnus) e dai a umidade de
-// equilibrio da cultura. Contra a umidade interna do grao (data-umidade):
-//   MIN    a partir daqui o ar seca (equilibrio abaixo do grao alem do neutro)
-//   IDEAL  seca de 0,5 a 1,5 ponto
-//   MAX    acima, seca mais de 2 pontos: a camada de baixo passa do ponto
-// A faixa muda com o ar: e' a de agora, para a leitura da estacao.
-const AR_SECAGEM = { ideal: [0.5, 1.5], max: 2.0, passo: 0.1, teto: 60 };
+// ---- Aeracao de conservacao: quando ligar, com o ar de agora ----
+// Diretrizes do Manejo da Aeracao (ABRAPOS) e do Guia de Secagem e
+// Armazenagem do RS:
+// - a massa de graos o mais fria possivel: ideal abaixo de 16 °C, bom
+//   abaixo de 20 °C; em clima tropical, 17 a 22 °C para ciclos longos;
+// - o ar ambiente pelo menos 3 °C (ideal 5 °C) abaixo da temperatura do
+//   grao, para resfriar;
+// - a UR do ar em equilibrio com a umidade do grao: o ar insuflado (o
+//   ambiente aquecido pelo ventilador) nao pode umedecer o grao.
+// Da leitura da estacao sai a umidade absoluta do ar de agora; cada
+// temperatura ambiente tem a sua UR (Magnus), aquecida pelo ventilador vira
+// a UR do ar insuflado, e a tabela higroscopica da a umidade de equilibrio.
+//   MAX    temperatura do grao - 3 °C: acima, o ar nao resfria
+//   IDEAL  ate a temperatura do grao - 5 °C
+//   MIN    abaixo, o ar insuflado umedece o grao (equilibrio acima da
+//          umidade do grao alem do neutro)
+// Minima acima da maxima: com o ar de agora nao da para resfriar sem molhar.
+const AERACAO = {
+    resfriaMin: 3,     // °C abaixo do grao para resfriar
+    resfriaIdeal: 5,   // °C abaixo do grao para resfriar bem
+    aquecimento: 6,    // °C que o ventilador soma ao ar ambiente
+    massa: { ideal: 16, bom: 20, tropical: 22 },
+    passo: 0.1,
+    piso: -10,
+};
 
 function pressaoSaturacao(t) {
     return 6.112 * Math.exp((17.62 * t) / (243.12 + t));
 }
 
-function faixaArSecagem(cultura, grao, tAgora, urAgora) {
+function janelaAeracao(cultura, grao, tGrao, tAgora, urAgora) {
     const vapor = (urAgora / 100) * pressaoSaturacao(tAgora);
-    // pontos de umidade que o ar a t °C tira do grao (negativo = umedece)
-    const seca = (t) => {
-        const ur = Math.min(100, (vapor / pressaoSaturacao(t)) * 100);
-        const eq = umidadeEquilibrio(cultura, t, ur);
-        return eq === null ? null : grao - eq;
+    // pontos de umidade que o ar insuflado poe no grao (positivo = umedece)
+    const umedece = (tAmb) => {
+        const tIns = tAmb + AERACAO.aquecimento;
+        const ur = Math.min(100, (vapor / pressaoSaturacao(tIns)) * 100);
+        const eq = umidadeEquilibrio(cultura, tIns, ur);
+        return eq === null ? null : eq - grao;
     };
-    // primeira temperatura em que o ar tira pelo menos "pontos" do grao
-    const apartir = (pontos) => {
-        for (let t = 0; t <= AR_SECAGEM.teto; t += AR_SECAGEM.passo) {
-            const s = seca(t);
-            if (s !== null && s >= pontos) return t;
+    const max = tGrao - AERACAO.resfriaMin;
+    let min = null;
+    for (let t = AERACAO.piso; t <= max + 10; t += AERACAO.passo) {
+        const u = umedece(t);
+        if (u !== null && u <= EQUILIBRIO_NEUTRO) {
+            min = t;
+            break;
         }
-        return null;
-    };
-    return {
-        min: apartir(EQUILIBRIO_NEUTRO),
-        ideal: AR_SECAGEM.ideal.map(apartir),
-        max: apartir(AR_SECAGEM.max),
-    };
+    }
+    return { min, idealAte: tGrao - AERACAO.resfriaIdeal, max, aberta: min !== null && min <= max };
 }
 
-// situacao do ar de agora na faixa: icone + texto, nunca so a cor
-function estadoArSecagem(t, faixa) {
-    const [lo, hi] = faixa.ideal;
-    if (faixa.min === null || t < faixa.min) return { estado: 'nao', icone: '▼', texto: 'não seca' };
-    if (lo !== null && t < lo) return { estado: 'pouco', icone: '●', texto: 'seca pouco' };
-    if (hi === null || t <= hi) return { estado: 'ideal', icone: '●', texto: 'no ideal' };
-    if (faixa.max === null || t <= faixa.max) return { estado: 'acima', icone: '▲', texto: 'acima do ideal' };
-    return { estado: 'demais', icone: '▲', texto: 'seca demais' };
+// situacao do ar de agora na janela: icone + texto, nunca so a cor
+function estadoAeracao(t, j) {
+    if (t > j.max) return { estado: 'quente', icone: '▲', texto: 'não resfria' };
+    if (j.min === null || t < j.min) return { estado: 'umido', icone: '▼', texto: 'umedece o grão' };
+    if (t <= j.idealAte) return { estado: 'ideal', icone: '●', texto: 'pode aerar' };
+    return { estado: 'pouco', icone: '●', texto: 'resfria pouco' };
 }
 
-function escreverArSecagem(card) {
-    const alvo = card.querySelector('[data-ar-secar]');
+// temperatura da massa contra as faixas das diretrizes
+function estadoMassa(t) {
+    const m = AERACAO.massa;
+    if (t <= m.ideal) return { estado: 'ideal', icone: '●', texto: 'ideal' };
+    if (t <= m.bom) return { estado: 'bom', icone: '●', texto: 'bom' };
+    if (t <= m.tropical) return { estado: 'tropical', icone: '●', texto: 'aceitável' };
+    return { estado: 'quente', icone: '▲', texto: 'quente' };
+}
+
+function escreverAeracao(card) {
+    const alvo = card.querySelector('[data-ar-janela]');
     const tela = card.closest('.screen');
     const estacao = tela && tela.querySelector('[data-estacao-temp]');
     if (!alvo || !estacao) return;
     const tAgora = paraNumero(estacao.dataset.estacaoTemp);
     const urAgora = paraNumero(estacao.dataset.estacaoUr);
     const grao = paraNumero(card.dataset.umidade);
-    const chave = [card.dataset.cultura, grao, tAgora, urAgora].join('|');
+    const temps = numeros(card.dataset.temps);
+    const tGrao = temps.length ? temps[temps.length - 1] : NaN; // a ultima leitura e' a atual
+    const chave = [card.dataset.cultura, grao, tGrao, tAgora, urAgora].join('|');
     if (alvo.dataset.chave === chave) return; // so refaz quando o ar ou o grao mudam
     alvo.dataset.chave = chave;
-    if (![tAgora, urAgora, grao].every(Number.isFinite)) {
+    if (![tAgora, urAgora, grao, tGrao].every(Number.isFinite)) {
         alvo.innerHTML = '';
         return;
     }
-    const f = faixaArSecagem(card.dataset.cultura, grao, tAgora, urAgora);
-    const grau = (v) => (v === null ? '—' : String(Math.round(v)));
-    const [lo, hi] = f.ideal;
-    const situacao = estadoArSecagem(tAgora, f);
+    const j = janelaAeracao(card.dataset.cultura, grao, tGrao, tAgora, urAgora);
+    const grau = (v) => String(Math.round(v));
+    const ar = estadoAeracao(tAgora, j);
+    const massa = estadoMassa(tGrao);
+    let ref;
+    if (!j.aberta) {
+        ref = `janela fechada · máx ${grau(j.max)} °C`;
+    } else if (j.min <= j.idealAte) {
+        ref = `mín ${grau(j.min)} · ideal ${grau(j.min)}–${grau(j.idealAte)} · máx ${grau(j.max)} °C`;
+    } else {
+        ref = `mín ${grau(j.min)} · máx ${grau(j.max)} °C`;
+    }
 
-    // regua: um pouco abaixo da minima ate um pouco acima da maxima
-    const ini = (f.min === null ? tAgora : Math.min(f.min, tAgora)) - 4;
-    const fim = Math.max(f.max === null ? AR_SECAGEM.teto : f.max, tAgora) + 3;
+    // regua do ar ambiente: umedece | ideal | resfria pouco | nao resfria,
+    // com o ar de agora (traco) e o grao (anel)
+    const ini = Math.min(j.min === null ? tAgora : j.min, tAgora, tGrao - 10) - 2;
+    const fim = Math.max(tAgora, tGrao) + 2;
     const pos = (v) => `${(((Math.min(Math.max(v, ini), fim) - ini) / (fim - ini)) * 100).toFixed(1)}%`;
-    const trecho = (a, b, cls) => (a === null || b === null || b <= a ? ''
+    const trecho = (a, b, cls) => (b <= a ? ''
         : `<i class="sa-ar-faixa sa-ar-faixa--${cls}" style="left: ${pos(a)}; width: calc(${pos(b)} - ${pos(a)})"></i>`);
-    const regua = trecho(f.min, lo, 'pouco') + trecho(lo, hi, 'ideal') + trecho(hi, f.max, 'acima')
-        + trecho(f.max, fim, 'demais')
+    const corteUmido = j.min === null ? fim : Math.min(j.min, j.max);
+    const regua = trecho(ini, corteUmido, 'umido')
+        + (j.aberta ? trecho(j.min, Math.min(j.idealAte, j.max), 'ideal') + trecho(Math.max(j.min, j.idealAte), j.max, 'pouco') : '')
+        + trecho(j.max, fim, 'quente')
+        + `<i class="sa-ar-grao" style="left: ${pos(tGrao)}" title="grão ${umPonto(tGrao)} °C"></i>`
         + `<i class="sa-ar-agora" style="left: ${pos(tAgora)}"></i>`;
 
-    alvo.title = `Temperatura do ar para a aeração secar a umidade interna do grão (${umPonto(grao)}%), `
-        + `com a umidade do ar de agora (estação: ${umPonto(tAgora)} °C, UR ${Math.round(urAgora)}%). `
-        + 'Mín: a partir dela o ar seca; ideal: seca de 0,5 a 1,5 ponto; máx: acima, seca demais a camada de baixo.';
-    alvo.innerHTML = '<div class="sa-ar-head"><span class="sa-ar-tit">Ar p/ secar</span>'
-        + `<span class="sa-ar-ref">mín ${grau(f.min)} · ideal ${grau(lo)}–${grau(hi)} · máx ${grau(f.max)} °C</span></div>`
+    alvo.title = `Quando aerar este silo com o ar de agora (estação: ${umPonto(tAgora)} °C, UR ${Math.round(urAgora)}%). `
+        + `Grão a ${umPonto(tGrao)} °C com ${umPonto(grao)}% de umidade. Máx: o ar ${AERACAO.resfriaMin} °C abaixo do grão `
+        + `(ideal ${AERACAO.resfriaIdeal} °C abaixo); mín: abaixo dela o ar, aquecido ${AERACAO.aquecimento} °C pelo ventilador, `
+        + `umedece o grão. Massa: ideal até ${AERACAO.massa.ideal} °C, bom até ${AERACAO.massa.bom} °C, aceitável até ${AERACAO.massa.tropical} °C. `
+        + 'Diretrizes do Manejo da Aeração (ABRAPOS) e do Guia de Secagem e Armazenagem do RS.';
+    alvo.innerHTML = '<div class="sa-ar-head"><span class="sa-ar-tit">Quando aerar</span>'
+        + `<span class="sa-ar-ref">${ref}</span></div>`
         + `<div class="sa-ar-regua" aria-hidden="true">${regua}</div>`
-        + `<div class="sa-ar-status" data-estado="${situacao.estado}"><b>${situacao.icone}</b> ar agora ${umPonto(tAgora)} °C · ${situacao.texto}</div>`;
+        + `<div class="sa-ar-status" data-estado="${ar.estado}"><b>${ar.icone}</b> ar ${umPonto(tAgora)} °C · ${ar.texto}</div>`
+        + `<div class="sa-ar-status" data-estado="${massa.estado}"><b>${massa.icone}</b> massa ${umPonto(tGrao)} °C · ${massa.texto}</div>`;
 }
 
 function escreverClimaAeracao(card, ligado) {
@@ -6279,7 +6315,7 @@ function atualizarSilosAeracao() {
 
     document.querySelectorAll('[data-silo]').forEach((card) => {
         prepararSilo(card);
-        escreverArSecagem(card);
+        escreverAeracao(card);
 
         const ligado = card.dataset.aer === 'on';
         const pausado = ligado && card.dataset.pausaPonta === '1' && dentroPonta;

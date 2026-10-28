@@ -11452,10 +11452,11 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 
 
 
-/* silos: ar para a aeracao secar a umidade interna do grao (o script
-   calcula da leitura da estacao e da tabela higroscopica). Texto com a
-   faixa, regua com os trechos (seca pouco, ideal, acima, seca demais) e o
-   marcador do ar de agora, e a situacao com icone e cor */
+/* silos: quando aerar (aeracao de conservacao). O script calcula da leitura
+   da estacao, da temperatura e da umidade do grao e da tabela higroscopica.
+   Texto com a janela de temperatura do ar, regua com os trechos (umedece,
+   ideal, resfria pouco, nao resfria), o ar de agora (traco) e o grao (anel),
+   e as situacoes do ar e da massa com icone e cor */
 .sa-ar {
     display: flex;
     flex-direction: column;
@@ -11502,21 +11503,34 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     bottom: 0;
 }
 
-.sa-ar-faixa--pouco {
-    background: color-mix(in srgb, var(--ok) 35%, transparent);
+.sa-ar-faixa--umido {
+    background: color-mix(in srgb, var(--danger) 55%, transparent);
+    border-radius: 999px 0 0 999px;
 }
 
 .sa-ar-faixa--ideal {
     background: var(--ok);
 }
 
-.sa-ar-faixa--acima {
-    background: var(--warn);
+.sa-ar-faixa--pouco {
+    background: color-mix(in srgb, var(--ok) 40%, transparent);
 }
 
-.sa-ar-faixa--demais {
-    background: var(--danger);
+.sa-ar-faixa--quente {
+    background: color-mix(in srgb, var(--warn) 70%, transparent);
     border-radius: 0 999px 999px 0;
+}
+
+/* grao: anel na cor do texto, para comparar com o ar de agora */
+.sa-ar-grao {
+    position: absolute;
+    top: 50%;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    border: 2px solid var(--text);
+    background: var(--bg-bottom);
+    transform: translate(-50%, -50%);
 }
 
 /* ar de agora: traco alto na cor do texto, com anel para soltar da regua */
@@ -11542,16 +11556,16 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     color: var(--muted);
 }
 
-.sa-ar-status[data-estado="nao"] b,
-.sa-ar-status[data-estado="acima"] b {
+.sa-ar-status[data-estado="quente"] b {
     color: var(--warn);
 }
 
-.sa-ar-status[data-estado="ideal"] b {
+.sa-ar-status[data-estado="ideal"] b,
+.sa-ar-status[data-estado="bom"] b {
     color: var(--ok);
 }
 
-.sa-ar-status[data-estado="demais"] b {
+.sa-ar-status[data-estado="umido"] b {
     color: var(--danger);
 }
 
