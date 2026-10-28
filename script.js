@@ -2775,6 +2775,7 @@ function remontar() {
         montarSecagem(palco);
         montarProdutividade(palco);
         montarPressao(palco);
+        rotularChuva(palco);
     });
     applyEditMode(isEditing());
     scheduleFit();
@@ -6385,6 +6386,38 @@ function escolherVistaChuva(alvo) {
         btn.setAttribute('aria-pressed', String(ativo));
     });
 }
+
+// Previsao do tempo: o mm de cada barra do grafico de chuva, escrito em cima
+// dela. Sai do title da barra ("8 mm caídos", "18 mm previstos", "48 mm caídos
+// + 30 mm previstos"); previsto leva "~", como as projecoes do resto do site.
+// O editor salva o HTML como esta, entao o rotulo e' atualizado, nunca somado.
+const MM_CAIDO = /([\d.,]+) mm caídos/;
+const MM_PREVISTO = /([\d.,]+) mm previstos/;
+
+function rotularChuva(raiz) {
+    (raiz || document).querySelectorAll('.pv-chuva-col').forEach((col) => {
+        const barra = col.querySelector('.pv-chuva-barra');
+        if (!barra) return;
+        const titulo = col.getAttribute('title') || '';
+        const caido = MM_CAIDO.test(titulo) ? paraNumero(titulo.match(MM_CAIDO)[1]) : 0;
+        const previsto = MM_PREVISTO.test(titulo) ? paraNumero(titulo.match(MM_PREVISTO)[1]) : 0;
+        let rotulo = barra.querySelector('.pv-chuva-mm');
+        if (!caido && !previsto) {
+            if (rotulo) rotulo.remove();
+            return;
+        }
+        if (!rotulo) {
+            rotulo = document.createElement('b');
+            rotulo.className = 'pv-chuva-mm';
+            barra.appendChild(rotulo);
+        }
+        const fmt = (v) => v.toLocaleString('pt-BR');
+        rotulo.textContent = caido && previsto ? `${fmt(caido)}+${fmt(previsto)}` : caido ? fmt(caido) : `~${fmt(previsto)}`;
+        rotulo.classList.toggle('is-previsto', !caido);
+    });
+}
+
+rotularChuva();
 
 // o editor salva o HTML como esta: a tela volta para o padrao (24 h)
 function limparFiltrosSilo() {

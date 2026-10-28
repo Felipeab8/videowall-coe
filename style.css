@@ -5907,6 +5907,8 @@ body.theme-light .kpi-flag--alerta {
     min-height: 4.5rem;
     max-height: 8rem;
     gap: 3px;
+    /* folga para o mm da barra mais alta */
+    padding-top: 0.9rem;
 }
 
 
@@ -5961,6 +5963,30 @@ body.theme-light .kpi-flag--alerta {
     bottom: calc(var(--c) * 100%);
     height: calc(var(--p) * 100%);
     background: repeating-linear-gradient(135deg, rgba(59, 130, 246, 0.55) 0 3px, rgba(59, 130, 246, 0.2) 3px 6px);
+}
+
+
+
+/* mm da barra, em cima dela (o script escreve a partir do title); previsto
+   com "~" e mais apagado, como as projecoes */
+.pv-chuva-mm {
+    position: absolute;
+    font-style: normal;
+    left: 50%;
+    bottom: calc((var(--c) + var(--p)) * 100%);
+    margin-bottom: 2px;
+    transform: translateX(-50%);
+    font-size: max(0.56rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    line-height: 1;
+    white-space: nowrap;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    pointer-events: none;
+}
+
+.pv-chuva-mm.is-previsto {
+    color: var(--muted);
 }
 
 
@@ -18723,14 +18749,30 @@ body.theme-light .class-val--fora {
 
 
 /* ---- Detalhe por carga ----
-   so qualidade e dosagem: horario, cultura, origem, destino, volume, os tres
-   itens de qualidade (umidade/PH, impureza/FN, avariados/germinado), dosagem
-   e status. Tag, motorista, placa, frete e tempo ficam no fluxo da expedicao. */
+   so qualidade e dosagem: horario, cultura, origem, tag do caminhao (o destino
+   vai no tooltip dela), volume, os itens de qualidade em colunas proprias
+   (umidade, PH, impureza, FN, avariados/germinado), dosagem e status. Placa,
+   frete e tempo ficam no fluxo da expedicao. */
 .exp-table td:nth-child(1),
 .exp-table td:nth-child(2),
-.exp-table td:nth-child(4),
 .exp-table td:nth-child(5) {
     white-space: nowrap;
+}
+
+
+
+/* tag RFID: quebra em duas linhas, como no fluxo de caminhoes (o id ganha
+   do nowrap geral das celulas da tela) */
+#screen-7 .exp-table td.exp-tag {
+    white-space: normal;
+    padding-right: 0.75rem;
+}
+
+.exp-table .exp-tag .fluxo-tag {
+    max-width: 8.5rem;
+    font-size: max(0.6rem, var(--fs-texto, 0px));
+    letter-spacing: 0.02em;
+    word-break: break-all;
 }
 
 
@@ -18775,6 +18817,14 @@ body.theme-light .class-val--fora {
     font-weight: 700;
     letter-spacing: 0.04em;
     color: var(--muted);
+}
+
+
+
+/* item que a cultura nao tem (PH e FN fora do trigo, umidade e impureza no
+   trigo): traco apagado */
+.exp-q--vazio {
+    color: var(--faint);
 }
 
 
@@ -21489,6 +21539,25 @@ body.theme-light .du-proj-sel option {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+
+
+.exf-frete {
+    display: inline-block;
+    padding: 0.08rem 0.45rem;
+    border-radius: 6px;
+    border: 1px solid var(--card-border);
+    font-size: max(0.66rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--text);
+}
+
+/* CIF (frete da cooperativa) preenchido; FOB (frete do comprador) so contorno */
+.exf-frete--cif {
+    background: var(--accent-soft);
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
 }
 
 
