@@ -6248,14 +6248,12 @@ function escreverAeracao(card) {
     const grau = (v) => String(Math.round(v));
     const ar = estadoAeracao(tAgora, j);
     const massa = estadoMassa(tGrao);
-    let ref;
-    if (!j.aberta) {
-        ref = `janela fechada · máx ${grau(j.max)} °C`;
-    } else if (j.min <= j.idealAte) {
-        ref = `mín ${grau(j.min)} · ideal ${grau(j.min)}–${grau(j.idealAte)} · máx ${grau(j.max)} °C`;
-    } else {
-        ref = `mín ${grau(j.min)} · máx ${grau(j.max)} °C`;
-    }
+    // faixa do ar ambiente em que da para aerar; com a janela fechada o ar de
+    // agora umedece em qualquer temperatura que resfrie: fica o teto, com ar
+    // mais seco que o de agora
+    const ref = j.aberta
+        ? `favorável: ar de ${grau(j.min)} a ${grau(j.max)} °C`
+        : `favorável: ar até ${grau(j.max)} °C, mais seco`;
 
     // regua do ar ambiente: umedece | ideal | resfria pouco | nao resfria,
     // com o ar de agora (traco) e o grao (anel)
@@ -6279,8 +6277,9 @@ function escreverAeracao(card) {
     alvo.innerHTML = '<div class="sa-ar-head"><span class="sa-ar-tit">Quando aerar</span>'
         + `<span class="sa-ar-ref">${ref}</span></div>`
         + `<div class="sa-ar-regua" aria-hidden="true">${regua}</div>`
-        + `<div class="sa-ar-status" data-estado="${ar.estado}"><b>${ar.icone}</b> ar ${umPonto(tAgora)} °C · ${ar.texto}</div>`
-        + `<div class="sa-ar-status" data-estado="${massa.estado}"><b>${massa.icone}</b> massa ${umPonto(tGrao)} °C · ${massa.texto}</div>`;
+        // na tela so o icone e a temperatura; a situacao vai no tooltip
+        + `<div class="sa-ar-status" data-estado="${ar.estado}" title="${ar.texto}"><b>${ar.icone}</b> ar ${umPonto(tAgora)} °C</div>`
+        + `<div class="sa-ar-status" data-estado="${massa.estado}" title="${massa.texto}"><b>${massa.icone}</b> massa ${umPonto(tGrao)} °C</div>`;
 }
 
 function escreverClimaAeracao(card, ligado) {
@@ -6549,7 +6548,7 @@ function montarArmazem(card) {
         todas.push(...doSetor);
         html += `<div class="arm-setor" style="--cols: ${cols}; flex-grow: ${cols}" data-ligados="${on}">`
             + '<div class="arm-setor-head">'
-            + `<span class="arm-setor-nome">CANALETA ${s + 1}</span>`
+            + `<span class="arm-setor-nome"><span class="arm-setor-rot">CANALETA </span>${s + 1}</span>`
             + `<span class="arm-setor-motores" title="Motores ligados na canaleta (lados A e B)">${on}/${qtd * 2} motores</span>`
             + `<b class="arm-setor-media" data-faixa="${m === null ? 'fora' : faixaArmazem(m)}" title="Média dos cabos com produto da canaleta">${m === null ? '--' : `${formatarGrau(m)}°`}</b>`
             + `<span class="arm-setor-max" title="Cabo mais quente da canaleta">máx ${max === null ? '--' : `${formatarGrau(max)}°`}</span>`
