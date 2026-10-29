@@ -11523,27 +11523,32 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     background: var(--row-line);
 }
 
+/* cores cheias (sem transparencia, que deixava vermelho e laranja barrentos
+   no fundo escuro) e 2px de folga entre os trechos */
 .sa-ar-faixa {
     position: absolute;
     top: 0;
     bottom: 0;
+    box-sizing: border-box;
+    padding: 0 1px;
+    background-clip: content-box;
 }
 
 .sa-ar-faixa--umido {
-    background: color-mix(in srgb, var(--danger) 55%, transparent);
+    background-color: var(--danger);
     border-radius: 999px 0 0 999px;
 }
 
 .sa-ar-faixa--ideal {
-    background: var(--ok);
+    background-color: var(--ok);
 }
 
 .sa-ar-faixa--pouco {
-    background: color-mix(in srgb, var(--ok) 40%, transparent);
+    background-color: color-mix(in srgb, var(--ok) 50%, var(--muted));
 }
 
 .sa-ar-faixa--quente {
-    background: color-mix(in srgb, var(--warn) 70%, transparent);
+    background-color: var(--warn);
     border-radius: 0 999px 999px 0;
 }
 
@@ -15858,9 +15863,9 @@ body.theme-light .kpi-flag--info {
 
 
 
-/* cavaco: pontos de umidade que cada secador tirou, com o rotulo numa linha
-   so em cima e a faixa de umidade (entrada -> saida) discreta ao lado */
-.kpi-sub--pontos .kpi-sub-rotulo {
+/* cavaco: consumo por volume secado (kg/m³) de cada secador, com o rotulo
+   numa linha so em cima e os m³ secados discretos ao lado */
+.kpi-sub--consumo .kpi-sub-rotulo {
     flex: 0 0 100%;
     font-size: max(0.58rem, var(--fs-texto, 0px));
     font-weight: 700;
@@ -15871,14 +15876,14 @@ body.theme-light .kpi-flag--info {
 
 
 
-.kpi-sub--pontos .kpi-sub-item:nth-child(2) {
+.kpi-sub--consumo .kpi-sub-item:nth-child(2) {
     padding-left: 0;
     border-left: none;
 }
 
 
 
-.kpi-sub--pontos .kpi-sub-item small {
+.kpi-sub--consumo .kpi-sub-item small {
     font-size: max(0.66rem, var(--fs-texto, 0px));
     font-weight: 600;
     color: var(--muted);
