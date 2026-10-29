@@ -22047,7 +22047,7 @@ body.theme-light .du-proj-sel option {
     html.tv {
         /* área útil = 92% da tela; teto maior que o do monitor para o 4K */
         --fit: clamp(0.68px, min(92vw / 1400, 92vh / 790), 3.2px);
-        --fs-texto: 0.95rem;   /* rótulos, unidades, tabelas, eixos: mínimo */
+        --fs-texto: 1.2rem;    /* rótulos, unidades, tabelas, eixos: mínimo */
         --fs-titulo: 2rem;     /* título da tela */
     }
 
@@ -22274,5 +22274,968 @@ body.theme-light .du-proj-sel option {
        letra maior, quebram */
     html.tv :is(.section-head, .serie-legenda, .gv-progress-legend, .sa-aer-clima-ur) {
         flex-wrap: wrap;
+    }
+
+    /* ---------- O QUE SAI NA TV ----------
+       Com o piso de 1,2rem (~24 px numa TV de 55" em 1080p, letra de ~1 cm,
+       legível a uns 5 m) nem tudo do monitor cabe. Sai o detalhe que é
+       repetido ou de consulta (referências, limites por escrito, colunas
+       secundárias, datas, eixos), fica o número que se olha de longe.
+       No monitor nada muda. */
+
+    /* cabeçalho da tela numa linha só: título e horário lado a lado; o
+       número da tela (01, 02...) é referência do monitor e sai */
+    html.tv .screen-badge {
+        display: none !important;
+    }
+
+    html.tv .screen-title-section {
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+        column-gap: 1.5rem;
+    }
+
+    html.tv .screen-header {
+        margin-bottom: 0.75rem;
+    }
+
+    /* filtro do cabeçalho (só a opção em uso aparece): numa linha, ao lado do título */
+    html.tv :is(.fluxo-filtro, #screen-1 .fluxo-filtro) {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+    }
+
+    /* rótulos em caixa alta: com a letra maior o espaçamento extra entre
+       letras só faz o título dos cartões quebrar em duas linhas */
+    html.tv :is(.kpi-label, .kpi-tag-rotulo, .kpi-sub-item b, .section-head-text h3, .mensal-head) {
+        letter-spacing: 0.02em;
+    }
+
+    /* Visão geral */
+    html.tv #screen-geral :is(
+        .gv-big-ref,
+        .gv-bar-sub,
+        .gv-bar-ref,
+        .gv-meter-lim,
+        .gv-col-sub,
+        .gv-caption,
+        .gv-day-date,
+        .gv-day-sub,
+        .gv-qual-item i,
+        .stack-axis,
+        .stack-seg--free .stack-value,
+        .gv-aer-legenda-temp,
+        .gv-aer-legenda-ur
+    ) {
+        display: none;
+    }
+
+    /* fila por cultura e cargas por cultura em barra: repetem a lista e a tabela logo abaixo */
+    html.tv #screen-geral .gv-block {
+        display: none;
+    }
+
+    /* tabelas por cultura: sai o volume, ficam a qualidade (classificação) e as cargas (expedição) */
+    html.tv #screen-geral .gv-heat:not(.gv-heat--exp) .gv-heat-row > :nth-child(2),
+    html.tv #screen-geral .gv-heat--exp .gv-heat-row > :nth-child(3) {
+        display: none;
+    }
+
+    html.tv #screen-geral .gv-heat:not(.gv-heat--exp) .gv-heat-row {
+        grid-template-columns: auto repeat(3, minmax(0, 1fr));
+    }
+
+    html.tv #screen-geral .gv-heat--exp .gv-heat-row {
+        grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    /* expedição: a dosagem e a tabela por cultura têm tela própria; aqui
+       ficam cargas, fila e reprovadas */
+    html.tv #screen-geral :is(.gv-qual, .gv-heat--exp) {
+        display: none;
+    }
+
+    /* classificação: as médias gerais saem, a tabela por cultura (com as
+       células em atenção) diz mais */
+    html.tv #screen-geral .geral-card[data-goto="1"] .gv-meters {
+        display: none;
+    }
+
+    /* secagem: total, temperaturas em alerta e a meta; cada secador fica
+       na tela da secagem */
+    html.tv #screen-geral .geral-card[data-goto="3"] .gv-list {
+        display: none;
+    }
+
+    /* aeração: o ar de agora já está no cartão da previsão */
+    html.tv #screen-geral .gv-aer-row--ar {
+        display: none;
+    }
+
+    /* números 01–08 dos cartões: referência do monitor, tiram espaço do título e do selo */
+    html.tv #screen-geral .geral-card-num {
+        display: none;
+    }
+
+    /* secagem: sem a lista dos secadores sobra altura; as duas temperaturas
+       descem para baixo do total, com o rótulo numa linha só */
+    html.tv #screen-geral .geral-card[data-goto="3"] .gv-hero {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    /* moegas: anel maior, com o rótulo dentro */
+    html.tv #screen-geral .gv-ring {
+        width: 7.5rem;
+        height: 7.5rem;
+    }
+
+    html.tv #screen-geral .gv-ring-value {
+        font-size: 2rem;
+    }
+
+    /* armazenagem: o estoque com a mesma letra do resto do cartão */
+    html.tv #screen-geral .gv-capacidade .stack-seg {
+        --fs-texto: 1.2rem;
+    }
+
+    html.tv #screen-geral .gv-capacidade .stack-track {
+        height: 2rem;
+    }
+
+    html.tv #screen-geral .gv-capacidade .stack-label {
+        width: auto;
+        min-width: 3.6rem;
+    }
+
+    /* previsão: três dias, para máxima e mínima caberem lado a lado */
+    html.tv #screen-geral .gv-days {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    html.tv #screen-geral .gv-day:nth-child(n+4) {
+        display: none;
+    }
+
+    html.tv #screen-geral .gv-capacidade .stack-value {
+        padding: 0 0.15rem;
+    }
+
+    /* Recepção e fluxo da expedição — ciclo por etapa: a linha GERAL
+       (média das culturas) e o total ao lado do nome saem; o comprimento da
+       barra contra a escala já dá o total. Sobra altura para a etapa e o
+       tempo em duas linhas, na letra do resto da tela. */
+    html.tv :is(#screen-0, #screen-exp-fluxo) :is(.etapa-row--geral, .etapa-cultura-total) {
+        display: none;
+    }
+
+    html.tv :is(#screen-0, #screen-exp-fluxo) .etapa-track {
+        height: 3.1rem;
+    }
+
+    html.tv :is(#screen-0, #screen-exp-fluxo) .etapa-chart {
+        padding-top: 0.75rem;
+    }
+
+    html.tv :is(#screen-0, #screen-exp-fluxo) .etapa-seg {
+        --fs-texto: 1.2rem;
+        flex-direction: column;
+        gap: 0;
+        line-height: 1.1;
+        padding: 0 0.15rem;
+    }
+
+    html.tv :is(#screen-0, #screen-exp-fluxo) .etapa-seg b {
+        letter-spacing: 0;
+    }
+
+    /* Recepção — cartões: a quebra por cultura sai (está no gráfico de
+       etapas e na tela do fluxo); o número grande ganha a altura */
+    html.tv #screen-0 .kpi-sub:has(.legend-dot) {
+        display: none;
+    }
+
+    /* "gasto no mês" é o único item da linha: sem o recuo de separador, cabe numa linha */
+    html.tv .kpi-sub-item:only-child {
+        padding: 0;
+        border-left: 0;
+    }
+
+    /* Recepção — volume mensal: o mês passado (fechado) sai; ficam o mês em
+       andamento e a projeção, com a barra e o número na mesma linha */
+    html.tv #screen-0 .mensal-grid {
+        grid-template-columns: auto repeat(2, minmax(0, 1fr));
+        row-gap: 0.4rem;
+    }
+
+    html.tv #screen-0 .mensal-grid > :nth-child(4n+2) {
+        display: none;
+    }
+
+    /* Fluxo de caminhões (recepção e expedição) — etapas: o número da
+       etapa sai (a ordem já é a da seta) e o selo de estado pode quebrar
+       linha, para as seis caberem lado a lado na letra da TV */
+    html.tv .fluxo-etapa-num {
+        display: none;
+    }
+
+    html.tv .fluxo-etapas {
+        grid-template-columns: repeat(var(--fluxo-n, 5), minmax(0, 1fr));
+        gap: 1.1rem;
+    }
+
+    html.tv .fluxo-etapas--seis {
+        --fluxo-n: 6;
+    }
+
+    html.tv .fluxo-etapa:not(:last-child)::after {
+        right: calc(-1.1rem + 0.3rem);
+        width: 0.6rem;
+        height: 0.6rem;
+    }
+
+    html.tv .fluxo-etapa {
+        padding: 0.75rem 0.8rem;
+    }
+
+    html.tv .fluxo-etapa-estado {
+        white-space: normal;
+        letter-spacing: 0.02em;
+    }
+
+    /* tabela: TAG (código do leitor) e vinculação da TAG são de conferência;
+       os selos de contagem repetem os cartões de etapa; nas horas, só a
+       hora (o dia é hoje) */
+    html.tv :is(#screen-fluxo, #screen-exp-fluxo) .fluxo-tabela-resumo,
+    html.tv .fluxo-dt-dia {
+        display: none;
+    }
+
+    html.tv #screen-fluxo .data-table--fluxo :is(col, th, td):is(:nth-child(1), :nth-child(7)) {
+        display: none;
+    }
+
+    /* expedição: ficam placa, cultura, contrato · destino, etapa atual,
+       entrada e o tempo na unidade; TAG, frete e a hora de cada etapa saem
+       (a etapa atual já diz onde o caminhão está) */
+    html.tv #screen-exp-fluxo .data-table--fluxo :is(col, th, td):is(:nth-child(1), :nth-child(5), :nth-child(n+8):nth-child(-n+11)) {
+        display: none;
+    }
+
+    /* o tempo médio de cada etapa está no gráfico logo abaixo */
+    html.tv #screen-exp-fluxo .fluxo-etapa-sub {
+        display: none;
+    }
+
+    html.tv .data-table--fluxo .fluxo-etapa-pill {
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+    }
+
+    html.tv .data-table--fluxo thead th {
+        overflow-wrap: normal;
+        word-break: normal;
+    }
+
+    /* Classificação — saem: limites escritos ao lado dos números (a cor
+       já marca o que passou), o queimado da soja, a contagem e as faixas
+       de cada tipo de trigo, a TAG das cargas, as notas sob os títulos,
+       a tabela de caçambas da conciliação (o saldo fica no 4º número),
+       e no histórico os valores de cada dia, o eixo dos dias e a barra
+       de 2025; ficam a linha, o valor de hoje e semana · mês · ano. */
+    html.tv #screen-1 :is(
+        .kpi-lim,
+        .kpi-queimado,
+        .trigo-tipo-lim,
+        .trigo-tipo-cargas,
+        .section-sub,
+        .conc-aberto,
+        .conc-scroll,
+        .hist-legend-linha,
+        .hist-legend-barra,
+        .hist-spark-dia,
+        .hist-eixo,
+        .hist-bars--antes
+    ),
+    html.tv #screen-1 .hist-tools .legend-item {
+        display: none;
+    }
+
+    html.tv #screen-1 .data-table :is(col, th, td):first-child {
+        display: none;
+    }
+
+    /* a lista de cargas rola sozinha na TV: pode ficar com menos linhas à mostra */
+    html.tv .screen > .class-detalhe {
+        min-height: 9rem;
+    }
+
+    /* a conciliação da pré-limpeza é fechamento de turno, de consulta no
+       monitor; na TV o espaço vai para a lista de cargas */
+    html.tv #screen-1 .conc-section {
+        display: none;
+    }
+
+    html.tv #screen-1 .trigo-tipo-nome {
+        letter-spacing: 0;
+    }
+
+    /* médias por cultura numa coluna só: em duas, a letra da TV não cabe no cartão */
+    html.tv #screen-1[data-class-cultura="todas"] .kpi-grid--class .kpi-value .class-media-lista[data-cultura="todas"] {
+        grid-template-columns: max-content;
+        font-size: 1.5rem;
+    }
+
+    html.tv #screen-1 .kpi-grid--class .kpi-label {
+        letter-spacing: 0.02em;
+    }
+
+    html.tv #screen-1 .data-table th {
+        letter-spacing: 0.02em;
+    }
+
+    /* histórico: sem a barra de 2025 a primeira coluna zera; semana · mês ·
+       ano ganham largura para os rótulos */
+    html.tv #screen-1 .hist-plot {
+        grid-template-columns: 0 minmax(0, 1fr) minmax(0, 1fr);
+        column-gap: 0 0.875rem;
+    }
+
+    html.tv #screen-1 .hist-plot > .hist-spark {
+        margin-left: -0.875rem;
+    }
+
+    /* lista de cargas: pH, falling number e germinado são só do trigo, e as
+       médias por tipo já estão no cartão do trigo; sem eles o cabeçalho cabe
+       numa linha e sobram linhas de carga à mostra */
+    html.tv #screen-1 .data-table :is(col, th, td):is(:nth-child(7), :nth-child(8), :nth-child(9)) {
+        display: none;
+    }
+
+    /* cartão do trigo mais largo, para os quatro tipos caberem com o nome */
+    html.tv #screen-1 .kpi-card.trigo-tipos {
+        grid-column: span 4;
+    }
+
+    html.tv #screen-1 .hist-bar {
+        flex: 1 1 0;
+    }
+
+    html.tv #screen-1 .hist-bar-lbl {
+        letter-spacing: 0;
+    }
+
+    /* Moegas — cada moega fica com nome, cultura, estado, total do dia, a
+       média de umidade · impureza · avariados e as vazões de entrada e
+       saída. Saem o tipo (graneleiro, basculante), a lista carga a carga
+       (placa por placa), a rota da saída e o histórico de culturas; nos
+       pulmões, as datas, o histórico de descargas e o resumo do rodapé. */
+    html.tv #screen-2 :is(
+        .moega-tipo,
+        .moega-cargas-tabela tbody,
+        .moega-cargas-mais,
+        .moega-fluxo-sub,
+        .moega-dados,
+        .pulmao-hist,
+        .pulmao-aer-dado small,
+        .pulmao-soma
+    ) {
+        display: none;
+    }
+
+    /* da tabela fica a média: sem placa e tonelagem, as três colunas cabem */
+    html.tv #screen-2 .moega-cargas-tabela :is(th, td):is(:nth-child(1), :nth-child(2)) {
+        display: none;
+    }
+
+    html.tv #screen-2 :is(.moega-item, .sa-card) {
+        --fs-texto: 1.2rem;
+    }
+
+    html.tv #screen-2 :is(.moega-dado-label, .moega-fluxo-label, .moega-status, .sa-name, .section-head h3) {
+        letter-spacing: 0.02em;
+    }
+
+    html.tv #screen-2 :is(.moega-dado-label, .moega-fluxo-label) {
+        white-space: normal;
+    }
+
+    html.tv #screen-2 .moega-fluxo-item {
+        height: auto;
+    }
+
+    html.tv #screen-2 .moega-item {
+        padding-inline: 0.6rem;
+    }
+
+    html.tv #screen-2 .sa-section--pulmao .section-head h3 {
+        margin-bottom: 0.4rem;
+    }
+
+    html.tv #screen-2 .sa-head {
+        flex-wrap: wrap;
+    }
+
+    /* "hoje · 9 cargas" em cima, a tonelagem embaixo, em destaque */
+    html.tv #screen-2 .moega-cargas-head {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    html.tv #screen-2 .moega-cargas-total b {
+        font-size: 1.6rem;
+    }
+
+    /* sobra altura no cartão: as médias e as vazões em letra de número */
+    html.tv #screen-2 .moega-cargas-tabela {
+        table-layout: fixed;
+    }
+
+    html.tv #screen-2 .moega-cargas-tabela tfoot td {
+        font-size: 1.25rem;
+    }
+
+    /* pulmões: fica o ligado/desligado e o acumulado da cultura; o "ligado
+       há" e as últimas 24 h saem, para o silo ter altura */
+    html.tv #screen-2 :is(.sa-aer-info, .pulmao-aer-dado:not(.pulmao-aer-dado--acum)) {
+        display: none;
+    }
+
+    html.tv #screen-2 .moega-fluxo-value {
+        font-size: 1.6rem;
+    }
+
+    /* Secagem — o gráfico já traz o nome e o valor de agora de cada curva,
+       então saem a legenda das curvas e a coluna fornalha/secador (repetia
+       os mesmos números). Saem também o tipo do secador, a faixa de ar da
+       cultura, a faixa da fornalha (máx./mín.), a "desejada", o "previsto
+       até 17h", o detalhe e as últimas limpezas, e o botão PRINT. */
+    html.tv [data-print],
+    html.tv #screen-3 :is(
+        .serie-legenda,
+        .secador-tipo,
+        .secador-cultura-lim,
+        .secador-col--calor,
+        .secador-agora-label small,
+        .sec-faixa--fornalha .sec-ref-tag,
+        .sec-ref-tag--desejada,
+        .secador-limpeza-trab,
+        .secador-limpeza-lista,
+        .secador-ponto-nota
+    ) {
+        display: none;
+    }
+
+    html.tv #screen-3 .secador-limpeza {
+        --fs-texto: 1.2rem;
+    }
+
+    html.tv #screen-3 .secador-ponto {
+        flex: 1 0 auto;
+        padding-block: 0.35rem;
+        gap: 0.15rem;
+    }
+
+    /* sem a coluna de calor: massa · gráfico · limpeza */
+    html.tv .screen--secagem .secador-body {
+        grid-template-columns: 13.5rem minmax(0, 1fr) 11rem;
+    }
+
+    /* Produtividade — fica o essencial do turno: secado, projeção, ritmo,
+       cavaco e o gráfico hora a hora com o "perdeu X t". Saem o painel de
+       paradas e disponibilidade (indicadores de manutenção, de consulta),
+       a legenda e o eixo do gráfico (cada barra já traz o número), a
+       umidade de cada hora, as ocorrências embaixo do gráfico, o tipo do
+       secador, a produtividade por cultura, o consumo por secador do
+       cavaco e as notas pequenas ao lado dos selos. */
+    html.tv #screen-4 :is(
+        .prod-col--paradas,
+        .prod-grafico-legenda,
+        .forecast-yaxis,
+        .prod-umi,
+        .prod-umi-rotulo,
+        .prod-eventos,
+        .secador-tipo,
+        .prod-cult-lista,
+        .kpi-sub--consumo,
+        .kpi-meta-ref
+    ) {
+        display: none;
+    }
+
+    /* sem o painel de paradas, o bloco dos secadores ocupa a largura toda
+       e o gráfico fica com a maior parte dela */
+    html.tv .split-grid--prod {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    html.tv #screen-4 .prod-secador {
+        grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    }
+
+    html.tv #screen-4 :is(.secador-nome, .secador-estado-pill) {
+        letter-spacing: 0.02em;
+    }
+
+    /* projeção numa linha só: rótulo, toneladas e diferença da meta (a
+       coluna ao lado era a da produtividade por cultura, que saiu) */
+    html.tv #screen-4 .prod-secador-periodo {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    html.tv #screen-4 .prod-secador-grade {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    html.tv #screen-4 .prod-linha-item {
+        flex-flow: row wrap;
+        align-items: baseline;
+        column-gap: 0.5em;
+    }
+
+    html.tv #screen-4 .prod-linha-item b {
+        letter-spacing: 0.02em;
+    }
+
+    /* "até agora": a conta por extenso sai; título, % do possível e o
+       quanto perdeu ficam numa linha */
+    html.tv #screen-4 .prod-fim-conta {
+        display: none;
+    }
+
+    html.tv #screen-4 .prod-fim {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        column-gap: 1.25rem;
+    }
+
+    html.tv #screen-4 .prod-fim-titulo {
+        flex: 1 1 auto;
+        letter-spacing: 0.02em;
+    }
+
+    /* Silos — cada silo fica com nome, cultura, umidade, ocupação, a
+       temperatura de agora com a linha do período, o "quando aerar" e o
+       ligado/desligado. Saem as horas do eixo e as temperaturas do começo
+       e da projeção, o "ligado há", a média do ar desde que ligou, as horas
+       de aeração (cultura, total, kWh) e a nota do tracejado; na tabela,
+       densidade e massa estimada (conferência de cadastro). */
+    html.tv #screen-5 :is(
+        .sa-spark-horas,
+        .sa-temp-ponto--ini,
+        .sa-temp-ponto--proj,
+        .sa-aer-info,
+        .sa-aer-clima,
+        .sa-aer-horas,
+        .section-head .stack-hint
+    ) {
+        display: none;
+    }
+
+    /* a tabela silo a silo (entradas, saídas e saldo do período) é de
+       conferência e repetia cultura e estoque dos cartões: sai, e os oito
+       silos ficam em duas fileiras de quatro, largos o bastante para a
+       letra da TV */
+    html.tv #screen-5 .sa-section--mov {
+        display: none;
+    }
+
+    html.tv #screen-5 .sa-grid--8 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    /* na linha da temperatura, só o valor de agora (o último ponto) */
+    html.tv #screen-5 .sa-temp-ponto--3:not(:last-child) {
+        display: none;
+    }
+
+    html.tv #screen-5 .sa-card {
+        --fs-texto: 1.2rem;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        align-content: start;
+    }
+
+    /* ocupação e temperatura lado a lado; o resto na largura toda */
+    html.tv #screen-5 .sa-card > :not(.sa-body, .sa-temp) {
+        grid-column: 1 / -1;
+    }
+
+    /* ar e massa do "quando aerar" na mesma linha */
+    html.tv #screen-5 .sa-ar {
+        flex-flow: row wrap;
+        column-gap: 1rem;
+    }
+
+    html.tv #screen-5 .sa-ar > :is(.sa-ar-head, .sa-ar-regua) {
+        flex: 1 1 100%;
+    }
+
+    html.tv #screen-5 :is(.sa-head, .sa-cultura) {
+        flex-wrap: wrap;
+    }
+
+    html.tv #screen-5 :is(.sa-name, .sa-ar-tit) {
+        letter-spacing: 0.02em;
+    }
+
+    /* Armazém — o mapa fica com a temperatura de cada cabo com produto e
+       a média de cada canaleta. Saem: o texto das células vazias (a
+       hachura já diz "sem produto"), motores ligados e máxima de cada
+       canaleta, o "ligado há", o ar no momento em que ligou e a contagem
+       de motores; das tendências fica o ritmo (°C/h, °C/dia) sem as
+       mini-linhas; da legenda, só as faixas de atenção e alerta. */
+    html.tv #screen-6 :is(
+        .arm-cel--vazio,
+        .arm-setor-motores,
+        .arm-setor-max,
+        .sa-aer-info,
+        .sa-aer-clima,
+        .arm-aer-motores,
+        .arm-tend-item .sa-spark-wrap,
+        .arm-tend-item .sa-spark-horas,
+        .arm-legenda-grupo:not(:nth-child(2), :nth-child(3))
+    ) {
+        font-size: 0;
+    }
+
+    html.tv #screen-6 :is(
+        .arm-setor-motores,
+        .arm-setor-max,
+        .sa-aer-info,
+        .sa-aer-clima,
+        .arm-aer-motores,
+        .arm-tend-item .sa-spark-wrap,
+        .arm-tend-item .sa-spark-horas,
+        .arm-legenda-grupo:not(:nth-child(2), :nth-child(3))
+    ) {
+        display: none;
+    }
+
+    html.tv #screen-6 .arm-cel--vazio small {
+        display: none;
+    }
+
+    html.tv #screen-6 .arm-card {
+        --fs-texto: 1.2rem;
+    }
+
+    html.tv #screen-6 :is(.arm-cel, .arm-motor) {
+        padding: 0;
+        line-height: 1;
+        letter-spacing: -0.02em;
+    }
+
+    /* são ~300 cabos: na letra da TV o número de cada um não cabe na
+       célula. O mapa vira mapa de calor (a cor de cada cabo continua) e o
+       número aparece só onde pede ação, nos cabos em atenção (28–32 °C) e
+       alerta (≥ 32 °C); a média de cada canaleta fica escrita em cima */
+    html.tv #screen-6 .arm-cel:not([data-faixa="atencao"], [data-faixa="alerta"]) {
+        font-size: 0;
+    }
+
+    html.tv #screen-6 :is(.arm-cel, .arm-motor) {
+        overflow: visible;
+    }
+
+    html.tv #screen-6 .arm-tend:has(> .arm-ar) {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    html.tv #screen-6 .arm-tend-item {
+        flex: 0 0 auto;
+    }
+
+    /* sem número nas células o mapa pode estreitar; a coluna do "quando
+       aerar" e das tendências ganha largura para cada item caber numa linha */
+    html.tv #screen-6 .arm-body {
+        grid-template-columns: minmax(0, 1fr) 20rem;
+    }
+
+    /* "lado A", "túnel" e "lado B" escritos na lateral: ficam só A e B */
+    html.tv #screen-6 :is(.arm-lado-cel, .arm-lado-tunel) {
+        font-size: 0;
+    }
+
+    html.tv #screen-6 .arm-setor-head {
+        grid-template-columns: auto auto;
+        justify-content: start;
+        column-gap: 0.5rem;
+    }
+
+    html.tv #screen-6 .sa-ar-ref {
+        white-space: normal;
+    }
+
+    /* "CANALETA 6" não cabe sobre as canaletas estreitas: vira "C6" */
+    html.tv #screen-6 .arm-setor-rot {
+        display: none;
+    }
+
+    html.tv #screen-6 .arm-setor-nome::before {
+        content: "C";
+    }
+
+    /* tendências numa linha cada; "quando aerar" com ar e massa lado a lado */
+    html.tv #screen-6 .arm-tend:has(> .arm-ar) {
+        grid-template-rows: auto;
+        align-content: start;
+    }
+    html.tv #screen-6 .sa-ar {
+        flex-flow: row wrap;
+        column-gap: 1rem;
+    }
+
+    html.tv #screen-6 .sa-ar > :is(.sa-ar-head, .sa-ar-regua) {
+        flex: 1 1 100%;
+    }
+
+    html.tv #screen-6 :is(.sa-name, .arm-setor-nome, .sa-ar-tit) {
+        letter-spacing: 0.02em;
+    }
+
+    /* Expedição — saem as notas sob os títulos (como ler o gráfico, os
+       limites por extenso, "as últimas 11 de 28"), o código e o destino do
+       contrato, a legenda de dias parados e o necessário por dia (fica o
+       prazo); na tabela de cargas, origem (silos), TAG, pH e FN (os dois
+       só do trigo). */
+    html.tv #screen-7 :is(
+        .section-sub,
+        .exp-contrato-ref,
+        .exp-contrato-dias-leg > span:not(.exp-contrato-validade)
+    ) {
+        display: none;
+    }
+
+    html.tv #screen-7 .exp-contrato-dias-leg {
+        justify-content: flex-end;
+    }
+
+    /* reprovadas e dosado: a quebra por motivo e por origem sai, fica o
+       número; o seletor de contrato (ninguém clica na TV) também, o nome
+       do cliente já está na linha do contrato */
+    html.tv #screen-7 :is(.exp-kpis .kpi-card:nth-child(3), .exp-kpis .kpi-card:nth-child(4)) .kpi-sub,
+    html.tv #screen-7 .exp-contratos-menu {
+        display: none;
+    }
+
+    /* a lista de cargas rola sozinha: não precisa de 24rem reservados */
+    html.tv .screen > .class-detalhe--exp {
+        min-height: 9rem;
+    }
+
+    html.tv #screen-7 .exp-table :is(th, td):is(:nth-child(3), :nth-child(4), :nth-child(7), :nth-child(9)) {
+        display: none;
+    }
+
+    /* Previsão — saem o selo "Avaré · unidade" do cabeçalho (a tela toda
+       é de Avaré), a hora da leitura da estação, nascer e pôr do sol, as
+       notas ao lado dos títulos, os milímetros hora a hora (fica a chance
+       de chuva), o vento nas tabelas e o gráfico de chuva do mês com a
+       legenda e o seletor (os acumulados em números ficam). */
+    html.tv #screen-8 :is(
+        .pv-local,
+        .pv-estacao-hora,
+        .pv-fact:nth-child(n+3),
+        .pv-legenda,
+        .pv-meteo-mm,
+        .pv-chuva-head,
+        .pv-chuva-graf,
+        .pv-agora-cidade,
+        .pv-meteo-chart
+    ) {
+        display: none;
+    }
+
+    html.tv #screen-8 .pv-tabela :is(th, td):nth-child(6),
+    html.tv #screen-8 .pv-unidade-tag {
+        display: none;
+    }
+
+    html.tv #screen-8 .pv-coop .pv-tabela :is(th, td) {
+        padding-inline: 0.35rem;
+    }
+
+    /* chuva e vento de agora: a chance de chuva já abre a faixa das 24 h */
+    html.tv #screen-8 .pv-facts {
+        display: none;
+    }
+
+    /* Câmeras (mosaico) — sem a contagem "N câmeras" de cada área; no
+       quadro sem sinal fica só o nome da câmera (o quadro escuro, sem
+       imagem, já diz que não tem sinal), para o nome caber na letra da TV */
+    html.tv #screen-cameras :is(.cam-op-count, .camera-glyph, .camera-state) {
+        display: none;
+    }
+
+    html.tv #screen-cameras .camera-frame {
+        --fs-texto: 0.9rem;
+    }
+
+    html.tv #screen-cameras .camera-name {
+        letter-spacing: 0;
+    }
+
+    /* telas de uma área: os quadros são grandes, o nome vai na letra da TV */
+    html.tv .screen--camera-area .camera-frame {
+        --fs-texto: 1.2rem;
+    }
+
+    /* Demais unidades · visão geral — na TV, só os alertas em aberto: os
+       resolvidos e a coluna "situação" saem; saem também as legendas (os
+       selos do cabeçalho já dão as cores com a contagem) e a escala do mapa */
+    html.tv #screen-du-geral :is(.du-legenda, .du-escala, .leaflet-control-scale, tr.is-resolvido),
+    html.tv #screen-du-geral .du-alertas :is(th, td):nth-child(5) {
+        display: none;
+    }
+
+    /* mapa e alertas com a mesma largura: o texto de cada alerta quebra em
+       menos linhas, e o mapa ainda cabe os rótulos das unidades */
+    html.tv .du-geral {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    }
+
+    /* Demais unidades · recebimento e armazenagem — saem as linhas de
+       apoio sob os números (ritmo t/h, saldo, nº de silos), as notas e
+       legendas ao lado dos títulos, o nome da cultura dentro das barras
+       (a cor já diz), a divisão por grão sob os cartões, entrada e saída
+       diárias (a lotação em dias já resume as duas) e, no gráfico da
+       ocupação, a legenda e o seletor de unidade. */
+    html.tv .du-screen :is(.du-sub, .pv-tabela-nome small, .du-mix small, .du-kpi-grao-leg, .du-proj-leg, .du-proj-sel),
+    html.tv :is(#screen-du-recebimento, #screen-du-armazenagem) .du-legenda,
+    html.tv #screen-du-armazenagem .du-tabela :is(th, td):is(:nth-child(6), :nth-child(7)) {
+        display: none;
+    }
+
+    /* recebido por cultura: sem o nome dentro, a barra fica com uma linha */
+    html.tv #screen-du-recebimento .du-mix {
+        height: 1.9rem;
+    }
+
+    html.tv #screen-du-recebimento .du-mix-topo {
+        margin-bottom: 0.15rem;
+    }
+
+    html.tv #screen-du-recebimento .du-tabela:has(.du-mix) thead {
+        display: none;
+    }
+
+    html.tv .du-screen :is(.du-tabela th, .section-head h3) {
+        letter-spacing: 0.02em;
+    }
+
+    /* Demais unidades · secagem — saem a nota dos limites, a coluna da
+       fornalha, e os complementos pequenos de cada número (faixa e máximo
+       do ar, temperatura da massa ao lado da umidade): a cor já marca o
+       que passou do limite */
+    html.tv #screen-du-secagem :is(.du-legenda, .du-tabela small),
+    html.tv #screen-du-secagem .du-tabela :is(th, td):nth-child(5) {
+        display: none;
+    }
+
+    /* Demais unidades · termometria — o "silo 1, silo 2..." escrito em
+       cada bolinha não cabe na letra da TV: fica a temperatura (círculo é
+       silo, retângulo é armazém, como diz a legenda; o pior silo de cada
+       unidade aparece por nome na coluna da máxima) */
+    html.tv #screen-du-termometria .du-silos small {
+        display: none;
+    }
+
+    /* o silo vira cápsula (largura do número), o armazém segue retângulo */
+    html.tv #screen-du-termometria .du-silos i:not(.du-arm) {
+        width: auto;
+        height: 2.4rem;
+        padding-inline: 0.3rem;
+        border-radius: 999px;
+    }
+
+    html.tv #screen-du-termometria :is(.du-silos, .du-grupo) {
+        gap: 0.2rem 0.5rem;
+    }
+
+    html.tv #screen-du-termometria .du-silos i {
+        letter-spacing: -0.02em;
+    }
+
+    /* Demais unidades · clima — sai a nota ao lado do título e o vento de
+       cada dia; ficam máx./mín. (ou temperatura e UR agora) e chuva */
+    html.tv #screen-du-clima :is(.du-legenda, .du-dia-vento) {
+        display: none;
+    }
+
+    /* são 15 linhas (dois secadores por unidade): linhas mais justas */
+    html.tv #screen-du-secagem .du-tabela td {
+        padding-block: 0.1rem;
+    }
+
+    html.tv #screen-du-secagem .du-sec {
+        padding-block: 0;
+    }
+
+    /* cultura sem recepção no mês: a linha inteira sai */
+    html.tv #screen-0 .mensal-cultura:has(+ * + .mensal-cell .is-vazio),
+    html.tv #screen-0 .mensal-cell:has(.is-vazio),
+    html.tv #screen-0 .mensal-cell:has(.is-vazio) + .mensal-cell {
+        display: none;
+    }
+
+    html.tv #screen-0 .mensal-cell {
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.5rem 0.875rem;
+    }
+
+    html.tv #screen-0 .mensal-bar-row {
+        flex: 1 1 0;
+    }
+
+    html.tv #screen-0 .mensal-note {
+        flex: 0 0 auto;
+    }
+
+    /* previsão: o selo "tempo" não é status, e o "agora" já se entende pelo número grande */
+    html.tv #screen-geral .geral-card[data-goto="8"] :is(.kpi-flag, .gv-big-label, .gv-kpi:nth-child(3)) {
+        display: none;
+    }
+
+    /* ar ambiente: fica a leitura de agora (direita); a de 24h atrás sai */
+    html.tv #screen-geral .gv-aer-leg--ini {
+        display: none;
+    }
+
+    /* moegas: o volume em m³ repete a ocupação do anel */
+    html.tv #screen-geral .gv-ring + .gv-side .gv-kpi:first-child {
+        display: none;
+    }
+
+    /* secagem: da legenda da meta ficam o percentual e a projeção */
+    html.tv #screen-geral .gv-progress-legend > :nth-child(2) {
+        display: none;
+    }
+
+    /* aeração: a hora só embaixo da última faixa, e só 00h, 12h e 24h
+       (a ponta já aparece marcada na faixa) */
+    html.tv #screen-geral .gv-aer-row:first-of-type .gv-aer-h,
+    html.tv #screen-geral .gv-aer-h:is(.gv-aer-h--18, .gv-aer-h--21) {
+        display: none;
+    }
+
+    html.tv #screen-geral .gv-aer-legenda span:has(:is(.gv-aer-legenda-temp, .gv-aer-legenda-ur)) {
+        display: none;
+    }
+
+    /* previsão: chuva só em %, sem os milímetros */
+    html.tv #screen-geral .gv-day-rain {
+        font-size: 0;
+    }
+
+    html.tv #screen-geral .gv-day-rain b {
+        font-size: var(--fs-texto);
     }
 }

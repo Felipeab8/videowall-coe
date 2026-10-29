@@ -6548,7 +6548,7 @@ function montarArmazem(card) {
         todas.push(...doSetor);
         html += `<div class="arm-setor" style="--cols: ${cols}; flex-grow: ${cols}" data-ligados="${on}">`
             + '<div class="arm-setor-head">'
-            + `<span class="arm-setor-nome">CANALETA ${s + 1}</span>`
+            + `<span class="arm-setor-nome"><span class="arm-setor-rot">CANALETA </span>${s + 1}</span>`
             + `<span class="arm-setor-motores" title="Motores ligados na canaleta (lados A e B)">${on}/${qtd * 2} motores</span>`
             + `<b class="arm-setor-media" data-faixa="${m === null ? 'fora' : faixaArmazem(m)}" title="Média dos cabos com produto da canaleta">${m === null ? '--' : `${formatarGrau(m)}°`}</b>`
             + `<span class="arm-setor-max" title="Cabo mais quente da canaleta">máx ${max === null ? '--' : `${formatarGrau(max)}°`}</span>`
