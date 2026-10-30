@@ -12,9 +12,9 @@
          não carrega e a tela usa o mapa esquemático em SVG. -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css">
-    <link rel="stylesheet" href="style.css?v=20261029a">
+    <link rel="stylesheet" href="style.css?v=20261030f">
 </head>
-<body class="theme-dark">
+<body class="theme-dark" data-visao="tatica">
 
     <!-- Icones dos graos (referenciados via <use> nos KPIs de classificação) -->
     <svg class="grao-sprite" aria-hidden="true" focusable="false">
@@ -89,6 +89,12 @@
                     <span class="brand-main">COE</span>
                     <span class="brand-sub">Cooperativa Holambra · Unidade Avaré</span>
                 </h1>
+                <!-- Tática: as telas do dia a dia (turno, hoje, agora). Estratégica:
+                     os mesmos dados da unidade em meses e anos, para a gestão. -->
+                <div class="visao-toggle" role="group" aria-label="Visão das telas">
+                    <button class="visao-btn is-active" type="button" data-visao-alvo="tatica" aria-pressed="true" title="Telas do dia a dia (tecla V alterna)">Tática</button>
+                    <button class="visao-btn" type="button" data-visao-alvo="estrategica" aria-pressed="false" title="Histórico de meses e anos (tecla V alterna)">Estratégica</button>
+                </div>
             </div>
             <div class="header-controls">
                 <button class="btn-header" id="btnClaro">CLARO</button>
@@ -112,10 +118,10 @@
         <!-- Sidebar Menu -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-top">
-                <div class="sidebar-header">TELAS AVARÉ</div>
+                <div class="sidebar-header"><span data-visao="tatica">TELAS AVARÉ</span><span data-visao="estrategica">ESTRATÉGICO AVARÉ</span></div>
                 <button class="sidebar-toggle" id="btnSidebarToggle" type="button" title="Recolher menu (Ctrl+B)" aria-label="Recolher menu de telas" aria-expanded="true" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
             </div>
-            <nav class="menu" data-unidade="Unidade Avaré">
+            <nav class="menu" data-unidade="Unidade Avaré" data-visao="tatica">
                 <button class="menu-item menu-item--geral active" data-screen="geral"><span class="menu-text">Visão geral</span></button>
                 <div class="menu-group" data-group="0">
                     <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-0">
@@ -187,9 +193,23 @@
                 <button class="menu-item menu-item--solo" data-screen="8"><span class="menu-text">Previsão do tempo</span></button>
             </nav>
 
+            <!-- Visão estratégica: uma tela por área de Avaré, com os meses
+                 fechados e os anos anteriores. Só aparece com o botão
+                 ESTRATÉGICA do cabeçalho (o resto do menu é da visão tática). -->
+            <nav class="menu" data-unidade="Unidade Avaré" data-visao="estrategica" aria-label="Telas estratégicas">
+                <button class="menu-item menu-item--geral" data-screen="est-geral"><span class="menu-text">Visão geral</span></button>
+                <button class="menu-item menu-item--solo" data-screen="est-recepcao"><span class="menu-text">Recepção</span></button>
+                <button class="menu-item menu-item--solo" data-screen="est-classificacao"><span class="menu-text">Classificação</span></button>
+                <button class="menu-item menu-item--solo" data-screen="est-moegas"><span class="menu-text">Moegas</span></button>
+                <button class="menu-item menu-item--solo" data-screen="est-secagem"><span class="menu-text">Secagem</span></button>
+                <button class="menu-item menu-item--solo" data-screen="est-armazenagem"><span class="menu-text">Silos e armazém</span></button>
+                <button class="menu-item menu-item--solo" data-screen="est-expedicao"><span class="menu-text">Expedição</span></button>
+                <button class="menu-item menu-item--solo" data-screen="est-clima"><span class="menu-text">Clima</span></button>
+            </nav>
+
             <!-- Câmeras: seção própria, com todas as câmeras de Avaré numa tela
                  (um quadro por operação). -->
-            <div class="sidebar-section">
+            <div class="sidebar-section" data-visao="tatica">
                 <div class="sidebar-header">CÂMERAS</div>
                 <nav class="menu" data-unidade="Unidade Avaré" aria-label="Câmeras">
                     <button class="menu-item menu-item--geral" data-screen="cameras"><span class="menu-text">Todas as câmeras</span></button>
@@ -204,7 +224,7 @@
 
             <!-- Demais unidades: telas comparando as outras unidades lado a lado,
                  com numeração própria. data-unidade vai para o cabeçalho da página. -->
-            <div class="sidebar-section">
+            <div class="sidebar-section" data-visao="tatica">
                 <div class="sidebar-header">TELAS DEMAIS UNIDADES</div>
                 <nav class="menu" data-unidade="Demais unidades" aria-label="Telas das demais unidades">
                     <button class="menu-item menu-item--geral" data-screen="du-geral"><span class="menu-text">Visão geral</span></button>
@@ -225,13 +245,13 @@
 
         <!-- Main Content Area -->
         <main class="content">
-            <!-- Screen 0: Recepção -->
-            <!-- Visão geral: um card por área, na ordem do fluxo do grão.
-                 Cada card tem um destaque visual (anel, barras, tanques) que
-                 resume a tela correspondente e leva até ela (data-goto usa a
-                 mesma chave do menu lateral). Os componentes gv-* são só CSS:
-                 --p é a fração preenchida (0–1), --c a cor da série. -->
-            <section class="screen active" id="screen-geral">
+            <!-- Visão geral: o mural do videowall, 8 TVs (4 em cima, 4 embaixo)
+                 num computador só. Cada quadro é uma TV com um segmento de
+                 Avaré: o script abre nele esta página com ?telas= (data-telas,
+                 na ordem do menu) e, com mais de uma, elas se revezam a cada
+                 10 s. Os quadros só abrem com esta tela no ar. No modo TV a
+                 tela cobre a janela inteira, um quadro por TV. -->
+            <section class="screen screen--mural active" id="screen-geral">
                 <div class="screen-header">
                     <div class="screen-badge">00</div>
                     <div class="screen-title-section">
@@ -239,350 +259,21 @@
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">5</span>s</div>
                     </div>
                 </div>
-
-                <div class="geral-grid">
-                    <!-- 01 Recepção: a espera é o problema, então ela é o destaque -->
-                    <button data-codigo="AVR-VG-A" class="geral-card alert" type="button" data-goto="0" title="Abrir tela da recepção">
-                        <div class="geral-card-head">
-                            <span class="geral-card-num">01</span>
-                            <span class="geral-card-name">Recepção</span>
-                            <span class="kpi-flag kpi-flag--alerta">Alerta</span>
-                        </div>
-                        <div class="gv-hero">
-                            <div class="gv-big gv-big--ruim">
-                                <span class="gv-big-value">38<small>min</small></span>
-                                <span class="gv-big-label">Espera média</span>
-                                <span class="gv-big-ref">em alta desde 14:35</span>
-                            </div>
-                            <div class="gv-side">
-                                <div class="gv-kpi"><span class="gv-kpi-value">12<small>cam.</small></span><span class="gv-kpi-label">na fila</span></div>
-                                <div class="gv-kpi gv-kpi--ruim"><span class="gv-kpi-value">82<small>t/h</small></span><span class="gv-kpi-label">ritmo</span></div>
-                            </div>
-                        </div>
-                        <div class="gv-block">
-                            <div class="gv-stack" role="img" aria-label="Fila: milho 8 caminhões, sorgo 4">
-                                <span class="gv-stack-seg" style="--p: 0.667; --c: var(--grao-milho)"><b>8</b></span>
-                                <span class="gv-stack-seg" style="--p: 0.333; --c: var(--grao-sorgo)"><b>4</b></span>
-                            </div>
-                            <div class="gv-stack-legend"><span><i class="legend-dot legend-dot--milho"></i>Milho</span><span><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><span class="gv-stack-legend-cap">caminhões na fila</span></div>
-                        </div>
-                        <div class="gv-list">
-                            <div class="gv-bar gv-bar--ruim" style="--p: 0.7">
-                                <span class="gv-bar-label"><i class="legend-dot legend-dot--milho"></i>Milho</span>
-                                <span class="gv-bar-track"><span class="gv-bar-fill"></span></span>
-                                <span class="gv-bar-value">42 min</span>
-                                <span class="gv-bar-sub">860 t · 34 cam.</span>
-                            </div>
-                            <div class="gv-bar gv-bar--atencao" style="--p: 0.5">
-                                <span class="gv-bar-label"><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span>
-                                <span class="gv-bar-track"><span class="gv-bar-fill"></span></span>
-                                <span class="gv-bar-value">30 min</span>
-                                <span class="gv-bar-sub">380 t · 14 cam.</span>
-                            </div>
-                        </div>
-                    </button>
-
-                    <!-- 02 Classificação: três medidores contra o limite + mapa por cultura -->
-                    <button data-codigo="AVR-VG-B" class="geral-card ok" type="button" data-goto="1" title="Abrir tela da classificação">
-                        <div class="geral-card-head">
-                            <span class="geral-card-num">02</span>
-                            <span class="geral-card-name">Classificação</span>
-                            <span class="kpi-flag kpi-flag--ok">OK</span>
-                        </div>
-                        <div class="gv-hero">
-                            <div class="gv-big">
-                                <span class="gv-big-value">100<small>cargas</small></span>
-                                <span class="gv-big-label">Analisadas hoje</span>
-                                <span class="gv-big-ref">2.540 t</span>
-                            </div>
-                            <div class="gv-meters">
-                                <div class="gv-meter" style="--p: 0.879"><span class="gv-meter-label">Umidade</span><span class="gv-meter-track"><span class="gv-meter-fill"></span></span><span class="gv-meter-value">12,3%</span></div>
-                                <div class="gv-meter" style="--p: 0.8"><span class="gv-meter-label">Impureza</span><span class="gv-meter-track"><span class="gv-meter-fill"></span></span><span class="gv-meter-value">0,8%</span></div>
-                                <div class="gv-meter" style="--p: 0.533"><span class="gv-meter-label">Avariados</span><span class="gv-meter-track"><span class="gv-meter-fill"></span></span><span class="gv-meter-value">3,2%</span></div>
-                            </div>
-                        </div>
-                        <div class="gv-block">
-                            <div class="gv-stack" role="img" aria-label="Cargas por cultura: milho 42, sorgo 26, trigo 18, soja 14">
-                                <span class="gv-stack-seg" style="--p: 0.42; --c: var(--grao-milho)"><b>42</b></span>
-                                <span class="gv-stack-seg" style="--p: 0.26; --c: var(--grao-sorgo)"><b>26</b></span>
-                                <span class="gv-stack-seg" style="--p: 0.18; --c: var(--grao-trigo)"><b>18</b></span>
-                                <span class="gv-stack-seg" style="--p: 0.14; --c: var(--grao-soja)"><b>14</b></span>
-                            </div>
-                        </div>
-                        <div class="gv-heat" role="table" aria-label="Qualidade por cultura">
-                            <div class="gv-heat-row gv-heat-row--head" role="row"><span></span><span>Volume</span><span>Umid.</span><span>Imp.</span><span>Avar.</span></div>
-                            <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--milho"></i>Milho</span><span>1.090 t</span><span class="gv-cell" style="--p: 0.9">12,6%</span><span class="gv-cell" style="--p: 0.8">0,8%</span><span class="gv-cell is-atencao" style="--p: 0.67">4,0%</span></div>
-                            <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><span>640 t</span><span class="gv-cell" style="--p: 0.857">12,0%</span><span class="gv-cell" style="--p: 0.7">0,7%</span><span class="gv-cell" style="--p: 0.433">2,6%</span></div>
-                            <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--trigo"></i>Trigo</span><span>450 t</span><span class="gv-cell" style="--p: 0.85">11,9%</span><span class="gv-cell" style="--p: 0.6">0,6%</span><span class="gv-cell" style="--p: 0.35">2,1%</span></div>
-                            <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--soja"></i>Soja</span><span>360 t</span><span class="gv-cell is-atencao" style="--p: 0.914">12,8%</span><span class="gv-cell is-atencao" style="--p: 0.9">0,9%</span><span class="gv-cell" style="--p: 0.567">3,4%</span></div>
-                        </div>
-                    </button>
-
-                    <!-- 03 Moegas: anel de ocupação + colunas por moega -->
-                    <button data-codigo="AVR-VG-C" class="geral-card ok" type="button" data-goto="2" title="Abrir tela das moegas">
-                        <div class="geral-card-head">
-                            <span class="geral-card-num">03</span>
-                            <span class="geral-card-name">Moegas</span>
-                            <span class="kpi-flag kpi-flag--ok">OK</span>
-                        </div>
-                        <div class="gv-hero">
-                            <div class="gv-ring" style="--p: 0.63" role="img" aria-label="Ocupação 63%">
-                                <span class="gv-ring-value">63<small>%</small></span>
-                                <span class="gv-ring-label">ocupação</span>
-                            </div>
-                            <div class="gv-side">
-                                <div class="gv-kpi"><span class="gv-kpi-value">378,0<small>/ 600 m³</small></span><span class="gv-kpi-label">em 6 moegas</span></div>
-                                <div class="gv-kpi"><span class="gv-kpi-value">93</span><span class="gv-kpi-label">cargas hoje</span></div>
-                                <div class="gv-kpi"><span class="gv-kpi-value">12,4<small>%</small></span><span class="gv-kpi-label">umidade · impureza 0,9%</span></div>
-                            </div>
-                        </div>
-                        <div class="gv-cols" role="img" aria-label="Ocupação e umidade por moega">
-                            <div class="gv-col gv-col--alto" style="--p: 0.92"><span class="gv-col-value">92%</span><span class="gv-col-track"><span class="gv-col-fill"></span></span><span class="gv-col-name">M1</span><span class="gv-col-sub">12,1%</span></div>
-                            <div class="gv-col" style="--p: 0.68"><span class="gv-col-value">68%</span><span class="gv-col-track"><span class="gv-col-fill"></span></span><span class="gv-col-name">M2</span><span class="gv-col-sub">11,8%</span></div>
-                            <div class="gv-col gv-col--alto" style="--p: 0.85"><span class="gv-col-value">85%</span><span class="gv-col-track"><span class="gv-col-fill"></span></span><span class="gv-col-name">M3</span><span class="gv-col-sub">12,6%</span></div>
-                            <div class="gv-col" style="--p: 0.75"><span class="gv-col-value">75%</span><span class="gv-col-track"><span class="gv-col-fill"></span></span><span class="gv-col-name">M4</span><span class="gv-col-sub">12,9%</span></div>
-                            <div class="gv-col" style="--p: 0.58"><span class="gv-col-value">58%</span><span class="gv-col-track"><span class="gv-col-fill"></span></span><span class="gv-col-name">M5</span><span class="gv-col-sub">12,2%</span></div>
-                            <div class="gv-col" style="--p: 0"><span class="gv-col-value">0%</span><span class="gv-col-track"><span class="gv-col-fill"></span></span><span class="gv-col-name">M6</span><span class="gv-col-sub is-atencao">13,0%</span></div>
-                        </div>
-                    </button>
-
-                    <!-- 04 Secagem: o 1º turno (07:00–16:20) contra a meta, as duas temperaturas que
-                         pedem atenção (o ar do S1 perto do máximo de 105 °C do milho e a saída
-                         do ar do S2 acima de 50 °C, risco de incêndio) e cada secador contra a
-                         própria meta.
-                         Os números são os das telas da secagem e da produtividade às 14h50;
-                         vazão fica por secador (t/h de secadores diferentes não se somam). -->
-                    <button data-codigo="AVR-VG-D" class="geral-card alert" type="button" data-goto="3" title="Abrir tela da secagem">
-                        <div class="geral-card-head">
-                            <span class="geral-card-num">04</span>
-                            <span class="geral-card-name">Secagem</span>
-                            <span class="kpi-flag kpi-flag--alerta">Alerta</span>
-                        </div>
-                        <div class="gv-hero">
-                            <div class="gv-big">
-                                <span class="gv-big-value">1.000<small>t</small></span>
-                                <span class="gv-big-label">Secado no turno</span>
-                                <span class="gv-big-ref">até 14:50</span>
-                            </div>
-                            <!-- escala até 120 °C (ar) e 60 °C (saída); a marca é o limite -->
-                            <div class="gv-meters gv-meters--stack">
-                                <div class="gv-meter" style="--p: 0.867"><span class="gv-meter-label">Ar · S1</span><span class="gv-meter-track"><span class="gv-meter-fill"></span><span class="gv-meter-mark" style="--m: 0.875"></span></span><span class="gv-meter-value">104°C</span><span class="gv-meter-lim">máx. 105°C no milho</span></div>
-                                <div class="gv-meter gv-meter--ruim" style="--p: 0.867"><span class="gv-meter-label">Saída do ar · S2</span><span class="gv-meter-track"><span class="gv-meter-fill"></span><span class="gv-meter-mark" style="--m: 0.833"></span></span><span class="gv-meter-value">52°C</span><span class="gv-meter-lim">limite 50°C · incêndio</span></div>
-                            </div>
-                        </div>
-                        <!-- escala até 1.400 t: marca branca na meta, verde na projeção -->
-                        <div class="gv-progress" style="--p: 0.613; --m1: 0.716; --m2: 0.716" role="img" aria-label="Secado no turno 858 t, 86% da meta de 1.002 t; projeção para 16h20 1.003 t">
-                            <span class="gv-progress-track"><span class="gv-progress-fill"></span><span class="gv-progress-mark gv-progress-mark--1"></span><span class="gv-progress-mark gv-progress-mark--2"></span></span>
-                            <span class="gv-progress-legend"><span><b>86%</b> da meta</span><span>meta <b>1.002 t</b></span><span>projeção 16h20 <b class="is-ok">1.003 t</b></span></span>
-                        </div>
-                        <!-- cada barra: secado no turno contra a meta do próprio secador -->
-                        <div class="gv-list">
-                            <div class="gv-bar" style="--p: 0.883; --c: var(--grao-milho)">
-                                <span class="gv-bar-label"><i class="legend-dot legend-dot--milho"></i>Secador 1</span>
-                                <span class="gv-bar-track"><span class="gv-bar-fill"></span></span>
-                                <span class="gv-bar-value">521 t</span>
-                                <span class="gv-bar-ref">61 t/h</span>
-                                <span class="gv-bar-sub">Milho · secando · 88% de 590 t</span>
-                            </div>
-                            <div class="gv-bar" style="--p: 0.818; --c: var(--grao-sorgo)">
-                                <span class="gv-bar-label"><i class="legend-dot legend-dot--sorgo"></i>Secador 2</span>
-                                <span class="gv-bar-track"><span class="gv-bar-fill"></span></span>
-                                <span class="gv-bar-value">337 t</span>
-                                <span class="gv-bar-ref">48 t/h</span>
-                                <span class="gv-bar-sub">Sorgo · descarregando · 82% de 412 t</span>
-                            </div>
-                        </div>
-                    </button>
-
-                    <!-- 05 Armazenagem: capacidade x estoque por cultura (mesmo gráfico da tela de silos, compacto) -->
-                    <button data-codigo="AVR-VG-E" class="geral-card ok" type="button" data-goto="5" title="Abrir tela dos silos">
-                        <div class="geral-card-head">
-                            <span class="geral-card-num">05</span>
-                            <span class="geral-card-name">Armazenagem</span>
-                            <span class="kpi-flag kpi-flag--ok">OK</span>
-                        </div>
-                        <div class="gv-capacidade">
-                            <div class="chart-legend">
-                                <span class="legend-item"><i class="legend-dot legend-dot--free"></i>Espaço Disponível</span>
-                                <span class="legend-item"><i class="legend-dot legend-dot--stock"></i>Produto em Estoque</span>
-                            </div>
-                            <div class="stack-chart stack-chart--capacidade" role="img" aria-label="Capacidade x estoque por cultura: milho 10.160 de 12.000 m³, sorgo 4.080 de 8.000 m³, trigo 5.560 de 8.000 m³, soja 1.440 de 4.000 m³, total 21.240 de 32.000 m³">
-                                <div class="stack-row">
-                                    <span class="stack-label">Milho</span>
-                                    <div class="stack-track">
-                                        <div class="stack-seg stack-seg--free" style="width: 15.3%"><span class="stack-value">1.840</span></div>
-                                        <div class="stack-seg stack-seg--stock" style="width: 84.7%"><span class="stack-value">10.160</span></div>
-                                    </div>
-                                    <span class="stack-cap">12.000</span>
-                                </div>
-                                <div class="stack-row">
-                                    <span class="stack-label">Sorgo</span>
-                                    <div class="stack-track">
-                                        <div class="stack-seg stack-seg--free" style="width: 49.0%"><span class="stack-value">3.920</span></div>
-                                        <div class="stack-seg stack-seg--stock" style="width: 51.0%"><span class="stack-value">4.080</span></div>
-                                    </div>
-                                    <span class="stack-cap">8.000</span>
-                                </div>
-                                <div class="stack-row">
-                                    <span class="stack-label">Trigo</span>
-                                    <div class="stack-track">
-                                        <div class="stack-seg stack-seg--free" style="width: 30.5%"><span class="stack-value">2.440</span></div>
-                                        <div class="stack-seg stack-seg--stock" style="width: 69.5%"><span class="stack-value">5.560</span></div>
-                                    </div>
-                                    <span class="stack-cap">8.000</span>
-                                </div>
-                                <div class="stack-row">
-                                    <span class="stack-label">Soja</span>
-                                    <div class="stack-track">
-                                        <div class="stack-seg stack-seg--free" style="width: 64.0%"><span class="stack-value">2.560</span></div>
-                                        <div class="stack-seg stack-seg--stock" style="width: 36.0%"><span class="stack-value">1.440</span></div>
-                                    </div>
-                                    <span class="stack-cap">4.000</span>
-                                </div>
-                                <div class="stack-row stack-row--total">
-                                    <span class="stack-label">Total</span>
-                                    <div class="stack-track">
-                                        <div class="stack-seg stack-seg--free" style="width: 33.6%"><span class="stack-value">10.760</span></div>
-                                        <div class="stack-seg stack-seg--stock" style="width: 66.4%"><span class="stack-value">21.240</span></div>
-                                    </div>
-                                    <span class="stack-cap">32.000</span>
-                                </div>
-                                <div class="stack-axis">
-                                    <span>0%</span>
-                                    <span>50%</span>
-                                    <span>100%</span>
-                                </div>
-                            </div>
-                        </div>
-                    </button>
-
-                    <!-- 06 Aeração: por área (silos e armazém), linha do tempo das últimas
-                         24h com os períodos de aeração ativa e os riscos do horário de
-                         ponta, e embaixo uma única curva do ar ambiente (temperatura e
-                         umidade relativa, medidas na estação meteorológica da unidade),
-                         que vale para as duas áreas. -->
-                    <button data-codigo="AVR-VG-F" class="geral-card ok gv-aer" type="button" data-goto="5" title="Abrir tela de silos e aeração" data-ponta-status>
-                        <div class="geral-card-head">
-                            <span class="geral-card-num">06</span>
-                            <span class="geral-card-name">Aeração</span>
-                            <span class="kpi-flag kpi-flag--ok" data-ponta-tarifa>FORA DE PONTA</span>
-                        </div>
-                        <div class="gv-aer-legenda" aria-hidden="true">
-                            <span><i class="gv-aer-legenda-on"></i>aeração ativa</span>
-                            <span><i class="gv-aer-legenda-ponta"></i>ponta 18h–21h</span>
-                            <span><i class="gv-aer-legenda-temp"></i>temperatura do ar</span>
-                            <span><i class="gv-aer-legenda-ur"></i>umidade relativa</span>
-                        </div>
-                        <div class="gv-aer-row">
-                            <div class="gv-aer-row-head"><span class="gv-aer-row-name">Silos</span></div>
-                            <div class="gv-aer-track" role="img" aria-label="Silos: aeração ativa nas últimas 24h e horário de ponta">
-                                <i class="gv-aer-on" style="left:8.3%;width:31.3%" title="02:00–09:30 · 7h30 ligado"></i><i class="gv-aer-on" style="left:56.3%;width:18.7%" title="13:30–18:00 · 4h30 ligado"></i><i class="gv-aer-on" style="left:87.5%;width:6.3%" title="21:00–22:30 · 1h30 ligado"></i><i class="gv-aer-ponta"></i>
-                                <span class="gv-aer-h gv-aer-h--0">00h</span><span class="gv-aer-h gv-aer-h--12">12h</span><span class="gv-aer-h gv-aer-h--18">18h</span><span class="gv-aer-h gv-aer-h--21">21h</span><span class="gv-aer-h gv-aer-h--24">24h</span>
-                            </div>
-                        </div>
-                        <div class="gv-aer-row">
-                            <div class="gv-aer-row-head"><span class="gv-aer-row-name">Armazém</span></div>
-                            <div class="gv-aer-track" role="img" aria-label="Armazém: aeração ativa nas últimas 24h e horário de ponta">
-                                <i class="gv-aer-on" style="left:12.5%;width:20.8%" title="03:00–08:00 · 5h ligado"></i><i class="gv-aer-on" style="left:62.5%;width:12.5%" title="15:00–18:00 · 3h ligado"></i><i class="gv-aer-on" style="left:87.5%;width:8.3%" title="21:00–23:00 · 2h ligado"></i><i class="gv-aer-ponta"></i>
-                                <span class="gv-aer-h gv-aer-h--0">00h</span><span class="gv-aer-h gv-aer-h--12">12h</span><span class="gv-aer-h gv-aer-h--18">18h</span><span class="gv-aer-h gv-aer-h--21">21h</span><span class="gv-aer-h gv-aer-h--24">24h</span>
-                            </div>
-                        </div>
-                        <div class="gv-aer-row gv-aer-row--ar">
-                            <div class="gv-aer-row-head"><span class="gv-aer-row-name">Ar ambiente</span></div>
-                            <div class="gv-aer-curvas">
-                                <!-- a ordem segue a altura de cada curva em cada ponta: nas
-                                     duas a umidade fica em cima e a temperatura embaixo -->
-                                <div class="gv-aer-leg gv-aer-leg--ini" title="Leituras de 24h atrás">
-                                    <span class="gv-aer-leg-item gv-aer-leg-item--ur"><b>72%</b>umidade rel.</span>
-                                    <span class="gv-aer-leg-item gv-aer-leg-item--temp"><b>22,0°C</b>temperatura</span>
-                                </div>
-                                <svg class="gv-aer-svg" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true">
-                                    <path class="gv-aer-linha gv-aer-linha--temp" d="M0.0 17.6 L4.3 18.6 L8.7 19.6 L13.0 20.8 L17.4 21.8 L21.7 22.4 L26.1 22.0 L30.4 20.4 L34.8 17.6 L39.1 14.4 L43.5 11.5 L47.8 8.7 L52.2 6.5 L56.5 4.9 L60.9 3.9 L65.2 3.7 L69.6 4.5 L73.9 5.9 L78.3 7.7 L82.6 11.8 L87.0 15.4 L91.3 19.0 L95.7 22.9 L100.0 26.7"></path>
-                                    <path class="gv-aer-linha gv-aer-linha--ur" d="M0.0 9.5 L4.3 8.4 L8.7 7.2 L13.0 5.5 L17.4 4.3 L21.7 3.7 L26.1 4.3 L30.4 6.0 L34.8 8.9 L39.1 11.8 L43.5 15.3 L47.8 18.2 L52.2 21.1 L56.5 23.4 L60.9 25.1 L65.2 25.7 L69.6 24.5 L73.9 22.8 L78.3 20.5 L82.6 18.2 L87.0 17.6 L91.3 18.2 L95.7 18.8 L100.0 19.4"></path>
-                                </svg>
-                                <div class="gv-aer-leg">
-                                    <span class="gv-aer-leg-item gv-aer-leg-item--ur"><b>55%</b>umidade rel.</span>
-                                    <span class="gv-aer-leg-item gv-aer-leg-item--temp"><b>18,0°C</b>temperatura</span>
-                                </div>
-                            </div>
-                        </div>
-                    </button>
-
-                    <!-- 07 Expedição: cargas do dia por cultura, qualidade média contra os limites -->
-                    <button data-codigo="AVR-VG-G" class="geral-card atencao" type="button" data-goto="7" title="Abrir tela da expedição">
-                        <div class="geral-card-head">
-                            <span class="geral-card-num">07</span>
-                            <span class="geral-card-name">Expedição</span>
-                            <span class="kpi-flag kpi-flag--atencao">Atenção</span>
-                        </div>
-                        <div class="gv-hero">
-                            <div class="gv-big">
-                                <span class="gv-big-value">28<small>cargas</small></span>
-                                <span class="gv-big-label">Expedidas hoje</span>
-                                <span class="gv-big-ref">1.120 t</span>
-                            </div>
-                            <div class="gv-side">
-                                <div class="gv-kpi"><span class="gv-kpi-value">6</span><span class="gv-kpi-label">aguardando · 18 min médio</span></div>
-                                <div class="gv-kpi gv-kpi--ruim"><span class="gv-kpi-value">4</span><span class="gv-kpi-label">reprovadas · 14%</span></div>
-                                <!-- a dosagem do dia em tres numeros, no lugar do anel de porcentagem:
-                                     a media das cargas em cada medida, contra o seu limite -->
-                                <div class="gv-qual" role="img" aria-label="Dosagem de hoje, média das cargas: umidade 12,8% de 14%, impureza 0,8% de 1%, avariados 3,1% de 6%">
-                                    <span class="gv-qual-titulo">Dosagem média</span>
-                                    <span class="gv-qual-item"><b>12,8<small>%</small></b><em>umidade</em><i>lim. 14%</i></span>
-                                    <span class="gv-qual-item"><b>0,8<small>%</small></b><em>impureza</em><i>lim. 1%</i></span>
-                                    <span class="gv-qual-item"><b>3,1<small>%</small></b><em>avariados</em><i>lim. 6%</i></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="gv-block">
-                            <div class="gv-stack" role="img" aria-label="Cargas expedidas: milho 12, sorgo 7, trigo 5, soja 4">
-                                <span class="gv-stack-seg" style="--p: 0.4286; --c: var(--grao-milho)"><b>12</b></span>
-                                <span class="gv-stack-seg" style="--p: 0.25; --c: var(--grao-sorgo)"><b>7</b></span>
-                                <span class="gv-stack-seg" style="--p: 0.1786; --c: var(--grao-trigo)"><b>5</b></span>
-                                <span class="gv-stack-seg" style="--p: 0.1429; --c: var(--grao-soja)"><b>4</b></span>
-                            </div>
-                        </div>
-                        <div class="gv-heat gv-heat--exp" role="table" aria-label="Cargas expedidas por cultura">
-                            <div class="gv-heat-row gv-heat-row--head" role="row"><span></span><span>Cargas</span><span>Volume</span><span>Reprov.</span></div>
-                            <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--milho"></i>Milho</span><span>12</span><span>480 t</span><span class="gv-pill is-atencao">2</span></div>
-                            <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--sorgo"></i>Sorgo</span><span>7</span><span>280 t</span><span class="gv-pill is-atencao">1</span></div>
-                            <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--trigo"></i>Trigo</span><span>5</span><span>200 t</span><span class="gv-pill">0</span></div>
-                            <div class="gv-heat-row" role="row"><span><i class="legend-dot legend-dot--soja"></i>Soja</span><span>4</span><span>160 t</span><span class="gv-pill is-atencao">1</span></div>
-                        </div>
-                    </button>
-
-                    <!-- 08 Previsão do tempo: agora (temperatura e umidade medidas na
-                         estação da unidade) e os próximos dias (previsão Climatempo) -->
-                    <button data-codigo="AVR-VG-H" class="geral-card" type="button" data-goto="8" title="Abrir previsão do tempo">
-                        <div class="geral-card-head">
-                            <span class="geral-card-num">08</span>
-                            <span class="geral-card-name">Previsão do tempo</span>
-                            <span class="kpi-flag kpi-flag--info">Tempo</span>
-                        </div>
-                        <div class="gv-hero gv-hero--tempo">
-                            <svg class="gv-weather-icon" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg>
-                            <div class="gv-big">
-                                <span class="gv-big-value">18,0<small>°</small></span>
-                                <span class="gv-big-label">Avaré agora · estação</span>
-                                <span class="gv-big-ref">parcialmente nublado</span>
-                            </div>
-                            <div class="gv-side">
-                                <div class="gv-kpi"><span class="gv-kpi-value">20<small>%</small></span><span class="gv-kpi-label">chuva</span></div>
-                                <div class="gv-kpi"><span class="gv-kpi-value">55<small>%</small></span><span class="gv-kpi-label">umidade</span></div>
-                                <div class="gv-kpi"><span class="gv-kpi-value">12<small>km/h</small></span><span class="gv-kpi-label">vento leste</span></div>
-                            </div>
-                        </div>
-                        <div class="gv-days" role="img" aria-label="Próximos dias em Avaré: quarta ensolarado 29°/18° chuva 10% 0 mm UR 62%, quinta parcialmente nublado 28°/19° chuva 20% 1 mm UR 65%, sexta chuva 24°/17° chuva 70% 18 mm UR 88%, sábado nublado 26°/17° chuva 40% 4 mm UR 74%">
-                            <div class="gv-day"><span class="gv-day-name">Qua</span><span class="gv-day-date">23 set.</span><svg class="gv-day-icon gv-day-icon--sol" aria-hidden="true"><use href="#ico-sol"></use></svg><span class="gv-day-rain"><b>10%</b>0 mm</span><span class="gv-day-temp"><b>29°</b><small>18°</small></span><span class="gv-day-sub"><b>62%</b> UR</span></div>
-                            <div class="gv-day"><span class="gv-day-name">Qui</span><span class="gv-day-date">24 set.</span><svg class="gv-day-icon gv-day-icon--sol" aria-hidden="true"><use href="#ico-sol-nuvem"></use></svg><span class="gv-day-rain"><b>20%</b>1 mm</span><span class="gv-day-temp"><b>28°</b><small>19°</small></span><span class="gv-day-sub"><b>65%</b> UR</span></div>
-                            <div class="gv-day"><span class="gv-day-name">Sex</span><span class="gv-day-date">25 set.</span><svg class="gv-day-icon gv-day-icon--chuva" aria-hidden="true"><use href="#ico-chuva"></use></svg><span class="gv-day-rain gv-day-rain--alta"><b>70%</b>18 mm</span><span class="gv-day-temp"><b>24°</b><small>17°</small></span><span class="gv-day-sub"><b>88%</b> UR</span></div>
-                            <div class="gv-day"><span class="gv-day-name">Sáb</span><span class="gv-day-date">26 set.</span><svg class="gv-day-icon gv-day-icon--nuvem" aria-hidden="true"><use href="#ico-nuvem"></use></svg><span class="gv-day-rain"><b>40%</b>4 mm</span><span class="gv-day-temp"><b>26°</b><small>17°</small></span><span class="gv-day-sub"><b>74%</b> UR</span></div>
-                        </div>
-                        <div class="gv-caption">próximos dias · Avaré</div>
-                    </button>
+                <div class="mural">
+                    <!-- fileira de cima -->
+                    <div class="mural-quadro" data-telas="0,fluxo"><button class="mural-abrir" type="button" data-goto="0" title="Abrir Recepção"></button></div>
+                    <div class="mural-quadro" data-telas="1"><button class="mural-abrir" type="button" data-goto="1" title="Abrir Classificação"></button></div>
+                    <div class="mural-quadro" data-telas="2"><button class="mural-abrir" type="button" data-goto="2" title="Abrir Moegas"></button></div>
+                    <div class="mural-quadro" data-telas="3,4,pressao"><button class="mural-abrir" type="button" data-goto="3" title="Abrir Secagem"></button></div>
+                    <!-- fileira de baixo -->
+                    <div class="mural-quadro" data-telas="5"><button class="mural-abrir" type="button" data-goto="5" title="Abrir Silos"></button></div>
+                    <div class="mural-quadro" data-telas="6"><button class="mural-abrir" type="button" data-goto="6" title="Abrir Armazém"></button></div>
+                    <div class="mural-quadro" data-telas="7,exp-fluxo"><button class="mural-abrir" type="button" data-goto="7" title="Abrir Expedição"></button></div>
+                    <div class="mural-quadro" data-telas="8"><button class="mural-abrir" type="button" data-goto="8" title="Abrir Previsão do tempo"></button></div>
                 </div>
             </section>
 
+            <!-- Screen 0: Recepção -->
             <section class="screen" id="screen-0">
                 <div class="screen-header">
                     <div class="screen-badge">01</div>
@@ -2208,7 +1899,7 @@
             <!-- Screen 3: Secagem
                  Um cartao por secador. A esquerda o calor (fornalha e ar do secador),
                  a massa do grao (entrada e saida) e, a direita, a limpeza. No meio,
-                 quatro graficos pequenos no mesmo eixo de horas do turno (07h–17h),
+                 quatro graficos pequenos no mesmo eixo de horas do turno (07h–17h), com o AGORA andando no relogio,
                  cada um na propria escala, com as faixas do padrao da unidade:
                    Fornalha                200 a 950 °C (todas as culturas): tracejado no minimo e no maximo
                    Ar do secador           50 a 105 (milho e soja), 50 a 85 (sorgo e trigo),
@@ -2272,7 +1963,7 @@
 
                     <div class="secador-list">
                         <div class="secador" data-secador data-nome="Secador 1"
-                            data-inicio="07:00" data-agora="14:50" data-fim="17:00"
+                            data-ciclo="carga:40,secagem:260,descarga:40,carga:30,secagem:130,descarga:35"
                             data-forn-min="200" data-forn-max="950"
                             data-ar-max="105" data-ar-desejada="98" data-saida-max="50"
                             data-limpeza-ciclo="72" data-limpeza-trab="54"
@@ -2373,7 +2064,7 @@
                         </div>
 
                         <div class="secador" data-secador data-nome="Secador 2"
-                            data-inicio="07:00" data-agora="14:50" data-fim="17:00"
+                            data-ciclo="carga:35,secagem:260,descarga:35,carga:30,secagem:90,descarga:40"
                             data-forn-min="200" data-forn-max="950"
                             data-ar-max="85" data-ar-desejada="80" data-saida-max="50"
                             data-limpeza-ciclo="72" data-limpeza-trab="75"
@@ -2572,7 +2263,7 @@
                                 <div class="kpi-value">21,9 <span class="kpi-value-unit">t</span></div>
                             </div>
                         </div>
-                        <div class="kpi-sub kpi-sub--consumo"><span class="kpi-sub-rotulo">Consumo por volume secado</span><span class="kpi-sub-item" title="Secador 1 (milho): 13,8 t de cavaco para 704 m³ secados"><b>S1</b> 19,6 kg/m³ <small>704 m³</small></span><span class="kpi-sub-item" title="Secador 2 (sorgo): 8,1 t de cavaco para 468 m³ secados"><b>S2</b> 17,3 kg/m³ <small>468 m³</small></span></div>
+                        <div class="kpi-sub kpi-sub--consumo"><span class="kpi-sub-rotulo">Consumo por volume secado</span><span class="kpi-sub-item" title="Secador 1 (milho): 13,8 t de cavaco para 704 m³ secados"><b>S1</b> 19,6 kg/m³</span><span class="kpi-sub-item" title="Secador 2 (sorgo): 8,1 t de cavaco para 468 m³ secados"><b>S2</b> 17,3 kg/m³</span></div>
                         <div class="kpi-meta-row">
                             <span class="kpi-flag kpi-flag--info">18,7 KG / M³</span>
                             <span class="kpi-meta-ref">cavaco por m³ secado</span>
@@ -7378,6 +7069,101 @@
                 </div>
             </section>
 
+            <!-- ============================================
+                 VISÃO ESTRATÉGICA (botão ESTRATÉGICA do cabeçalho)
+                 Os mesmos dados das telas táticas de Avaré, olhando para
+                 trás: 24 meses fechados e os anos de 2022 a 2026. O corpo
+                 de cada tela é desenhado pelo script (montarEstrategica)
+                 a partir da série mensal; aqui fica só a moldura.
+                 ============================================ -->
+            <section class="screen du-screen screen--est" id="screen-est-geral">
+                <div class="screen-header">
+                    <div class="screen-badge">E0</div>
+                    <div class="screen-title-section">
+                        <h2>Visão Estratégica da Unidade</h2>
+                        <div class="screen-meta">ESTRATÉGICO • MESES FECHADOS ATÉ SET/2026</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="geral"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-recepcao">
+                <div class="screen-header">
+                    <div class="screen-badge">E1</div>
+                    <div class="screen-title-section">
+                        <h2>Recepção · histórico</h2>
+                        <div class="screen-meta">ESTRATÉGICO • MESES FECHADOS ATÉ SET/2026</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="recepcao"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-classificacao">
+                <div class="screen-header">
+                    <div class="screen-badge">E2</div>
+                    <div class="screen-title-section">
+                        <h2>Classificação · histórico</h2>
+                        <div class="screen-meta">ESTRATÉGICO • MESES FECHADOS ATÉ SET/2026</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="classificacao"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-moegas">
+                <div class="screen-header">
+                    <div class="screen-badge">E3</div>
+                    <div class="screen-title-section">
+                        <h2>Moegas · histórico</h2>
+                        <div class="screen-meta">ESTRATÉGICO • MESES FECHADOS ATÉ SET/2026</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="moegas"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-secagem">
+                <div class="screen-header">
+                    <div class="screen-badge">E4</div>
+                    <div class="screen-title-section">
+                        <h2>Secagem · histórico</h2>
+                        <div class="screen-meta">ESTRATÉGICO • MESES FECHADOS ATÉ SET/2026</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="secagem"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-armazenagem">
+                <div class="screen-header">
+                    <div class="screen-badge">E5</div>
+                    <div class="screen-title-section">
+                        <h2>Silos e armazém · histórico</h2>
+                        <div class="screen-meta">ESTRATÉGICO • MESES FECHADOS ATÉ SET/2026</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="armazenagem"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-expedicao">
+                <div class="screen-header">
+                    <div class="screen-badge">E6</div>
+                    <div class="screen-title-section">
+                        <h2>Expedição · histórico</h2>
+                        <div class="screen-meta">ESTRATÉGICO • MESES FECHADOS ATÉ SET/2026</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="expedicao"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-clima">
+                <div class="screen-header">
+                    <div class="screen-badge">E7</div>
+                    <div class="screen-title-section">
+                        <h2>Clima · histórico</h2>
+                        <div class="screen-meta">ESTRATÉGICO • MESES FECHADOS ATÉ SET/2026</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="clima"></div>
+            </section>
+
             <!-- Pagina de Alertas (funcionalidade, fora do rodizio de telas) -->
             <section class="alerts-page" id="alertsPage" role="dialog" aria-modal="false" aria-labelledby="alertsPageTitle" hidden>
                 <div class="screen-header alerts-page-header">
@@ -7465,7 +7251,7 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.1.4/leaflet-maplibre-gl.js"></script>
-    <script src="script.js?v=20261029a"></script>
+    <script src="script.js?v=20261030f"></script>
 
 </body>
 </html>

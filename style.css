@@ -3856,9 +3856,6 @@ body.edit-mode .header-controls .btn-alertas.active {
 
 
 
-
-
-
 .moega-item {
     transition: opacity 0.25s ease, filter 0.25s ease;
 }
@@ -4405,7 +4402,6 @@ body.edit-mode .header-controls .btn-alertas.active {
     text-align: left;
     color: var(--faint);
 }
-
 
 
 
@@ -6129,7 +6125,6 @@ body.theme-light .kpi-flag--alerta {
 
 
 
-
 /* ============================================
    PRINT — sai so a tela ativa, sem cromo de navegacao
    ============================================ */
@@ -7297,6 +7292,13 @@ body.theme-light .kpi-flag--alerta {
 
 .secador-agora-label b {
     font-weight: 700;
+}
+
+/* perto das 17h o rotulo passa para a esquerda do marcador */
+.secador-agora.is-fim .secador-agora-label {
+    left: auto;
+    right: 0.5rem;
+    text-align: right;
 }
 
 
@@ -11482,7 +11484,7 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
    da estacao, da temperatura e da umidade do grao e da tabela higroscopica.
    Texto com a janela de temperatura do ar, regua com os trechos (umedece,
    ideal, resfria pouco, nao resfria), o ar de agora (traco) e o grao (anel),
-   e as situacoes do ar e da massa com icone e cor */
+   e a situacao da massa com icone e cor */
 .sa-ar {
     display: flex;
     flex-direction: column;
@@ -11591,13 +11593,8 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     color: var(--warn);
 }
 
-.sa-ar-status[data-estado="ideal"] b,
-.sa-ar-status[data-estado="bom"] b {
+.sa-ar-status[data-estado="ideal"] b {
     color: var(--ok);
-}
-
-.sa-ar-status[data-estado="umido"] b {
-    color: var(--danger);
 }
 
 /* armazem: o mesmo bloco no alto da coluna de tendencias, separado delas;
@@ -14041,9 +14038,6 @@ body.edit-mode .fluxo-etapa[data-fluxo-filtro] {
 
 
 
-
-
-
     .hourly-data {
         grid-template-columns: repeat(4, minmax(0, 1fr));
     }
@@ -14142,10 +14136,8 @@ body.edit-mode .fluxo-etapa[data-fluxo-filtro] {
 
 
 /* ============================================
-   VISÃO GERAL (tela 00)
-   Um card por área, na ordem do fluxo do grão. O card inteiro é um
-   botão que abre a tela da área; o semáforo reaproveita .ok/.alert
-   do .kpi-card e as pílulas .kpi-flag.
+   ITEM "VISÃO GERAL" DO MENU (demais unidades, estratégica, câmeras)
+   e a pílula informativa .kpi-flag--info
    ============================================ */
 .menu-item--geral {
     gap: 0.5rem;
@@ -14170,104 +14162,6 @@ body.edit-mode .fluxo-etapa[data-fluxo-filtro] {
 }
 
 
-.geral-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    /* as linhas dividem a altura, mas nunca ficam menores que o conteudo */
-    grid-auto-rows: minmax(min-content, 1fr);
-    gap: 0.875rem;
-    margin-bottom: 1rem;
-}
-
-
-
-/* a grade divide a altura que sobra da tela; os cards crescem juntos.
-   Sem overflow escondido: se nao couber, o fitToScreen (script.js) mede
-   o estouro e reduz a escala ate caber, sem rolagem e sem sobreposicao. */
-.screen > .geral-grid {
-    flex: 1 1 auto;
-    min-height: 0;
-}
-
-.geral-card {
-    display: flex;
-    flex-direction: column;
-    gap: 0.625rem;
-    min-height: 10.5rem;
-    padding: 1rem 1.125rem;
-    background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
-    border: 1px solid var(--card-border);
-    border-radius: 12px;
-    color: var(--text);
-    cursor: pointer;
-    font-family: inherit;
-    text-align: left;
-    transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.geral-card:hover,
-.geral-card:focus-visible {
-    border-color: var(--accent);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-soft);
-    outline: none;
-}
-
-.geral-card:hover .geral-card-link,
-.geral-card:focus-visible .geral-card-link {
-    color: var(--accent);
-}
-
-
-
-/* cartao ok fica com a aparencia normal: so atencao e alerta ganham cor */
-
-/* visao geral e lida de longe: selo de status maior que nas outras telas */
-.geral-card .kpi-flag {
-    font-size: max(0.72rem, var(--fs-texto, 0px));
-}
-
-.geral-card.atencao {
-    border-color: rgba(243, 156, 18, 0.42);
-    background: linear-gradient(180deg, rgba(243, 156, 18, 0.14) 0%, rgba(243, 156, 18, 0.04) 100%);
-}
-
-.geral-card.alert {
-    border-color: rgba(231, 76, 60, 0.4);
-    background: linear-gradient(180deg, rgba(231, 76, 60, 0.14) 0%, rgba(231, 76, 60, 0.04) 100%);
-}
-
-.geral-card-head {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    width: 100%;
-}
-
-
-
-.geral-card-num {
-    font-size: max(0.8rem, var(--fs-texto, 0px));
-    font-weight: 800;
-    color: var(--faint);
-    letter-spacing: 0.06em;
-    font-variant-numeric: tabular-nums;
-}
-
-
-
-.geral-card-name {
-    flex: 1 1 auto;
-    font-size: max(1.2rem, var(--fs-texto, 0px));
-    font-weight: 700;
-    letter-spacing: 0.2px;
-}
-
-.geral-card .kpi-flag {
-    flex-shrink: 0;
-}
-
-
 
 .kpi-flag--info {
     background: var(--accent-soft);
@@ -14277,1530 +14171,112 @@ body.edit-mode .fluxo-etapa[data-fluxo-filtro] {
 
 
 
-/* ------------------------------------------------
-   Componentes visuais da visao geral (gv-*)
-   Todos so CSS: --p e a fracao preenchida (0-1) e
-   --c a cor da serie (cai no azul da interface).
-   ------------------------------------------------ */
-.geral-card {
-    gap: 0.6rem;
-    min-height: 0;
-    padding: 0.8rem 1rem 0.7rem;
-    overflow: hidden;
-}
-
-.geral-card > * {
-    width: 100%;
-    /* blocos internos mantem a altura natural: nada encolhe por cima do vizinho */
-    flex-shrink: 0;
-}
-
-
-
-/* topo do card: numero grande a esquerda, apoio a direita */
-.gv-hero {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--row-line);
-}
-
-.gv-big {
-    display: flex;
-    flex-direction: column;
-    flex: 0 0 auto;
-    min-width: 0;
-}
-
-
-.gv-big-value {
-    display: flex;
-    align-items: baseline;
-    gap: 0.3rem;
-    font-size: 2.1rem;
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-}
-
-
-.gv-big-value small {
-    font-size: max(0.95rem, var(--fs-texto, 0px));
-    font-weight: 600;
-    letter-spacing: 0;
-    color: var(--muted);
-}
-
-
-.gv-big--ruim .gv-big-value {
-    color: var(--danger);
-}
-
-.gv-big-label {
-    margin-top: 0.3rem;
-    font-size: max(0.8rem, var(--fs-texto, 0px));
-    font-weight: 600;
-    color: var(--text);
-}
-
-.gv-big-ref {
-    font-size: max(0.76rem, var(--fs-texto, 0px));
-    color: var(--faint);
-    white-space: nowrap;
-}
-
-.gv-side {
-    display: flex;
-    flex: 1 1 auto;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.45rem;
-    min-width: 0;
-    padding-left: 1rem;
-    border-left: 1px solid var(--row-line);
-}
-
-.gv-kpi {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-}
-
-
-.gv-kpi-value {
-    font-size: max(1.15rem, var(--fs-texto, 0px));
-    font-weight: 700;
-    line-height: 1.1;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-}
-
-
-.gv-kpi-value small {
-    margin-left: 0.2rem;
-    font-size: max(0.8rem, var(--fs-texto, 0px));
-    font-weight: 600;
-    color: var(--muted);
-}
-
-
-.gv-kpi--ruim .gv-kpi-value {
-    color: var(--danger);
-}
-
-.gv-kpi-label {
-    font-size: max(0.76rem, var(--fs-texto, 0px));
-    color: var(--muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-
-
-/* anel de percentual */
-/* qualidade media das cargas expedidas, no lugar do anel de dosagem:
-   tres numeros lado a lado, cada um com o proprio limite embaixo */
-.gv-qual {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.5rem;
-    padding-top: 0.45rem;
-    border-top: 1px solid var(--row-line);
-}
-
-/* o titulo atravessa as tres colunas e diz de onde vem o numero */
-.gv-qual-titulo {
-    grid-column: 1 / -1;
-    font-size: max(0.58rem, var(--fs-texto, 0px));
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--accent);
-}
-
-.gv-qual-item {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    line-height: 1.1;
-}
-
-.gv-qual-item b {
-    font-size: max(1.05rem, var(--fs-texto, 0px));
-    font-weight: 800;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.01em;
-}
-
-.gv-qual-item b small {
-    margin-left: 0.05rem;
-    font-size: max(0.6em, var(--fs-texto, 0px));
-    font-weight: 700;
-    color: var(--muted);
-}
-
-.gv-qual-item em {
-    font-style: normal;
-    font-size: max(0.6rem, var(--fs-texto, 0px));
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--muted);
-}
-
-.gv-qual-item i {
-    font-style: normal;
-    font-size: max(0.56rem, var(--fs-texto, 0px));
-    font-weight: 600;
-    color: var(--faint);
-}
-
-/* passou do limite: o numero avisa na cor */
-.gv-qual-item.is-atencao b {
-    color: var(--warn);
-}
-
-.gv-ring {
-    position: relative;
-    display: flex;
-    flex: 0 0 auto;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 4.8rem;
-    height: 4.8rem;
-    text-align: center;
-}
-
-.gv-ring::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: conic-gradient(var(--c, var(--accent)) calc(var(--p) * 360deg), var(--row-line) 0);
-    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 0.5rem), #000 calc(100% - 0.5rem + 1px));
-    mask: radial-gradient(farthest-side, transparent calc(100% - 0.5rem), #000 calc(100% - 0.5rem + 1px));
-}
-
-
-.gv-ring-value {
-    font-size: 1.35rem;
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-}
-
-
-.gv-ring-value small {
-    font-size: max(0.6em, var(--fs-texto, 0px));
-    font-weight: 600;
-    color: var(--muted);
-}
-
-.gv-ring-label {
-    margin-top: 0.15rem;
-    font-size: max(0.74rem, var(--fs-texto, 0px));
-    color: var(--muted);
-}
-
-.gv-ring--mini {
-    width: 4.2rem;
-    height: 4.2rem;
-    --c: var(--ok);
-}
-
-.gv-ring--mini::before {
-    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 0.36rem), #000 calc(100% - 0.36rem + 1px));
-    mask: radial-gradient(farthest-side, transparent calc(100% - 0.36rem), #000 calc(100% - 0.36rem + 1px));
-}
-
-
-.gv-ring--mini .gv-ring-value {
-    font-size: max(0.95rem, var(--fs-texto, 0px));
-}
-
-.gv-side .gv-ring--mini {
-    align-self: flex-start;
-}
-
-
-
-/* medidores: valor contra um limite ou nominal */
-.gv-meters {
-    display: flex;
-    flex: 1 1 auto;
-    flex-direction: column;
-    gap: 0.4rem;
-    min-width: 0;
-    padding-left: 1rem;
-    border-left: 1px solid var(--row-line);
-}
-
-
-
-/* variante com o limite embaixo da barra: para heros com so dois medidores */
-.gv-meters--stack .gv-meter {
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas:
-        'label value'
-        'track track'
-        'lim   lim';
-    row-gap: 0.15rem;
-}
-
-.gv-meters--stack .gv-meter-lim {
-    text-align: left;
-}
-
-.gv-meters--wide {
-    padding-left: 0;
-    border-left: 0;
-    gap: 0.5rem;
-}
-
-.gv-meter {
-    display: grid;
-    grid-template-columns: max-content minmax(0, 1fr) auto;
-    grid-template-areas:
-        'label lim   value'
-        'track track track';
-    column-gap: 0.4rem;
-    row-gap: 0.2rem;
-    align-items: baseline;
-}
-
-.gv-meter-label {
-    grid-area: label;
-    font-size: max(0.76rem, var(--fs-texto, 0px));
-    font-weight: 600;
-    color: var(--muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.gv-meter-track {
-    grid-area: track;
-    position: relative;
-    align-self: center;
-    height: 0.4rem;
-    border-radius: 999px;
-    background: var(--row-line);
-    overflow: visible;
-}
-
-.gv-meter-fill {
-    display: block;
-    width: calc(var(--p) * 100%);
-    height: 100%;
-    border-radius: inherit;
-    background: var(--c, var(--accent));
-}
-
-.gv-meter-mark {
-    position: absolute;
-    top: -0.2rem;
-    bottom: -0.2rem;
-    left: calc(var(--m) * 100%);
-    width: 2px;
-    background: var(--text);
-    opacity: 0.6;
-}
-
-.gv-meter--range .gv-meter-track {
-    background: linear-gradient(90deg, var(--row-line), rgba(46, 204, 113, 0.35) 30%, rgba(46, 204, 113, 0.35) 70%, var(--row-line));
-}
-
-.gv-meter-dot {
-    position: absolute;
-    top: 50%;
-    left: calc(var(--p) * 100%);
-    width: 0.7rem;
-    height: 0.7rem;
-    border-radius: 50%;
-    background: var(--ok);
-    box-shadow: 0 0 0 2px var(--card-bg-bottom);
-    transform: translate(-50%, -50%);
-}
-
-.gv-meter-value {
-    grid-area: value;
-    font-size: max(0.86rem, var(--fs-texto, 0px));
-    font-weight: 700;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-}
-
-.gv-meter--ruim .gv-meter-value,
-.gv-meter--ruim .gv-meter-fill {
-    color: var(--danger);
-    background: var(--danger);
-}
-
-.gv-meter--ruim .gv-meter-value {
-    background: none;
-}
-
-.gv-meter-lim {
-    grid-area: lim;
-    min-width: 0;
-    font-size: max(0.74rem, var(--fs-texto, 0px));
-    color: var(--faint);
-    text-align: right;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-
-
-/* barra empilhada por cultura (uma linha, segmentos proporcionais) */
-.gv-block {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-}
-
-.gv-stack {
-    display: flex;
-    gap: 2px;
-    height: 1.35rem;
-    border-radius: 6px;
-    overflow: hidden;
-}
-
-.gv-stack-seg {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: var(--p) 1 0;
-    min-width: 0;
-    background: var(--c, var(--accent));
-    color: #fff;
-    font-size: max(0.8rem, var(--fs-texto, 0px));
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-}
-
-.gv-stack-legend {
-    display: flex;
-    gap: 0.75rem;
-    font-size: max(0.76rem, var(--fs-texto, 0px));
-    color: var(--muted);
-}
-
-.gv-stack-legend > span {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-}
-
-.gv-stack-legend .legend-dot {
-    width: 0.5rem;
-    height: 0.5rem;
-}
-
-.gv-stack-legend-cap {
-    margin-left: auto;
-    color: var(--faint);
-}
-
-
-
-/* lista de barras horizontais com rotulo, valor e linha de apoio */
-.gv-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-}
-
-.gv-bar {
-    display: grid;
-    grid-template-columns: 5.2rem minmax(0, 1fr) auto;
-    grid-template-areas:
-        'label track value'
-        'sub   sub   ref';
-    column-gap: 0.5rem;
-    row-gap: 0.1rem;
-    align-items: center;
-}
-
-.gv-bar-label {
-    grid-area: label;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    font-size: max(0.8rem, var(--fs-texto, 0px));
-    font-weight: 600;
-    color: var(--text);
-    white-space: nowrap;
-}
-
-.gv-bar-label .legend-dot,
-.gv-bar-sub .legend-dot,
-.gv-heat-row .legend-dot,
-.gv-chip .legend-dot {
-    width: 0.5rem;
-    height: 0.5rem;
-    margin: 0;
-    flex-shrink: 0;
-}
-
-.gv-bar-track {
-    grid-area: track;
-    height: 0.55rem;
-    border-radius: 999px;
-    background: var(--row-line);
-    overflow: hidden;
-}
-
-.gv-bar-fill {
-    display: block;
-    width: calc(var(--p) * 100%);
-    height: 100%;
-    border-radius: inherit;
-    background: var(--c, var(--accent));
-}
-
-.gv-bar--ruim {
-    --c: var(--danger);
-}
-
-.gv-bar--atencao {
-    --c: var(--warn);
-}
-
-.gv-bar-value {
-    grid-area: value;
-    font-size: max(0.86rem, var(--fs-texto, 0px));
-    font-weight: 700;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-}
-
-.gv-bar--ruim .gv-bar-value {
-    color: var(--danger);
-}
-
-.gv-bar--atencao .gv-bar-value {
-    color: var(--warn);
-}
-
-.gv-bar-ref {
-    grid-area: ref;
-    font-size: max(0.76rem, var(--fs-texto, 0px));
-    color: var(--faint);
-    text-align: right;
-    white-space: nowrap;
-}
-
-.gv-bar-sub {
-    grid-area: sub;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    font-size: max(0.76rem, var(--fs-texto, 0px));
-    color: var(--faint);
-    white-space: nowrap;
-}
-
-.gv-bar-sub em {
-    font-style: normal;
-    font-weight: 600;
-}
-
-
-
-/* mapa de calor compacto: cada celula tem um preenchimento proporcional */
-.gv-heat {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-}
-
-.gv-heat-row {
-    display: grid;
-    grid-template-columns: 4.2rem 3.4rem repeat(3, minmax(0, 1fr));
-    column-gap: 0.35rem;
-    align-items: center;
-    font-size: max(0.8rem, var(--fs-texto, 0px));
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-}
-
-.gv-heat--exp .gv-heat-row {
-    grid-template-columns: 4.2rem minmax(0, 1fr) minmax(0, 1fr) 2.4rem;
-}
-
-.gv-heat-row > span {
-    text-align: right;
-    white-space: nowrap;
-}
-
-.gv-heat-row > span:first-child {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    font-weight: 600;
-    text-align: left;
-}
-
-.gv-heat-row > span:nth-child(2) {
-    color: var(--muted);
-}
-
-.gv-heat-row--head > span {
-    font-size: max(0.74rem, var(--fs-texto, 0px));
-    font-weight: 600;
-    color: var(--faint);
-}
-
-.gv-cell {
-    padding: 0.12rem 0.35rem;
-    border-radius: 4px;
-    background: linear-gradient(90deg, rgba(59, 130, 246, 0.22) calc(var(--p) * 100%), transparent 0);
-}
-
-.gv-cell.is-atencao {
-    color: var(--warn);
-    background: linear-gradient(90deg, rgba(243, 156, 18, 0.28) calc(var(--p) * 100%), transparent 0);
-}
-
-.gv-pill {
-    justify-self: end;
-    min-width: 1.5rem;
-    padding: 0.08rem 0.4rem;
-    border-radius: 999px;
-    background: var(--row-line);
-    color: var(--muted);
-    text-align: center;
-    font-weight: 700;
-}
-
-.gv-pill.is-atencao {
-    background: rgba(243, 156, 18, 0.22);
-    color: var(--warn);
-}
-
-
-
-/* colunas verticais (moegas) */
-.gv-cols {
-    display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    gap: 0.5rem;
-    flex: 1 1 auto;
-    min-height: 0;
-}
-
-.gv-col {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.2rem;
-    min-height: 0;
-}
-
-.gv-col-value {
-    font-size: max(0.8rem, var(--fs-texto, 0px));
-    font-weight: 700;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-}
-
-.gv-col--alto .gv-col-value {
-    color: var(--warn);
-}
-
-.gv-col-track {
-    display: flex;
-    align-items: flex-end;
-    flex: 1 1 auto;
-    width: 100%;
-    min-height: 2.2rem;
-    border-radius: 5px;
-    background: var(--row-line);
-    overflow: hidden;
-}
-
-.gv-col-fill {
-    display: block;
-    width: 100%;
-    height: calc(var(--p) * 100%);
-    border-radius: inherit;
-    background: var(--c, var(--accent));
-}
-
-.gv-col--alto .gv-col-fill {
-    background: var(--warn);
-}
-
-.gv-col-name {
-    font-size: max(0.76rem, var(--fs-texto, 0px));
-    font-weight: 700;
-    color: var(--muted);
-}
-
-.gv-col-sub {
-    font-size: max(0.76rem, var(--fs-texto, 0px));
-    color: var(--faint);
-    font-variant-numeric: tabular-nums;
-}
-
-.gv-col-sub.is-atencao {
-    color: var(--warn);
-    font-weight: 700;
-}
-
-.gv-caption {
-    font-size: max(0.76rem, var(--fs-texto, 0px));
-    color: var(--faint);
-    text-align: center;
-}
-
-
-
-/* progresso do dia com marcas de referencia (secagem) */
-.gv-progress {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-}
-
-.gv-progress-track {
-    position: relative;
-    display: block;
-    height: 0.7rem;
-    border-radius: 999px;
-    background: var(--row-line);
-}
-
-.gv-progress-fill {
-    display: block;
-    width: calc(var(--p) * 100%);
-    height: 100%;
-    border-radius: inherit;
-    background: linear-gradient(90deg, var(--accent-strong), var(--accent));
-}
-
-.gv-progress-mark {
-    position: absolute;
-    top: -0.2rem;
-    bottom: -0.2rem;
-    width: 2px;
-    background: var(--text);
-    opacity: 0.55;
-}
-
-.gv-progress-mark--1 {
-    left: calc(var(--m1) * 100%);
-}
-
-.gv-progress-mark--2 {
-    left: calc(var(--m2) * 100%);
-    background: var(--ok);
-    opacity: 0.9;
-}
-
-.gv-progress-legend {
-    display: flex;
-    justify-content: space-between;
-    gap: 0.5rem;
-    font-size: max(0.66rem, var(--fs-texto, 0px));
-    color: var(--faint);
-    white-space: nowrap;
-}
-
-.gv-progress-legend b {
-    color: var(--muted);
-    font-weight: 700;
-}
-
-.gv-progress-legend b.is-ok {
-    color: var(--ok);
-}
-
-
-
-/* tanques (silos): preenchem de baixo pra cima na cor do produto */
-.gv-tanks {
-    display: grid;
-    grid-template-columns: repeat(8, minmax(0, 1fr));
-    gap: 0.4rem;
-    flex: 1 1 auto;
-}
-
-.gv-tank {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.15rem;
-    min-width: 0;
-}
-
-.gv-tank-body {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 2.6rem;
-    border: 1px solid var(--row-line);
-    border-radius: 4px 4px 6px 6px;
-    background: var(--row-bg);
-    overflow: hidden;
-}
-
-.gv-tank-fill {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: calc(var(--p) * 100%);
-    background: var(--c, var(--accent));
-    opacity: 0.85;
-}
-
-.gv-tank-body b {
-    position: relative;
-    font-size: max(0.76rem, var(--fs-texto, 0px));
-    font-weight: 800;
-    color: #fff;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-    font-variant-numeric: tabular-nums;
-}
-
-.gv-tank-name {
-    font-size: max(0.76rem, var(--fs-texto, 0px));
-    font-weight: 700;
-    color: var(--muted);
-}
-
-.gv-tank-temp {
-    font-size: max(0.74rem, var(--fs-texto, 0px));
-    color: var(--faint);
-    font-variant-numeric: tabular-nums;
-}
-
-.gv-tank--alto .gv-tank-body {
-    border-color: var(--warn);
-}
-
-.gv-tank--alto .gv-tank-name {
-    color: var(--warn);
-}
-
-.gv-tank--quente .gv-tank-temp {
-    color: var(--warn);
-    font-weight: 700;
-}
-
-
-
-/* fichas por cultura com preenchimento proporcional ao fundo */
-/* Cartão 05 (armazenagem): capacidade x estoque por cultura em versão
-   compacta — mesmas classes do gráfico grande, só com barras mais baixas. */
-.gv-capacidade {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    flex: 1 1 auto;
-    min-height: 0;
-}
-
-.gv-capacidade .chart-legend {
-    margin-bottom: 0;
-}
-
-.gv-capacidade .stack-chart {
-    gap: 0.3rem;
-    flex: 1 1 auto;
-    justify-content: center;
-}
-
-.gv-capacidade .stack-row--total {
-    margin-top: 0.2rem;
-    padding-top: 0.35rem;
-    border-top: 1px solid var(--row-line);
-}
-
-.gv-capacidade .stack-track {
-    height: 1.5rem;
-}
-
-.gv-capacidade .stack-label {
-    width: 2.75rem;
-    font-size: max(0.76rem, var(--fs-texto, 0px));
-}
-
-.gv-capacidade .stack-value {
-    font-size: max(0.76rem, var(--fs-texto, 0px));
-    padding: 0 0.25rem;
-}
-
-.gv-capacidade .stack-chart--capacidade .stack-cap {
-    flex-basis: 2.75rem;
-    font-size: max(0.76rem, var(--fs-texto, 0px));
-}
-
-.gv-capacidade .stack-chart--capacidade .stack-axis {
-    margin-left: 3.5rem;
-    margin-right: 3.5rem;
-    margin-top: 0;
-    font-size: max(0.74rem, var(--fs-texto, 0px));
-}
-
-.gv-chips {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.3rem;
-}
-
-.gv-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    min-width: 0;
-    padding: 0.2rem 0.45rem;
-    border-radius: 5px;
-    background: linear-gradient(90deg, color-mix(in srgb, var(--c, var(--accent)) 22%, transparent) calc(var(--p) * 100%), var(--row-bg) 0);
-    font-size: max(0.76rem, var(--fs-texto, 0px));
-    color: var(--muted);
-    white-space: nowrap;
-}
-
-.gv-chip b {
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-}
-
-.gv-chip em {
-    margin-left: auto;
-    font-style: normal;
-    font-weight: 700;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-}
-
-.gv-chip.is-atencao em {
-    color: var(--warn);
-}
-
-
-
-/* ventiladores e tarifa (aeracao) */
-.gv-fans {
-    display: inline-flex;
-    gap: 0.25rem;
-    margin-right: 0.35rem;
-    align-self: center;
-}
-
-.gv-fan {
-    width: 0.8rem;
-    height: 0.8rem;
-    border-radius: 50%;
-    border: 2px solid var(--faint);
-}
-
-.gv-fan.is-on {
-    border-color: var(--ok);
-    background: radial-gradient(circle, var(--ok) 35%, transparent 40%);
-    box-shadow: 0 0 0.5rem rgba(46, 204, 113, 0.5);
-}
-
-
-
-/* ---- Cartão 06 · Aeração por área ----
-   Para silos e armazém: linha do tempo de 24h com os trechos de aeração
-   ativa (cinza), os riscos do horário de ponta (18h e 21h) e o marcador de
-   agora; embaixo, temperatura e umidade relativa das últimas 24h. */
-.gv-aer {
-    gap: 0.45rem;
-}
-
-.gv-aer-legenda {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem 0.75rem;
-    font-size: max(0.74rem, var(--fs-texto, 0px));
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--muted);
-}
-
-.gv-aer-legenda span {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-}
-
-.gv-aer-legenda i {
-    display: inline-block;
-    width: 0.75rem;
-    height: 0.4rem;
-    border-radius: 2px;
-}
-
-.gv-aer-legenda-on {
-    background: var(--muted);
-    opacity: 0.8;
-}
-
-.gv-aer-legenda-ponta {
-    width: 0.75rem;
-    height: 0.4rem;
-    background: none;
-    border-left: 2px solid #f39c12;
-    border-right: 2px solid #f39c12;
-    border-radius: 0;
-}
-
-.gv-aer-legenda-temp,
-.gv-aer-legenda-ur {
-    height: 0;
-    border-top: 2px solid var(--grao-milho);
-    border-radius: 0;
-}
-
-.gv-aer-legenda-ur {
-    border-top-color: var(--accent);
-    border-top-style: dashed;
-}
-
-.gv-aer-row {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-    flex: 0 0 auto;
-    min-height: 0;
-}
-
-
-
-/* a curva do ar ambiente é uma só e fica com a altura que sobrar */
-.gv-aer-row--ar {
-    flex: 1 1 0;
-}
-
-.gv-aer-row + .gv-aer-row {
-    padding-top: 0.4rem;
-    border-top: 1px solid var(--row-line);
-}
-
-.gv-aer-row-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.5rem;
-}
-
-.gv-aer-row-name {
-    font-size: max(0.8rem, var(--fs-texto, 0px));
-    font-weight: 800;
-    color: var(--text);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    white-space: nowrap;
-}
-
-.gv-aer-row-sub {
-    font-size: max(0.76rem, var(--fs-texto, 0px));
-    font-weight: 600;
-    color: var(--muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-
-
-/* linha do tempo de 24h */
-.gv-aer-track {
-    position: relative;
-    height: 1.7rem;
-    margin-bottom: 0.75rem; /* espaço para as horas embaixo */
-    background: var(--row-bg);
-    border: 1px solid var(--row-line);
-    border-radius: 4px;
-}
-
-.gv-aer-on {
-    position: absolute;
-    top: 3px;
-    bottom: 3px;
-    background: var(--muted);
-    opacity: 0.8;
-    border-radius: 2px;
-}
-
-.gv-aer-ponta {
-    position: absolute;
-    top: -3px;
-    bottom: -3px;
-    left: 75%;
-    width: 12.5%;
-    border-left: 2px solid #f39c12;
-    border-right: 2px solid #f39c12;
-    pointer-events: none;
-}
-
-.gv-aer-now {
-    position: absolute;
-    top: -2px;
-    bottom: -2px;
-    left: 0;
-    width: 2px;
-    background: var(--text);
-    box-shadow: 0 0 4px var(--text);
-    transform: translateX(-1px);
-    pointer-events: none;
-}
-
-.gv-aer-h {
-    position: absolute;
-    top: 100%;
-    margin-top: 1px;
-    font-size: max(0.74rem, var(--fs-texto, 0px));
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    color: var(--faint);
-    transform: translateX(-50%);
-}
-
-.gv-aer-h--0 { left: 0; transform: none; }
-.gv-aer-h--12 { left: 50%; }
-.gv-aer-h--18 { left: 75%; color: #f39c12; }
-.gv-aer-h--21 { left: 87.5%; color: #f39c12; }
-.gv-aer-h--24 { left: 100%; transform: translateX(-100%); }
-
-
-
-/* curvas de temperatura e umidade + valores atuais ao lado */
-.gv-aer-curvas {
-    display: flex;
-    align-items: stretch;
-    gap: 0.5rem;
-    flex: 1 1 auto;
-    min-height: 2rem;
-}
-
-.gv-aer-svg {
-    flex: 1 1 0;
-    width: 100%;
-    min-width: 0; /* deixa o SVG encolher para caber a legenda da direita */
-    height: 100%;
-    min-height: 2rem;
-    overflow: visible;
-}
-
-.gv-aer-linha {
-    fill: none;
-    stroke-width: 1.6;
-    stroke-linejoin: round;
-    stroke-linecap: round;
-    vector-effect: non-scaling-stroke;
-}
-
-.gv-aer-linha--temp {
-    stroke: var(--grao-milho);
-}
-
-.gv-aer-linha--ur {
-    stroke: var(--accent);
-    stroke-dasharray: 4 3;
-}
-
-.gv-aer-leg {
-    flex: 0 0 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.2rem;
-}
-
-
-
-/* coluna da esquerda: leituras de 24h atrás, encostadas no começo da curva */
-.gv-aer-leg--ini .gv-aer-leg-item {
-    align-items: flex-end;
-    text-align: right;
-    padding-left: 0;
-    padding-right: 0.4rem;
-    border-left: 0;
-    border-right: 2px solid var(--grao-milho);
-}
-
-.gv-aer-leg--ini .gv-aer-leg-item--ur {
-    border-right-color: var(--accent);
-    border-right-style: dashed;
-}
-
-.gv-aer-leg-item {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.05;
-    font-size: max(0.74rem, var(--fs-texto, 0px));
-    font-weight: 600;
-    color: var(--muted);
-    padding-left: 0.4rem;
-    border-left: 2px solid var(--grao-milho);
-}
-
-.gv-aer-leg-item--ur {
-    border-left-color: var(--accent);
-    border-left-style: dashed;
-}
-
-.gv-aer-leg-item b {
-    font-size: max(0.86rem, var(--fs-texto, 0px));
-    font-weight: 800;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-}
-
-
-
-/* em ponta o selo do cabeçalho vira laranja */
-.geral-card.ponta-on .kpi-flag[data-ponta-tarifa] {
-    color: #f39c12;
-    border-color: rgba(243, 156, 18, 0.5);
-    background: rgba(243, 156, 18, 0.12);
-}
-
-.gv-tarifa {
-    display: flex;
-    flex: 1 1 auto;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
-    min-width: 0;
-    padding-left: 1rem;
-    border-left: 1px solid var(--row-line);
-}
-
-.gv-tarifa-badge {
-    padding: 0.3rem 0.65rem;
-    border-radius: 999px;
-    border: 1px solid rgba(46, 204, 113, 0.45);
-    background: rgba(46, 204, 113, 0.14);
-    color: var(--ok);
-    font-size: max(0.8rem, var(--fs-texto, 0px));
-    font-weight: 800;
-    letter-spacing: 0.06em;
-}
-
-.gv-tarifa-sub {
-    font-size: max(0.8rem, var(--fs-texto, 0px));
-    color: var(--muted);
-}
-
-.gv-tarifa-sub b {
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-}
-
-.gv-tarifa-ref {
-    font-size: max(0.76rem, var(--fs-texto, 0px));
-    color: var(--faint);
-}
-
-
-
-/* em ponta o card da aeracao acompanha a tela 08 */
-.geral-card.ponta-on .gv-tarifa-badge {
-    border-color: rgba(243, 156, 18, 0.5);
-    background: rgba(243, 156, 18, 0.16);
-    color: var(--warn);
-}
-
-
-
-/* tempo (central) */
-.gv-hero--tempo {
-    gap: 0.75rem;
-}
-
-.gv-weather-icon {
-    flex: 0 0 auto;
-    width: 2.8rem;
-    height: 2.8rem;
-    color: var(--warn);
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.6;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-.gv-days {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0.6rem;
-    flex: 1 1 auto;
-}
-
-.gv-day {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.15rem;
-    padding: 0.35rem 0.2rem;
-    border-radius: 8px;
-    background: var(--row-line);
-    min-width: 0;
-}
-
-.gv-day-name {
-    font-size: max(0.76rem, var(--fs-texto, 0px));
-    font-weight: 700;
-    color: var(--text);
-}
-
-.gv-day-date {
-    font-size: max(0.74rem, var(--fs-texto, 0px));
-    color: var(--muted);
-    margin-top: -0.1rem;
-}
-
-
-
-/* ícone do tempo do dia, nas mesmas cores da tela 08 */
-.gv-day-icon {
-    width: 1.7rem;
-    height: 1.7rem;
-    margin: 0.1rem 0;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.6;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-.gv-day-icon--sol { color: #e0a33c; }
-.gv-day-icon--nuvem { color: var(--muted); }
-.gv-day-icon--chuva { color: var(--accent); }
-
-
-
-/* chance de chuva e volume esperado */
-.gv-day-rain {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: max(0.74rem, var(--fs-texto, 0px));
-    line-height: 1.2;
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-}
-
-.gv-day-rain b {
-    font-size: max(0.76rem, var(--fs-texto, 0px));
-    font-weight: 700;
-    color: #38bdf8;
-}
-
-.gv-day-rain--alta b {
-    color: var(--accent);
-}
-
-
-
-/* máxima em vermelho, mínima em azul */
-.gv-day-temp {
-    font-size: max(0.8rem, var(--fs-texto, 0px));
-    font-weight: 700;
-    line-height: 1.1;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-}
-
-.gv-day-temp b {
-    color: var(--danger);
-}
-
-.gv-day-temp small {
-    font-size: max(0.85em, var(--fs-texto, 0px));
-    font-weight: 700;
-    color: #38bdf8;
-}
-
-.gv-day-temp small::before {
-    content: " / ";
-    color: var(--muted);
-    font-weight: 400;
-}
-
-
-
-/* umidade relativa do dia */
-.gv-day-sub {
-    font-size: max(0.78rem, var(--fs-texto, 0px));
-    line-height: 1.2;
-    color: var(--muted);
-    white-space: nowrap;
-    font-variant-numeric: tabular-nums;
-}
-
-.gv-day-sub b {
-    font-weight: 700;
-    color: var(--text);
-}
-
-.gv-coop {
-    display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
-    font-size: max(0.8rem, var(--fs-texto, 0px));
-    color: var(--muted);
-}
-
-.gv-coop-value {
-    font-weight: 700;
-    color: var(--text);
-}
-
-.gv-coop-ref {
-    margin-left: auto;
-    font-size: max(0.76rem, var(--fs-texto, 0px));
-    color: var(--faint);
-}
-
-
-
-/* rodape: menor e sem caixa alta, o card e o botao inteiro */
-.geral-card-foot {
-    margin-top: auto;
-    font-size: max(0.66rem, var(--fs-texto, 0px));
-}
-
-.geral-card-foot em {
-    font-style: normal;
-    color: var(--faint);
-}
-
-.geral-card-foot .is-ok,
-.gv-bar-sub .is-ok {
-    color: var(--ok);
-}
-
-.gv-bar-sub .is-atencao {
-    color: var(--warn);
-}
-
-
-
-/* tema claro: fundos das celulas e dos tanques */
-body.theme-light .gv-tank-fill {
-    opacity: 0.9;
-}
-
-
-
-body.theme-light .gv-tank-body b {
-    color: var(--text);
-    text-shadow: 0 0 3px #fff, 0 0 3px #fff;
-}
-
-
-
-body.theme-light .gv-stack-seg {
-    color: #fff;
-}
-
-
-
-body.theme-light .gv-meter-dot {
-    box-shadow: 0 0 0 2px #fff;
-}
-
-.geral-card-foot {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-    width: 100%;
-    padding-top: 0.625rem;
-    border-top: 1px solid var(--row-line);
-    font-size: max(0.8rem, var(--fs-texto, 0px));
-    color: var(--muted);
-}
-
-.geral-card-foot > span:first-child {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-.geral-card-link {
-    flex-shrink: 0;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    font-size: max(0.76rem, var(--fs-texto, 0px));
-    color: var(--faint);
-    transition: color 0.2s ease;
-}
-
-
-
-/* tema claro: mesmas cores das pilulas .kpi-flag no claro */
-body.theme-light .geral-card.atencao {
-    border-color: rgba(184, 108, 0, 0.35);
-    background: linear-gradient(180deg, rgba(184, 108, 0, 0.1) 0%, rgba(184, 108, 0, 0.03) 100%);
-}
-
-
-
-body.theme-light .geral-card.alert {
-    border-color: rgba(179, 38, 30, 0.35);
-    background: linear-gradient(180deg, rgba(179, 38, 30, 0.1) 0%, rgba(179, 38, 30, 0.03) 100%);
-}
-
-
-
 body.theme-light .kpi-flag--info {
     background: rgba(37, 99, 235, 0.1);
     border-color: rgba(37, 99, 235, 0.35);
     color: #1d4ed8;
 }
-@media screen and (max-width: 1024px) {
 
-    .geral-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+
+
+/* ============================================
+   VISÃO GERAL (tela 00): MURAL DO VIDEOWALL
+   8 quadros, 4 por fileira, na ordem da parede de TVs. Cada quadro é
+   uma TV: um iframe Full HD (1920 px) que o script escala para o
+   tamanho do quadro. O botão por cima leva à tela da área.
+   A parede é a maior que cabe na tela (largura ou altura, o que faltar
+   antes), com as TVs emendadas por um fio preto, como no videowall.
+   ============================================ */
+.screen--mural {
+    padding: 0.75rem;
 }
 
-@media screen and (max-width: 768px) {
+.mural {
+    --mural-fio: 3px;
+    flex: 1 1 auto;
+    container-type: size;
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    justify-content: center;
+    align-content: center;
+    gap: var(--mural-fio);
+}
 
-    .geral-grid {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
+/* 4 TVs de 16:9 na largura, 2 na altura: a menor das duas medidas manda */
+.mural-quadro {
+    position: relative;
+    width: min((100cqw - 5 * var(--mural-fio)) / 4, (100cqh - 3 * var(--mural-fio)) * 8 / 9);
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 0 0 var(--mural-fio) #000;
+}
 
-    .geral-card {
-        min-height: 0;
-        padding: 14px 16px;
-    }
+.mural-tv {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1920px;
+    height: 1080px;
+    border: 0;
+    transform-origin: 0 0;
+}
 
+.mural-abrir {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
 
-    .gv-big-value {
-        font-size: 28px;
-    }
+.mural-abrir:hover,
+.mural-abrir:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+}
 
+/* dentro do quadro (o iframe): a tela igual à do computador, só sem o
+   cabeçalho e o menu */
+html.quadro .header,
+html.quadro .sidebar,
+html.quadro .sidebar-reveal,
+html.quadro .sidebar-backdrop {
+    display: none !important;
+}
+
+html.quadro .container {
+    height: 100vh;
+}
+
+/* modo TV: a tela cobre a janela inteira, sem moldura, um quadro por TV */
+html.tv #screen-geral.active {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: #000;
+}
+
+html.tv #screen-geral .screen-header,
+html.tv .mural-abrir {
+    display: none;
+}
+
+html.tv .mural {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: 0;
+}
+
+html.tv .mural-quadro {
+    width: auto;
+    aspect-ratio: auto;
+    box-shadow: none;
 }
 
 
@@ -15967,7 +14443,6 @@ body.theme-light .kpi-flag--info {
     padding: 0 0.5rem;
     font-size: max(0.68rem, var(--fs-texto, 0px));
 }
-
 
 
 
@@ -16530,8 +15005,6 @@ body.theme-light .mensal-ritmo {
 
 
 
-
-
 /* o limite do padrao anda junto do rotulo (o queimado da soja tem teto
    proprio de 1% mesmo ja estando contado dentro do avariado) */
 .kpi-lim {
@@ -16546,7 +15019,6 @@ body.theme-light .mensal-ritmo {
     color: var(--faint);
     white-space: nowrap;
 }
-
 
 
 
@@ -16662,9 +15134,6 @@ body.theme-light .mensal-ritmo {
 
 
 
-
-
-
 #screen-1[data-cult-trigo="off"] .trigo-tipos-grid {
     opacity: 0.55;
 }
@@ -16772,9 +15241,6 @@ body.theme-light .mensal-ritmo {
     font-weight: 700;
     color: var(--faint);
 }
-
-
-
 
 
 
@@ -17078,16 +15544,6 @@ body.theme-light .mensal-ritmo {
 #screen-7[data-exp-cultura="soja"] .kpi-sub-item[data-cultura]:not([data-cultura="soja"]) {
     display: none;
 }
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -17713,7 +16169,6 @@ body.theme-light .mensal-ritmo {
 
 
 
-
 #screen-7 .exp-table td {
     font-size: max(0.92rem, var(--fs-texto, 0px));
 }
@@ -17741,7 +16196,6 @@ body.theme-light .mensal-ritmo {
 #screen-7[data-exp-cultura="soja"] .exp-contrato:not([data-cultura="soja"]) {
     display: none;
 }
-
 
 
 
@@ -18754,18 +17208,6 @@ body.theme-light .class-val--fora {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 /* ---- Detalhe por carga ----
    so qualidade e dosagem: horario, cultura, origem, tag do caminhao (o destino
    vai no tooltip dela), volume, os itens de qualidade em colunas proprias
@@ -18948,7 +17390,6 @@ body.theme-light .class-val--fora {
 
 
 
-
 /* volume x programado: barra no rodape do cartao, no lugar da quebra por
    cultura (que ja esta na tabela de qualidade). Abaixo de 85% fica laranja. */
 #screen-7 .exp-meta {
@@ -18994,7 +17435,6 @@ body.theme-light .class-val--fora {
 
 
 
-
 /* a tabela de cargas rola por dentro e fica com a sobra da tela; o piso
    garante cabecalho + ~4 linhas sem empurrar o resto para o ajuste */
 /* piso de ~6 cargas visiveis: se faltar altura, o ajuste encolhe a tela
@@ -19033,14 +17473,6 @@ body.theme-light .class-val--fora {
 
 
 
-
-
-
-
-
-
-
-
 /* coluna DOSAGEM do detalhe: o bag e, embaixo, a folga ate o limite */
 .exp-table td.dos-carga {
     white-space: nowrap;
@@ -19054,11 +17486,6 @@ body.theme-light .class-val--fora {
     font-size: max(0.6rem, var(--fs-texto, 0px));
     color: var(--faint);
 }
-
-
-
-
-
 
 
 
@@ -22157,7 +20584,7 @@ body.theme-light .du-proj-sel option {
 
     /* rótulos que no monitor ficam numa linha só (com reticências quando
        não cabem): na TV quebram, para nenhum número sumir */
-    html.tv :is(.gv-kpi-label, .gv-meter-label, .gv-meter-lim, .trigo-tipo-lim, .conc-num-sub, .sa-aer-clima-rotulo, .sa-aer-clima-ur, .pv-fact) {
+    html.tv :is(.trigo-tipo-lim, .conc-num-sub, .sa-aer-clima-rotulo, .sa-aer-clima-ur, .pv-fact) {
         white-space: normal;
         text-overflow: clip;
         overflow: visible;
@@ -22170,7 +20597,7 @@ body.theme-light .du-proj-sel option {
     }
 
     /* cores escritas direto nas regras (fora dos tokens): versão clara */
-    html.tv :is(.pv-tabela-temp small, .gv-day-rain b, .gv-day-temp small, .du-dia-temp small) {
+    html.tv :is(.pv-tabela-temp small, .du-dia-temp small) {
         color: #7dd3fc;
     }
 
@@ -22187,13 +20614,10 @@ body.theme-light .du-proj-sel option {
         --sec2: #ffad85;
     }
 
-    html.tv .gv-aer-h:is(.gv-aer-h--18, .gv-aer-h--21) {
-        color: #fcd34d;
-    }
 
     /* texto por cima das cores claras (segmentos de barra, selos de alarme,
        número da tela): escuro, que é o que dá contraste sobre elas */
-    html.tv :is(.gv-stack-seg, .secador-alarme, .du-silos i.is-subindo, .du-subindo-leg, .screen-badge, .stack-value, .secador-estado-pill) {
+    html.tv :is(.secador-alarme, .du-silos i.is-subindo, .du-subindo-leg, .screen-badge, .stack-value, .secador-estado-pill) {
         color: #0b0f14;
     }
 
@@ -22209,14 +20633,7 @@ body.theme-light .du-proj-sel option {
         }
     }
 
-    /* tingidos âmbar fixos no arquivo: mais fracos, para o texto âmbar dar 7:1 */
-    html.tv .gv-cell.is-atencao {
-        background: linear-gradient(90deg, rgba(243, 156, 18, 0.16) calc(var(--p) * 100%), transparent 0);
-    }
 
-    html.tv .gv-pill.is-atencao {
-        background: rgba(243, 156, 18, 0.14);
-    }
 
     /* % e volume do silo ficam por cima do nível (claro) e do vazio
        (escuro), conforme a ocupação: nenhuma cor única serve aos dois, então
@@ -22257,22 +20674,11 @@ body.theme-light .du-proj-sel option {
     html.tv .etapa-fill--moega { background: #1e4f9f; color: #fff; }
     html.tv .etapa-fill--p2 { background: #163b78; color: #fff; }
 
-    /* dosagem média na visão geral (expedição): as três colunas estreitas
-       não comportam os rótulos maiores; o cartão tem altura de sobra, então
-       cada item vira uma linha (valor · rótulo · limite) */
-    html.tv .gv-qual {
-        grid-template-columns: 1fr;
-    }
 
-    html.tv .gv-qual-item {
-        flex-flow: row wrap;
-        align-items: baseline;
-        gap: 0.4em;
-    }
 
     /* título de bloco, legendas e linhas de rótulos dividem a linha; com
        letra maior, quebram */
-    html.tv :is(.section-head, .serie-legenda, .gv-progress-legend, .sa-aer-clima-ur) {
+    html.tv :is(.section-head, .serie-legenda, .sa-aer-clima-ur) {
         flex-wrap: wrap;
     }
 
@@ -22313,115 +20719,7 @@ body.theme-light .du-proj-sel option {
         letter-spacing: 0.02em;
     }
 
-    /* Visão geral */
-    html.tv #screen-geral :is(
-        .gv-big-ref,
-        .gv-bar-sub,
-        .gv-bar-ref,
-        .gv-meter-lim,
-        .gv-col-sub,
-        .gv-caption,
-        .gv-day-date,
-        .gv-day-sub,
-        .gv-qual-item i,
-        .stack-axis,
-        .stack-seg--free .stack-value,
-        .gv-aer-legenda-temp,
-        .gv-aer-legenda-ur
-    ) {
-        display: none;
-    }
 
-    /* fila por cultura e cargas por cultura em barra: repetem a lista e a tabela logo abaixo */
-    html.tv #screen-geral .gv-block {
-        display: none;
-    }
-
-    /* tabelas por cultura: sai o volume, ficam a qualidade (classificação) e as cargas (expedição) */
-    html.tv #screen-geral .gv-heat:not(.gv-heat--exp) .gv-heat-row > :nth-child(2),
-    html.tv #screen-geral .gv-heat--exp .gv-heat-row > :nth-child(3) {
-        display: none;
-    }
-
-    html.tv #screen-geral .gv-heat:not(.gv-heat--exp) .gv-heat-row {
-        grid-template-columns: auto repeat(3, minmax(0, 1fr));
-    }
-
-    html.tv #screen-geral .gv-heat--exp .gv-heat-row {
-        grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr);
-    }
-
-    /* expedição: a dosagem e a tabela por cultura têm tela própria; aqui
-       ficam cargas, fila e reprovadas */
-    html.tv #screen-geral :is(.gv-qual, .gv-heat--exp) {
-        display: none;
-    }
-
-    /* classificação: as médias gerais saem, a tabela por cultura (com as
-       células em atenção) diz mais */
-    html.tv #screen-geral .geral-card[data-goto="1"] .gv-meters {
-        display: none;
-    }
-
-    /* secagem: total, temperaturas em alerta e a meta; cada secador fica
-       na tela da secagem */
-    html.tv #screen-geral .geral-card[data-goto="3"] .gv-list {
-        display: none;
-    }
-
-    /* aeração: o ar de agora já está no cartão da previsão */
-    html.tv #screen-geral .gv-aer-row--ar {
-        display: none;
-    }
-
-    /* números 01–08 dos cartões: referência do monitor, tiram espaço do título e do selo */
-    html.tv #screen-geral .geral-card-num {
-        display: none;
-    }
-
-    /* secagem: sem a lista dos secadores sobra altura; as duas temperaturas
-       descem para baixo do total, com o rótulo numa linha só */
-    html.tv #screen-geral .geral-card[data-goto="3"] .gv-hero {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    /* moegas: anel maior, com o rótulo dentro */
-    html.tv #screen-geral .gv-ring {
-        width: 7.5rem;
-        height: 7.5rem;
-    }
-
-    html.tv #screen-geral .gv-ring-value {
-        font-size: 2rem;
-    }
-
-    /* armazenagem: o estoque com a mesma letra do resto do cartão */
-    html.tv #screen-geral .gv-capacidade .stack-seg {
-        --fs-texto: 1.2rem;
-    }
-
-    html.tv #screen-geral .gv-capacidade .stack-track {
-        height: 2rem;
-    }
-
-    html.tv #screen-geral .gv-capacidade .stack-label {
-        width: auto;
-        min-width: 3.6rem;
-    }
-
-    /* previsão: três dias, para máxima e mínima caberem lado a lado */
-    html.tv #screen-geral .gv-days {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    html.tv #screen-geral .gv-day:nth-child(n+4) {
-        display: none;
-    }
-
-    html.tv #screen-geral .gv-capacidade .stack-value {
-        padding: 0 0.15rem;
-    }
 
     /* Recepção e fluxo da expedição — ciclo por etapa: a linha GERAL
        (média das culturas) e o total ao lado do nome saem; o comprimento da
@@ -23199,43 +21497,793 @@ body.theme-light .du-proj-sel option {
         flex: 0 0 auto;
     }
 
-    /* previsão: o selo "tempo" não é status, e o "agora" já se entende pelo número grande */
-    html.tv #screen-geral .geral-card[data-goto="8"] :is(.kpi-flag, .gv-big-label, .gv-kpi:nth-child(3)) {
-        display: none;
+
+
+}
+
+
+
+/* ============================================
+   VISÃO TÁTICA x ESTRATÉGICA
+   O <body> diz a visão no ar (data-visao); tudo do menu marcado com a
+   outra visão some. As telas não precisam da marca: só se chega a elas
+   pelo menu (ou pelas setas, que o script limita à visão no ar).
+   ============================================ */
+body[data-visao="tatica"] .sidebar [data-visao="estrategica"],
+body[data-visao="estrategica"] .sidebar [data-visao="tatica"] {
+    display: none !important;
+}
+
+
+
+/* PDF de todas as telas: só as da visão no ar */
+body.print-all[data-visao="tatica"] .screen--est,
+body.print-all[data-visao="estrategica"] .screen:not(.screen--est) {
+    display: none !important;
+}
+
+
+
+.visao-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.1875rem;
+    margin-left: 0.5rem;
+    padding: 0.1875rem;
+    border: 1px solid var(--panel-border);
+    border-radius: 999px;
+    background: var(--hover);
+}
+
+
+
+.visao-btn {
+    appearance: none;
+    border: 0;
+    border-radius: 999px;
+    padding: 0.375rem 0.875rem;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: max(0.66rem, var(--fs-texto, 0px));
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+
+
+.visao-btn:hover {
+    color: var(--text);
+}
+
+
+
+.visao-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+
+
+.visao-btn.is-active {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+
+
+/* selo das telas estratégicas: contorno em vez de preenchido, para a
+   foto de uma TV já dizer de que visão é a tela */
+.screen--est .screen-badge {
+    background: transparent;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    box-shadow: none;
+}
+
+
+
+/* ============================================
+   TELAS ESTRATÉGICAS (est-*)
+   Moldura comum: KPIs do ano, gráfico de 24 meses (du-split à esquerda)
+   e tabela ano a ano à direita. Base visual das demais unidades (du-*).
+   ============================================ */
+.est-corpo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+
+
+.est-corpo > * {
+    margin-bottom: 0;
+    min-height: 0;
+}
+
+
+
+.est-kpis {
+    flex: 0 0 auto;
+}
+
+
+
+.est-kpi .kpi-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+
+
+.est-split {
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+}
+
+
+
+.est-section {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+
+
+/* ---- variação contra o ano anterior: seta + texto, a cor só reforça ---- */
+.est-delta {
+    display: block;
+    font-size: max(0.74rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--muted);
+}
+
+
+
+.est-delta b {
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+
+
+.est-delta.is-bom b {
+    color: var(--du-ok);
+}
+
+
+
+.est-delta.is-ruim b {
+    color: var(--du-danger);
+}
+
+
+
+.est-delta.is-neutro b {
+    color: var(--text);
+}
+
+
+
+/* ---- gráfico de 24 meses ---- */
+.est-graf {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    column-gap: 0.5rem;
+    flex: 1 1 auto;
+    min-height: 9rem;
+    padding-top: 0.6rem;
+}
+
+
+
+.est-eixo-y {
+    position: relative;
+    min-width: 2.25rem;
+}
+
+
+
+.est-eixo-y span {
+    position: absolute;
+    right: 0;
+    bottom: calc(var(--y) * 100%);
+    transform: translateY(50%);
+    font-size: max(0.66rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    color: var(--faint);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.est-plot {
+    position: relative;
+    min-height: 0;
+}
+
+
+
+.est-grade,
+.est-ref {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--y) * 100%);
+    height: 0;
+    pointer-events: none;
+}
+
+
+
+.est-grade {
+    border-top: 1px solid var(--row-line);
+}
+
+
+
+/* base, meta ou limite: tracejado forte (o nome fica na legenda) */
+.est-ref {
+    border-top: 2px dashed var(--muted);
+    z-index: 2;
+}
+
+
+
+.est-cols {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(24, minmax(0, 1fr));
+    z-index: 3;
+}
+
+
+
+.est-col {
+    position: relative;
+    height: 100%;
+    border-radius: 4px;
+}
+
+
+
+.est-col:hover {
+    background: var(--hover);
+}
+
+
+
+/* virada do ano: um fio vertical antes de janeiro */
+.est-col.is-jan::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    border-left: 1px dashed var(--card-border);
+}
+
+
+
+.est-barra {
+    position: absolute;
+    left: 16%;
+    right: 16%;
+    bottom: 0;
+    height: calc(var(--h) * 100%);
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 2px;
+}
+
+
+
+.est-barra i {
+    flex-basis: 0;
+    min-height: 0;
+    background: var(--c);
+}
+
+
+
+.est-barra i:last-child {
+    border-radius: 4px 4px 0 0;
+}
+
+
+
+/* mesmo mês do ano anterior: traço sobre a coluna */
+.est-ant {
+    position: absolute;
+    left: 6%;
+    right: 6%;
+    bottom: calc(var(--h) * 100%);
+    height: 0;
+    border-top: 3px solid var(--text);
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px var(--section-bg);
+    opacity: 0.85;
+}
+
+
+
+.est-linhas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    z-index: 2;
+}
+
+
+
+.est-linhas polyline {
+    fill: none;
+    stroke-width: 2px;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+}
+
+
+
+.est-linha {
+    stroke: var(--viz-real);
+    stroke-width: 3px !important;
+}
+
+
+
+.est-linha-ant {
+    stroke: var(--faint);
+    stroke-dasharray: 5 4;
+}
+
+
+
+.est-ponto {
+    position: absolute;
+    left: 50%;
+    bottom: calc(var(--h) * 100%);
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: var(--viz-real);
+    box-shadow: 0 0 0 2px var(--section-bg);
+    transform: translate(-50%, 50%);
+}
+
+
+
+.est-col.is-anterior .est-ponto {
+    opacity: 0.55;
+}
+
+
+
+.est-eixo-x {
+    grid-column: 2;
+    display: grid;
+    grid-template-columns: repeat(24, minmax(0, 1fr));
+    padding-top: 0.3rem;
+    border-top: 1px solid var(--card-border);
+}
+
+
+
+.est-eixo-x span {
+    font-size: max(0.62rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    color: var(--faint);
+    white-space: nowrap;
+}
+
+
+
+.est-eixo-x b {
+    display: block;
+    font-weight: 800;
+    color: var(--muted);
+}
+
+
+
+/* legenda dos traços (as culturas usam o du-dot) */
+.est-leg {
+    display: inline-block;
+    width: 0.9rem;
+    height: 0.7rem;
+    border-radius: 3px;
+}
+
+
+
+.est-leg--barra {
+    background: var(--viz-real);
+}
+
+
+
+.est-leg--ant {
+    height: 0;
+    border-top: 3px solid var(--text);
+    border-radius: 2px;
+}
+
+
+
+.est-leg--linha {
+    height: 0;
+    border-top: 3px solid var(--viz-real);
+}
+
+
+
+.est-leg--linha-ant {
+    height: 0;
+    border-top: 2px dashed var(--faint);
+}
+
+
+
+.est-leg--ref {
+    height: 0;
+    border-top: 2px dashed var(--muted);
+}
+
+
+
+/* ---- tabela ano a ano ---- */
+.est-tabela td .du-medidor {
+    min-width: 7rem;
+}
+
+
+
+.est-tabela td .est-delta {
+    font-size: max(0.7rem, var(--fs-texto, 0px));
+}
+
+
+
+.est-tabela td.num .est-delta {
+    text-align: right;
+}
+
+
+
+.est-linha-atual td {
+    background: var(--accent-soft);
+    font-weight: 700;
+}
+
+
+
+.est-linha-atual td.pv-tabela-nome small {
+    color: var(--muted);
+}
+
+
+
+/* ---- dica do gráfico ---- */
+.est-tip {
+    position: fixed;
+    z-index: 300;
+    min-width: 11rem;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    background: var(--header-bg);
+    box-shadow: var(--shadow);
+    color: var(--text);
+    font-size: max(0.78rem, var(--fs-texto, 0px));
+    pointer-events: none;
+}
+
+
+
+.est-tip[hidden] {
+    display: none;
+}
+
+
+
+.est-tip-titulo {
+    margin-bottom: 0.3rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+
+
+.est-tip-linha {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    line-height: 1.5;
+}
+
+
+
+.est-tip-linha i {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 2px;
+    background: var(--c);
+}
+
+
+
+.est-tip-linha span {
+    color: var(--muted);
+}
+
+
+
+.est-tip-linha b {
+    margin-left: auto;
+    padding-left: 0.8rem;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.est-tip-ant {
+    margin-top: 0.35rem;
+    padding-top: 0.35rem;
+    border-top: 1px solid var(--row-line);
+    color: var(--muted);
+}
+
+
+
+.est-tip-ant .est-delta {
+    display: inline;
+}
+
+
+
+/* ---- visão geral estratégica: um cartão por área ---- */
+.est-geral {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+
+
+.est-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.3rem;
+    min-height: 0;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    background: var(--section-bg);
+    color: var(--text);
+    font: inherit;
+    text-align: left;
+}
+
+
+
+button.est-tile {
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+
+
+button.est-tile:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+
+
+button.est-tile:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+
+
+.est-tile-nome {
+    font-size: max(0.82rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+
+
+.est-tile-rotulo {
+    font-size: max(0.7rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    color: var(--faint);
+}
+
+
+
+.est-tile .kpi-value {
+    margin-top: 0.2rem;
+}
+
+
+
+.est-spark {
+    position: relative;
+    display: block;
+    flex: 1 1 auto;
+    min-height: 2.5rem;
+    margin-top: 0.4rem;
+}
+
+
+
+.est-spark svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+
+
+.est-spark polyline {
+    fill: none;
+    stroke: var(--viz-real);
+    stroke-width: 2px;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+
+
+
+.est-spark i {
+    position: absolute;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--viz-real);
+    box-shadow: 0 0 0 2px var(--section-bg);
+    transform: translate(-50%, -50%);
+}
+
+
+
+.est-recordes {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    flex: 1 1 auto;
+    margin: 0.3rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+
+
+.est-recordes li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid var(--row-line);
+    font-size: max(0.8rem, var(--fs-texto, 0px));
+}
+
+
+
+.est-recordes li:last-child {
+    border-bottom: 0;
+}
+
+
+
+.est-recordes span {
+    color: var(--muted);
+    font-weight: 600;
+}
+
+
+
+.est-recordes b {
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.est-recordes em {
+    min-width: 3.2rem;
+    font-style: normal;
+    font-weight: 700;
+    text-align: right;
+    color: var(--faint);
+}
+
+
+
+@media screen and (max-width: 1024px) {
+    .est-geral {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: none;
     }
 
-    /* ar ambiente: fica a leitura de agora (direita); a de 24h atrás sai */
-    html.tv #screen-geral .gv-aer-leg--ini {
-        display: none;
+    .est-split {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+
+
+@media screen and (max-width: 768px) {
+    .visao-toggle {
+        margin-left: 0;
     }
 
-    /* moegas: o volume em m³ repete a ocupação do anel */
-    html.tv #screen-geral .gv-ring + .gv-side .gv-kpi:first-child {
-        display: none;
+    .est-graf {
+        min-height: 14rem;
     }
 
-    /* secagem: da legenda da meta ficam o percentual e a projeção */
-    html.tv #screen-geral .gv-progress-legend > :nth-child(2) {
-        display: none;
+    /* 24 rótulos não cabem no celular: só os trimestres */
+    .est-eixo-x span:not(.is-trim) {
+        visibility: hidden;
     }
+}
 
-    /* aeração: a hora só embaixo da última faixa, e só 00h, 12h e 24h
-       (a ponta já aparece marcada na faixa) */
-    html.tv #screen-geral .gv-aer-row:first-of-type .gv-aer-h,
-    html.tv #screen-geral .gv-aer-h:is(.gv-aer-h--18, .gv-aer-h--21) {
-        display: none;
-    }
 
-    html.tv #screen-geral .gv-aer-legenda span:has(:is(.gv-aer-legenda-temp, .gv-aer-legenda-ur)) {
-        display: none;
-    }
 
-    /* previsão: chuva só em %, sem os milímetros */
-    html.tv #screen-geral .gv-day-rain {
-        font-size: 0;
-    }
+/* TV: de longe, o eixo X fica nos trimestres e o rótulo do KPI pode quebrar */
+html.tv .est-eixo-x span:not(.is-trim) {
+    visibility: hidden;
+}
 
-    html.tv #screen-geral .gv-day-rain b {
-        font-size: var(--fs-texto);
-    }
+
+
+html.tv .est-kpi .kpi-label {
+    white-space: normal;
+}
+
+
+
+html.tv .est-tile-rotulo {
+    display: none;
+}
+
+
+
+.est-spark-eixo {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 0.25rem;
+    border-top: 1px solid var(--row-line);
+    font-size: max(0.66rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    color: var(--faint);
 }
