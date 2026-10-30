@@ -49,6 +49,7 @@ menuItems.forEach((item) => {
         syncMenuGroups();
         setAlertsPage(false);
         if (isMobile()) setSidebarCollapsed(true, false);
+        sincronizarMural();
         scheduleFit();
     });
 });
@@ -202,7 +203,7 @@ function fitTargets() {
         const cortam = Array.prototype.filter.call(active.querySelectorAll('*'), (el) => {
             const cs = getComputedStyle(el);
             return (cs.overflowX !== 'visible' || cs.overflowY !== 'visible')
-                && !el.closest('.table-scroll--livre, .content-section--livre, .leaflet-container');
+                && !el.closest('.table-scroll--livre, .content-section--livre, .leaflet-container, .mural');
         });
         return [active, ...cortam];
     }
@@ -213,7 +214,7 @@ function fitTargets() {
     // O cartao do secador (produtividade), o do silo e o do armazem cortam o
     // que passa da fileira deles, sem a secao perceber: entram na conta para
     // nada sumir.
-    const blocos = active.querySelectorAll('.content-section:not(.content-section--livre), .table-scroll:not(.table-scroll--livre), .alerts-list, .geral-grid, .prod-secador, .sa-card[data-silo], .sa-card[data-armazem]');
+    const blocos = active.querySelectorAll('.content-section:not(.content-section--livre), .table-scroll:not(.table-scroll--livre), .alerts-list, .prod-secador, .sa-card[data-silo], .sa-card[data-armazem]');
     return [active, ...Array.prototype.filter.call(blocos, (el) => getComputedStyle(el).overflowY !== 'visible')];
 }
 
@@ -268,6 +269,52 @@ if (document.fonts && document.fonts.ready) {
 // ============================================
 const TV_STORAGE_KEY = 'videowall:modo-tv';
 
+// Quadro do mural (Visao geral): ?telas=3,4,pressao sao as telas do segmento
+// desta TV. Vazio fora do quadro. O revezamento esta no fim do arquivo.
+const TELAS_DO_QUADRO = (new URLSearchParams(location.search).get('telas') || '')
+    .split(',').map((tela) => tela.trim()).filter(Boolean);
+
+// ---- Visao geral: o mural ----
+// Cada .mural-quadro ganha um iframe com esta pagina em ?telas=... so com a
+// tela no ar (fora dela sai, para nao rodar 8 paginas escondidas). O iframe
+// desenha uma TV Full HD e escala para o tamanho do quadro; no modo TV, com
+// um quadro por TV, a escala e' 1.
+const MURAL_LARGURA = 1920;
+const muralTamanho = new ResizeObserver((entradas) => {
+    entradas.forEach(({ target }) => escalarQuadro(target));
+});
+
+function escalarQuadro(quadro) {
+    const tv = quadro.querySelector('.mural-tv');
+    const escala = quadro.clientWidth / MURAL_LARGURA;
+    if (!tv || !escala) return;
+    tv.style.transform = `scale(${escala})`;
+    tv.style.height = `${quadro.clientHeight / escala}px`;
+}
+
+function sincronizarMural() {
+    // dentro de um quadro nao ha mural: abriria quadros sem fim
+    if (TELAS_DO_QUADRO.length) return;
+    const tela = document.getElementById('screen-geral');
+    const noAr = !!tela && tela.classList.contains('active');
+    document.querySelectorAll('.mural-quadro').forEach((quadro) => {
+        const aberto = quadro.querySelector('.mural-tv');
+        if (!noAr) {
+            if (aberto) aberto.remove();
+            return;
+        }
+        if (aberto) return;
+        const tv = document.createElement('iframe');
+        const abrir = quadro.querySelector('.mural-abrir');
+        tv.className = 'mural-tv';
+        tv.title = abrir ? abrir.title.replace(/^Abrir /, '') : '';
+        tv.src = location.pathname + '?telas=' + (quadro.dataset.telas || '');
+        quadro.prepend(tv);
+        muralTamanho.observe(quadro);
+        escalarQuadro(quadro);
+    });
+}
+
 function tvInicial() {
     const pedido = new URLSearchParams(location.search).get('tv');
     try {
@@ -290,16 +337,21 @@ function setModoTv(ligado) {
 }
 
 function irParaTelaVizinha(passo) {
+    // só as telas da visão no ar (tática ou estratégica)
     const itens = Array.prototype.filter.call(
         document.querySelectorAll('.menu-item[data-screen]'),
-        (item) => document.getElementById('screen-' + item.getAttribute('data-screen'))
+        (item) => visaoDoItem(item) === visaoAtual()
+            && document.getElementById('screen-' + item.getAttribute('data-screen'))
     );
     if (!itens.length) return;
     const atual = itens.findIndex((item) => item.classList.contains('active'));
     itens[(atual + passo + itens.length) % itens.length].click();
 }
 
-document.documentElement.classList.toggle('tv', tvInicial());
+// o quadro do mural mostra a tela como no computador (sem o modo TV), so
+// sem cabecalho e menu (html.quadro no CSS)
+document.documentElement.classList.toggle('quadro', TELAS_DO_QUADRO.length > 0);
+document.documentElement.classList.toggle('tv', !TELAS_DO_QUADRO.length && tvInicial());
 
 // Listas longas (caminhões, cargas) rolam por dentro no monitor; na TV
 // ninguém rola, então descem sozinhas, devagar, param no fim e voltam ao
@@ -308,7 +360,7 @@ const TV_ROLAGEM_PAUSA = 4000;   // ms parada no topo e no fim
 const rolagemTv = new WeakMap();
 
 function rolarListasTv() {
-    if (!modoTv()) return;
+    if (!modoTv() && !TELAS_DO_QUADRO.length) return; // no mural tambem ninguem rola
     const agora = Date.now();
     const passo = Math.max(1, Math.round(window.innerHeight / 1080));
     document.querySelectorAll('.screen.active .table-scroll--livre').forEach((lista) => {
@@ -341,6 +393,11 @@ document.addEventListener('keydown', (event) => {
     if (alvo instanceof Element && alvo.closest('input, textarea, select, [contenteditable="true"]')) return;
     if (event.key === 't' || event.key === 'T') {
         setModoTv(!modoTv());
+        return;
+    }
+    // na TV o cabeçalho some: a tecla V é o botão TÁTICA/ESTRATÉGICA
+    if (event.key === 'v' || event.key === 'V') {
+        setVisao(visaoAtual() === 'tatica' ? 'estrategica' : 'tatica');
         return;
     }
     if (!modoTv()) return;
@@ -2484,7 +2541,7 @@ function aviso(texto) {
 // LIMPEZA: o layout salvo não leva as alças da edição
 // ============================================
 function limparArtefatos(raiz) {
-    raiz.querySelectorAll('.block-actions, .drag-handle, .resize-handle, .camera-stream, .du-mapa-real')
+    raiz.querySelectorAll('.block-actions, .drag-handle, .resize-handle, .camera-stream, .du-mapa-real, .mural-tv')
         .forEach((el) => el.remove());
     // sem o mapa real, o SVG de reserva volta a aparecer no HTML salvo
     if (raiz.classList && raiz.classList.contains('has-mapa')) raiz.classList.remove('has-mapa');
@@ -2767,6 +2824,7 @@ function remontar() {
     mountMapaUnidades(palco);
     refreshAlertsBadge();
     sincronizarMenuComTela();
+    sincronizarMural();
     desenharRoscas(palco);
     desenharProjecoes(palco);
     // no carregamento o remontar roda antes das constantes do armazém
@@ -5475,26 +5533,21 @@ atualizarPonta();
 
 // ============================================
 // SECAGEM · GRAFICOS, ALARMES E LIMPEZA
-// Cada [data-secador] traz as series do turno (data-forn, data-ar e
-// data-saida de 5 em 5 min; data-umi de 15 em 15 min, a partir de
-// data-inicio) e o script monta os quatro graficos pequenos, um por
-// indicador, todos no mesmo eixo de horas (data-inicio a data-fim) e cada
-// um na propria escala:
+// Cada [data-secador] traz series de demonstracao (data-forn, data-ar e
+// data-saida de 5 em 5 min; data-umi de 15 em 15 min) que dao o nivel de
+// cada indicador; o grafico anda no relogio com leituras simuladas (ver
+// "Secagem em tempo real" abaixo). Sao quatro graficos pequenos, um por
+// indicador, todos no mesmo eixo de horas e cada um na propria escala:
 //   fornalha  0–1.000 °C, tracejado no minimo e no maximo da faixa
 //   ar        0 até um pouco acima do limite da cultura, tracejado no limite
 //             e pontilhado na desejada (o operador define)
 //   saida     0–60 °C, tracejado no limite (50); acima dele o cartao alarma
 //   umidade   12–20 %
 // Os numeros do cartao saem da ultima leitura, entao nunca brigam com o
-// grafico. Monta uma vez; os dados de demonstracao sao fixos em 14h50.
+// grafico.
 // ============================================
 const SEC_PASSO_TEMP = 5; // min entre leituras de temperatura
 const SEC_PASSO_UMI = 15; // min entre leituras de umidade
-
-function minutosDoDia(hhmm) {
-    const [h, m] = String(hhmm || '0:0').split(':').map(Number);
-    return (h || 0) * 60 + (m || 0);
-}
 
 function grau(v) {
     return `${Math.round(v)}°C`;
@@ -5523,9 +5576,10 @@ function quedaUmidade(umi) {
     return quedas.length ? quedas.reduce((a, b) => a + b, 0) / quedas.length : null;
 }
 
-function graficoSecador({ nome, cls, serie, passo, total, lo, hi, linhas, valor, alarme }) {
+// desloc: minutos do inicio do eixo ate a primeira leitura
+function graficoSecador({ nome, cls, serie, passo, total, desloc = 0, lo, hi, linhas, valor, alarme }) {
     const y = (v) => Math.max(0, Math.min(100, (1 - (v - lo) / (hi - lo)) * 100));
-    const x = (i) => ((i * passo) / total) * 1000;
+    const x = (i) => ((desloc + i * passo) / total) * 1000;
     const pontos = serie.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
     const refs = linhas.map((l) =>
         `<line class="sec-ref sec-ref--${l.tipo}" x1="0" y1="${y(l.v).toFixed(1)}" x2="1000" y2="${y(l.v).toFixed(1)}"></line>`).join('');
@@ -5539,14 +5593,11 @@ function graficoSecador({ nome, cls, serie, passo, total, lo, hi, linhas, valor,
         + '</div></div>';
 }
 
-function montarSecador(card) {
+// leituras: as series e o eixo da simulacao em tempo real (simularSecador)
+function montarSecador(card, leituras) {
     const alvo = card.querySelector('[data-sec-graficos]');
     if (!alvo) return;
-    const total = minutosDoDia(card.dataset.fim) - minutosDoDia(card.dataset.inicio);
-    const forn = numeros(card.dataset.forn);
-    const ar = numeros(card.dataset.ar);
-    const saida = numeros(card.dataset.saida);
-    const umi = numeros(card.dataset.umi);
+    const { total, forn, ar, saida, umi, deslocTemp, deslocUmi } = leituras;
     const ultimo = (s) => s[s.length - 1];
     const fornMin = paraNumero(card.dataset.fornMin);
     const fornMax = paraNumero(card.dataset.fornMax);
@@ -5558,7 +5609,7 @@ function montarSecador(card) {
 
     alvo.innerHTML = [
         graficoSecador({
-            nome: 'Fornalha', cls: 'fornalha', serie: forn, passo: SEC_PASSO_TEMP, total, lo: 0, hi: 1000,
+            nome: 'Fornalha', cls: 'fornalha', serie: forn, passo: SEC_PASSO_TEMP, total, desloc: deslocTemp, lo: 0, hi: 1000,
             valor: forn.length ? grau(ultimo(forn)) : '--',
             linhas: [
                 { v: fornMax, tipo: 'limite', rotulo: `máx. ${fornMax}` },
@@ -5566,7 +5617,7 @@ function montarSecador(card) {
             ],
         }),
         graficoSecador({
-            nome: 'Ar do secador', cls: 'ar', serie: ar, passo: SEC_PASSO_TEMP, total, lo: 0, hi: Math.ceil((arMax + 15) / 10) * 10,
+            nome: 'Ar do secador', cls: 'ar', serie: ar, passo: SEC_PASSO_TEMP, total, desloc: deslocTemp, lo: 0, hi: Math.ceil((arMax + 15) / 10) * 10,
             valor: ar.length ? grau(ultimo(ar)) : '--', alarme: arAcima,
             linhas: [
                 { v: arMax, tipo: 'limite', rotulo: `limite ${arMax}` },
@@ -5574,12 +5625,12 @@ function montarSecador(card) {
             ],
         }),
         graficoSecador({
-            nome: 'Saída do ar', cls: 'saida', serie: saida, passo: SEC_PASSO_TEMP, total, lo: 0, hi: 60,
+            nome: 'Saída do ar', cls: 'saida', serie: saida, passo: SEC_PASSO_TEMP, total, desloc: deslocTemp, lo: 0, hi: 60,
             valor: saida.length ? grau(ultimo(saida)) : '--', alarme: saidaAlarme,
             linhas: [{ v: saidaMax, tipo: 'limite', rotulo: `limite ${saidaMax}` }],
         }),
         graficoSecador({
-            nome: 'Umidade', cls: 'umi', serie: umi, passo: SEC_PASSO_UMI, total, lo: 12, hi: 20,
+            nome: 'Umidade', cls: 'umi', serie: umi, passo: SEC_PASSO_UMI, total, desloc: deslocUmi, lo: 12, hi: 20,
             valor: umi.length ? umidade(ultimo(umi)) : '--', linhas: [],
         }),
     ].join('');
@@ -5629,11 +5680,207 @@ function montarSecador(card) {
     }
 }
 
+// ---- Secagem em tempo real (simulado) ----
+// O grafico segue o relogio: o eixo e' o turno de hoje (07h as 17h) e o
+// AGORA anda pela hora de verdade, com as leituras ate ele e o resto do
+// turno esmaecido; antes das 07h o AGORA fica no comeco, depois das 17h no
+// fim. As fases vem do ciclo do secador (data-ciclo, que comeca as 07h e se
+// repete) e as leituras sao simuladas a partir do horario
+// de cada uma: oscilam em volta do nivel das series de demonstracao do
+// cartao (data-forn, data-ar, data-saida) conforme a fase. Secando, as
+// temperaturas ficam no nivel e a umidade cai ate o piso; carregando ou
+// descarregando, as temperaturas esfriam e, na carga, a umidade volta a do
+// grao novo. O ruido sai de um sorteio fixo por horario, entao recarregar a
+// pagina mostra o mesmo historico.
+const SEC_TURNO_INICIO = 7 * 60; // min do dia
+const SEC_TURNO_FIM = 17 * 60;
+const SEC_AQUECE = 240;        // min simulados antes do turno, para a serie assentar
+const SEC_ESFRIA = { forn: 0.6, ar: 0.6, saida: 0.6 }; // nivel na carga e na descarga
+const SEC_RUIDO = { forn: 8, ar: 1.5, saida: 0.6 };
+const SEC_ESTADO = {
+    secagem: { cls: 'is-secando', texto: 'Secando' },
+    carga: { cls: 'is-carregando', texto: 'Carregando' },
+    descarga: { cls: 'is-descarregando', texto: 'Descarregando' },
+};
+const secNiveis = new WeakMap();
+
+// minutos desde 01/01/1970 no fuso local
+function minutoLocal(data) {
+    return Math.floor((data.getTime() - data.getTimezoneOffset() * 60000) / 60000);
+}
+
+function horaMinuto(minuto) {
+    const m = ((minuto % 1440) + 1440) % 1440;
+    return `${String(Math.floor(m / 60)).padStart(2, '0')}h${String(m % 60).padStart(2, '0')}`;
+}
+
+// sorteio fixo entre -1 e 1 para cada secador, serie e horario
+function sorteioSecador(chave, minuto) {
+    let h = 2166136261;
+    const texto = chave + '|' + minuto;
+    for (let i = 0; i < texto.length; i++) h = Math.imul(h ^ texto.charCodeAt(i), 16777619);
+    h = Math.imul(h ^ (h >>> 15), 2246822507);
+    h ^= h >>> 13;
+    return ((h >>> 0) / 4294967295) * 2 - 1;
+}
+
+// "carga:40,secagem:260,..." -> [{ fase, dur }], com a duracao total
+function cicloDoSecador(card) {
+    const etapas = (card.dataset.ciclo || 'carga:30,secagem:240,descarga:30').split(',').map((par) => {
+        const [fase, dur] = par.split(':');
+        return { fase: fase.trim(), dur: Number(dur) || 0 };
+    }).filter((e) => e.dur > 0 && SEC_ESTADO[e.fase]);
+    return { etapas, total: etapas.reduce((s, e) => s + e.dur, 0) };
+}
+
+// etapas do ciclo (que comeca em ancora) que cobrem [de, ate), em minutos
+// absolutos
+function fasesNoIntervalo(ciclo, ancora, de, ate) {
+    const fases = [];
+    let ini = de - ((((de - ancora) % ciclo.total) + ciclo.total) % ciclo.total);
+    let i = 0;
+    while (ini < ate) {
+        const etapa = ciclo.etapas[i];
+        if (ini + etapa.dur > de) fases.push({ fase: etapa.fase, ini, fim: ini + etapa.dur });
+        ini += etapa.dur;
+        i = (i + 1) % ciclo.etapas.length;
+    }
+    return fases;
+}
+
+function faseNoMinuto(fases, minuto) {
+    const f = fases.find((x) => minuto >= x.ini && minuto < x.fim);
+    return f ? f.fase : 'secagem';
+}
+
+// niveis das series de demonstracao do cartao, lidos uma vez
+function niveisDoSecador(card) {
+    let n = secNiveis.get(card);
+    if (!n) {
+        const umi = numeros(card.dataset.umi);
+        n = {
+            forn: medianaSerie(numeros(card.dataset.forn)),
+            ar: medianaSerie(numeros(card.dataset.ar)),
+            saida: medianaSerie(numeros(card.dataset.saida)),
+            umiPiso: Math.min(...umi),
+            umiGrao: Math.max(...umi),
+        };
+        secNiveis.set(card, n);
+    }
+    return n;
+}
+
+function medianaSerie(serie) {
+    const ordem = [...serie].sort((a, b) => a - b);
+    return ordem[Math.floor(ordem.length / 2)];
+}
+
+// leituras de um passo ate o fim; devolve as que caem no turno
+function simularSerie({ de, fim, passo, inicial, proxima }) {
+    const primeiro = Math.ceil((de - SEC_AQUECE) / passo) * passo;
+    const serie = [];
+    let v = inicial;
+    for (let t = primeiro; t <= fim; t += passo) {
+        v = proxima(v, t);
+        if (t >= de) serie.push(v);
+    }
+    const inicio = Math.ceil(de / passo) * passo;
+    return { serie, desloc: inicio - de };
+}
+
+function simularSecador(card) {
+    const agora = minutoLocal(new Date());
+    const hoje = agora - (agora % 1440);
+    const de = hoje + SEC_TURNO_INICIO;
+    const ate = hoje + SEC_TURNO_FIM;
+    const total = ate - de;
+    const fim = Math.min(agora, ate); // leituras ate o agora, dentro do turno
+    const nome = card.dataset.nome || '';
+    const nivel = niveisDoSecador(card);
+    const fases = fasesNoIntervalo(cicloDoSecador(card), de, de - SEC_AQUECE, Math.max(ate, agora + 1));
+
+    const temp = (chave) => simularSerie({
+        de, fim, passo: SEC_PASSO_TEMP, inicial: nivel[chave],
+        proxima: (v, t) => {
+            const alvo = nivel[chave] * (faseNoMinuto(fases, t) === 'secagem' ? 1 : SEC_ESFRIA[chave]);
+            return Math.round((v + (alvo - v) * 0.25 + sorteioSecador(nome + chave, t) * SEC_RUIDO[chave]) * 10) / 10;
+        },
+    });
+    const forn = temp('forn');
+    const ar = temp('ar');
+    const saida = temp('saida');
+    const umi = simularSerie({
+        de, fim, passo: SEC_PASSO_UMI, inicial: nivel.umiGrao,
+        proxima: (v, t) => {
+            const fase = faseNoMinuto(fases, t);
+            if (fase === 'carga') return nivel.umiGrao;
+            if (fase === 'descarga') return v;
+            const nova = v + (nivel.umiPiso - v) * 0.25 + sorteioSecador(nome + 'umi', t) * 0.05;
+            return Math.round(Math.max(nivel.umiPiso, nova) * 10) / 10;
+        },
+    });
+    montarSecador(card, {
+        total, forn: forn.serie, ar: ar.serie, saida: saida.serie, umi: umi.serie,
+        deslocTemp: forn.desloc, deslocUmi: umi.desloc,
+    });
+
+    const pct = (minuto) => ((minuto - de) / total) * 100;
+
+    // fases: a que esta em curso parte no AGORA; dali em diante, prevista
+    const faixas = card.querySelector('.secador-fases');
+    if (faixas) {
+        faixas.innerHTML = fases.flatMap((f) => {
+            const partes = f.ini < agora && f.fim > agora
+                ? [{ ini: f.ini, fim: agora }, { ini: agora, fim: f.fim, prevista: true }]
+                : [{ ini: f.ini, fim: f.fim, prevista: f.ini >= agora }];
+            return partes.map((p) => ({ ...p, fase: f.fase }));
+        }).filter((p) => p.fim > de && p.ini < ate).map((p) => {
+            const esq = Math.max(0, pct(p.ini));
+            const larg = Math.min(100, pct(p.fim)) - esq;
+            const cls = ['secador-fase', `secador-fase--${p.fase}`];
+            if (p.prevista) cls.push('is-prevista');
+            if (larg < 4) cls.push('is-curta');
+            return `<span class="${cls.join(' ')}" style="left: ${esq.toFixed(2)}%; width: ${larg.toFixed(2)}%"></span>`;
+        }).join('');
+    }
+
+    // AGORA: anda pelo turno; fora dele fica parado no comeco ou no fim
+    const rotulo = card.querySelector('.secador-agora-label');
+    if (rotulo) {
+        rotulo.innerHTML = agora < de ? `Turno começa <b>${horaMinuto(de)}</b>`
+            : agora > ate ? `Turno encerrado <b>${horaMinuto(ate)}</b>`
+                : `Agora <b>${horaMinuto(agora)}</b><small>previsto até ${horaMinuto(ate).replace('h00', 'h')}</small>`;
+    }
+    const posAgora = Math.max(0, Math.min(100, pct(agora)));
+    card.querySelectorAll('.secador-futuro, .secador-agora').forEach((el) => {
+        el.style.left = `${posAgora.toFixed(2)}%`;
+    });
+    const marcador = card.querySelector('.secador-agora');
+    if (marcador) marcador.classList.toggle('is-fim', posAgora > 85);
+
+    // selo do estado: a fase em curso e ha quanto tempo
+    const emCurso = fases.find((f) => agora >= f.ini && agora < f.fim);
+    const pill = card.querySelector('.secador-estado-pill');
+    if (pill && emCurso) {
+        const estado = SEC_ESTADO[emCurso.fase];
+        Object.values(SEC_ESTADO).forEach((e) => pill.classList.remove(e.cls));
+        pill.classList.add(estado.cls);
+        pill.textContent = estado.texto;
+        const ha = card.querySelector('.secador-estado-info b');
+        const min = agora - emCurso.ini;
+        if (ha) ha.textContent = min < 60 ? `${min} min` : `${Math.floor(min / 60)}h${String(min % 60).padStart(2, '0')}`;
+    }
+}
+
 function montarSecagem(raiz) {
-    (raiz || document).querySelectorAll('[data-secador]').forEach(montarSecador);
+    (raiz || document).querySelectorAll('[data-secador]').forEach(simularSecador);
 }
 
 montarSecagem();
+setInterval(() => {
+    if (isEditing()) return; // o editor mexe no cartao: o grafico espera
+    montarSecagem();
+}, 1000);
 
 // ============================================
 // SILOS & AERAÇÃO
@@ -6162,8 +6409,8 @@ const umPonto = (v) => v.toFixed(1).replace('.', ',');
 // a ultima e' a atual); a estacao vem do bloco data-estacao-* da tela.
 // Diretrizes do Manejo da Aeracao (ABRAPOS) e do Guia de Secagem e
 // Armazenagem do RS:
-// - a massa de graos o mais fria possivel: ideal abaixo de 16 °C, bom
-//   abaixo de 20 °C; em clima tropical, 17 a 22 °C para ciclos longos;
+// - a temperatura da massa nas faixas da unidade, por cultura (MASSA_AERACAO):
+//   abaixo da ideal e' minima, acima e' maxima (o grao esta estragando);
 // - o ar ambiente pelo menos 3 °C (ideal 5 °C) abaixo da temperatura do
 //   grao, para resfriar;
 // - a UR do ar em equilibrio com a umidade do grao: o ar insuflado (o
@@ -6180,10 +6427,20 @@ const AERACAO = {
     resfriaMin: 3,     // °C abaixo do grao para resfriar
     resfriaIdeal: 5,   // °C abaixo do grao para resfriar bem
     aquecimento: 6,    // °C que o ventilador soma ao ar ambiente
-    massa: { ideal: 16, bom: 20, tropical: 22 },
     passo: 0.1,
     piso: -10,
 };
+
+// faixa ideal da massa por cultura (°C): abaixo e' minima, acima e' maxima
+// (estragando); cultura sem faixa propria usa a de milho
+const MASSA_AERACAO = {
+    soja: { de: 20, ate: 30 },
+    sorgo: { de: 20, ate: 30 },
+    milho: { de: 20, ate: 30 },
+    trigo: { de: 20, ate: 28 },
+    cevada: { de: 15, ate: 25 },
+};
+const faixaMassa = (cultura) => MASSA_AERACAO[cultura] || MASSA_AERACAO.milho;
 
 function pressaoSaturacao(t) {
     return 6.112 * Math.exp((17.62 * t) / (243.12 + t));
@@ -6218,13 +6475,12 @@ function estadoAeracao(t, j) {
     return { estado: 'pouco', icone: '●', texto: 'resfria pouco' };
 }
 
-// temperatura da massa contra as faixas das diretrizes
-function estadoMassa(t) {
-    const m = AERACAO.massa;
-    if (t <= m.ideal) return { estado: 'ideal', icone: '●', texto: 'ideal' };
-    if (t <= m.bom) return { estado: 'bom', icone: '●', texto: 'bom' };
-    if (t <= m.tropical) return { estado: 'tropical', icone: '●', texto: 'aceitável' };
-    return { estado: 'quente', icone: '▲', texto: 'quente' };
+// temperatura da massa contra a faixa da cultura
+function estadoMassa(t, cultura) {
+    const f = faixaMassa(cultura);
+    if (t < f.de) return { estado: 'minima', icone: '▼', texto: 'mínima' };
+    if (t <= f.ate) return { estado: 'ideal', icone: '●', texto: 'ideal' };
+    return { estado: 'quente', icone: '▲', texto: 'máxima: estragando' };
 }
 
 function escreverAeracao(card) {
@@ -6247,7 +6503,8 @@ function escreverAeracao(card) {
     const j = janelaAeracao(card.dataset.cultura, grao, tGrao, tAgora, urAgora);
     const grau = (v) => String(Math.round(v));
     const ar = estadoAeracao(tAgora, j);
-    const massa = estadoMassa(tGrao);
+    const massa = estadoMassa(tGrao, card.dataset.cultura);
+    const fMassa = faixaMassa(card.dataset.cultura);
     // faixa do ar ambiente em que da para aerar; com a janela fechada o ar de
     // agora umedece em qualquer temperatura que resfrie: fica o teto, com ar
     // mais seco que o de agora
@@ -6267,18 +6524,19 @@ function escreverAeracao(card) {
         + (j.aberta ? trecho(j.min, Math.min(j.idealAte, j.max), 'ideal') + trecho(Math.max(j.min, j.idealAte), j.max, 'pouco') : '')
         + trecho(j.max, fim, 'quente')
         + `<i class="sa-ar-grao" style="left: ${pos(tGrao)}" title="grão ${umPonto(tGrao)} °C"></i>`
-        + `<i class="sa-ar-agora" style="left: ${pos(tAgora)}"></i>`;
+        + `<i class="sa-ar-agora" style="left: ${pos(tAgora)}" title="ar ${umPonto(tAgora)} °C · ${ar.texto}"></i>`;
 
     alvo.title = `Quando aerar com o ar de agora (estação: ${umPonto(tAgora)} °C, UR ${Math.round(urAgora)}%). `
         + `Grão a ${umPonto(tGrao)} °C com ${umPonto(grao)}% de umidade. Máx: o ar ${AERACAO.resfriaMin} °C abaixo do grão `
         + `(ideal ${AERACAO.resfriaIdeal} °C abaixo); mín: abaixo dela o ar, aquecido ${AERACAO.aquecimento} °C pelo ventilador, `
-        + `umedece o grão. Massa: ideal até ${AERACAO.massa.ideal} °C, bom até ${AERACAO.massa.bom} °C, aceitável até ${AERACAO.massa.tropical} °C. `
-        + 'Diretrizes do Manejo da Aeração (ABRAPOS) e do Guia de Secagem e Armazenagem do RS.';
-    alvo.innerHTML = '<div class="sa-ar-head"><span class="sa-ar-tit">Quando aerar</span>'
+        + `umedece o grão. Massa: mínima abaixo de ${fMassa.de} °C, ideal de ${fMassa.de} a ${fMassa.ate} °C, `
+        + `máxima acima de ${fMassa.ate} °C (estragando). `
+        + 'Ar: diretrizes do Manejo da Aeração (ABRAPOS) e do Guia de Secagem e Armazenagem do RS.';
+    alvo.innerHTML = '<div class="sa-ar-head"><span class="sa-ar-tit">Aeração</span>'
         + `<span class="sa-ar-ref">${ref}</span></div>`
         + `<div class="sa-ar-regua" aria-hidden="true">${regua}</div>`
-        // na tela so o icone e a temperatura; a situacao vai no tooltip
-        + `<div class="sa-ar-status" data-estado="${ar.estado}" title="${ar.texto}"><b>${ar.icone}</b> ar ${umPonto(tAgora)} °C</div>`
+        // o ar de agora fica so no traco da regua; da massa, o icone e a
+        // temperatura, com a situacao no tooltip
         + `<div class="sa-ar-status" data-estado="${massa.estado}" title="${massa.texto}"><b>${massa.icone}</b> massa ${umPonto(tGrao)} °C</div>`;
 }
 
@@ -6726,3 +6984,659 @@ setInterval(() => { atualizarSilosAeracao(); atualizarPulmoesAeracao(); atualiza
 atualizarSilosAeracao();
 atualizarPulmoesAeracao();
 montarArmazens();
+
+// ============================================
+// VISÃO TÁTICA x ESTRATÉGICA
+// O botão do cabeçalho (ou a tecla V, que vale também na TV, onde o
+// cabeçalho some) troca o menu inteiro: a tática é o dia a dia (turno,
+// hoje, agora); a estratégica olha os mesmos dados de Avaré em meses
+// fechados e anos. O CSS esconde o que é da outra visão a partir do
+// data-visao do <body>; aqui fica a troca de tela e a memória da última
+// tela de cada visão, para ir e voltar sem perder o lugar.
+// ============================================
+const VISAO_STORAGE_KEY = 'videowall:visao';
+const ultimaTelaDaVisao = {};
+
+function visaoAtual() {
+    return document.body.getAttribute('data-visao') === 'estrategica' ? 'estrategica' : 'tatica';
+}
+
+function visaoDoItem(item) {
+    const bloco = item.closest('.sidebar [data-visao]');
+    return bloco ? bloco.getAttribute('data-visao') : 'tatica';
+}
+
+function itensDaVisao(visao) {
+    return document.querySelectorAll('.sidebar [data-visao="' + visao + '"] .menu-item[data-screen]');
+}
+
+function setVisao(visao, persist = true) {
+    if (visao !== 'estrategica') visao = 'tatica';
+    const ativo = document.querySelector('.menu-item.active');
+    if (ativo) ultimaTelaDaVisao[visaoDoItem(ativo)] = ativo.getAttribute('data-screen');
+
+    document.body.setAttribute('data-visao', visao);
+    document.querySelectorAll('.visao-btn').forEach((btn) => {
+        const on = btn.getAttribute('data-visao-alvo') === visao;
+        btn.classList.toggle('is-active', on);
+        btn.setAttribute('aria-pressed', String(on));
+    });
+    if (persist) {
+        try {
+            localStorage.setItem(VISAO_STORAGE_KEY, visao);
+        } catch (err) {
+            // sem armazenamento: vale só para esta visita
+        }
+    }
+
+    if (ativo && visaoDoItem(ativo) === visao) return;
+    const itens = Array.from(itensDaVisao(visao));
+    const destino = itens.find((item) => item.getAttribute('data-screen') === ultimaTelaDaVisao[visao]) || itens[0];
+    if (destino) destino.click();
+}
+
+function visaoInicial() {
+    if (TELAS_DO_QUADRO.length) return 'tatica'; // o mural so tem telas de Avaré
+    const pedido = new URLSearchParams(location.search).get('visao');
+    if (pedido) return pedido;
+    try {
+        return localStorage.getItem(VISAO_STORAGE_KEY) || 'tatica';
+    } catch (err) {
+        return 'tatica';
+    }
+}
+
+document.querySelectorAll('.visao-btn').forEach((btn) => {
+    btn.addEventListener('click', () => setVisao(btn.getAttribute('data-visao-alvo')));
+});
+
+// ============================================
+// TELAS ESTRATÉGICAS (est-*)
+// Cada tela tem a mesma moldura: 4 KPIs do ano (jan até o último mês
+// fechado, contra o mesmo período do ano anterior), o gráfico dos últimos
+// 24 meses com a marca do mesmo mês um ano antes, e a tabela dos anos.
+// Enquanto a base histórica não chega, a série mensal sai de um perfil de
+// safra por mês × o porte de cada ano, com uma variação fixa por mês (sem
+// sorteio: a tela é a mesma a cada carga). Ligar a base é trocar
+// dadosEstrategicos(); o resto lê só EST_METRICAS.
+// ============================================
+const EST_MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+const EST_ANO_INICIO = 2022;
+const EST_ULTIMO = { ano: 2026, mes: 8 };   // último mês fechado: set/2026 (0 = jan)
+const EST_N = (EST_ULTIMO.ano - EST_ANO_INICIO) * 12 + EST_ULTIMO.mes + 1;
+const EST_JANELA = 24;                       // meses no gráfico
+const EST_ANOS = Array.from({ length: EST_ULTIMO.ano - EST_ANO_INICIO + 1 }, (_, i) => EST_ANO_INICIO + i);
+const EST_CULTURAS = [
+    { chave: 'milho', nome: 'Milho' },
+    { chave: 'sorgo', nome: 'Sorgo' },
+    { chave: 'trigo', nome: 'Trigo' },
+    { chave: 'soja', nome: 'Soja' },
+];
+const EST_CAPACIDADE_T = 24000;              // 32.000 m³ de silos e armazém, a ~0,75 t/m³
+
+function estMesDe(k) {
+    return { ano: EST_ANO_INICIO + Math.floor(k / 12), mes: k % 12 };
+}
+
+function estRotuloMes(k) {
+    const { ano, mes } = estMesDe(k);
+    return EST_MESES[mes] + '/' + String(ano).slice(2);
+}
+
+// variação fixa do mês k, entre -1 e 1
+function estVariacao(k, semente) {
+    const x = Math.sin((k + 1) * 12.9898 + semente * 78.233) * 43758.5453;
+    return (x - Math.floor(x)) * 2 - 1;
+}
+
+function estMapear(n, fn) {
+    return Array.from({ length: n }, (_, k) => fn(k));
+}
+
+// perfil de jan a dez × porte do ano × (1 ± amplitude)
+function estSerie(perfil, porte, semente, amplitude) {
+    return estMapear(EST_N, (k) => {
+        const { ano, mes } = estMesDe(k);
+        return perfil[mes] * porte[ano - EST_ANO_INICIO] * (1 + amplitude * estVariacao(k, semente));
+    });
+}
+
+function dadosEstrategicos() {
+    const porte = [0.84, 0.91, 0.96, 1, 1.06];
+    const fixo = [1, 1, 1, 1, 1];
+    const doAno = (fatores) => (k) => fatores[estMesDe(k).ano - EST_ANO_INICIO];
+    const rec = {
+        milho: estSerie([1500, 5000, 8000, 3000, 1000, 3000, 9000, 15000, 19000, 16000, 4000, 800], porte, 1, 0.1),
+        sorgo: estSerie([0, 0, 0, 300, 800, 2000, 4000, 6000, 7000, 6000, 1500, 0], porte, 2, 0.12),
+        trigo: estSerie([0, 0, 0, 0, 0, 0, 0, 200, 1800, 2600, 900, 100], porte, 3, 0.15),
+        soja: estSerie([600, 4000, 7000, 3000, 300, 0, 0, 0, 0, 0, 0, 0], porte, 4, 0.12),
+    };
+    const recTotal = estMapear(EST_N, (k) => EST_CULTURAS.reduce((s, c) => s + rec[c.chave][k], 0));
+
+    // a expedição segue o recebido com 2 a 3 meses de armazenagem
+    const exp = {};
+    EST_CULTURAS.forEach((c, i) => {
+        const r = rec[c.chave];
+        exp[c.chave] = estMapear(EST_N, (k) => (0.55 * r[Math.max(0, k - 2)] + 0.42 * r[Math.max(0, k - 3)])
+            * (1 + 0.06 * estVariacao(k, 20 + i)));
+    });
+    const expTotal = estMapear(EST_N, (k) => EST_CULTURAS.reduce((s, c) => s + exp[c.chave][k], 0));
+
+    const umidade = estSerie([14.6, 16.8, 17.9, 16.2, 14.9, 15.4, 16.6, 17.4, 18.1, 17.7, 15.8, 14.5], fixo, 5, 0.03);
+    const impureza = estSerie([0.8, 0.95, 1.05, 0.9, 0.8, 0.85, 0.95, 1.05, 1.1, 1, 0.85, 0.8], [1.06, 1.03, 1, 0.98, 0.95], 6, 0.08);
+    const avariados = estSerie([2.6, 3.2, 3.8, 3.3, 2.8, 2.9, 3.4, 3.9, 4.2, 3.8, 3, 2.7], [1.08, 1.04, 1, 0.97, 0.94], 7, 0.08);
+    const descontado = estMapear(EST_N, (k) => recTotal[k] * (Math.max(0, umidade[k] - 14) * 0.0125 + impureza[k] * 0.006));
+
+    const melhora = [1.12, 1.07, 1.03, 1, 0.93];   // espera e paradas caindo ano a ano
+    const fatorMelhora = doAno(melhora);
+    const espera = estMapear(EST_N, (k) => (5 + recTotal[k] / 1000 * 0.9) * fatorMelhora(k) * (1 + 0.08 * estVariacao(k, 8)));
+    const vazao = estMapear(EST_N, (k) => (97 - recTotal[k] / 1000 * 0.32) / fatorMelhora(k) * (1 + 0.025 * estVariacao(k, 9)));
+    const tempoDescarga = estMapear(EST_N, (k) => 27.5 / vazao[k] * 60 + 2);
+    const paradas = estSerie([30, 8, 6, 10, 24, 12, 6, 4, 3, 5, 16, 36], melhora, 10, 0.25);
+
+    const secado = estMapear(EST_N, (k) => recTotal[k] * Math.min(0.95, 0.55 + Math.max(0, umidade[k] - 14) * 0.09));
+    const umidadeSaida = estSerie([13.2, 13.1, 13, 13.1, 13.2, 13.2, 13.1, 13, 13, 13.1, 13.2, 13.2], fixo, 11, 0.012);
+    const fatorCavaco = doAno([1.05, 1.03, 1.01, 1, 0.97]);
+    const cavacoKg = estMapear(EST_N, (k) => (15.6 + Math.max(0, umidade[k] - 14) * 0.95) * fatorCavaco(k) * (1 + 0.03 * estVariacao(k, 12)));
+    const cavacoT = estMapear(EST_N, (k) => secado[k] / 0.72 * cavacoKg[k] / 1000);
+
+    const fatorOcupacao = doAno([0.9, 0.94, 0.97, 1, 1.02]);
+    const ocupacao = estMapear(EST_N, (k) => Math.min(99,
+        [58, 63, 76, 80, 72, 64, 70, 82, 91, 92, 81, 66][estMesDe(k).mes] * fatorOcupacao(k) * (1 + 0.04 * estVariacao(k, 13))));
+    const giro = estMapear(EST_N, (k) => expTotal[k] / EST_CAPACIDADE_T);
+    const reprovas = estSerie([1.4, 1.8, 2.2, 1.9, 1.5, 1.6, 1.9, 2.3, 2.5, 2.2, 1.7, 1.4], [1.15, 1.08, 1.02, 1, 0.9], 14, 0.12);
+
+    const chuva = estSerie([230, 190, 140, 70, 75, 50, 40, 35, 75, 120, 135, 200], fixo, 15, 0.45);
+    const temperatura = estSerie([24, 24.2, 23.5, 21.5, 19, 18, 17.8, 19.5, 21, 22.5, 23, 23.6], fixo, 16, 0.03);
+    const diasChuva = estMapear(EST_N, (k) => Math.max(1, Math.min(24, Math.round(chuva[k] / 11))));
+    const diasParados = estMapear(EST_N, (k) => Math.round(diasChuva[k] * (recTotal[k] > 15000 ? 0.3 : 0.12)));
+
+    const M = {
+        rec: { serie: recTotal, agreg: 'soma', casas: 0, unidade: 't', melhor: 'maior' },
+        cam: { serie: estMapear(EST_N, (k) => recTotal[k] / 27.5), agreg: 'soma', casas: 0, unidade: 'cam.', melhor: 'maior' },
+        espera: { serie: espera, agreg: 'media', peso: recTotal, casas: 0, unidade: 'min', melhor: 'menor' },
+        umidade: { serie: umidade, agreg: 'media', peso: recTotal, casas: 1, unidade: '%', melhor: 'menor' },
+        impureza: { serie: impureza, agreg: 'media', peso: recTotal, casas: 2, unidade: '%', melhor: 'menor' },
+        avariados: { serie: avariados, agreg: 'media', peso: recTotal, casas: 1, unidade: '%', melhor: 'menor' },
+        descontado: { serie: descontado, agreg: 'soma', casas: 0, unidade: 't', melhor: 'menor' },
+        vazao: { serie: vazao, agreg: 'media', peso: recTotal, casas: 0, unidade: 't/h', melhor: 'maior' },
+        tempoDescarga: { serie: tempoDescarga, agreg: 'media', peso: recTotal, casas: 1, unidade: 'min', melhor: 'menor' },
+        paradas: { serie: paradas, agreg: 'soma', casas: 0, unidade: 'h', melhor: 'menor' },
+        secado: { serie: secado, agreg: 'soma', casas: 0, unidade: 't', melhor: 'maior' },
+        umidadeSaida: { serie: umidadeSaida, agreg: 'media', peso: secado, casas: 1, unidade: '%' },
+        cavacoKg: { serie: cavacoKg, agreg: 'media', peso: secado, casas: 1, unidade: 'kg/m³', melhor: 'menor' },
+        cavacoT: { serie: cavacoT, agreg: 'soma', casas: 0, unidade: 't' },
+        ocupacao: { serie: ocupacao, agreg: 'media', casas: 0, unidade: '%' },
+        ocupacaoPico: { serie: ocupacao, agreg: 'max', casas: 0, unidade: '%' },
+        acima90: { serie: ocupacao, agreg: 'acima', limiar: 90, casas: 0, unidade: 'meses', melhor: 'menor' },
+        giro: { serie: giro, agreg: 'soma', casas: 1, unidade: '×', melhor: 'maior' },
+        exp: { serie: expTotal, agreg: 'soma', casas: 0, unidade: 't', melhor: 'maior' },
+        camExp: { serie: estMapear(EST_N, (k) => expTotal[k] / 37), agreg: 'soma', casas: 0, unidade: 'cam.', melhor: 'maior' },
+        reprovas: { serie: reprovas, agreg: 'media', peso: expTotal, casas: 1, unidade: '%', melhor: 'menor' },
+        chuva: { serie: chuva, agreg: 'soma', casas: 0, unidade: 'mm' },
+        diasChuva: { serie: diasChuva, agreg: 'soma', casas: 0, unidade: 'dias' },
+        temperatura: { serie: temperatura, agreg: 'media', casas: 1, unidade: '°C' },
+        diasParados: { serie: diasParados, agreg: 'soma', casas: 0, unidade: 'dias', melhor: 'menor' },
+    };
+    EST_CULTURAS.forEach((c) => {
+        M['rec_' + c.chave] = { serie: rec[c.chave], agreg: 'soma', casas: 0, unidade: 't' };
+        M['exp_' + c.chave] = { serie: exp[c.chave], agreg: 'soma', casas: 0, unidade: 't' };
+    });
+    return M;
+}
+
+const EST_METRICAS = dadosEstrategicos();
+
+function estPilha(prefixo) {
+    return EST_CULTURAS.map((c) => ({ nome: c.nome, cor: 'var(--grao-' + c.chave + ')', metrica: prefixo + c.chave }));
+}
+
+// O que cada tela mostra. kpis: modo 'ano' (jan até o último mês fechado),
+// '12m' (últimos 12 meses) ou 'pico' (maior mês da janela do gráfico).
+// destaque: o número do cartão da área na visão geral estratégica.
+const EST_TELAS = {
+    recepcao: {
+        nome: 'Recepção', destaque: 'rec', goto: 'est-recepcao',
+        kpis: [
+            { rotulo: 'Recebido no ano', metrica: 'rec', modo: 'ano' },
+            { rotulo: 'Últimos 12 meses', metrica: 'rec', modo: '12m' },
+            { rotulo: 'Espera média', metrica: 'espera', modo: 'ano' },
+            { rotulo: 'Maior mês', metrica: 'rec', modo: 'pico' },
+        ],
+        grafico: { titulo: 'Recebido por mês e cultura', tipo: 'barras', pilha: estPilha('rec_'), total: 'rec' },
+        tabela: [
+            { rotulo: 'Recebido', metrica: 'rec', barra: true },
+            { rotulo: 'Caminhões', metrica: 'cam' },
+            { rotulo: 'Espera', metrica: 'espera' },
+        ],
+    },
+    classificacao: {
+        nome: 'Classificação', destaque: 'umidade', goto: 'est-classificacao',
+        kpis: [
+            { rotulo: 'Umidade média', metrica: 'umidade', modo: 'ano' },
+            { rotulo: 'Impureza média', metrica: 'impureza', modo: 'ano' },
+            { rotulo: 'Avariados', metrica: 'avariados', modo: 'ano' },
+            { rotulo: 'Descontado', metrica: 'descontado', modo: 'ano' },
+        ],
+        grafico: { titulo: 'Umidade média na chegada', tipo: 'linha', metrica: 'umidade', ref: { valor: 14, rotulo: 'base 14%' } },
+        tabela: [
+            { rotulo: 'Umidade', metrica: 'umidade' },
+            { rotulo: 'Impureza', metrica: 'impureza' },
+            { rotulo: 'Avariados', metrica: 'avariados' },
+            { rotulo: 'Descontado', metrica: 'descontado', barra: true },
+        ],
+    },
+    moegas: {
+        nome: 'Moegas', destaque: 'vazao', goto: 'est-moegas',
+        kpis: [
+            { rotulo: 'Vazão média', metrica: 'vazao', modo: 'ano' },
+            { rotulo: 'Descarga por caminhão', metrica: 'tempoDescarga', modo: 'ano' },
+            { rotulo: 'Moega parada', metrica: 'paradas', modo: 'ano' },
+            { rotulo: 'Melhor mês de vazão', metrica: 'vazao', modo: 'pico' },
+        ],
+        grafico: { titulo: 'Vazão média de descarga', tipo: 'linha', metrica: 'vazao', ref: { valor: 95, rotulo: 'meta 95 t/h' } },
+        tabela: [
+            { rotulo: 'Vazão', metrica: 'vazao' },
+            { rotulo: 'Descarga', metrica: 'tempoDescarga' },
+            { rotulo: 'Parada', metrica: 'paradas', barra: true },
+        ],
+    },
+    secagem: {
+        nome: 'Secagem', destaque: 'secado', goto: 'est-secagem',
+        kpis: [
+            { rotulo: 'Secado no ano', metrica: 'secado', modo: 'ano' },
+            { rotulo: 'Cavaco por m³ secado', metrica: 'cavacoKg', modo: 'ano' },
+            { rotulo: 'Cavaco consumido', metrica: 'cavacoT', modo: 'ano' },
+            { rotulo: 'Umidade de saída', metrica: 'umidadeSaida', modo: 'ano' },
+        ],
+        grafico: { titulo: 'Secado por mês', tipo: 'barras', metrica: 'secado' },
+        tabela: [
+            { rotulo: 'Secado', metrica: 'secado', barra: true },
+            { rotulo: 'Cavaco', metrica: 'cavacoT' },
+            { rotulo: 'Cavaco/m³', metrica: 'cavacoKg' },
+        ],
+    },
+    armazenagem: {
+        nome: 'Silos e armazém', destaque: 'ocupacao', goto: 'est-armazenagem',
+        kpis: [
+            { rotulo: 'Ocupação média', metrica: 'ocupacao', modo: 'ano' },
+            { rotulo: 'Pico de ocupação', metrica: 'ocupacaoPico', modo: 'ano' },
+            { rotulo: 'Meses acima de 90%', metrica: 'acima90', modo: 'ano' },
+            { rotulo: 'Giro do estoque', metrica: 'giro', modo: 'ano' },
+        ],
+        grafico: { titulo: 'Ocupação no fim do mês', serie: 'fim do mês', tipo: 'linha', metrica: 'ocupacao', escala: { min: 0, max: 100, passo: 25 }, ref: { valor: 90, rotulo: 'limite 90%' } },
+        tabela: [
+            { rotulo: 'Ocupação', metrica: 'ocupacao', barra: true },
+            { rotulo: 'Pico', metrica: 'ocupacaoPico' },
+            { rotulo: 'Acima de 90%', metrica: 'acima90' },
+            { rotulo: 'Giro', metrica: 'giro' },
+        ],
+    },
+    expedicao: {
+        nome: 'Expedição', destaque: 'exp', goto: 'est-expedicao',
+        kpis: [
+            { rotulo: 'Expedido no ano', metrica: 'exp', modo: 'ano' },
+            { rotulo: 'Últimos 12 meses', metrica: 'exp', modo: '12m' },
+            { rotulo: 'Reprovas', metrica: 'reprovas', modo: 'ano' },
+            { rotulo: 'Maior mês', metrica: 'exp', modo: 'pico' },
+        ],
+        grafico: { titulo: 'Expedido por mês e cultura', tipo: 'barras', pilha: estPilha('exp_'), total: 'exp' },
+        tabela: [
+            { rotulo: 'Expedido', metrica: 'exp', barra: true },
+            { rotulo: 'Caminhões', metrica: 'camExp' },
+            { rotulo: 'Reprovas', metrica: 'reprovas' },
+        ],
+    },
+    clima: {
+        nome: 'Clima', destaque: 'chuva', goto: 'est-clima',
+        kpis: [
+            { rotulo: 'Chuva no ano', metrica: 'chuva', modo: 'ano' },
+            { rotulo: 'Dias de chuva', metrica: 'diasChuva', modo: 'ano' },
+            { rotulo: 'Temperatura média', metrica: 'temperatura', modo: 'ano' },
+            { rotulo: 'Recepção parada por chuva', metrica: 'diasParados', modo: 'ano' },
+        ],
+        grafico: { titulo: 'Chuva por mês', tipo: 'barras', metrica: 'chuva' },
+        tabela: [
+            { rotulo: 'Chuva', metrica: 'chuva', barra: true },
+            { rotulo: 'Dias de chuva', metrica: 'diasChuva' },
+            { rotulo: 'Temp. média', metrica: 'temperatura' },
+            { rotulo: 'Parada', metrica: 'diasParados' },
+        ],
+    },
+};
+
+const EST_PERIODO_ANO = EST_MESES[0] + '–' + EST_MESES[EST_ULTIMO.mes];
+
+function estNum(v, casas) {
+    return v.toLocaleString('pt-BR', { minimumFractionDigits: casas, maximumFractionDigits: casas });
+}
+
+function estMesesDoAno(ano) {
+    const ate = ano === EST_ULTIMO.ano ? EST_ULTIMO.mes : 11;
+    return estMapear(ate + 1, (mes) => (ano - EST_ANO_INICIO) * 12 + mes);
+}
+
+function estJanela() {
+    return estMapear(EST_JANELA, (i) => EST_N - EST_JANELA + i);
+}
+
+function estAgregar(m, ks) {
+    const vals = ks.map((k) => m.serie[k]);
+    if (m.agreg === 'soma') return vals.reduce((s, v) => s + v, 0);
+    if (m.agreg === 'max') return Math.max(...vals);
+    if (m.agreg === 'acima') return vals.filter((v) => v > m.limiar).length;
+    const pesos = ks.map((k) => (m.peso ? m.peso[k] : 1));
+    const total = pesos.reduce((s, p) => s + p, 0);
+    return vals.reduce((s, v, i) => s + v * pesos[i], 0) / (total || 1);
+}
+
+// variação contra a referência: % nas somas, diferença nas médias (p.p.
+// quando a unidade é %). A cor diz se foi para o lado bom; a seta, o sentido.
+function estDelta(m, atual, antes) {
+    const porcento = m.agreg === 'soma';
+    const diff = porcento ? (antes ? (atual - antes) / antes * 100 : 0) : atual - antes;
+    const casas = porcento ? 1 : m.casas;
+    if (Math.abs(diff) < 0.5 * 10 ** -casas) return { txt: 'estável', classe: 'is-neutro', seta: '=' };
+    const unidade = porcento ? '%' : (m.unidade === '%' ? ' p.p.' : ' ' + m.unidade);
+    const subiu = diff > 0;
+    const classe = !m.melhor ? 'is-neutro' : (subiu === (m.melhor === 'maior') ? 'is-bom' : 'is-ruim');
+    return { txt: estNum(Math.abs(diff), casas) + unidade, classe, seta: subiu ? '▲' : '▼' };
+}
+
+function estDeltaHtml(d, sufixo) {
+    return `<span class="est-delta ${d.classe}"><b>${d.seta} ${d.txt}</b>${sufixo ? ' <span>' + sufixo + '</span>' : ''}</span>`;
+}
+
+function estValorHtml(m, v) {
+    return `${estNum(v, m.casas)} <span class="kpi-value-unit">${m.unidade}</span>`;
+}
+
+function estPicoDe(serie) {
+    return estJanela().reduce((a, k) => (serie[k] > serie[a] ? k : a), EST_N - EST_JANELA);
+}
+
+function estKpi(kpi) {
+    const m = EST_METRICAS[kpi.metrica];
+    let valor;
+    let rodape;
+    if (kpi.modo === 'pico') {
+        const k = estPicoDe(m.serie);
+        valor = m.serie[k];
+        rodape = `<span class="est-delta is-neutro"><b>${estRotuloMes(k)}</b> <span>nos últimos ${EST_JANELA} meses</span></span>`;
+    } else {
+        const ks = kpi.modo === '12m' ? estJanela().slice(-12) : estMesesDoAno(EST_ULTIMO.ano);
+        valor = estAgregar(m, ks);
+        const sufixo = kpi.modo === '12m' ? 'vs 12 meses antes' : `vs ${EST_PERIODO_ANO} ${EST_ULTIMO.ano - 1}`;
+        rodape = estDeltaHtml(estDelta(m, valor, estAgregar(m, ks.map((k) => k - 12))), sufixo);
+    }
+    const periodo = kpi.modo === 'ano' ? ` · ${EST_PERIODO_ANO} ${EST_ULTIMO.ano}` : '';
+    return `<div class="kpi-card est-kpi">
+        <div class="kpi-label">${kpi.rotulo}${periodo}</div>
+        <div class="kpi-value">${estValorHtml(m, valor)}</div>
+        ${rodape}
+    </div>`;
+}
+
+function estEscala(valores, desdeZero, fixa) {
+    if (fixa) return fixa;
+    let min = desdeZero ? 0 : Math.min(...valores);
+    let max = Math.max(...valores);
+    const bruto = (max - min) / 4 || 1;
+    const mag = 10 ** Math.floor(Math.log10(bruto));
+    const passo = [1, 2, 2.5, 5, 10].map((f) => f * mag).find((p) => p >= bruto);
+    min = desdeZero ? 0 : Math.floor(min / passo) * passo;
+    max = Math.ceil(max / passo) * passo;
+    if (max <= min) max = min + passo;
+    return { min, max, passo };
+}
+
+function estMetricaDoGrafico(cfg) {
+    return EST_METRICAS[cfg.pilha ? cfg.total : cfg.metrica];
+}
+
+function estGrafico(cfg) {
+    const ks = estJanela();
+    const m = estMetricaDoGrafico(cfg);
+    const barras = cfg.tipo === 'barras';
+    const valores = ks.flatMap((k) => [m.serie[k], m.serie[k - 12]]);
+    if (cfg.ref) valores.push(cfg.ref.valor);
+    const esc = estEscala(valores, barras, cfg.escala);
+    const y = (v) => Math.max(0, Math.min(1, (v - esc.min) / (esc.max - esc.min))).toFixed(4);
+    const casasEixo = esc.passo < 1 ? 1 : 0;
+
+    let grade = '';
+    let eixoY = '';
+    for (let v = esc.min; v <= esc.max + esc.passo / 1000; v += esc.passo) {
+        grade += `<i class="est-grade" style="--y: ${y(v)}"></i>`;
+        eixoY += `<span style="--y: ${y(v)}">${estNum(v, casasEixo)}</span>`;
+    }
+    // o nome da referência vai na legenda: na ponta da linha ele cobriria os pontos
+    const ref = cfg.ref ? `<i class="est-ref" style="--y: ${y(cfg.ref.valor)}"></i>` : '';
+
+    let linhas = '';
+    if (!barras) {
+        const pontos = (desloc) => ks.map((k, i) => `${((i + 0.5) / EST_JANELA * 100).toFixed(2)},${(100 - y(m.serie[k - desloc]) * 100).toFixed(2)}`).join(' ');
+        linhas = `<svg class="est-linhas" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">`
+            + `<polyline class="est-linha-ant" points="${pontos(12)}"></polyline>`
+            + `<polyline class="est-linha" points="${pontos(0)}"></polyline></svg>`;
+    }
+
+    // os 12 primeiros meses (o ano anterior da janela) ficam mais apagados
+    const cols = ks.map((k, i) => {
+        const classes = ['est-col'];
+        if (estMesDe(k).mes === 0 && i > 0) classes.push('is-jan');
+        if (i < EST_JANELA - 12) classes.push('is-anterior');
+        let marca;
+        if (barras) {
+            const partes = cfg.pilha
+                ? cfg.pilha.map((p) => [EST_METRICAS[p.metrica].serie[k], p.cor]).filter(([v]) => v > 0)
+                : [[m.serie[k], 'var(--viz-real)']];
+            marca = `<span class="est-barra" style="--h: ${y(m.serie[k])}">`
+                + partes.map(([v, cor]) => `<i style="flex-grow: ${v.toFixed(1)}; --c: ${cor}"></i>`).join('')
+                + `</span><span class="est-ant" style="--h: ${y(m.serie[k - 12])}"></span>`;
+        } else {
+            marca = `<span class="est-ponto" style="--h: ${y(m.serie[k])}"></span>`;
+        }
+        return `<div class="${classes.join(' ')}" data-est-k="${k}">${marca}</div>`;
+    }).join('');
+
+    const eixoX = ks.map((k, i) => {
+        const { ano, mes } = estMesDe(k);
+        const comAno = mes === 0 || i === 0;
+        return `<span class="${mes % 3 === 0 ? 'is-trim' : ''}">${EST_MESES[mes]}${comAno ? '<b>' + ano + '</b>' : ''}</span>`;
+    }).join('');
+
+    const legenda = (cfg.pilha
+        ? cfg.pilha.filter((p) => EST_METRICAS[p.metrica].serie.some((v) => v > 0))
+            .map((p) => `<span><i class="du-dot" style="--du-c: ${p.cor}"></i>${p.nome}</span>`).join('')
+        : `<span><i class="est-leg ${barras ? 'est-leg--barra' : 'est-leg--linha'}"></i>${cfg.serie || (barras ? 'mês' : 'média do mês')}</span>`)
+        + `<span><i class="est-leg ${barras ? 'est-leg--ant' : 'est-leg--linha-ant'}"></i>mesmo mês, ano anterior</span>`
+        + (cfg.ref ? `<span><i class="est-leg est-leg--ref"></i>${cfg.ref.rotulo}</span>` : '');
+
+    return `<div class="content-section du-section est-section est-section--grafico">
+        <div class="section-head">
+            <h3>${cfg.titulo.toUpperCase()} · ${m.unidade.toUpperCase()}</h3>
+            <span class="du-legenda">${legenda}</span>
+        </div>
+        <div class="est-graf">
+            <div class="est-eixo-y" aria-hidden="true">${eixoY}</div>
+            <div class="est-plot" role="img" aria-label="${cfg.titulo}, de ${estRotuloMes(ks[0])} a ${estRotuloMes(ks[ks.length - 1])}">
+                ${grade}${ref}${linhas}
+                <div class="est-cols">${cols}</div>
+            </div>
+            <div class="est-eixo-x" aria-hidden="true">${eixoX}</div>
+        </div>
+    </div>`;
+}
+
+function estTabela(colunas) {
+    const head = colunas.map((c) => `<th class="num">${c.rotulo}<small>${EST_METRICAS[c.metrica].unidade}</small></th>`).join('');
+    const maximos = colunas.map((c) => Math.max(...EST_ANOS.map((ano) => estAgregar(EST_METRICAS[c.metrica], estMesesDoAno(ano)))));
+    const linhas = EST_ANOS.slice().reverse().map((ano) => {
+        const ks = estMesesDoAno(ano);
+        const parcial = ano === EST_ULTIMO.ano;
+        const cels = colunas.map((c, i) => {
+            const m = EST_METRICAS[c.metrica];
+            const v = estAgregar(m, ks);
+            const delta = parcial ? estDeltaHtml(estDelta(m, v, estAgregar(m, ks.map((k) => k - 12))), '') : '';
+            if (c.barra) {
+                return `<td><div class="du-medidor" style="--p: ${(v / (maximos[i] || 1)).toFixed(3)}"><span class="du-medidor-trilho"><i></i></span><b>${estNum(v, m.casas)}</b></div>${delta}</td>`;
+            }
+            return `<td class="num">${estNum(v, m.casas)}${delta}</td>`;
+        }).join('');
+        const nome = parcial ? `${ano}<small>${EST_PERIODO_ANO}</small>` : String(ano);
+        return `<tr${parcial ? ' class="est-linha-atual"' : ''}><td class="pv-tabela-nome">${nome}</td>${cels}</tr>`;
+    }).join('');
+    return `<div class="content-section du-section est-section">
+        <div class="section-head">
+            <h3>ANO A ANO</h3>
+            <span class="du-legenda"><span>${EST_ULTIMO.ano} até ${EST_MESES[EST_ULTIMO.mes]} · ▲▼ vs ${EST_PERIODO_ANO} ${EST_ULTIMO.ano - 1}</span></span>
+        </div>
+        <div class="du-tabela-wrap">
+            <table class="pv-tabela du-tabela est-tabela">
+                <thead><tr><th>Ano</th>${head}</tr></thead>
+                <tbody>${linhas}</tbody>
+            </table>
+        </div>
+    </div>`;
+}
+
+function estSparkline(m) {
+    const vals = estJanela().map((k) => m.serie[k]);
+    const esc = estEscala(vals, m.agreg === 'soma');
+    const pts = vals.map((v, i) => [(i + 0.5) / EST_JANELA * 100, (1 - (v - esc.min) / (esc.max - esc.min)) * 100]);
+    const ult = pts[pts.length - 1];
+    const ks = estJanela();
+    return `<span class="est-spark" aria-hidden="true">`
+        + `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><polyline points="${pts.map((p) => p[0].toFixed(2) + ',' + p[1].toFixed(2)).join(' ')}"></polyline></svg>`
+        + `<i style="left: ${ult[0].toFixed(2)}%; top: ${ult[1].toFixed(2)}%"></i></span>`
+        + `<span class="est-spark-eixo"><span>${estRotuloMes(ks[0])}</span><span>${estRotuloMes(ks[ks.length - 1])}</span></span>`;
+}
+
+function estGeral() {
+    const ano = estMesesDoAno(EST_ULTIMO.ano);
+    const tiles = Object.values(EST_TELAS).map((tela) => {
+        const m = EST_METRICAS[tela.destaque];
+        const v = estAgregar(m, ano);
+        const d = estDelta(m, v, estAgregar(m, ano.map((k) => k - 12)));
+        const kpi = tela.kpis.find((x) => x.metrica === tela.destaque);
+        return `<button type="button" class="est-tile" data-goto="${tela.goto}">
+            <span class="est-tile-nome">${tela.nome}</span>
+            <span class="est-tile-rotulo">${kpi ? kpi.rotulo : ''} · ${EST_PERIODO_ANO} ${EST_ULTIMO.ano}</span>
+            <span class="kpi-value">${estValorHtml(m, v)}</span>
+            ${estDeltaHtml(d, 'vs ' + (EST_ULTIMO.ano - 1))}
+            ${estSparkline(m)}
+        </button>`;
+    }).join('');
+
+    // recordes da janela: o mês mais forte de cada assunto
+    const recordes = [
+        ['Maior recebimento', 'rec'],
+        ['Maior expedição', 'exp'],
+        ['Maior ocupação', 'ocupacao'],
+        ['Grão mais úmido', 'umidade'],
+        ['Mês mais chuvoso', 'chuva'],
+    ].map(([rotulo, chave]) => {
+        const m = EST_METRICAS[chave];
+        const k = estPicoDe(m.serie);
+        return `<li><span>${rotulo}</span><b>${estNum(m.serie[k], m.casas)} ${m.unidade}</b><em>${estRotuloMes(k)}</em></li>`;
+    }).join('');
+
+    return `<div class="est-geral">${tiles}
+        <div class="est-tile est-tile--recordes">
+            <span class="est-tile-nome">Recordes · ${EST_JANELA} meses</span>
+            <ul class="est-recordes">${recordes}</ul>
+        </div>
+    </div>`;
+}
+
+function estTela(chave) {
+    const tela = EST_TELAS[chave];
+    return `<div class="kpi-grid kpi-grid--four est-kpis">${tela.kpis.map(estKpi).join('')}</div>
+        <div class="du-split est-split">${estGrafico(tela.grafico)}${estTabela(tela.tabela)}</div>`;
+}
+
+function montarEstrategica() {
+    document.querySelectorAll('.est-corpo[data-est]').forEach((corpo) => {
+        const chave = corpo.getAttribute('data-est');
+        if (chave === 'geral') corpo.innerHTML = estGeral();
+        else if (EST_TELAS[chave]) corpo.innerHTML = estTela(chave);
+    });
+}
+
+// ---- dica do gráfico: o mês sob o ponteiro (por cultura quando empilhado)
+// e o mesmo mês do ano anterior ----
+let estTip = null;
+
+function estTipHtml(cfg, k) {
+    const m = estMetricaDoGrafico(cfg);
+    const linha = (cor, nome, v, casas, unidade) => `<div class="est-tip-linha">${cor ? `<i style="--c: ${cor}"></i>` : ''}<span>${nome}</span><b>${estNum(v, casas)} ${unidade}</b></div>`;
+    let html = `<div class="est-tip-titulo">${estRotuloMes(k)}</div>`;
+    if (cfg.pilha) {
+        cfg.pilha.forEach((p) => {
+            const v = EST_METRICAS[p.metrica].serie[k];
+            if (v > 0) html += linha(p.cor, p.nome, v, 0, 't');
+        });
+    }
+    html += linha('', cfg.tipo === 'linha' ? 'Média do mês' : 'Total', m.serie[k], m.casas, m.unidade);
+    const antes = m.serie[k - 12];
+    html += `<div class="est-tip-ant">${estRotuloMes(k - 12)}: <b>${estNum(antes, m.casas)} ${m.unidade}</b> ${estDeltaHtml(estDelta(m, m.serie[k], antes), '')}</div>`;
+    return html;
+}
+
+document.addEventListener('pointerover', (ev) => {
+    const col = ev.target instanceof Element ? ev.target.closest('.est-col') : null;
+    const corpo = col && col.closest('.est-corpo[data-est]');
+    const tela = corpo && EST_TELAS[corpo.getAttribute('data-est')];
+    if (!tela) {
+        if (estTip) estTip.hidden = true;
+        return;
+    }
+    if (!estTip) {
+        estTip = document.createElement('div');
+        estTip.className = 'est-tip';
+        estTip.setAttribute('role', 'tooltip');
+        document.body.appendChild(estTip);
+    }
+    estTip.innerHTML = estTipHtml(tela.grafico, Number(col.getAttribute('data-est-k')));
+    estTip.hidden = false;
+});
+
+document.addEventListener('pointermove', (ev) => {
+    if (!estTip || estTip.hidden) return;
+    const larg = estTip.offsetWidth;
+    const alt = estTip.offsetHeight;
+    let x = ev.clientX + 16;
+    let topo = ev.clientY - alt - 12;
+    if (x + larg > window.innerWidth - 8) x = ev.clientX - larg - 16;
+    if (topo < 8) topo = ev.clientY + 16;
+    estTip.style.left = x + 'px';
+    estTip.style.top = topo + 'px';
+});
+
+montarEstrategica();
+setVisao(visaoInicial(), false);
+
+// ============================================
+// QUADRO DO MURAL (Visão geral): 8 TVs, 4 em cima e 4 embaixo, num
+// computador só. Cada TV é esta página num quadro com ?telas=... (as telas
+// de um segmento, na ordem do menu). As telas se revezam a cada 10 s;
+// segmento de uma tela só fica parado nela.
+// ============================================
+const QUADRO_INTERVALO = 10000;
+
+sincronizarMural();
+
+if (TELAS_DO_QUADRO.length) {
+    const itensDoQuadro = TELAS_DO_QUADRO
+        .map((tela) => document.querySelector('.menu-item[data-screen="' + tela + '"]'))
+        .filter(Boolean);
+    let vez = 0;
+    if (itensDoQuadro.length) itensDoQuadro[0].click();
+    if (itensDoQuadro.length > 1) {
+        setInterval(() => {
+            vez = (vez + 1) % itensDoQuadro.length;
+            itensDoQuadro[vez].click();
+        }, QUADRO_INTERVALO);
+    }
+}
