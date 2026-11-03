@@ -24528,3 +24528,102 @@ body.theme-dark .pr-q--fora .pr-q-valor > b { color: #f87171; }
 }
 
 .pr-sec--s2 .pr15-dot--agora { background: var(--pr-s2); }
+
+
+/* ==========================================================
+   PRESSÃO (04C) · v3 — caixas iguais, última hora, pinos
+   ========================================================== */
+#screen-pressao [data-pressao-eventos] { display: none; }
+
+/* 3 linhas iguais dos dois lados: todas as caixas do mesmo tamanho */
+.pr-layout--v2 .pr-col {
+    display: grid;
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.pr-layout--v2 .pr-q {
+    justify-content: flex-start;
+    gap: 0.3rem;
+    min-height: 13.5rem;
+}
+
+.pr-q-valor { flex-wrap: nowrap; }
+.pr-q-valor > b { font-size: 3rem; }
+.pr-q-faixa { margin-left: auto; }
+
+/* gráfico: só a linha */
+.pr-q .pr15 { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: flex-end; }
+.pr-q .pr15-plot { flex: 1 1 auto; min-height: 4.2rem; max-height: none; margin-top: 1.4rem; margin-bottom: 0.2rem; }
+.pr15-area { display: none; }
+.pr15-faixa { fill: color-mix(in srgb, #16a34a 13%, transparent); }
+.pr15-linha { stroke-width: 3; }
+
+.pr15-dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    margin: -0.3rem 0 0 -0.3rem;
+    background: var(--section-bg);
+    border: 2.5px solid var(--pr-s1);
+    z-index: 1;
+}
+
+.pr-sec--s2 .pr15-dot { border-color: var(--pr-s2); }
+.pr15-dot--limite { border-color: #d97706 !important; background: #d97706; }
+.pr15-dot--fora { border-color: #dc2626 !important; background: #dc2626; }
+.pr15-dot--agora { width: 0.85rem; height: 0.85rem; margin: -0.425rem 0 0 -0.425rem; background: var(--pr-s1); border-color: #fff; }
+.pr-sec--s2 .pr15-dot--agora { background: var(--pr-s2); }
+
+.pr15-v,
+.pr15-v--ini,
+.pr15-v--fim { transform: translate(-50%, -135%); font-size: 1.1rem; }
+.pr15-v.is-agora { font-size: 1.25rem; }
+
+.pr15-horas { height: 1.2rem; }
+
+.pr15-h {
+    position: absolute;
+    top: 0;
+    transform: translateX(-50%);
+    font-size: 0.85rem;
+    font-weight: 700;
+    white-space: nowrap;
+    color: var(--muted);
+}
+
+.pr15-h.is-agora { color: var(--text); font-weight: 900; }
+
+/* ocorrências do secador na 6ª caixa */
+.pr-q--ocorr { border-left-color: var(--card-border); }
+.pr-q-id--peq { font-size: 1rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.pr-ocorr { display: flex; flex-direction: column; align-items: flex-start; gap: 0.45rem; font-size: 0.95rem; }
+.pr-ocorr .prod-evento { font-size: 0.95rem; white-space: normal; }
+
+/* pinos no desenho */
+.pr-layout--v2 :is(.pr-d-p, .pr-d-p-txt) { display: none; }
+
+.pr-d-pin-guia { stroke: var(--text); stroke-width: 2; opacity: 0.8; }
+.pr-d-pin-alvo { fill: none; stroke-width: 3; }
+.pr-d-pin-centro { fill: var(--text); }
+.pr-d-pin-tag { stroke: #fff; stroke-width: 2; }
+.pr-d-pin-txt { font-family: inherit; font-size: 15px; font-weight: 900; fill: #fff; }
+
+.pr-d-pin--ok .pr-d-pin-alvo { stroke: #22c55e; }
+.pr-d-pin--ok .pr-d-pin-tag { fill: #15803d; }
+.pr-d-pin--limite .pr-d-pin-alvo { stroke: #f59e0b; }
+.pr-d-pin--limite .pr-d-pin-tag { fill: #d97706; }
+.pr-d-pin--fora .pr-d-pin-alvo { stroke: #ef4444; }
+.pr-d-pin--fora .pr-d-pin-tag { fill: #dc2626; }
+
+body.theme-light .pr-d-pin-tag { stroke: #0f172a; stroke-width: 1; }
+
+@container (max-width: 52rem) {
+    .pr-layout--v2 .pr-col { grid-template-rows: none; }
+}
+
+.pr-d-pin-txt { font-size: 19px; }
+.pr-layout--v2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr); }
+.pr-q-faixa { font-size: 0.85rem; padding: 0.12rem 0.5rem; }
+.pr-ocorr { align-items: stretch; width: 100%; }
+.pr-ocorr .prod-evento { display: block; width: 100%; box-sizing: border-box; border-radius: 8px; line-height: 1.3; }
+.pr-ocorr .prod-evento b { display: inline; }

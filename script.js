@@ -5856,43 +5856,50 @@ function serie15(horas, sec, i) {
     return pts;
 }
 
-// grafico no molde do dos silos: area sob a linha, faixa da Tabela 12 ao
-// fundo e so tres leituras escritas (inicio, meio e agora) com a hora embaixo
+// grafico da ultima hora: leituras de 15 em 15 min (5 pontos, do
+// inicio ao fim da hora), so a linha, cada leitura com o valor em cima e o
+// horario embaixo; a faixa da Tabela 12 fica ao fundo, bem leve
 function graficoPonto15(pts, faixa) {
+    const hora = pts.slice(-5);
+    const n = hora.length;
     const W = 300;
-    const H = 70;
-    const vals = pts.map((p) => p.v);
+    const H = 60;
+    const vals = hora.map((p) => p.v);
     const lo = Math.min(...vals, faixa ? faixa.min : Infinity);
     const hi = Math.max(...vals, faixa ? faixa.max : -Infinity);
-    const folga = Math.max(1, (hi - lo) * 0.18);
+    const folga = Math.max(1, (hi - lo) * 0.2);
     const y0 = lo - folga;
     const y1 = hi + folga;
-    const n = pts.length;
-    const x = (k) => (n > 1 ? (k / (n - 1)) * W : W / 2);
-    const y = (v) => H - ((v - y0) / (y1 - y0)) * H;
-    const f = (v) => v.toFixed(1);
-    const linha = pts.map((p, k) => `${k ? 'L' : 'M'}${f(x(k))} ${f(y(p.v))}`).join(' ');
-    const area = `${linha} L${f(x(n - 1))} ${H} L0 ${H} Z`;
+    // margem lateral para o primeiro e o ultimo rotulo caberem
+    const x = (k) => 8 + (n > 1 ? (k / (n - 1)) * 84 : 42);
+    const y = (v) => ((y1 - v) / (y1 - y0)) * 100;
+    const f = (v) => v.toFixed(2);
+    const linha = hora.map((p, k) => `${k ? 'L' : 'M'}${f((x(k) / 100) * W)} ${f((y(p.v) / 100) * H)}`).join(' ');
     const band = faixa
-        ? `<rect class="pr15-faixa" x="0" y="${f(y(faixa.max))}" width="${W}" height="${f(y(faixa.min) - y(faixa.max))}"></rect>`
+        ? `<rect class="pr15-faixa" x="0" y="${f((y(faixa.max) / 100) * H)}" width="${W}" height="${f(((y(faixa.min) - y(faixa.max)) / 100) * H)}"></rect>`
         : '';
-    const pos = (k) => `left:${((x(k) / W) * 100).toFixed(2)}%;top:${((y(pts[k].v) / H) * 100).toFixed(2)}%`;
-    const fora = pts.map((p, k) => (estadoPressao(p.v, faixa) === 'fora'
-        ? `<i class="pr15-dot pr15-dot--fora" style="${pos(k)}"></i>` : '')).join('');
-    const marcas = [0, Math.floor((n - 1) / 2), n - 1];
-    const rotulos = marcas.map((k, i) => {
-        const cls = ['ini', 'meio', 'fim'][i];
-        const est = estadoPressao(pts[k].v, faixa) || 'ok';
-        return `<span class="pr15-v pr15-v--${cls} pr15-v--${est}" style="left:${((x(k) / W) * 100).toFixed(2)}%;top:${((y(pts[k].v) / H) * 100).toFixed(2)}%">${Math.round(pts[k].v)}</span>`;
+    const pontos = hora.map((p, k) => {
+        const est = estadoPressao(p.v, faixa) || 'ok';
+        const ult = k === n - 1;
+        return `<i class="pr15-dot pr15-dot--${est}${ult ? ' pr15-dot--agora' : ''}" style="left:${f(x(k))}%;top:${f(y(p.v))}%"></i>`
+            + `<span class="pr15-v pr15-v--${est}${ult ? ' is-agora' : ''}" style="left:${f(x(k))}%;top:${f(y(p.v))}%">${Math.round(p.v)}</span>`;
     }).join('');
-    const horas = marcas.map((k, i) => `<span class="pr15-h pr15-h--${['ini', 'meio', 'fim'][i]}">${pts[k].t}</span>`).join('');
+    const horas = hora.map((p, k) => `<span class="pr15-h${k === n - 1 ? ' is-agora' : ''}" style="left:${f(x(k))}%">${p.t}</span>`).join('');
     return '<div class="pr15">'
         + `<div class="pr15-plot"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">${band}`
-        + `<path class="pr15-area" d="${area}"></path><path class="pr15-linha" d="${linha}"></path>`
-        + `<line class="pr15-eixo" x1="0" x2="${W}" y1="${H}" y2="${H}"></line></svg>${fora}`
-        + `<i class="pr15-dot pr15-dot--agora" style="${pos(n - 1)}"></i>${rotulos}</div>`
+        + `<path class="pr15-linha" d="${linha}"></path></svg>${pontos}</div>`
         + `<div class="pr15-horas">${horas}</div></div>`;
 }
+
+// ponto no desenho: alvo pequeno no lugar exato da tomada e a etiqueta
+// P1..P5 ao lado, ligada por um traco
+const PRESSAO_ROTULOS = [
+    { x: 200, y: 530 },
+    { x: 296, y: 532 },
+    { x: 350, y: 478 },
+    { x: 540, y: 452 },
+    { x: 588, y: 545 },
+];
 
 const PRESSAO_RECORTE = { x: 170, y: 96, w: 450, h: 530 };
 
@@ -5907,8 +5914,13 @@ function cartaoPressao(dados, sec) {
     const marcas = PRESSAO_LUGARES.map((l, i) => {
         const s = series[i];
         const est = s && s.length ? (estadoPressao(s[s.length - 1].v, faixas[i]) || 'ok') : 'ok';
-        return `<circle class="pr-d-p pr-d-p--${est}" cx="${l.x}" cy="${l.y}" r="27"></circle>`
-            + `<text class="pr-d-p-txt" x="${l.x}" y="${l.y + 8}" text-anchor="middle">P${i + 1}</text>`;
+        const r = PRESSAO_ROTULOS[i];
+        return `<g class="pr-d-pin pr-d-pin--${est}">`
+            + `<line class="pr-d-pin-guia" x1="${r.x}" y1="${r.y}" x2="${l.x}" y2="${l.y}"></line>`
+            + `<circle class="pr-d-pin-alvo" cx="${l.x}" cy="${l.y}" r="9"></circle>`
+            + `<circle class="pr-d-pin-centro" cx="${l.x}" cy="${l.y}" r="3.5"></circle>`
+            + `<rect class="pr-d-pin-tag" x="${r.x - 24}" y="${r.y - 15}" width="48" height="30" rx="15"></rect>`
+            + `<text class="pr-d-pin-txt" x="${r.x}" y="${r.y + 7}" text-anchor="middle">P${i + 1}</text></g>`;
     }).join('');
 
     const quadro = (ponto, i) => {
@@ -5935,30 +5947,31 @@ function cartaoPressao(dados, sec) {
         + `<span class="pr-sec-nome">${meta.nome}</span><span class="pr-sec-meta">${detalhe}</span>${seloSecador(dados, sec)}</div>`
         + `<div class="pr-layout pr-layout--v2"><div class="pr-col pr-col--esq">${lado([0, 1, 2])}</div>`
         + `<div class="pr-figura"><div class="pr-figura-in" style="--ar:${R.w} / ${R.h}; --arn:${(R.w / R.h).toFixed(4)}">${svg}</div></div>`
-        + `<div class="pr-col pr-col--dir">${lado([3, 4])}</div></div>`
+        + `<div class="pr-col pr-col--dir">${lado([3, 4])}<div class="pr-q pr-q--ocorr"><div class="pr-q-head"><span class="pr-q-id pr-q-id--peq">Ocorrências</span></div><div class="pr-ocorr">${eventosPressao(dados, sec)}</div></div></div></div>`
         + '</article>';
 }
 
 // ocorrencias do turno: paradas, pontos fora da faixa e a hora em andamento
-function eventosPressao(dados) {
+function eventosPressao(dados, so) {
     const itens = [];
-    const paradas = dados.paradas || [];
+    const lista = so ? [so] : PRESSAO_SECADORES;
+    const paradas = (dados.paradas || []).filter((p) => !so || p.sec === so);
     if (!paradas.length) {
         itens.push('<span class="prod-evento prod-evento--ok"><b>Sem paradas</b> no turno</span>');
     }
     paradas.forEach((p) => {
         const meta = (dados.secadores && dados.secadores[p.sec]) || { nome: p.sec };
         itens.push('<span class="prod-evento prod-evento--parada"><i class="prod-leg-parada" aria-hidden="true"></i>'
-            + `<b>${meta.nome} · ${parseInt(p.h, 10)}h · parado ${p.min} min</b> ${p.motivo}</span>`);
+            + `<b>${so ? '' : `${meta.nome} · `}${parseInt(p.h, 10)}h · parado ${p.min} min</b> ${p.motivo}</span>`);
     });
-    PRESSAO_SECADORES.forEach((sec) => {
+    lista.forEach((sec) => {
         const { meta, faixas, atual } = metaPressao(dados, sec);
         atual.forEach((v, i) => {
             const f = faixas[i];
             if (estadoPressao(v, f) !== 'fora') return;
             const p = dados.pontos[i] || { id: 'P' + (i + 1) };
             itens.push('<span class="prod-evento prod-evento--parada"><i class="prod-leg-parada" aria-hidden="true"></i>'
-                + `<b>${meta.nome} · ${p.id} ${formatarPressao(v)} mmca</b> fora da faixa (${faixaTexto(f)})</span>`);
+                + `<b>${so ? '' : `${meta.nome} · `}${p.id} ${formatarPressao(v)} mmca</b> fora da faixa (${faixaTexto(f)})</span>`);
         });
     });
     const agora = dados.horas.find((hora) => hora.agora);
@@ -5997,7 +6010,7 @@ function montarPressao(raiz) {
         if (!dados || !alvo || !dados.horas.length) return;
         alvo.innerHTML = PRESSAO_SECADORES.map((sec) => cartaoPressao(dados, sec)).join('');
         const eventos = secao.querySelector('[data-pressao-eventos]');
-        if (eventos) eventos.innerHTML = eventosPressao(dados);
+        if (eventos) eventos.innerHTML = '';
         const tabela = secao.querySelector('[data-pressao-tabela]');
         if (tabela) tabela.innerHTML = '';
         secao.querySelectorAll('[data-pressao-turno]').forEach((el) => {
@@ -7268,7 +7281,7 @@ function escreverAeracao(card) {
         + `máxima acima de ${fMassa.ate} °C (estragando). `
         + 'Ar: diretrizes do Manejo da Aeração (ABRAPOS) e do Guia de Secagem e Armazenagem do RS.';
     alvo.innerHTML = '<div class="sa-ar-head"><span class="sa-ar-tit">Aeração</span>'
-        + `<span class="sa-ar-ref">${ref}</span></div>`
+        + '</div>'
         + reguaMassa
         // o ar de agora fica so no traco da regua; da massa, o icone e a
         // temperatura, com a situacao no tooltip
