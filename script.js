@@ -5296,11 +5296,11 @@ const PRESSAO_DESENHO = { w: 800, h: 640, quadroEsq: 195, quadroDir: 595 };
 // lugar de cada ponto no desenho (marca) e altura do quadro dele; os da
 // camara de ar quente e da fornalha ficam a esquerda, os outros a direita
 const PRESSAO_LUGARES = [
-    { x: 255, y: 530, lado: 'esq', qy: 530 },   // P1 saida da fornalha (entrada de ar quente)
-    { x: 222, y: 440, lado: 'esq', qy: 315 },   // P2 camara de ar quente, base
-    { x: 315, y: 120, lado: 'esq', qy: 110 },   // P3 camara de ar quente, topo
-    { x: 400, y: 518, lado: 'dir', qy: 470 },   // P4 resfriamento
-    { x: 497, y: 150, lado: 'dir', qy: 180 },   // P5 ar saturado, exaustao (ventilador)
+    { x: 216, y: 588, lado: 'esq', qy: 540 },   // P1 fornalha, lado de fora
+    { x: 326, y: 590, lado: 'esq', qy: 360 },   // P2 duto de ar quente, saida da fornalha
+    { x: 384, y: 548, lado: 'esq', qy: 170 },   // P3 camara de ar quente (plenum), embaixo
+    { x: 484, y: 500, lado: 'dir', qy: 380 },   // P4 resfriamento, acima da descarga
+    { x: 530, y: 590, lado: 'dir', qy: 545 },   // P5 camara de ar saturado, embaixo
 ];
 
 // mmH2O com o sinal de menos tipografico: "−32"
@@ -5337,38 +5337,75 @@ function setaPressao(x1, y1, x2, y2, tipo, sufixo) {
     return `<line class="pr-d-seta pr-d-seta--${tipo}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" marker-end="url(#pr-ponta-${tipo}-${sufixo})"></line>`;
 }
 
-// torre de cavaletes: o ar quente sai da fornalha, sobe pela camara em
-// escada, atravessa os cavaletes, cai na camara de ar saturado e sai pelo
-// ventilador no topo; embaixo o resfriamento puxa ar ambiente. "por cima"
-// entra por ultimo no SVG (marcas dos pontos e guias)
+// secador de coluna no molde do desenho da SanTec: fornalha a esquerda,
+// duto e camara de ar quente, coluna com a secao de secagem (110 °C) em
+// cima e a de resfriamento (20 °C) embaixo, descarga e pernas; a direita a
+// camara de ar saturado e o ventilador. Sensores e registros como no
+// desenho. "porCima" entra por ultimo no SVG (marcas dos pontos e guias)
 function desenhoCavaletes(sufixo, porCima) {
-    const tipos = ['quente', 'secagem', 'saturado', 'ambiente'];
-    const pontas = tipos.map((t) => `<marker id="pr-ponta-${t}-${sufixo}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path class="pr-d-ponta pr-d-ponta--${t}" d="M0,0 L10,5 L0,10 z"></path></marker>`).join('');
-    const partes = [];
-    // fornalha e duto de ar quente ate a camara
-    partes.push('<rect class="pr-d-fornalha" x="197" y="580" width="136" height="44" rx="6"></rect>');
-    partes.push('<rect class="pr-d-zona pr-d-zona--quente" x="230" y="470" width="50" height="110"></rect>');
-    partes.push(setaPressao(255, 572, 255, 482, 'quente', sufixo));
-    // camara de ar quente em escada, mais larga embaixo
-    partes.push('<polygon class="pr-d-zona pr-d-zona--quente" points="330,80 305,80 305,160 280,160 280,240 255,240 255,320 230,320 230,400 205,400 205,470 330,470"></polygon>');
-    [[120, 305], [200, 280], [280, 255], [360, 230], [440, 205]].forEach(([y, x]) => {
-        partes.push(setaPressao(x + 10, y, 324, y, 'quente', sufixo));
+    const tipos = ['quente', 'secagem', 'saturado', 'recirc', 'ambiente'];
+    const pontas = tipos.map((t) => `<marker id="pr-ponta-${t}-${sufixo}" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="3.6" markerHeight="3.6" orient="auto"><path class="pr-d-ponta pr-d-ponta--${t}" d="M0,0 L10,5 L0,10 z"></path></marker>`).join('');
+    const seta = (d, t) => `<path class="pr-d-seta pr-d-seta--${t}" d="${d}" marker-end="url(#pr-ponta-${t}-${sufixo})"></path>`;
+    const txt = (x, y, s, cls = '', anc = 'middle') => `<text class="pr-d-txt ${cls}" x="${x}" y="${y}" text-anchor="${anc}">${s}</text>`;
+    const p = [];
+    // chao
+    p.push('<rect class="pr-d-chao" x="200" y="608" width="392" height="8"></rect>');
+    // fornalha (blocos e grelhas)
+    p.push('<rect class="pr-d-fornalha" x="206" y="512" width="88" height="96"></rect>');
+    p.push('<rect class="pr-d-parede" x="206" y="512" width="8" height="96"></rect>');
+    for (let x = 222; x <= 280; x += 14) p.push(`<rect class="pr-d-grelha" x="${x}" y="588" width="9" height="14"></rect>`);
+    p.push('<rect class="pr-d-parede" x="246" y="530" width="5" height="40"></rect>');
+    p.push(txt(222, 502, 'FORNALHA', 'pr-d-txt--alerta', 'start'));
+    // duto da fornalha ate a camara (com o labirinto de chapas)
+    p.push('<polygon class="pr-d-duto" points="294,526 300,526 300,516 340,516 340,608 294,608"></polygon>');
+    for (let x = 304; x <= 332; x += 7) p.push(`<rect class="pr-d-parede" x="${x}" y="520" width="3" height="20"></rect>`);
+    p.push('<rect class="pr-d-parede" x="316" y="548" width="4" height="60"></rect>');
+    p.push(seta('M334,604 L340,588', 'quente'));
+    // camara de ar quente (plenum) a esquerda da coluna
+    p.push('<polygon class="pr-d-zona pr-d-zona--quente" points="350,608 350,236 432,190 432,608"></polygon>');
+    p.push('<rect class="pr-d-parede" x="372" y="548" width="4" height="60"></rect>');
+    p.push(seta('M392,250 Q404,232 424,236', 'secagem'));
+    p.push(seta('M392,388 L392,360', 'secagem'));
+    // coluna: chapeu, chamine, secagem, resfriamento, descarga e pernas
+    p.push('<rect class="pr-d-torre" x="430" y="16" width="20" height="18"></rect>');
+    p.push('<polygon class="pr-d-torre" points="412,34 468,34 468,80 412,80"></polygon>');
+    p.push('<polygon class="pr-d-torre" points="414,80 466,80 440,106"></polygon>');
+    p.push('<polygon class="pr-d-torre" points="412,110 468,110 468,180 412,180"></polygon>');
+    for (let y = 128; y <= 172; y += 11) p.push(`<line class="pr-d-torre-linha" x1="412" y1="${y}" x2="468" y2="${y}"></line>`);
+    p.push('<rect class="pr-d-secao pr-d-secao--secagem" x="432" y="180" width="38" height="232"></rect>');
+    p.push('<rect class="pr-d-secao pr-d-secao--resfr" x="432" y="412" width="38" height="104"></rect>');
+    p.push(`<rect class="pr-d-temp" x="436" y="${282}" width="30" height="14" rx="2"></rect>` + txt(451, 293, '110°C', 'pr-d-txt--temp'));
+    p.push(`<rect class="pr-d-temp" x="436" y="${474}" width="30" height="14" rx="2"></rect>` + txt(451, 485, '20°C', 'pr-d-txt--temp'));
+    p.push('<rect class="pr-d-descarga" x="420" y="520" width="62" height="20"></rect>' + txt(451, 534, 'DESCARGA', 'pr-d-txt--peq'));
+    p.push('<path class="pr-d-perna" d="M426,540 L426,608 M476,540 L476,608 M432,546 L451,566 L470,546 M451,566 L451,580"></path>');
+    // camara de resfriamento (contorno) e registros
+    p.push('<polygon class="pr-d-resfr" points="410,608 410,414 424,404 480,404 494,414 494,608"></polygon>');
+    p.push('<path class="pr-d-registro" d="M486,404 L498,396"></path>' + txt(502, 388, 'REGISTRO 2', 'pr-d-txt--alerta', 'start') + txt(502, 399, '(coluna inteira)', 'pr-d-txt--alerta pr-d-txt--peq', 'start'));
+    p.push('<path class="pr-d-registro" d="M362,442 L370,434 M378,446 L386,438 M394,450 L402,442"></path>' + txt(346, 470, 'REGISTRO 3', 'pr-d-txt--alerta', 'end') + txt(346, 481, '(opcional · lotes)', 'pr-d-txt--alerta pr-d-txt--peq', 'end'));
+    p.push('<path class="pr-d-registro" d="M484,524 L498,524"></path>' + txt(504, 530, 'REGISTRO 1', 'pr-d-txt--alerta', 'start') + txt(504, 541, '(resfriamento)', 'pr-d-txt--alerta pr-d-txt--peq', 'start'));
+    // camara de ar saturado a direita e o ventilador
+    p.push('<polygon class="pr-d-zona pr-d-zona--saturado" points="470,190 552,236 552,608 494,608 494,414 470,404"></polygon>');
+    p.push(seta('M474,282 Q496,290 510,306', 'saturado'));
+    p.push(seta('M474,250 Q500,252 516,264', 'saturado'));
+    p.push('<path class="pr-d-vent" d="M554,262 L570,262 M562,250 L562,300 M554,300 L570,300 M570,256 L582,256 L582,306 L570,306 Z"></path>');
+    p.push(seta('M584,272 L594,272', 'ambiente'));
+    p.push(seta('M584,292 L594,292', 'ambiente'));
+    p.push(txt(568, 318, 'VENTILADOR', 'pr-d-txt--peq'));
+    // recirculacao (ciano) e ar ambiente (laranja) no resfriamento
+    p.push(seta('M430,448 Q404,456 400,476', 'recirc'));
+    p.push(seta('M414,568 Q396,566 388,580', 'recirc'));
+    p.push(seta('M506,478 Q490,456 474,452', 'ambiente'));
+    p.push(seta('M488,560 L488,544', 'ambiente'));
+    // sensores
+    [[432, 300, 'SENSOR 1', 346, 330, 'end'], [470, 228, 'SENSOR 3', 520, 196, 'start'], [432, 432, 'SENSOR 3 (opc.)', 346, 420, 'end']].forEach(([x, y, nome, tx, ty, anc]) => {
+        p.push(`<line class="pr-d-sensor-guia" x1="${x}" y1="${y}" x2="${tx}" y2="${ty - 4}"></line>`);
+        p.push(`<circle class="pr-d-sensor" cx="${x}" cy="${y}" r="5"></circle>`);
+        p.push(txt(tx + (anc === 'end' ? -2 : 2), ty, nome, 'pr-d-txt--alerta', anc));
     });
-    // torre com os cavaletes (ar de secagem atravessando o grao)
-    partes.push('<polygon class="pr-d-torre" points="322,60 400,24 478,60"></polygon>');
-    partes.push('<rect class="pr-d-torre" x="330" y="60" width="140" height="500"></rect>');
-    for (let y = 82; y <= 460; y += 27) partes.push(setaPressao(342, y, 456, y, 'secagem', sufixo));
-    // resfriamento: ar ambiente entra por baixo e atravessa o grao
-    partes.push('<rect class="pr-d-zona pr-d-zona--ambiente" x="331" y="478" width="138" height="81"></rect>');
-    [496, 540].forEach((y) => partes.push(setaPressao(288, y, 324, y, 'ambiente', sufixo)));
-    [496, 518, 540].forEach((y) => partes.push(setaPressao(342, y, 456, y, 'ambiente', sufixo)));
-    // camara de ar saturado e ventilador no topo
-    partes.push('<rect class="pr-d-zona pr-d-zona--saturado" x="470" y="60" width="55" height="499"></rect>');
-    partes.push(setaPressao(497, 545, 497, 78, 'saturado', sufixo));
-    partes.push('<circle class="pr-d-vent" cx="497" cy="40" r="14"></circle>');
-    partes.push(setaPressao(497, 24, 497, 4, 'saturado', sufixo));
+    p.push(txt(500, 340, 'SEÇÃO DE', 'pr-d-txt--alerta', 'start') + txt(500, 352, 'SECAGEM', 'pr-d-txt--alerta', 'start'));
+    p.push(txt(500, 430, 'SEÇÃO DE', 'pr-d-txt--alerta pr-d-txt--peq', 'start') + txt(500, 440, 'RESFRIAMENTO', 'pr-d-txt--alerta pr-d-txt--peq', 'start'));
     return `<svg class="pr-d" viewBox="0 0 ${PRESSAO_DESENHO.w} ${PRESSAO_DESENHO.h}" aria-hidden="true">`
-        + `<defs>${pontas}</defs>${partes.join('')}${porCima || ''}</svg>`;
+        + `<defs>${pontas}</defs>${p.join('')}${porCima || ''}</svg>`;
 }
 
 // curva do turno no quadro do ponto, na escala do proprio ponto
@@ -5396,8 +5433,9 @@ function cartaoPressao(dados, sec) {
     const marcas = PRESSAO_LUGARES.map((l) => {
         const ax = l.lado === 'esq' ? PRESSAO_DESENHO.quadroEsq : PRESSAO_DESENHO.quadroDir;
         return `<line class="pr-d-guia" x1="${l.x}" y1="${l.y}" x2="${ax}" y2="${l.qy}"></line>`
-            + `<circle class="pr-d-marca" cx="${l.x}" cy="${l.y}" r="10"></circle>`;
-    }).join('');
+            + `<circle class="pr-d-marca" cx="${l.x}" cy="${l.y}" r="7"></circle>`
+            + chipPonto(l, PRESSAO_LUGARES.indexOf(l), horas[n - 1][sec], faixas);
+    }).join('') + instrumentosPressao(dados, sec);
 
     const quadros = dados.pontos.map((ponto, i) => {
         const l = PRESSAO_LUGARES[i];
@@ -5419,8 +5457,7 @@ function cartaoPressao(dados, sec) {
             + '</div>';
     }).join('');
 
-    const rotulos = `<span class="pr-d-rotulo" style="left: ${pct(265, w)}; top: ${pct(602, h)}">Fornalha</span>`
-        + `<span class="pr-d-rotulo pr-d-rotulo--esq" style="left: ${pct(518, w)}; top: ${pct(40, h)}">Ventilador</span>`;
+    const rotulos = '';
 
     const detalhe = [meta.tipo && `secador de ${meta.tipo}`, meta.cultura, meta.fluxo && `fluxo ${meta.fluxo}`].filter(Boolean).join(' · ');
     return `<article class="pr-sec pr-sec--${sec}">`
@@ -5484,12 +5521,99 @@ function tabelaPressao(dados) {
         + `<table class="pr-tab"><thead><tr><th>Local de medição</th>${cab}</tr></thead><tbody>${linhas}</tbody></table>`;
 }
 
+// etiqueta do ponto no desenho: "P1 4" na cor da situacao (faixa da Tabela 12)
+function chipPonto(l, i, valores, faixas) {
+    const v = valores ? valores[i] : null;
+    if (v == null) return '';
+    const est = estadoPressao(v, faixas[i]) || 'ok';
+    const rot = `P${i + 1}  ${formatarPressao(v)}`;
+    const larg = 14 + rot.length * 7.4;
+    const x = l.x - larg / 2;
+    const y = l.y - 34;
+    return `<g class="pr-d-chip pr-d-chip--${est}"><rect x="${x.toFixed(1)}" y="${y}" width="${larg.toFixed(1)}" height="20" rx="10"></rect>`
+        + `<text x="${l.x}" y="${y + 14.5}" text-anchor="middle">${rot}</text></g>`;
+}
+
+// sensores de temperatura e registros do desenho, com a leitura atual
+const PRESSAO_INSTRUMENTOS = {
+    sensores: [
+        { id: 's1', x: 346, y: 344, anc: 'end' },     // Sensor 1 · secagem
+        { id: 's3', x: 520, y: 210, anc: 'start' },   // Sensor 3 · ar saturado
+        { id: 's3o', x: 346, y: 434, anc: 'end' },    // Sensor 3 opcional · lotes
+    ],
+    registros: [
+        { id: 'r1', x: 504, y: 554, anc: 'start' },
+        { id: 'r2', x: 502, y: 412, anc: 'start' },
+        { id: 'r3', x: 346, y: 494, anc: 'end' },
+    ],
+};
+
+function instrumentosPressao(dados, sec) {
+    const ins = (dados.instrumentos && dados.instrumentos[sec]) || {};
+    const ref = dados.referencias || {};
+    const partes = [];
+    PRESSAO_INSTRUMENTOS.sensores.forEach((s) => {
+        const v = ins.sensores && ins.sensores[s.id];
+        if (v == null) return;
+        const lim = ref[s.id];
+        const fora = lim && (v < lim.min || v > lim.max);
+        partes.push(`<text class="pr-d-leitura${fora ? ' is-fora' : ''}" x="${s.x}" y="${s.y}" text-anchor="${s.anc}">${String(v).replace('.', ',')} °C</text>`);
+    });
+    PRESSAO_INSTRUMENTOS.registros.forEach((r) => {
+        const v = ins.registros && ins.registros[r.id];
+        if (!v) return;
+        partes.push(`<text class="pr-d-leitura pr-d-leitura--reg pr-d-leitura--${v}" x="${r.x}" y="${r.y}" text-anchor="${r.anc}">${v}</text>`);
+    });
+    return partes.join('');
+}
+
+// indicadores do secador: pontos na faixa, menor folga, perda de carga na
+// coluna (P5 - P3), depressao no ventilador (P5) e temperaturas dos sensores
+function resumoPressao(dados, sec) {
+    const meta = (dados.secadores && dados.secadores[sec]) || { nome: sec };
+    const faixas = (dados.faixas && meta.fluxo && dados.faixas[meta.fluxo]) || [];
+    const atual = dados.horas[dados.horas.length - 1][sec] || [];
+    const ins = (dados.instrumentos && dados.instrumentos[sec]) || {};
+    let naFaixa = 0;
+    let pior = null;
+    atual.forEach((v, i) => {
+        const f = faixas[i];
+        if (!f) return;
+        const a = Math.abs(v);
+        const est = estadoPressao(v, f);
+        if (est !== 'fora') naFaixa += 1;
+        const folga = Math.min(a - f.min, f.max - a);
+        if (!pior || folga < pior.folga) pior = { folga, i };
+    });
+    const total = atual.length;
+    const coluna = Math.abs(atual[4]) - Math.abs(atual[2]);
+    const sen = ins.sensores || {};
+    const estFaixa = naFaixa === total ? 'ok' : 'fora';
+    const estFolga = !pior ? '' : pior.folga < 0 ? 'fora' : pior.folga < 1 ? 'limite' : 'ok';
+    const c = (rot, val, sub, est) => `<div class="pr-kpi${est ? ` pr-kpi--${est}` : ''}"><span class="pr-kpi-rot">${rot}</span>`
+        + `<span class="pr-kpi-val">${val}</span>${sub ? `<span class="pr-kpi-sub">${sub}</span>` : ''}</div>`;
+    const temp = (v) => (v == null ? '—' : `${String(v).replace('.', ',')}<small>°C</small>`);
+    return '<div class="pr-kpis-linha">'
+        + c('Na faixa', `${naFaixa}<small>/${total}</small>`, naFaixa === total ? 'todos na faixa' : `${total - naFaixa} fora`, estFaixa)
+        + c('Menor folga', pior ? `${pior.folga < 0 ? '−' : ''}${Math.abs(pior.folga)}<small>mmca</small>` : '—', pior ? `P${pior.i + 1} · faixa ${faixaTexto(faixas[pior.i])}` : '', estFolga)
+        + c('Perda coluna', `${coluna}<small>mmca</small>`, 'P5 − P3', '')
+        + c('Ventilador', `${formatarPressao(atual[4])}<small>mmca</small>`, 'P5 · exaustão', '')
+        + c('Secagem', temp(sen.s1), 'sensor 1', '')
+        + c('Ar saturado', temp(sen.s3), 'sensor 3', '')
+        + '</div>';
+}
+
 function montarPressao(raiz) {
     (raiz || document).querySelectorAll('.pr-section').forEach((secao) => {
         const dados = dadosPressao(secao);
         const alvo = secao.querySelector('[data-pressao-secadores]');
         if (!dados || !alvo || !dados.horas.length) return;
         alvo.innerHTML = PRESSAO_SECADORES.map((sec) => cartaoPressao(dados, sec)).join('');
+        // indicadores dentro do cartao de cada secador, logo abaixo do nome
+        PRESSAO_SECADORES.forEach((sec) => {
+            const cab = alvo.querySelector(`.pr-sec--${sec} .pr-sec-head`);
+            if (cab) cab.insertAdjacentHTML('afterend', resumoPressao(dados, sec));
+        });
         const eventos = secao.querySelector('[data-pressao-eventos]');
         if (eventos) eventos.innerHTML = eventosPressao(dados);
         const tabela = secao.querySelector('[data-pressao-tabela]');
