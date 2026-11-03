@@ -5355,7 +5355,7 @@ function desenhoCavaletes(sufixo, porCima) {
     p.push('<rect class="pr-d-parede" x="206" y="512" width="8" height="96"></rect>');
     for (let x = 222; x <= 280; x += 14) p.push(`<rect class="pr-d-grelha" x="${x}" y="588" width="9" height="14"></rect>`);
     p.push('<rect class="pr-d-parede" x="246" y="530" width="5" height="40"></rect>');
-    p.push(txt(222, 502, 'FORNALHA', 'pr-d-txt--alerta', 'start'));
+    p.push(txt(250, 502, 'FORNALHA', 'pr-d-txt--nome'));
     // duto da fornalha ate a camara (com o labirinto de chapas)
     p.push('<polygon class="pr-d-duto" points="294,526 300,526 300,516 340,516 340,608 294,608"></polygon>');
     for (let x = 304; x <= 332; x += 7) p.push(`<rect class="pr-d-parede" x="${x}" y="520" width="3" height="20"></rect>`);
@@ -5390,7 +5390,7 @@ function desenhoCavaletes(sufixo, porCima) {
     p.push('<path class="pr-d-vent" d="M554,262 L570,262 M562,250 L562,300 M554,300 L570,300 M570,256 L582,256 L582,306 L570,306 Z"></path>');
     p.push(seta('M584,272 L594,272', 'ambiente'));
     p.push(seta('M584,292 L594,292', 'ambiente'));
-    p.push(txt(568, 318, 'VENTILADOR', 'pr-d-txt--peq'));
+    p.push(txt(576, 322, 'VENTILADOR', 'pr-d-txt--nome'));
     // recirculacao (ciano) e ar ambiente (laranja) no resfriamento
     p.push(seta('M430,448 Q404,456 400,476', 'recirc'));
     p.push(seta('M414,568 Q396,566 388,580', 'recirc'));
@@ -5398,9 +5398,9 @@ function desenhoCavaletes(sufixo, porCima) {
     p.push(seta('M488,560 L488,544', 'ambiente'));
     // sensores
     [[432, 300, 'SENSOR 1', 346, 330, 'end'], [470, 228, 'SENSOR 3', 520, 196, 'start'], [432, 432, 'SENSOR 3 (opc.)', 346, 420, 'end']].forEach(([x, y, nome, tx, ty, anc]) => {
-        p.push(`<line class="pr-d-sensor-guia" x1="${x}" y1="${y}" x2="${tx}" y2="${ty - 4}"></line>`);
+
         p.push(`<circle class="pr-d-sensor" cx="${x}" cy="${y}" r="5"></circle>`);
-        p.push(txt(tx + (anc === 'end' ? -2 : 2), ty, nome, 'pr-d-txt--alerta', anc));
+        p.push(txt(x + (x < 451 ? -9 : 9), y + 4, nome.replace('SENSOR ', 'S').replace(' (opc.)', '*'), 'pr-d-txt--sensor', x < 451 ? 'end' : 'start'));
     });
     p.push(txt(500, 340, 'SEÇÃO DE', 'pr-d-txt--alerta', 'start') + txt(500, 352, 'SECAGEM', 'pr-d-txt--alerta', 'start'));
     p.push(txt(500, 430, 'SEÇÃO DE', 'pr-d-txt--alerta pr-d-txt--peq', 'start') + txt(500, 440, 'RESFRIAMENTO', 'pr-d-txt--alerta pr-d-txt--peq', 'start'));
@@ -5426,45 +5426,58 @@ function cartaoPressao(dados, sec) {
     const horas = dados.horas;
     const n = horas.length;
     const faixas = (dados.faixas && meta.fluxo && dados.faixas[meta.fluxo]) || [];
-    const pct = (v, total) => `${((v / total) * 100).toFixed(2)}%`;
-    const { w, h } = PRESSAO_DESENHO;
 
-    // marcas no desenho e guias ate o quadro de cada ponto
-    const marcas = PRESSAO_LUGARES.map((l) => {
-        const ax = l.lado === 'esq' ? PRESSAO_DESENHO.quadroEsq : PRESSAO_DESENHO.quadroDir;
-        return `<line class="pr-d-guia" x1="${l.x}" y1="${l.y}" x2="${ax}" y2="${l.qy}"></line>`
-            + `<circle class="pr-d-marca" cx="${l.x}" cy="${l.y}" r="7"></circle>`
-            + chipPonto(l, PRESSAO_LUGARES.indexOf(l), horas[n - 1][sec], faixas);
-    }).join('') + instrumentosPressao(dados, sec);
+    // no desenho so a marca e a etiqueta do ponto (sem guias cruzando)
+    const marcas = PRESSAO_LUGARES.map((l, i) => `<circle class="pr-d-marca" cx="${l.x}" cy="${l.y}" r="7"></circle>`
+        + chipPonto(l, i, horas[n - 1][sec], faixas)).join('');
 
-    const quadros = dados.pontos.map((ponto, i) => {
-        const l = PRESSAO_LUGARES[i];
-        if (!l) return '';
+    const quadro = (ponto, i) => {
         const serie = horas.map((hora) => hora[sec][i]);
         const media = serie.reduce((a, v) => a + v, 0) / serie.length;
-        const lado = l.lado === 'esq'
-            ? `left: 0; width: ${pct(PRESSAO_DESENHO.quadroEsq, w)}`
-            : `right: 0; width: ${pct(w - PRESSAO_DESENHO.quadroDir, w)}`;
         const turno = horas.map((hora, k) => `${rotuloHora(hora)} ${formatarPressao(serie[k])}`).join(' · ');
         const faixa = faixas[i];
-        const estado = estadoPressao(serie[n - 1], faixa);
-        const selo = { ok: 'na faixa', limite: 'no limite', fora: 'fora da faixa' }[estado] || '';
-        const ref = faixa ? `<span class="pr-quadro-faixa">faixa ${faixaTexto(faixa)}</span>` : '';
-        return `<div class="pr-quadro pr-quadro--${l.lado}${estado ? ` pr-quadro--${estado}` : ''}" style="${lado}; top: ${pct(l.qy, h)}" title="${ponto.id} · ${ponto.local} · fluxo ${meta.fluxo || '—'} · faixa ${faixa ? faixaTexto(faixa) : '—'} mmca · ${turno} mmca">`
-            + `<div class="pr-quadro-head"><span class="pr-quadro-id">${ponto.id}</span><span class="pr-quadro-local">${ponto.local}</span></div>`
-            + `<div class="pr-quadro-valor"><b>${formatarPressao(serie[n - 1])}</b><small>mmca</small>${selo ? `<em class="pr-quadro-selo">${selo}</em>` : ''}</div>`
-            + `<div class="pr-quadro-sub">${curvaPressao(serie)}<span>média ${formatarPressao(media)}</span>${ref}</div>`
+        const estado = estadoPressao(serie[n - 1], faixa) || 'ok';
+        const selo = { ok: 'na faixa', limite: 'no limite', fora: 'fora' }[estado];
+        return `<div class="pr-quadro pr-quadro--col pr-quadro--${estado}" title="${ponto.id} · ${ponto.local} · fluxo ${meta.fluxo || '—'} · ${turno} mmca">`
+            + `<div class="pr-quadro-head"><span class="pr-quadro-id">${ponto.id}</span><span class="pr-quadro-local">${ponto.local}</span><em class="pr-quadro-selo">${selo}</em></div>`
+            + `<div class="pr-quadro-valor"><b>${formatarPressao(serie[n - 1])}</b><small>mmca</small>${curvaPressao(serie)}</div>`
+            + `<div class="pr-quadro-sub"><span>média <b>${formatarPressao(media)}</b></span>${faixa ? `<span>faixa <b>${faixaTexto(faixa)}</b></span>` : ''}</div>`
             + '</div>';
-    }).join('');
+    };
+    const esquerda = [0, 1, 2].map((i) => dados.pontos[i] && quadro(dados.pontos[i], i)).join('');
+    const direita = [3, 4].map((i) => dados.pontos[i] && quadro(dados.pontos[i], i)).join('') + quadroInstrumentos(dados, sec);
 
-    const rotulos = '';
-
+    const svg = desenhoCavaletes(sec, marcas).replace(/viewBox="[^"]*"/, 'viewBox="196 4 410 622"');
     const detalhe = [meta.tipo && `secador de ${meta.tipo}`, meta.cultura, meta.fluxo && `fluxo ${meta.fluxo}`].filter(Boolean).join(' · ');
     return `<article class="pr-sec pr-sec--${sec}">`
         + `<div class="pr-sec-head"><i class="pr-leg pr-leg--${sec}" aria-hidden="true"></i>`
         + `<span class="pr-sec-nome">${meta.nome}</span><span class="pr-sec-meta">${detalhe}</span></div>`
-        + `<div class="pr-corpo"><div class="pr-desenho">${desenhoCavaletes(sec, marcas)}${rotulos}${quadros}</div></div>`
+        + `<div class="pr-layout"><div class="pr-col">${esquerda}</div><div class="pr-figura">${svg}</div><div class="pr-col">${direita}</div></div>`
         + '</article>';
+}
+
+// sensores (temperatura) e registros do desenho, num quadro proprio
+function quadroInstrumentos(dados, sec) {
+    const ins = (dados.instrumentos && dados.instrumentos[sec]) || {};
+    const ref = dados.referencias || {};
+    const sen = ins.sensores || {};
+    const reg = ins.registros || {};
+    const linhaS = (id, rot, nome) => {
+        const v = sen[id];
+        if (v == null) return '';
+        const lim = ref[id];
+        const fora = lim && (v < lim.min || v > lim.max);
+        return `<li><span class="pr-ins-id">${rot}</span><span class="pr-ins-nome">${nome}</span><b class="${fora ? 'is-fora' : ''}">${String(v).replace('.', ',')} °C</b></li>`;
+    };
+    const linhaR = (id, rot, nome) => {
+        const v = reg[id];
+        if (!v) return '';
+        return `<li><span class="pr-ins-id">${rot}</span><span class="pr-ins-nome">${nome}</span><b class="pr-ins-reg pr-ins-reg--${v}">${v}</b></li>`;
+    };
+    return '<div class="pr-quadro pr-quadro--col pr-quadro--ins"><div class="pr-quadro-head"><span class="pr-quadro-id">Sensores e registros</span></div><ul class="pr-ins">'
+        + linhaS('s1', 'S1', 'Secagem') + linhaS('s3', 'S3', 'Ar saturado') + linhaS('s3o', 'S3*', 'Lotes (opc.)')
+        + linhaR('r1', 'R1', 'Resfriamento') + linhaR('r2', 'R2', 'Coluna inteira') + linhaR('r3', 'R3', 'Lotes (opc.)')
+        + '</ul></div>';
 }
 
 // ocorrencias do turno, com as mesmas marcas e selos da produtividade
