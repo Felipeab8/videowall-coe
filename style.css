@@ -11615,7 +11615,7 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     position: absolute;
     top: 50%;
     width: 0.2rem;
-    height: 1.4rem;
+    height: 0.5rem;
     border-radius: 2px;
     background: var(--text);
     box-shadow: 0 0 0 2px var(--bg-bottom);
