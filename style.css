@@ -11519,9 +11519,11 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     flex-direction: column;
     gap: 0.2rem;
 }
+
 .sa-ar:empty {
     display: none;
 }
+
 .sa-ar-head {
     display: flex;
     flex-wrap: wrap;
@@ -11531,79 +11533,101 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     font-weight: 600;
     color: var(--muted);
 }
+
 .sa-ar-tit {
     font-weight: 800;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--text);
 }
+
 .sa-ar-ref {
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
 }
-/* régua fixa por cultura (0 a 75 °C) */
+
 .sa-ar-regua {
     position: relative;
-    height: 1rem;
-    margin: 0.25rem 0;
+    height: 0.4rem;
+    margin: 0.2rem 0;
     border-radius: 999px;
-    overflow: hidden;
+    background: #f1c40f;
 }
+
+/* cores cheias (sem transparencia, que deixava vermelho e laranja barrentos
+   no fundo escuro) e 2px de folga entre os trechos */
 .sa-ar-faixa {
     position: absolute;
     top: 0;
     bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-.sa-ar-faixa span {
-    font-size: max(0.55rem, var(--fs-texto, 0px));
-    font-weight: 800;
-    font-style: normal;
-    line-height: 1;
-    white-space: nowrap;
-    color: #0b0f14;
-}
-.sa-ar-faixa--umido {
-    background-color: #f1c40f;
-}
-.sa-ar-faixa--ideal {
-    background-color: var(--ok);
 }
 .sa-ar-faixa--quente {
     background-color: #e74c3c !important;
+    border-radius: 0 999px 999px 0;
 }
-.sa-ar-faixa--quente span {
-    color: #fff;
 }
-/* traço do valor atual, da altura da régua */
+
+.sa-ar-faixa--umido {
+    background-color: #f1c40f;
+    border-radius: 999px 0 0 999px;
+}
+
+.sa-ar-faixa--ideal {
+    background-color: var(--ok);
+}
+
+.sa-ar-faixa--pouco {
+    background-color: color-mix(in srgb, var(--ok) 50%, var(--muted));
+}
+
+.sa-ar-faixa--quente {
+    background-color: #e74c3c !important;
+    border-radius: 0 999px 999px 0;
+}
+
+/* grao: anel na cor do texto, para comparar com o ar de agora */
+.sa-ar-grao {
+    position: absolute;
+    top: 50%;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    border: 2px solid var(--text);
+    background: var(--bg-bottom);
+    transform: translate(-50%, -50%);
+}
+
+/* ar de agora: traco alto na cor do texto, com anel para soltar da regua */
 .sa-ar-agora {
     position: absolute;
-    top: 0;
-    bottom: 0;
+    top: 50%;
     width: 0.2rem;
+    height: 0.9rem;
     border-radius: 2px;
     background: var(--text);
     box-shadow: 0 0 0 2px var(--bg-bottom);
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
 }
+
 .sa-ar-status {
     font-size: max(0.6rem, var(--fs-texto, 0px));
     font-weight: 700;
     color: var(--text);
     font-variant-numeric: tabular-nums;
 }
+
 .sa-ar-status b {
     color: var(--muted);
 }
+
 .sa-ar-status[data-estado="quente"] b {
     color: var(--warn);
 }
+
 .sa-ar-status[data-estado="ideal"] b {
     color: var(--ok);
 }
+
 /* armazem: o mesmo bloco no alto da coluna de tendencias, separado delas;
    a coluna ganha uma linha do tamanho dele antes das tres tendencias, que
    nao encolhem abaixo do que precisam: faltando altura, o cartao transborda
@@ -23499,3 +23523,267 @@ body.theme-dark .pr-quadro--col.pr-quadro--fora .pr-quadro-valor b { color: #f87
     .pr-kpi:first-child { border-top: 0; }
     .pr-status { margin-left: 0; }
 }
+
+
+/* ==========================================================
+   PRESSÃO · gráfico hora a hora, faixa e etiquetas dos pontos
+   ========================================================== */
+.pr-layout {
+    grid-template-columns: minmax(11rem, 1fr) minmax(0, 1.8fr) minmax(11rem, 1fr);
+}
+
+/* valor + hora + faixa na mesma linha */
+.pr-quadro--col .pr-quadro-valor {
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.2rem 0.4rem;
+}
+
+.pr-quadro--col .pr-quadro-valor b { font-size: 2.1rem; }
+
+.pr-quadro-range {
+    margin-left: auto;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    font-size: max(0.66rem, var(--fs-texto, 0px));
+    font-weight: 700;
+    white-space: nowrap;
+    color: var(--muted);
+    background: color-mix(in srgb, var(--pr-ok) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--pr-ok) 35%, transparent);
+}
+
+.pr-quadro--col .pr-quadro-valor .pr-quadro-range b {
+    font-size: inherit;
+    letter-spacing: 0;
+    line-height: inherit;
+    color: var(--text);
+    font-weight: 800;
+}
+.pr-quadro--col .pr-quadro-sub,
+.pr-quadro--col .pr-curva { display: none; }
+
+/* gráfico do ponto */
+.pr-g {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    margin-top: 0.2rem;
+}
+
+.pr-g-linha {
+    display: grid;
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+}
+
+.pr-g-v {
+    font-size: max(0.66rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    color: var(--text);
+}
+
+.pr-g-v--limite { color: var(--pr-alerta); }
+.pr-g-v--fora { color: var(--pr-fora); }
+
+.pr-g-h {
+    font-size: max(0.56rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.pr-g-linha .is-agora {
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.pr-g-h.is-agora { color: var(--text); font-weight: 800; }
+
+.pr-g-area {
+    position: relative;
+    height: 2.2rem;
+}
+
+.pr-g-area svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.pr-g-faixa { fill: color-mix(in srgb, var(--pr-ok) 14%, transparent); }
+
+.pr-g-lim {
+    stroke: color-mix(in srgb, var(--pr-ok) 60%, transparent);
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+    vector-effect: non-scaling-stroke;
+}
+
+.pr-g-area polyline {
+    fill: none;
+    stroke: var(--pr-s1);
+    stroke-width: 2;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.pr-sec--s2 .pr-g-area polyline { stroke: var(--pr-s2); }
+
+.pr-g-p {
+    position: absolute;
+    width: 0.4rem;
+    height: 0.4rem;
+    margin: -0.2rem 0 0 -0.2rem;
+    border-radius: 50%;
+    background: var(--section-bg);
+    border: 2px solid var(--pr-s1);
+}
+
+.pr-sec--s2 .pr-g-p { border-color: var(--pr-s2); }
+.pr-g-p.is-agora { width: 0.6rem; height: 0.6rem; margin: -0.3rem 0 0 -0.3rem; background: currentColor; }
+.pr-g-p--limite { border-color: var(--pr-alerta) !important; background: var(--pr-alerta); }
+.pr-g-p--fora { border-color: var(--pr-fora) !important; background: var(--pr-fora); }
+
+/* desenho com etiquetas dos pontos por cima, na escala real do texto */
+.pr-figura {
+    container-type: size;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pr-figura-in {
+    position: relative;
+    width: min(100cqw, 100cqh * var(--arn));
+    aspect-ratio: var(--ar);
+}
+
+.pr-figura-in .pr-d {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.pr-d-chip { display: none; }
+
+.pr-d-guia2 {
+    stroke: var(--text);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+    opacity: 0.55;
+}
+
+.pr-d-ponto { stroke: #fff; stroke-width: 2.5; }
+.pr-d-ponto--ok { fill: #15803d; }
+.pr-d-ponto--limite { fill: var(--pr-alerta); }
+.pr-d-ponto--fora { fill: var(--pr-fora); }
+
+.pr-d-ponto-n {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 900;
+    fill: #fff;
+}
+
+.pr-figura .pr-d-marca { display: none; }
+
+.pr-et {
+    position: absolute;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.18rem 0.45rem 0.2rem;
+    background: var(--section-bg);
+    border: 1px solid var(--card-border);
+    border-left: 4px solid var(--pr-ok);
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+    white-space: nowrap;
+    line-height: 1.15;
+}
+
+.pr-et--limite { border-left-color: var(--pr-alerta); }
+.pr-et--fora { border-color: var(--pr-fora); border-left-color: var(--pr-fora); background: color-mix(in srgb, var(--pr-fora) 12%, var(--section-bg)); }
+
+.pr-et-l1 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+}
+
+.pr-et-l1 b {
+    font-size: 0.78rem;
+    font-weight: 900;
+    color: var(--text);
+}
+
+.pr-et-l1 strong {
+    font-size: 0.95rem;
+    font-weight: 900;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.pr-et--limite .pr-et-l1 strong { color: var(--pr-alerta); }
+.pr-et--fora .pr-et-l1 strong { color: var(--pr-fora); }
+
+.pr-et-l1 small {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.pr-et-l2 {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+@container (max-width: 44rem) {
+    .pr-figura { height: 22rem; }
+}
+
+
+/* faixa da Tabela 12 escrita no gráfico: limites no eixo da direita */
+.pr-g-corpo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 1.6rem;
+    gap: 0.25rem;
+}
+
+.pr-g-linha--eixo { margin-right: 1.85rem; }
+
+.pr-g-area { height: 2.8rem; }
+
+.pr-g-faixa { fill: color-mix(in srgb, var(--pr-ok) 20%, transparent); }
+
+.pr-g-lim {
+    stroke: var(--pr-ok);
+    stroke-width: 1.5;
+    opacity: 0.85;
+}
+
+.pr-g-eixo { position: relative; }
+
+.pr-g-eixo span {
+    position: absolute;
+    left: 0;
+    transform: translateY(-50%);
+    padding: 0 0.2rem;
+    border-radius: 3px;
+    font-size: max(0.6rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    line-height: 1.3;
+    color: #15803d;
+    background: color-mix(in srgb, var(--pr-ok) 16%, transparent);
+    font-variant-numeric: tabular-nums;
+}
+
+body.theme-dark .pr-g-eixo span { color: #4ade80; }
