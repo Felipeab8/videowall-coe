@@ -7639,4 +7639,25 @@ if (TELAS_DO_QUADRO.length) {
             itensDoQuadro[vez].click();
         }, QUADRO_INTERVALO);
     }
+    /* Classificação: ícone da cultura no lugar da bolinha em cada média
+   (umidade média, impureza e total de avariados) */
+function iconesCulturaClassificacao() {
+    const NS = 'http://www.w3.org/2000/svg';
+    document.querySelectorAll('#screen-1 .class-media-item').forEach(item => {
+        if (item.querySelector('.grao-icon')) return;           // já tem ícone
+        const dot = item.querySelector('.legend-dot');
+        const m = dot && dot.className.match(/legend-dot--(milho|sorgo|trigo|soja)/);
+        if (!m) return;
+        const simbolo = document.querySelector(`.grao-sprite symbol[id*="${m[1]}"]`);
+        if (!simbolo) return;
+        const svg = document.createElementNS(NS, 'svg');
+        svg.setAttribute('class', `grao-icon grao-icon--${m[1]}`);
+        svg.setAttribute('aria-hidden', 'true');
+        const use = document.createElementNS(NS, 'use');
+        use.setAttribute('href', '#' + simbolo.id);
+        svg.appendChild(use);
+        dot.replaceWith(svg);
+    });
+}
+document.addEventListener('DOMContentLoaded', iconesCulturaClassificacao);
 }
