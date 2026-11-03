@@ -5051,6 +5051,7 @@ function expLerContrato(linha) {
     const total = me ? expNum(me[2]) : 0;
     const estado = (linha.className.match(/exp-contrato--(ok|atencao|fora)/) || ['', 'ok'])[1];
     return {
+        id: linha.dataset.contrato,
         exec,
         total,
         peso: somaCam ? somaT / somaCam : 40,
@@ -5093,33 +5094,116 @@ function expUnid(m, u) {
     };
 }
 
+
+// Plano por dia, variado como na operacao real (dia de 500 t, de 400, de 0,
+// de 300...). Fixo por contrato: o mesmo sorteio a cada abertura.
+//   cadencia: total do contrato repartido pelos dias com pesos variados;
+//             soma exatamente o total
+//   projetado: o que falta, a partir de amanha, em torno do ritmo atual,
+//             com dias sem carga; para quando o contrato fecha
+// Tudo em multiplos de um caminhao (peso medio), para fechar nas duas unidades.
+const expPlanos = new Map();
+
+function expSorteio(semente) {
+    let s = 0;
+    for (const ch of String(semente)) s = (s * 31 + ch.charCodeAt(0)) >>> 0;
+    return () => {
+        s = (s + 0x6d2b79f5) >>> 0;
+        let t = s;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+}
+
+function expRepartir(total, pesos, cam) {
+    // reparte em caminhoes inteiros, pelo maior resto, e volta para t
+    const soma = pesos.reduce((a, v) => a + v, 0);
+    const caminhoes = Math.round(total / cam);
+    if (!soma || !caminhoes) return pesos.map(() => 0);
+    const bruto = pesos.map((p) => (p / soma) * caminhoes);
+    const base = bruto.map(Math.floor);
+    let falta = caminhoes - base.reduce((a, v) => a + v, 0);
+    bruto.map((v, i) => [v - base[i], i]).sort((a, b) => b[0] - a[0]).forEach(([, i]) => {
+        if (falta > 0 && pesos[i] > 0) { base[i] += 1; falta -= 1; }
+    });
+    const tons = base.map((c) => c * cam);
+    // sobra de fracao de caminhao vai para o maior dia: soma bate com o total
+    const dif = total - tons.reduce((x, v) => x + v, 0);
+    if (dif) {
+        const i = tons.indexOf(Math.max(...tons));
+        tons[i] = Math.max(0, tons[i] + dif);
+    }
+    return tons;
+}
+
+function expPlanoDias(m) {
+    const chave = `${m.id}|${m.total}|${m.exec}|${m.ritmo}`;
+    if (expPlanos.has(chave)) return expPlanos.get(chave);
+    const rnd = expSorteio(m.id || chave);
+    const cam = m.peso || 40;
+    // cadencia: 0 em ~1 de cada 7 dias (mais em fim de semana), resto entre
+    // 50% e 170% da media
+    const pesosCad = m.dias.map((d) => {
+        const r = rnd();
+        if (r < (d.fds ? 0.35 : 0.08)) return 0;
+        return 0.5 + rnd() * 1.2;
+    });
+    const cadDia = expRepartir(m.total, pesosCad, cam);
+    // projetado: em torno do ritmo atual, com dias sem carga, ate fechar
+    const futuros = m.dias.map((d, k) => (d.futuro ? k : -1)).filter((k) => k >= 0);
+    let resta = Math.max(0, m.total - m.exec);
+    const projDia = m.dias.map(() => 0);
+    futuros.forEach((k) => {
+        if (resta <= 0) return;
+        const d = m.dias[k];
+        const r = rnd();
+        let v = r < (d.fds ? 0.3 : 0.1) ? 0 : m.ritmo * (0.45 + rnd() * 1.1);
+        v = Math.round(v / cam) * cam;
+        v = Math.min(v, resta);
+        projDia[k] = v;
+        resta -= v;
+    });
+    const plano = { cadDia, projDia };
+    expPlanos.set(chave, plano);
+    return plano;
+}
+
 function expGrafico(m, u) {
     const U = expUnid(m, u);
     const n = m.dias.length;
-    const cad = n ? m.total / n : 0;
+    const cad = n ? m.total / n : 0;   // media, para a legenda
     const proj = m.ritmo;
     const reais = m.dias.filter((d) => !d.futuro);
     const futuros = n - reais.length;
-    // projetado: ritmo atual por dia, so ate completar o contrato
-    let resta = Math.max(0, m.total - m.exec);
-    const projDia = m.dias.map((d) => {
-        if (!d.futuro) return 0;
-        const v = Math.min(proj, resta);
-        resta -= v;
-        return v;
-    });
+    const { cadDia, projDia } = expPlanoDias(m);
     const fimIdx = projDia.reduce((acc, v, k) => (v > 0 ? k : acc), -1);
-    const topo = Math.max(cad, m.meta, proj, ...m.dias.map((d) => d.t)) * 1.18 || 1;
+    const topo = Math.max(m.meta, ...cadDia, ...projDia, ...m.dias.map((d) => d.t)) * 1.15 || 1;
     const h = (t) => `${((t / topo) * 100).toFixed(2)}%`;
     const pctX = (k) => `${((k / n) * 100).toFixed(3)}%`;
 
+    // barra empilhada por dia, sempre na mesma largura:
+    //   base   = executado (ou projetado) ate a cadencia do dia
+    //   topo   = azul-claro: o que faltou para a cadencia
+    //   ou     = excedente acima da cadencia, com um traco na cadencia
     const cols = m.dias.map((d, k) => {
         const fase = d.futuro ? 'proj' : 'real';
         const valT = d.futuro ? projDia[k] : d.t;
         const rot = d.futuro ? U.dia(projDia[k]) : U.dia(d.t, d.cam);
+        const c = cadDia[k];
+        const base = rot ? Math.min(valT, c) : 0;
+        const excedente = rot && valT > c ? valT - c : 0;
+        const falta = c > (rot ? valT : 0) ? c - (rot ? valT : 0) : 0;
+        const topoPilha = Math.max(rot ? valT : 0, c);
+        const seg = (cls, v) => (v > 0 ? `<span class="ecg-seg ${cls}" style="height:${h(v)}"></span>` : '');
         return `<div class="ecg-col ecg-col--${fase}${d.hoje ? ' is-hoje' : ''}${d.fds ? ' is-fds' : ''}" data-k="${k}" tabindex="-1">`
-            + `<span class="ecg-cad" style="height:${h(cad)}"></span>`
-            + (valT && rot ? `<span class="ecg-bar" style="height:${h(valT)}"><span class="ecg-val">${rot}</span></span>` : '')
+            + '<span class="ecg-pilha">'
+            + seg('ecg-seg--base', base)
+            + seg('ecg-seg--exc', excedente)
+            + seg('ecg-seg--falta', falta)
+            + (excedente && c ? `<i class="ecg-cad-marca" style="bottom:${h(c)}"></i>` : '')
+            + '</span>'
+            + (rot ? `<span class="ecg-val" style="bottom:${h(topoPilha)}">${rot}</span>` : '')
             + '</div>';
     }).join('');
     const datas = m.dias.map((d, k) => `<span class="ecg-x-d${d.hoje ? ' is-hoje' : ''}${d.fds ? ' is-fds' : ''}" data-k="${k}">${d.d}</span>`).join('');
@@ -5136,11 +5220,12 @@ function expGrafico(m, u) {
     const concluiAntes = projFim >= m.total && fimIdx >= 0 && fimIdx < n - 1;
     const ultimo = m.dias[n - 1];
     const leg = '<div class="ecg-leg">'
-        + '<span class="ecg-leg-item"><i class="ecg-sw ecg-sw--cad"></i>Cadência</span>'
         + '<span class="ecg-leg-item"><i class="ecg-sw ecg-sw--real"></i>Executado</span>'
         + '<span class="ecg-leg-item"><i class="ecg-sw ecg-sw--proj"></i>Projetado</span>'
+        + '<span class="ecg-leg-item"><i class="ecg-sw ecg-sw--exc"></i>Acima da cadência</span>'
+        + '<span class="ecg-leg-item"><i class="ecg-sw ecg-sw--cad"></i>Falta p/ cadência</span>'
         + '<span class="ecg-leg-item"><i class="ecg-sw ecg-sw--meta"></i>Meta</span>'
-        + `<span class="ecg-leg-sep"></span><span class="ecg-leg-dado">cadência <b>${U.taxa(cad)}</b> ${U.porDia}</span>`
+        + `<span class="ecg-leg-sep"></span><span class="ecg-leg-dado">cadência média <b>${U.taxa(cad)}</b> ${U.porDia}</span>`
         + (futuros ? `<span class="ecg-leg-dado">projetado até ${ultimo ? ultimo.d : 'o fim'} <b>${U.total(projFim)}</b> ${U.nome} · ${Math.round((projFim / m.total) * 100)}%${concluiAntes ? ` · conclui em <b>${m.dias[fimIdx].d}</b>` : ''}</span>` : '')
         + `<span class="ecg-leg-dado exp-contrato-parado">${m.paradoHtml}</span>`
         + `<span class="exp-contrato-validade">${m.validadeHtml}</span>`
@@ -5205,15 +5290,24 @@ function expTooltip(col) {
     if (!m || !tela) return;
     const U = expUnid(m, tela.dataset.expUnidade || 't');
     const d = m.dias[Number(col.dataset.k)];
-    const cad = m.total / m.dias.length;
+    const k = Number(col.dataset.k);
+    const { cadDia, projDia } = expPlanoDias(m);
     const tip = linha.querySelector('.ecg-tip');
-    const nomeQtd = (t) => `${U.taxa(t)} ${U.cam ? 'caminhões' : 't'}`;
+    const nomeQtd = (t) => (t ? `${U.taxa(t)} ${U.cam ? 'caminhões' : 't'}` : 'sem carga');
     const exec = d.futuro
-        ? `<li><i class="ecg-sw ecg-sw--proj"></i>Projetado: <b>${nomeQtd(m.ritmo)}</b></li>`
+        ? `<li><i class="ecg-sw ecg-sw--proj"></i>Projetado: <b>${nomeQtd(projDia[k])}</b></li>`
         : `<li><i class="ecg-sw ecg-sw--real"></i>Executado: <b>${d.t ? (U.cam ? `${d.cam} caminhões` : `${expFmt(d.t, 0)} t`) : 'sem carga'}</b></li>`;
     tip.innerHTML = `<b class="ecg-tip-d">${d.d}${d.fds ? ' · fim de semana' : ''}${d.hoje ? ' · hoje' : ''}</b><ul>`
-        + `<li><i class="ecg-sw ecg-sw--cad"></i>Cadência: <b>${nomeQtd(cad)}</b></li>${exec}`
-        + `<li><i class="ecg-sw ecg-sw--meta"></i>Meta: <b>${nomeQtd(m.meta)}</b></li></ul>`;
+        + `<li><i class="ecg-sw ecg-sw--cad"></i>Cadência: <b>${nomeQtd(cadDia[k])}</b></li>${exec}`
+        + `<li><i class="ecg-sw ecg-sw--meta"></i>Meta: <b>${nomeQtd(m.meta)}</b></li>`
+        + (() => {
+            const v = d.futuro ? projDia[k] : d.t;
+            const dif = v - cadDia[k];
+            if (!dif) return '';
+            const txt = `${U.taxa(Math.abs(dif))} ${U.cam ? 'caminhões' : 't'}`;
+            return `<li class="ecg-tip-dif ${dif > 0 ? 'is-acima' : 'is-abaixo'}">${dif > 0 ? 'Acima' : 'Abaixo'} da cadência: <b>${txt}</b></li>`;
+        })()
+        + '</ul>';
     tip.hidden = false;
     const plot = linha.querySelector('.ecg');
     const rc = col.getBoundingClientRect();
@@ -5236,7 +5330,7 @@ function expAplicarUnidade(tela, u) {
     const subCart = tela.querySelector('.exp-carteira .section-sub');
     if (subCart) subCart.textContent = `em ${u === 'cam' ? 'caminhões' : 'toneladas'} · executado até hoje · ritmo dos últimos 7 dias contra a meta até a validade · clique para abrir o contrato`;
     const sub = tela.querySelector('.exp-contratos .section-sub');
-    if (sub) sub.textContent = `em ${u === 'cam' ? 'caminhões' : 'toneladas'} · executado até hoje · projetado no ritmo dos últimos 7 dias · meta = ritmo necessário até a validade`;
+    if (sub) sub.textContent = `em ${u === 'cam' ? 'caminhões' : 'toneladas'} · executado até hoje · projetado dia a dia em torno do ritmo atual · meta = ritmo necessário até a validade`;
     const th = tela.querySelectorAll('.exp-carteira-tabela thead th');
     if (th[3]) th[3].textContent = 'Executado';
     if (th[5]) th[5].textContent = `Ritmo / meta ${u === 'cam' ? 'cam./dia' : 't/dia'}`;
@@ -5705,7 +5799,12 @@ function curvaPressao(serie) {
 function metaPressao(dados, sec) {
     const meta = (dados.secadores && dados.secadores[sec]) || { nome: sec.toUpperCase() };
     const faixas = (dados.faixas && meta.fluxo && dados.faixas[meta.fluxo]) || [];
-    const atual = dados.horas[dados.horas.length - 1][sec] || [];
+    // leitura atual = ultima de 15 min, a mesma que o quadro mostra
+    const ultima = dados.horas[dados.horas.length - 1][sec] || [];
+    const atual = ultima.map((v, i) => {
+        const s = serie15(dados.horas, sec, i);
+        return s.length ? Math.round(s[s.length - 1].v) : v;
+    });
     return { meta, faixas, atual };
 }
 
@@ -5736,83 +5835,94 @@ function seloSecador(dados, sec) {
 // grafico do ponto no turno: faixa da Tabela 12 em verde, a linha das
 // leituras e, em cada hora, o valor (em cima) e a hora (embaixo). Valor
 // fora da faixa em vermelho; a hora em andamento em destaque.
-function graficoPonto(serie, horas, faixa) {
-    const n = serie.length;
-    const vals = serie.map((v) => Math.abs(v));
-    const lo = Math.min(...vals, faixa ? faixa.min : Infinity);
-    const hi = Math.max(...vals, faixa ? faixa.max : -Infinity);
-    const folga = Math.max(1, (hi - lo) * 0.15);
-    const y0 = lo - folga;
-    const y1 = hi + folga;
-    const y = (v) => (100 - ((v - y0) / (y1 - y0)) * 100).toFixed(1);
-    const x = (k) => (((k + 0.5) / n) * 100).toFixed(2);
-    const faixaRect = faixa
-        ? `<rect class="pr-g-faixa" x="0" width="100" y="${y(faixa.max)}" height="${(y(faixa.min) - y(faixa.max)).toFixed(1)}"></rect>`
-          + `<line class="pr-g-lim" x1="0" x2="100" y1="${y(faixa.max)}" y2="${y(faixa.max)}"></line>`
-          + `<line class="pr-g-lim" x1="0" x2="100" y1="${y(faixa.min)}" y2="${y(faixa.min)}"></line>`
-        : '';
-    const pts = vals.map((v, k) => `${x(k)},${y(v)}`).join(' ');
-    const col = (k, conteudo, extra) => `<span class="${extra}${k === n - 1 ? ' is-agora' : ''}">${conteudo}</span>`;
-    const valores = vals.map((v, k) => col(k, v, `pr-g-v pr-g-v--${estadoPressao(v, faixa) || 'ok'}`)).join('');
-    const rotulos = horas.map((h, k) => col(k, String(parseInt(h.h, 10)).padStart(2, '0') + 'h', 'pr-g-h')).join('');
-    const pontos = vals.map((v, k) => `<i class="pr-g-p pr-g-p--${estadoPressao(v, faixa) || 'ok'}${k === n - 1 ? ' is-agora' : ''}" style="left:${x(k)}%;top:${y(v)}%"></i>`).join('');
-    return `<div class="pr-g" style="--n:${n}">`
-        + `<div class="pr-g-linha">${valores}</div>`.replace('pr-g-linha"', 'pr-g-linha pr-g-linha--eixo"')
-        + `<div class="pr-g-corpo"><div class="pr-g-area"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${faixaRect}<polyline points="${pts}"></polyline></svg>${pontos}</div>`
-        + (faixa
-            ? `<div class="pr-g-eixo"><span class="pr-g-eixo-max" style="top:${y(faixa.max)}%">${String(faixa.max).padStart(2, '0')}</span>`
-              + `<span class="pr-g-eixo-min" style="top:${y(faixa.min)}%">${String(faixa.min).padStart(2, '0')}</span></div>`
-            : '')
-        + '</div>'
-        + `<div class="pr-g-linha pr-g-linha--eixo">${rotulos}</div>`
-        + '</div>';
+// Leituras de 15 em 15 minutos de um ponto no turno. Enquanto o CLP nao
+// manda a serie, sai das medias por hora: interpola entre as horas e
+// acrescenta uma oscilacao pequena e fixa (mesmo desenho a cada carga).
+function serie15(horas, sec, i) {
+    const pts = [];
+    const sorteio = expSorteio(`pr-${sec}-${i}`);
+    horas.forEach((hora, k) => {
+        const v0 = Math.abs(hora[sec][i]);
+        const prox = horas[k + 1];
+        const v1 = prox ? Math.abs(prox[sec][i]) : v0;
+        const quartos = hora.agora && hora.min ? Math.min(4, Math.floor(hora.min / 15) + 1) : 4;
+        for (let q = 0; q < quartos; q++) {
+            const base = v0 + (v1 - v0) * (q / 4);
+            const osc = (sorteio() - 0.5) * Math.max(1, v0 * 0.06);
+            const hh = parseInt(hora.h, 10);
+            pts.push({ v: Math.max(0, Math.round((base + osc) * 10) / 10), t: `${String(hh).padStart(2, '0')}:${String(q * 15).padStart(2, '0')}` });
+        }
+    });
+    return pts;
 }
 
-// recorte do desenho e onde fica a etiqueta de cada ponto (coordenadas do
-// desenho). A etiqueta diz o ponto, o lugar e a leitura; a guia liga ao ponto.
-const PRESSAO_RECORTE = { x: 120, y: 96, w: 560, h: 530 };
-const PRESSAO_ETIQUETAS = [
-    { x: 205, y: 470, nome: 'Fornalha' },
-    { x: 250, y: 395, nome: 'Duto ar quente' },
-    { x: 250, y: 318, nome: 'Câm. ar quente' },
-    { x: 598, y: 400, nome: 'Resfriamento' },
-    { x: 598, y: 515, nome: 'Câm. ar saturado' },
-];
+// grafico no molde do dos silos: area sob a linha, faixa da Tabela 12 ao
+// fundo e so tres leituras escritas (inicio, meio e agora) com a hora embaixo
+function graficoPonto15(pts, faixa) {
+    const W = 300;
+    const H = 70;
+    const vals = pts.map((p) => p.v);
+    const lo = Math.min(...vals, faixa ? faixa.min : Infinity);
+    const hi = Math.max(...vals, faixa ? faixa.max : -Infinity);
+    const folga = Math.max(1, (hi - lo) * 0.18);
+    const y0 = lo - folga;
+    const y1 = hi + folga;
+    const n = pts.length;
+    const x = (k) => (n > 1 ? (k / (n - 1)) * W : W / 2);
+    const y = (v) => H - ((v - y0) / (y1 - y0)) * H;
+    const f = (v) => v.toFixed(1);
+    const linha = pts.map((p, k) => `${k ? 'L' : 'M'}${f(x(k))} ${f(y(p.v))}`).join(' ');
+    const area = `${linha} L${f(x(n - 1))} ${H} L0 ${H} Z`;
+    const band = faixa
+        ? `<rect class="pr15-faixa" x="0" y="${f(y(faixa.max))}" width="${W}" height="${f(y(faixa.min) - y(faixa.max))}"></rect>`
+        : '';
+    const pos = (k) => `left:${((x(k) / W) * 100).toFixed(2)}%;top:${((y(pts[k].v) / H) * 100).toFixed(2)}%`;
+    const fora = pts.map((p, k) => (estadoPressao(p.v, faixa) === 'fora'
+        ? `<i class="pr15-dot pr15-dot--fora" style="${pos(k)}"></i>` : '')).join('');
+    const marcas = [0, Math.floor((n - 1) / 2), n - 1];
+    const rotulos = marcas.map((k, i) => {
+        const cls = ['ini', 'meio', 'fim'][i];
+        const est = estadoPressao(pts[k].v, faixa) || 'ok';
+        return `<span class="pr15-v pr15-v--${cls} pr15-v--${est}" style="left:${((x(k) / W) * 100).toFixed(2)}%;top:${((y(pts[k].v) / H) * 100).toFixed(2)}%">${Math.round(pts[k].v)}</span>`;
+    }).join('');
+    const horas = marcas.map((k, i) => `<span class="pr15-h pr15-h--${['ini', 'meio', 'fim'][i]}">${pts[k].t}</span>`).join('');
+    return '<div class="pr15">'
+        + `<div class="pr15-plot"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">${band}`
+        + `<path class="pr15-area" d="${area}"></path><path class="pr15-linha" d="${linha}"></path>`
+        + `<line class="pr15-eixo" x1="0" x2="${W}" y1="${H}" y2="${H}"></line></svg>${fora}`
+        + `<i class="pr15-dot pr15-dot--agora" style="${pos(n - 1)}"></i>${rotulos}</div>`
+        + `<div class="pr15-horas">${horas}</div></div>`;
+}
+
+const PRESSAO_RECORTE = { x: 170, y: 96, w: 450, h: 530 };
 
 function cartaoPressao(dados, sec) {
     const { meta, faixas } = metaPressao(dados, sec);
     const horas = dados.horas;
-    const n = horas.length;
     const R = PRESSAO_RECORTE;
-    const atual = horas[n - 1][sec];
+    const series = dados.pontos.map((p, i) => serie15(horas, sec, i));
 
-    // no desenho: guia, marca numerada na cor da situacao
+    // no desenho, so onde fica cada ponto: circulo grande com P1..P5 na cor
+    // da situacao; os valores ficam nos quadros
     const marcas = PRESSAO_LUGARES.map((l, i) => {
-        const e = PRESSAO_ETIQUETAS[i];
-        const est = estadoPressao(atual[i], faixas[i]) || 'ok';
-        return `<line class="pr-d-guia2" x1="${e.x}" y1="${e.y}" x2="${l.x}" y2="${l.y}"></line>`
-            + `<circle class="pr-d-ponto pr-d-ponto--${est}" cx="${l.x}" cy="${l.y}" r="11"></circle>`
-            + `<text class="pr-d-ponto-n" x="${l.x}" y="${l.y + 4.5}" text-anchor="middle">${i + 1}</text>`;
-    }).join('');
-    const etiquetas = PRESSAO_ETIQUETAS.map((e, i) => {
-        const est = estadoPressao(atual[i], faixas[i]) || 'ok';
-        const f = faixas[i];
-        return `<div class="pr-et pr-et--${est}" style="left:${(((e.x - R.x) / R.w) * 100).toFixed(2)}%;top:${(((e.y - R.y) / R.h) * 100).toFixed(2)}%">`
-            + `<span class="pr-et-l1"><b>P${i + 1}</b><strong>${formatarPressao(atual[i])}</strong><small>mmca</small></span>`
-            + `<span class="pr-et-l2">${e.nome}${f ? ` · ${faixaTexto(f)}` : ''}</span></div>`;
+        const s = series[i];
+        const est = s && s.length ? (estadoPressao(s[s.length - 1].v, faixas[i]) || 'ok') : 'ok';
+        return `<circle class="pr-d-p pr-d-p--${est}" cx="${l.x}" cy="${l.y}" r="27"></circle>`
+            + `<text class="pr-d-p-txt" x="${l.x}" y="${l.y + 8}" text-anchor="middle">P${i + 1}</text>`;
     }).join('');
 
     const quadro = (ponto, i) => {
-        const serie = horas.map((hora) => hora[sec][i]);
-        const media = serie.reduce((acc, v) => acc + v, 0) / serie.length;
+        const pts = series[i];
+        const atual = pts[pts.length - 1];
+        const media = pts.reduce((acc, p) => acc + p.v, 0) / pts.length;
         const faixa = faixas[i];
-        const estado = estadoPressao(serie[n - 1], faixa) || 'ok';
-        const selo = { ok: 'na faixa', limite: 'no limite', fora: 'fora da faixa' }[estado];
-        return `<div class="pr-quadro pr-quadro--col pr-quadro--${estado}" title="${ponto.id} · ${ponto.local} · média do turno ${formatarPressao(media)} mmca">`
-            + `<div class="pr-quadro-head"><span class="pr-quadro-id">${ponto.id}</span><span class="pr-quadro-local">${ponto.local}</span><em class="pr-quadro-selo">${selo}</em></div>`
-            + `<div class="pr-quadro-valor"><b>${formatarPressao(serie[n - 1])}</b><small>mmca · ${rotuloHora(horas[n - 1])}</small>`
-            + (faixa ? `<span class="pr-quadro-range">faixa <b>${faixaTexto(faixa)}</b></span>` : '') + '</div>'
-            + graficoPonto(serie, horas, faixa)
+        const estado = estadoPressao(atual.v, faixa) || 'ok';
+        const selo = { ok: '', limite: 'no limite', fora: 'fora da faixa' }[estado];
+        return `<div class="pr-q pr-q--${estado}" title="${ponto.id} · ${ponto.local} · média do turno ${Math.round(media)} mmca · leitura a cada 15 min">`
+            + `<div class="pr-q-head"><span class="pr-q-id">${ponto.id}</span><span class="pr-q-local">${ponto.local}</span>${selo ? `<span class="pr-q-selo">${selo}</span>` : ''}</div>`
+            + `<div class="pr-q-valor"><b>${Math.round(atual.v)}</b><small>mmca</small>`
+            + (faixa ? `<span class="pr-q-faixa">faixa <b>${faixaTexto(faixa)}</b></span>` : '') + '</div>'
+            + graficoPonto15(pts, faixa)
             + '</div>';
     };
     const lado = (lista) => lista.map((i) => dados.pontos[i] && quadro(dados.pontos[i], i)).join('');
@@ -5823,8 +5933,8 @@ function cartaoPressao(dados, sec) {
     return `<article class="pr-sec pr-sec--${sec}">`
         + `<div class="pr-sec-head"><i class="pr-leg pr-leg--${sec}" aria-hidden="true"></i>`
         + `<span class="pr-sec-nome">${meta.nome}</span><span class="pr-sec-meta">${detalhe}</span>${seloSecador(dados, sec)}</div>`
-        + `<div class="pr-layout"><div class="pr-col pr-col--esq">${lado([0, 1, 2])}</div>`
-        + `<div class="pr-figura"><div class="pr-figura-in" style="--ar:${R.w} / ${R.h}; --arn:${(R.w / R.h).toFixed(4)}">${svg}${etiquetas}</div></div>`
+        + `<div class="pr-layout pr-layout--v2"><div class="pr-col pr-col--esq">${lado([0, 1, 2])}</div>`
+        + `<div class="pr-figura"><div class="pr-figura-in" style="--ar:${R.w} / ${R.h}; --arn:${(R.w / R.h).toFixed(4)}">${svg}</div></div>`
         + `<div class="pr-col pr-col--dir">${lado([3, 4])}</div></div>`
         + '</article>';
 }
@@ -5889,7 +5999,7 @@ function montarPressao(raiz) {
         const eventos = secao.querySelector('[data-pressao-eventos]');
         if (eventos) eventos.innerHTML = eventosPressao(dados);
         const tabela = secao.querySelector('[data-pressao-tabela]');
-        if (tabela) tabela.innerHTML = tabelaPressao(dados);
+        if (tabela) tabela.innerHTML = '';
         secao.querySelectorAll('[data-pressao-turno]').forEach((el) => {
             el.textContent = String(dados.turno || '').replace(/\s*\d{2}:\d{2}.*$/, '');
         });
@@ -7056,10 +7166,11 @@ const MASSA_AERACAO = {
     soja: { de: 20, ate: 30 },
     sorgo: { de: 20, ate: 30 },
     milho: { de: 20, ate: 30 },
-    trigo: { de: 20, ate: 28 },
-    cevada: { de: 15, ate: 25 },
+    trigo: { de: 20, ate: 28, maxDe: 29 },
+    cevada: { de: 15, ate: 25, maxDe: 26 },
 };
 const faixaMassa = (cultura) => MASSA_AERACAO[cultura] || MASSA_AERACAO.milho;
+const MASSA_TETO = 75; // fim da regua da massa (°C)
 
 function pressaoSaturacao(t) {
     return 6.112 * Math.exp((17.62 * t) / (243.12 + t));
@@ -7131,19 +7242,24 @@ function escreverAeracao(card) {
         ? `favorável: ar de ${grau(j.min)} a ${grau(j.max)} °C`
         : `favorável: ar até ${grau(j.max)} °C, mais seco`;
 
-    // regua do ar ambiente: umedece | ideal | resfria pouco | nao resfria,
-    // com o ar de agora (traco) e o grao (anel)
-    const ini = Math.min(j.min === null ? tAgora : j.min, tAgora, tGrao - 10) - 2;
-    const fim = Math.max(tAgora, tGrao) + 2;
-    const pos = (v) => `${(((Math.min(Math.max(v, ini), fim) - ini) / (fim - ini)) * 100).toFixed(1)}%`;
-    const trecho = (a, b, cls) => (b <= a ? ''
-        : `<i class="sa-ar-faixa sa-ar-faixa--${cls}" style="left: ${pos(a)}; width: calc(${pos(b)} - ${pos(a)})"></i>`);
-       const corteUmido = j.min === null ? fim : Math.min(j.min, j.max);
-    // 3 cores: vermelho (umedece) | verde (pode aerar) | amarelo (não resfria)
-    const regua = trecho(ini, corteUmido, 'umido')
-        + (j.aberta ? trecho(j.min, j.max, 'ideal') : '')
-        + trecho(j.max, fim, 'quente')
-        + `<i class="sa-ar-agora" style="left: ${pos(tAgora)}" title="ar ${umPonto(tAgora)} °C · ${ar.texto}"></i>`;
+    // regua da massa por cultura: minima | ideal | maxima (estragando), com
+    // os limites escritos dentro de cada trecho e o traco na massa de agora.
+    // Trechos com largura fixa (28/36/36) para o rotulo caber; dentro de
+    // cada trecho a posicao do traco e proporcional.
+    const reguaMassa = (() => {
+        const teto = MASSA_TETO;
+        const cortes = [0, fMassa.de, fMassa.ate, teto];
+        const larg = [28, 36, 36];
+        const ini = [0, 28, 64];
+        const t = Math.min(Math.max(tGrao, 0), teto);
+        const i = t < fMassa.de ? 0 : t <= fMassa.ate ? 1 : 2;
+        const pos = ini[i] + ((t - cortes[i]) / (cortes[i + 1] - cortes[i] || 1)) * larg[i];
+        const nomes = ['mínima', 'ideal', 'máxima'];
+        const rotIni = [0, fMassa.de, fMassa.maxDe || fMassa.ate];
+        const seg = ['min', 'ideal', 'max'].map((cls, k) => `<span class="sa-mg-seg sa-mg-seg--${cls}${k === i ? ' is-atual' : ''}" style="width:${larg[k]}%" title="${nomes[k]}${k === 2 ? ' · estragando' : ''}: ${rotIni[k]} a ${cortes[k + 1]} °C">${rotIni[k]}–${cortes[k + 1]}</span>`).join('');
+        return `<div class="sa-mg" aria-label="Massa ${umPonto(tGrao)} °C · ${massa.texto}">${seg}`
+            + `<i class="sa-mg-agora" style="left:${pos.toFixed(1)}%"></i></div>`;
+    })();
 
     alvo.title = `Quando aerar com o ar de agora (estação: ${umPonto(tAgora)} °C, UR ${Math.round(urAgora)}%). `
         + `Grão a ${umPonto(tGrao)} °C com ${umPonto(grao)}% de umidade. Máx: o ar ${AERACAO.resfriaMin} °C abaixo do grão `
@@ -7153,10 +7269,10 @@ function escreverAeracao(card) {
         + 'Ar: diretrizes do Manejo da Aeração (ABRAPOS) e do Guia de Secagem e Armazenagem do RS.';
     alvo.innerHTML = '<div class="sa-ar-head"><span class="sa-ar-tit">Aeração</span>'
         + `<span class="sa-ar-ref">${ref}</span></div>`
-        + `<div class="sa-ar-regua" aria-hidden="true">${regua}</div>`
+        + reguaMassa
         // o ar de agora fica so no traco da regua; da massa, o icone e a
         // temperatura, com a situacao no tooltip
-        + `<div class="sa-ar-status" data-estado="${massa.estado}" title="${massa.texto}"><b>${massa.icone}</b> massa ${umPonto(tGrao)} °C</div>`;
+        + `<div class="sa-ar-status" data-estado="${massa.estado}" title="${massa.texto}"><b>${massa.icone}</b> massa ${umPonto(tGrao)} °C <span class="sa-ar-status-txt">· ${massa.texto}</span></div>`;
 }
 
 function escreverClimaAeracao(card, ligado) {

@@ -21213,7 +21213,7 @@ body.theme-light .du-proj-sel option {
         column-gap: 1rem;
     }
 
-    html.tv #screen-5 .sa-ar > :is(.sa-ar-head, .sa-ar-regua) {
+    html.tv #screen-5 .sa-ar > :is(.sa-ar-head, .sa-ar-regua, .sa-mg) {
         flex: 1 1 100%;
     }
 
@@ -21334,7 +21334,7 @@ body.theme-light .du-proj-sel option {
         column-gap: 1rem;
     }
 
-    html.tv #screen-6 .sa-ar > :is(.sa-ar-head, .sa-ar-regua) {
+    html.tv #screen-6 .sa-ar > :is(.sa-ar-head, .sa-ar-regua, .sa-mg) {
         flex: 1 1 100%;
     }
 
@@ -24098,3 +24098,433 @@ body:not(.theme-light) #screen-exp-contrato .ecg-cad {
 body.theme-light .ecg-tip { background: #ffffff; }
 body:not(.theme-light) #screen-exp-contrato .ecg-cad { background: rgba(125, 211, 252, 0.55); }
 body:not(.theme-light) #screen-exp-contrato .ecg-sw--cad { background: rgba(125, 211, 252, 0.55); border-top-color: #bae6fd; }
+
+
+/* ==========================================================
+   07C · barras empilhadas
+   base sólida = executado (hachurada no projetado) até a cadência
+   + azul-claro = falta para a cadência do dia
+   + faixa clara listrada = acima da cadência (traço na cadência)
+   ========================================================== */
+#screen-exp-contrato .ecg-cad,
+#screen-exp-contrato .ecg-bar { display: none; }
+
+.ecg-pilha {
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    bottom: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.ecg-seg {
+    flex: none;
+    width: 100%;
+}
+
+.ecg-seg--base { background: var(--cor); }
+
+.ecg-seg--exc {
+    background:
+        repeating-linear-gradient(0deg, transparent 0 3px, rgba(255, 255, 255, 0.22) 3px 4px),
+        color-mix(in srgb, var(--cor) 70%, #fff);
+}
+
+.ecg-seg--falta {
+    background: rgba(125, 211, 252, 0.55);
+    border-top: 2px solid #bae6fd;
+}
+
+body.theme-light .ecg-seg--falta {
+    background: rgba(14, 165, 233, 0.28);
+    border-top-color: #0ea5e9;
+}
+
+/* topo arredondado só no último segmento da pilha */
+.ecg-pilha > .ecg-seg:last-of-type { border-radius: 3px 3px 0 0; }
+
+.ecg-cad-marca {
+    position: absolute;
+    left: -2px;
+    right: -2px;
+    height: 0;
+    border-top: 2px solid #bae6fd;
+    pointer-events: none;
+}
+
+body.theme-light .ecg-cad-marca { border-top-color: #0369a1; }
+
+/* projetado: base e excedente hachurados e transparentes */
+.ecg-col--proj .ecg-seg--base,
+.ecg-col--proj .ecg-seg--exc {
+    background:
+        repeating-linear-gradient(135deg, color-mix(in srgb, var(--cor) 75%, transparent) 0 3px, transparent 3px 7px),
+        color-mix(in srgb, var(--cor) 18%, transparent);
+    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--cor) 85%, transparent);
+}
+
+.ecg-col--proj .ecg-seg--falta { opacity: 0.7; }
+
+.ecg-col--real.is-hoje .ecg-pilha { outline: 2px solid var(--text); outline-offset: 1px; }
+
+/* rótulo do valor acima da pilha */
+.ecg-col > .ecg-val {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 2px;
+}
+
+.ecg-sw--exc {
+    background:
+        repeating-linear-gradient(0deg, transparent 0 2px, rgba(255, 255, 255, 0.3) 2px 3px),
+        color-mix(in srgb, var(--cor, var(--ok)) 70%, #fff);
+}
+
+.ecg-tip-dif { font-weight: 600; }
+.ecg-tip-dif.is-acima b { color: var(--ok); }
+.ecg-tip-dif.is-abaixo b { color: var(--danger); }
+
+
+/* ==========================================================
+   SILOS E ARMAZÉM · régua da massa por cultura
+   amarelo mínima · verde ideal · vermelho máxima (estragando)
+   ========================================================== */
+.sa-mg {
+    position: relative;
+    display: flex;
+    gap: 2px;
+    height: 1rem;
+    margin: 0.3rem 0 0.25rem;
+}
+
+.sa-mg-seg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: max(0.55rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    color: rgba(255, 255, 255, 0.92);
+    font-variant-numeric: tabular-nums;
+    opacity: 0.55;
+}
+
+.sa-mg-seg.is-atual { opacity: 1; }
+.sa-mg-seg--min { background: #d4a20c; border-radius: 999px 0 0 999px; color: #1f1600; }
+.sa-mg-seg--ideal { background: #16a34a; }
+.sa-mg-seg--max { background: #dc2626; border-radius: 0 999px 999px 0; }
+
+.sa-mg-agora {
+    position: absolute;
+    top: -0.2rem;
+    bottom: -0.2rem;
+    width: 3px;
+    margin-left: -1.5px;
+    border-radius: 2px;
+    background: var(--text);
+    box-shadow: 0 0 0 2px var(--bg-bottom, #0b1220);
+}
+
+.sa-ar-status-txt { font-weight: 600; color: var(--muted); }
+.sa-ar-status[data-estado="ideal"] b { color: #16a34a; }
+.sa-ar-status[data-estado="minima"] b { color: #d4a20c; }
+.sa-ar-status[data-estado="quente"] b,
+.sa-ar-status[data-estado="quente"] .sa-ar-status-txt { color: #dc2626; }
+
+/* marcador da massa: seta acima da régua, sem cobrir o rótulo */
+.sa-mg { margin-top: 0.55rem; }
+
+.sa-mg-agora {
+    top: -0.5rem;
+    bottom: auto;
+    width: 0;
+    height: 0;
+    margin-left: -0.32rem;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    border-left: 0.32rem solid transparent;
+    border-right: 0.32rem solid transparent;
+    border-top: 0.42rem solid var(--text);
+}
+
+.sa-mg-agora::after {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 0;
+    width: 2px;
+    height: 1.05rem;
+    background: var(--text);
+    opacity: 0.35;
+}
+
+
+/* ==========================================================
+   PRESSÃO (04C) · v2 — leitura a 3 m, sem duplicar
+   Desenho: só a posição P1–P5. Quadros: valor, faixa e o turno
+   em leituras de 15 min (gráfico no molde dos silos).
+   ========================================================== */
+#screen-pressao .pr-tab-box { display: none; }
+
+#screen-pressao .pr-sec-nome { font-size: 1.9rem; }
+#screen-pressao .pr-sec-meta { font-size: 1rem; }
+#screen-pressao .pr-status { font-size: 1rem; padding: 0.35rem 0.9rem; }
+#screen-pressao .pr-legenda { font-size: 0.85rem; }
+#screen-pressao [data-pressao-eventos] { font-size: 0.95rem; }
+
+.pr-layout--v2 {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.9fr) minmax(0, 1.25fr);
+    gap: 1rem;
+}
+
+.pr-layout--v2 .pr-col { gap: 0.75rem; }
+.pr-layout--v2 .pr-col > .pr-q { flex: 1 1 0; }
+
+/* desenho: marcas grandes com o nome do ponto */
+.pr-d-p { stroke: #fff; stroke-width: 3; }
+.pr-d-p--ok { fill: #15803d; }
+.pr-d-p--limite { fill: #d97706; }
+.pr-d-p--fora { fill: #dc2626; }
+
+.pr-d-p-txt {
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 900;
+    fill: #fff;
+    pointer-events: none;
+}
+
+.pr-layout--v2 :is(.pr-d-chip, .pr-d-marca, .pr-d-guia, .pr-d-guia2, .pr-d-ponto, .pr-d-ponto-n, .pr-et) { display: none; }
+
+/* quadro do ponto */
+.pr-q {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.35rem;
+    min-width: 0;
+    padding: 0.75rem 0.9rem 0.6rem;
+    background: var(--section-bg);
+    border: 1px solid var(--card-border);
+    border-left: 6px solid #16a34a;
+    border-radius: 10px;
+}
+
+.pr-q--limite { border-left-color: #d97706; background: color-mix(in srgb, #d97706 8%, var(--section-bg)); }
+.pr-q--fora {
+    border-color: #dc2626;
+    border-left-color: #dc2626;
+    background: color-mix(in srgb, #dc2626 12%, var(--section-bg));
+    box-shadow: 0 0 0 1px #dc2626;
+}
+
+.pr-q-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+.pr-q-id {
+    flex: none;
+    font-size: 1.5rem;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--text);
+}
+
+.pr-q-local {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--muted);
+}
+
+.pr-q-selo {
+    flex: none;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    color: #15803d;
+    background: color-mix(in srgb, #16a34a 15%, transparent);
+}
+
+body.theme-dark .pr-q--ok .pr-q-selo { color: #4ade80; }
+.pr-q--limite .pr-q-selo { color: #fff; background: #d97706; }
+.pr-q--fora .pr-q-selo { color: #fff; background: #dc2626; }
+
+.pr-q-valor {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.2rem 0.5rem;
+}
+
+.pr-q-valor > b {
+    font-size: 3.4rem;
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.pr-q--limite .pr-q-valor > b { color: #d97706; }
+.pr-q--fora .pr-q-valor > b { color: #dc2626; }
+body.theme-dark .pr-q--fora .pr-q-valor > b { color: #f87171; }
+
+.pr-q-valor small {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.pr-q-faixa {
+    margin-left: auto;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    color: var(--muted);
+    background: color-mix(in srgb, #16a34a 12%, transparent);
+    border: 1px solid color-mix(in srgb, #16a34a 40%, transparent);
+}
+
+.pr-q-faixa b { color: var(--text); font-weight: 900; }
+
+/* gráfico de 15 em 15 min */
+.pr15 { display: flex; flex-direction: column; gap: 0.15rem; }
+
+.pr15-plot {
+    position: relative;
+    height: 4.2rem;
+    margin-top: 1.1rem;
+}
+
+.pr15-plot svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.pr15-faixa { fill: color-mix(in srgb, #16a34a 16%, transparent); }
+
+.pr15-area { fill: color-mix(in srgb, var(--pr-s1) 28%, transparent); }
+.pr-sec--s2 .pr15-area { fill: color-mix(in srgb, var(--pr-s2) 28%, transparent); }
+
+.pr15-linha {
+    fill: none;
+    stroke: var(--pr-s1);
+    stroke-width: 2.5;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.pr-sec--s2 .pr15-linha { stroke: var(--pr-s2); }
+
+.pr15-eixo {
+    stroke: var(--muted);
+    stroke-width: 1;
+    opacity: 0.6;
+    vector-effect: non-scaling-stroke;
+}
+
+.pr15-fora { fill: #dc2626; }
+
+.pr15-agora {
+    fill: var(--pr-s1);
+    stroke: #fff;
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+}
+
+.pr-sec--s2 .pr15-agora { fill: var(--pr-s2); }
+
+.pr15-v {
+    position: absolute;
+    transform: translate(-50%, -125%);
+    font-size: 1.05rem;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--text);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 4px var(--section-bg), 0 0 4px var(--section-bg);
+}
+
+.pr15-v--ini { transform: translate(0, -125%); }
+.pr15-v--fim { transform: translate(-100%, -125%); }
+.pr15-v--limite { color: #d97706; }
+.pr15-v--fora { color: #dc2626; }
+
+.pr15-horas {
+    position: relative;
+    height: 1.1rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.pr15-h { position: absolute; top: 0; }
+.pr15-h--ini { left: 0; }
+.pr15-h--meio { left: 50%; transform: translateX(-50%); }
+.pr15-h--fim { right: 0; color: var(--text); }
+
+/* secador estreito: desenho em cima, quadros em 2 colunas */
+@container (max-width: 52rem) {
+    .pr-layout--v2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-areas: "fig fig" "esq dir";
+    }
+    .pr-layout--v2 .pr-figura { grid-area: fig; height: 20rem; min-height: 0; }
+}
+
+@container (max-width: 30rem) {
+    .pr-layout--v2 { grid-template-columns: minmax(0, 1fr); grid-template-areas: "fig" "esq" "dir"; }
+    .pr-q-valor > b { font-size: 2.6rem; }
+}
+
+/* desenho maior e marcas legíveis; gráfico usa a altura que sobrar */
+.pr-layout--v2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr) minmax(0, 1fr); gap: 0.85rem; }
+.pr-d-p-txt { font-size: 22px; }
+.pr-d-p { stroke-width: 3.5; }
+.pr-q .pr15 { flex: 1 1 auto; min-height: 0; }
+.pr-q .pr15-plot { flex: 1 1 auto; min-height: 3.6rem; max-height: 9rem; }
+.pr-q-faixa { font-size: 0.95rem; padding: 0.15rem 0.6rem; }
+
+.pr15-dot {
+    position: absolute;
+    width: 0.45rem;
+    height: 0.45rem;
+    margin: -0.225rem 0 0 -0.225rem;
+    border-radius: 50%;
+}
+
+.pr15-dot--fora { background: #dc2626; }
+
+.pr15-dot--agora {
+    width: 0.75rem;
+    height: 0.75rem;
+    margin: -0.375rem 0 0 -0.375rem;
+    background: var(--pr-s1);
+    border: 2px solid #fff;
+}
+
+.pr-sec--s2 .pr15-dot--agora { background: var(--pr-s2); }
