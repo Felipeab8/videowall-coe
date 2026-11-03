@@ -12,7 +12,7 @@
          não carrega e a tela usa o mapa esquemático em SVG. -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css">
-    <link rel="stylesheet" href="style.css?v=pressao1">
+    <link rel="stylesheet" href="style.css?v=numeros1">
 </head>
 <body class="theme-dark" data-visao="tatica">
 
@@ -142,8 +142,8 @@
                         <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
                     <div class="submenu" id="submenu-0" hidden>
-                        <button class="menu-item" data-screen="0"><span class="menu-text">Tela da recepção</span></button>
-                        <button class="menu-item" data-screen="fluxo"><span class="menu-text">Fluxo de caminhões</span></button>
+                        <button class="menu-item" data-screen="0" data-num="01A"><span class="menu-text">Tela da recepção</span></button>
+                        <button class="menu-item" data-screen="fluxo" data-num="01B"><span class="menu-text">Fluxo de caminhões</span></button>
                     </div>
                 </div>
                 <div class="menu-group" data-group="1">
@@ -170,9 +170,9 @@
                         <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
                     <div class="submenu" id="submenu-3" hidden>
-                        <button class="menu-item" data-screen="3"><span class="menu-text">Tela da secagem</span></button>
-                        <button class="menu-item" data-screen="4"><span class="menu-text">Produtividade da secagem</span></button>
-                        <button class="menu-item" data-screen="pressao"><span class="menu-text">Pressão dos secadores</span></button>
+                        <button class="menu-item" data-screen="3" data-num="04A"><span class="menu-text">Tela da secagem</span></button>
+                        <button class="menu-item" data-screen="4" data-num="04B"><span class="menu-text">Produtividade da secagem</span></button>
+                        <button class="menu-item" data-screen="pressao" data-num="04C"><span class="menu-text">Pressão dos secadores</span></button>
                     </div>
                 </div>
                 <div class="menu-group" data-group="5">
@@ -199,8 +199,9 @@
                         <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
                     <div class="submenu" id="submenu-7" hidden>
-                        <button class="menu-item" data-screen="7"><span class="menu-text">Tela da expedição</span></button>
-                        <button class="menu-item" data-screen="exp-fluxo"><span class="menu-text">Fluxo de caminhões</span></button>
+                        <button class="menu-item" data-screen="7" data-num="07A"><span class="menu-text">Tela da expedição</span></button>
+                        <button class="menu-item" data-screen="exp-fluxo" data-num="07B"><span class="menu-text">Fluxo de caminhões</span></button>
+                        <button class="menu-item" data-screen="exp-contrato" data-num="07C"><span class="menu-text">Contratos</span></button>
                     </div>
                 </div>
                 <button class="menu-item menu-item--solo" data-screen="8"><span class="menu-text">Previsão do tempo</span></button>
@@ -281,7 +282,7 @@
                     <!-- fileira de baixo -->
                     <div class="mural-quadro" data-telas="5"><button class="mural-abrir" type="button" data-goto="5" title="Abrir Silos"></button></div>
                     <div class="mural-quadro" data-telas="6"><button class="mural-abrir" type="button" data-goto="6" title="Abrir Armazém"></button></div>
-                    <div class="mural-quadro" data-telas="7,exp-fluxo"><button class="mural-abrir" type="button" data-goto="7" title="Abrir Expedição"></button></div>
+                    <div class="mural-quadro" data-telas="7,exp-fluxo,exp-contrato"><button class="mural-abrir" type="button" data-goto="7" title="Abrir Expedição"></button></div>
                     <div class="mural-quadro" data-telas="8"><button class="mural-abrir" type="button" data-goto="8" title="Abrir Previsão do tempo"></button></div>
                 </div>
             </section>
@@ -289,7 +290,7 @@
             <!-- Screen 0: Recepção -->
             <section class="screen" id="screen-0">
                 <div class="screen-header">
-                    <div class="screen-badge">01</div>
+                    <div class="screen-badge screen-badge--letra">01<span class="screen-badge-letra">A</span></div>
                     <div class="screen-title-section">
                         <h2>Recepção & Fila de Caminhões</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">5</span>s</div>
@@ -562,7 +563,7 @@
             <!-- Screen 0b: Fluxo de caminhões (recepção → expedição) -->
             <section class="screen" id="screen-fluxo" data-fluxo-periodo="hoje" data-fluxo-cultura="todas">
                 <div class="screen-header">
-                    <div class="screen-badge">02</div>
+                    <div class="screen-badge screen-badge--letra">01<span class="screen-badge-letra">B</span></div>
                     <div class="screen-title-section">
                         <h2>Fluxo de Caminhões & Etapas do Grão</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">5</span>s</div>
@@ -777,7 +778,7 @@
             <!-- Screen 1: Classificação -->
             <section class="screen" id="screen-1" data-class-cultura="todas" data-cult-milho="on" data-cult-sorgo="on" data-cult-trigo="on" data-cult-soja="on" data-class-periodo="hoje">
                 <div class="screen-header">
-                    <div class="screen-badge">03</div>
+                    <div class="screen-badge">02</div>
                     <div class="screen-title-section">
                         <h2>Controle de Classificação</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">4</span>s</div>
@@ -1392,7 +1393,7 @@
             <!-- Screen 2: Moegas -->
             <section class="screen screen--moegas" id="screen-2" data-moega-periodo="hoje" data-moega-cultura="todas">
                 <div class="screen-header">
-                    <div class="screen-badge">04</div>
+                    <div class="screen-badge">03</div>
                     <div class="screen-title-section">
                         <h2>Segregação por Moegas</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">7</span>s</div>
@@ -1935,7 +1936,7 @@
                  antecipa quando chove. -->
             <section class="screen screen--secagem" id="screen-3">
                 <div class="screen-header">
-                    <div class="screen-badge">05</div>
+                    <div class="screen-badge screen-badge--letra">04<span class="screen-badge-letra">A</span></div>
                     <div class="screen-title-section">
                         <h2>Processo de Secagem</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • TURNO 07h–17h • ATUALIZADO HÁ <span class="time-update">2</span>s</div>
@@ -2191,7 +2192,7 @@
                  Cores por secador (S1 azul, S2 laranja), nao por cultura: aqui a pergunta e "qual secador". -->
             <section class="screen" id="screen-4" data-prod-periodo="t1">
                 <div class="screen-header">
-                    <div class="screen-badge">06</div>
+                    <div class="screen-badge screen-badge--letra">04<span class="screen-badge-letra">B</span></div>
                     <div class="screen-title-section">
                         <h2>Produtividade da Secagem</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">4</span>s</div>
@@ -3105,7 +3106,7 @@
                  (CLP/supervisorio). -->
             <section class="screen screen--pressao" id="screen-pressao">
                 <div class="screen-header">
-                    <div class="screen-badge">06B</div>
+                    <div class="screen-badge screen-badge--letra">04<span class="screen-badge-letra">C</span></div>
                     <div class="screen-title-section">
                         <h2>Pressão dos Secadores</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">4</span>s</div>
@@ -3124,6 +3125,7 @@
                         </div>
                     </div>
                     <div class="pr-secadores" data-pressao-secadores></div>
+                    <div class="pr-tab-box" data-pressao-tabela></div>
                     <div class="prod-eventos" data-pressao-eventos></div>
                     <script type="application/json" data-pressao-dados>
 {
@@ -3194,7 +3196,7 @@
   "pontos": [
     {
       "id": "P1",
-      "local": "Ar quente · topo"
+      "local": "Saída da fornalha"
     },
     {
       "id": "P2",
@@ -3202,7 +3204,7 @@
     },
     {
       "id": "P3",
-      "local": "Ar saturado · exaustão"
+      "local": "Ar quente · topo"
     },
     {
       "id": "P4",
@@ -3210,7 +3212,7 @@
     },
     {
       "id": "P5",
-      "local": "Saída da fornalha"
+      "local": "Ar saturado · exaustão"
     }
   ],
   "horas": [
@@ -3253,7 +3255,7 @@
       "h": "14h",
       "min": 50,
       "agora": true,
-      "s1": [4, 24, 23, 6, 40],
+      "s1": [4, 21, 23, 6, 40],
       "s2": [3, 18, 22, 40, 39]
     }
   ],
@@ -3314,7 +3316,7 @@
                  esta em conversa com a TI (o nivel da termometria so da o saldo). -->
             <section class="screen screen--silos" id="screen-5" data-silo-periodo="24h">
                 <div class="screen-header">
-                    <div class="screen-badge">07</div>
+                    <div class="screen-badge">05</div>
                     <div class="screen-title-section">
                         <h2>Silos &amp; Aeração</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">8</span>s</div>
@@ -3732,7 +3734,7 @@
                  da tela de previsão do tempo). -->
             <section class="screen screen--armazem" id="screen-6">
                 <div class="screen-header">
-                    <div class="screen-badge">08</div>
+                    <div class="screen-badge">06</div>
                     <div class="screen-title-section">
                         <h2>Armazém</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">6</span>s</div>
@@ -3890,7 +3892,7 @@
             <!-- Screen 7: Expedição -->
             <section class="screen" id="screen-7" data-exp-periodo="dia" data-exp-cultura="todas">
                 <div class="screen-header">
-                    <div class="screen-badge">09</div>
+                    <div class="screen-badge screen-badge--letra">07<span class="screen-badge-letra">A</span></div>
                     <div class="screen-title-section">
                         <h2>Expedição &amp; Dosagem</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">2</span>s</div>
@@ -4187,140 +4189,6 @@
                     </div>
                 </div>
 
-                <!-- Ritmo por contrato, que vale para qualquer periodo. A qualidade por
-                     cultura juntou-se ao detalhe por carga, na tabela de baixo. -->
-                <div class="split-grid split-grid--exp">
-
-                    <!-- Ritmo por contrato: entregue no mes contra o que o prazo pede ate hoje
-                         (24/09). A marca na barra e onde o contrato deveria estar se fosse
-                         linear do inicio ao prazo; o ritmo atual e a media dos ultimos 7 dias
-                         (volume da semana para o destino / 7) e o necessario e o que falta / dias
-                         restantes. O entregue soma o que foi para aquele destino no mes. O menu
-                         escolhe UM contrato por vez (radio), para a secao nao mudar de tamanho;
-                         a cultura do filtro geral tambem vale: se o escolhido for de outra
-                         cultura, a tela passa para o primeiro contrato daquela cultura.
-                         Embaixo de cada contrato, os dias dele do inicio a validade (ex.: navio
-                         fecha no fim de outubro): uma barra por dia com os caminhoes carregados
-                         e o traco do ritmo necessario (total / dias do contrato / 40 t), para
-                         cobrar o cliente que nao manda caminhao no comeco e sobrecarrega no
-                         fim. Dias sem carregamento contam dias corridos ate ontem (a unidade
-                         carrega no fim de semana) e dizem quantos cairam em sabado/domingo.
-                         Milho: avariados pelo contrato, 6% mercado interno e 5% exportacao. -->
-                    <div data-codigo="AVR-EXP-F" class="content-section exp-contratos" id="expContratos">
-                        <div class="section-head section-head--top">
-                            <div class="section-head-text">
-                                <h3>RITMO POR CONTRATO</h3>
-                                <p class="section-sub">entregue até 24/09 · marca = previsto pelo prazo · barras = caminhões por dia · traço = ritmo necessário</p>
-                            </div>
-                            <div class="exp-contratos-menu">
-                                <button type="button" class="exp-contratos-btn" aria-haspopup="true" aria-expanded="false" aria-controls="expContratosLista">Contrato <b class="exp-contratos-conta">Atlântica Grains</b><svg class="exp-contratos-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
-                                <div class="exp-contratos-lista" id="expContratosLista" role="radiogroup" aria-label="Contrato exibido" hidden>
-                                    <label class="exp-contrato-opcao"><input type="radio" name="exp-contrato" value="031" checked><span class="exp-contrato-opcao-txt"><b>Atlântica Grains</b><small>CT-2026/031 · <svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho · Porto de Santos</small></span><span class="exp-contrato-opcao-st exp-contrato-opcao-st--fora">76%</span></label>
-                                    <label class="exp-contrato-opcao"><input type="radio" name="exp-contrato" value="027"><span class="exp-contrato-opcao-txt"><b>Sulbrasil Trading</b><small>CT-2026/027 · <svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho · Porto de Paranaguá</small></span><span class="exp-contrato-opcao-st exp-contrato-opcao-st--ok">84%</span></label>
-                                    <label class="exp-contrato-opcao"><input type="radio" name="exp-contrato" value="035"><span class="exp-contrato-opcao-txt"><b>Cooperativa Holambra</b><small>CT-2026/035 · <svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho · Coop. Holambra</small></span><span class="exp-contrato-opcao-st exp-contrato-opcao-st--atencao">80%</span></label>
-                                    <label class="exp-contrato-opcao"><input type="radio" name="exp-contrato" value="029"><span class="exp-contrato-opcao-txt"><b>Frigorífico Aurora</b><small>CT-2026/029 · <svg class="grao-icon grao-icon--sorgo grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo · Frig. Aurora</small></span><span class="exp-contrato-opcao-st exp-contrato-opcao-st--atencao">79%</span></label>
-                                    <label class="exp-contrato-opcao"><input type="radio" name="exp-contrato" value="038"><span class="exp-contrato-opcao-txt"><b>Nutriave Rações</b><small>CT-2026/038 · <svg class="grao-icon grao-icon--sorgo grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo · Fáb. Ração Nutriave</small></span><span class="exp-contrato-opcao-st exp-contrato-opcao-st--ok">79%</span></label>
-                                    <label class="exp-contrato-opcao"><input type="radio" name="exp-contrato" value="033"><span class="exp-contrato-opcao-txt"><b>Moinho Sul Alimentos</b><small>CT-2026/033 · <svg class="grao-icon grao-icon--trigo grao-icon--dot" aria-hidden="true"><use href="#ico-trigo"></use></svg>Trigo · Ind. Moinho Sul</small></span><span class="exp-contrato-opcao-st exp-contrato-opcao-st--fora">59%</span></label>
-                                    <label class="exp-contrato-opcao"><input type="radio" name="exp-contrato" value="040"><span class="exp-contrato-opcao-txt"><b>Rio Verde Commodities</b><small>CT-2026/040 · <svg class="grao-icon grao-icon--soja grao-icon--dot" aria-hidden="true"><use href="#ico-soja"></use></svg>Soja · Porto de Santos</small></span><span class="exp-contrato-opcao-st exp-contrato-opcao-st--ok">73%</span></label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="exp-contratos-linhas">
-                            <div class="exp-contrato exp-contrato--fora" data-contrato="031" data-cultura="milho" style="--pct: 76.1; --esperado: 80">
-                                <div class="exp-contrato-id"><b class="exp-contrato-cliente">Atlântica Grains</b><span class="exp-contrato-ref">CT-2026/031 · <svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho · Porto de Santos · avariados até 5% (exportação)</span></div>
-                                <div class="exp-contrato-barra">
-                                    <div class="exp-contrato-track"><span class="exp-contrato-fill"></span><span class="exp-contrato-marca"></span></div>
-                                    <div class="exp-contrato-escala"><span><b>6.090</b> de 8.000 t · 76%</span></div>
-                                </div>
-                                <div class="exp-contrato-ritmo"><span class="exp-contrato-ritmo-sub">ritmo</span><span class="exp-contrato-ritmo-val"><b class=" is-abaixo">214</b> / 318 <small>t/dia</small></span></div>
-                                <span class="class-status class-status--fora">Atrasado · 310 t</span>
-                                <div class="exp-contrato-dias" style="--nec: 0.483">
-                                    <div class="exp-contrato-dias-graf" role="img" aria-label="Caminhões por dia de 01/09 a 30/09: 152 até hoje contra 6,7 por dia necessários; 5 dias sem carregamento, 2 em fim de semana"><i class="is-zero" style="--v: 0.000" title="01/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="02/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="03/09 · 0 caminhões · 0 t"></i><i style="--v: 0.290" title="04/09 · 4 caminhões · 160 t"></i><i class="is-fds" style="--v: 0.362" title="05/09 (fim de semana) · 5 caminhões · 200 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="06/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.362" title="07/09 · 5 caminhões · 200 t"></i><i style="--v: 0.435" title="08/09 · 6 caminhões · 240 t"></i><i style="--v: 0.435" title="09/09 · 6 caminhões · 240 t"></i><i style="--v: 0.435" title="10/09 · 6 caminhões · 240 t"></i><i style="--v: 0.507" title="11/09 · 7 caminhões · 280 t"></i><i class="is-fds" style="--v: 0.507" title="12/09 (fim de semana) · 7 caminhões · 280 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="13/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.580" title="14/09 · 8 caminhões · 320 t"></i><i style="--v: 0.580" title="15/09 · 8 caminhões · 320 t"></i><i style="--v: 0.580" title="16/09 · 8 caminhões · 320 t"></i><i style="--v: 0.652" title="17/09 · 9 caminhões · 360 t"></i><i style="--v: 0.652" title="18/09 · 9 caminhões · 360 t"></i><i class="is-fds" style="--v: 0.725" title="19/09 (fim de semana) · 10 caminhões · 400 t"></i><i class="is-fds" style="--v: 0.725" title="20/09 (fim de semana) · 10 caminhões · 400 t"></i><i style="--v: 0.725" title="21/09 · 10 caminhões · 400 t"></i><i style="--v: 0.797" title="22/09 · 11 caminhões · 440 t"></i><i style="--v: 0.797" title="23/09 · 11 caminhões · 440 t"></i><i class="is-hoje" style="--v: 0.870" title="24/09 · 12 caminhões · 480 t"></i><i class="is-futuro" style="--v: 0.000" title="25/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="26/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="27/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="28/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="29/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="30/09 · a carregar"></i><b class="exp-contrato-dias-nec" title="Ritmo necessário: 6,7 caminhões por dia"></b></div>
-                                    <div class="exp-contrato-dias-leg"><span>01/09</span><span class="exp-contrato-parado"><b>5</b> dias sem carregar · 2 em fim de semana</span><span class="exp-contrato-nec">necessário <b>6,7</b> cam./dia</span><span class="exp-contrato-validade">válido até <b>30/09</b> · navio fecha · faltam 6 dias</span></div>
-                                </div>
-                            </div>
-                            <div class="exp-contrato exp-contrato--ok" data-contrato="027" data-cultura="milho" style="--pct: 84.4; --esperado: 80" hidden>
-                                <div class="exp-contrato-id"><b class="exp-contrato-cliente">Sulbrasil Trading</b><span class="exp-contrato-ref">CT-2026/027 · <svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho · Porto de Paranaguá · avariados até 5% (exportação)</span></div>
-                                <div class="exp-contrato-barra">
-                                    <div class="exp-contrato-track"><span class="exp-contrato-fill"></span><span class="exp-contrato-marca"></span></div>
-                                    <div class="exp-contrato-escala"><span><b>4.220</b> de 5.000 t · 84%</span></div>
-                                </div>
-                                <div class="exp-contrato-ritmo"><span class="exp-contrato-ritmo-sub">ritmo</span><span class="exp-contrato-ritmo-val"><b class="">147</b> / 130 <small>t/dia</small></span></div>
-                                <span class="class-status class-status--ok">Adiantado · 220 t</span>
-                                <div class="exp-contrato-dias" style="--nec: 0.604">
-                                    <div class="exp-contrato-dias-graf" role="img" aria-label="Caminhões por dia de 01/09 a 30/09: 106 até hoje contra 4,2 por dia necessários; 2 dias sem carregamento, 2 em fim de semana"><i style="--v: 0.580" title="01/09 · 4 caminhões · 160 t"></i><i style="--v: 0.725" title="02/09 · 5 caminhões · 200 t"></i><i style="--v: 0.870" title="03/09 · 6 caminhões · 240 t"></i><i style="--v: 0.580" title="04/09 · 4 caminhões · 160 t"></i><i class="is-fds" style="--v: 0.725" title="05/09 (fim de semana) · 5 caminhões · 200 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="06/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.870" title="07/09 · 6 caminhões · 240 t"></i><i style="--v: 0.580" title="08/09 · 4 caminhões · 160 t"></i><i style="--v: 0.725" title="09/09 · 5 caminhões · 200 t"></i><i style="--v: 0.870" title="10/09 · 6 caminhões · 240 t"></i><i style="--v: 0.580" title="11/09 · 4 caminhões · 160 t"></i><i class="is-fds" style="--v: 0.725" title="12/09 (fim de semana) · 5 caminhões · 200 t"></i><i class="is-fds" style="--v: 0.870" title="13/09 (fim de semana) · 6 caminhões · 240 t"></i><i style="--v: 0.580" title="14/09 · 4 caminhões · 160 t"></i><i style="--v: 0.725" title="15/09 · 5 caminhões · 200 t"></i><i style="--v: 0.725" title="16/09 · 5 caminhões · 200 t"></i><i style="--v: 0.580" title="17/09 · 4 caminhões · 160 t"></i><i style="--v: 0.725" title="18/09 · 5 caminhões · 200 t"></i><i class="is-fds" style="--v: 0.725" title="19/09 (fim de semana) · 5 caminhões · 200 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="20/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.580" title="21/09 · 4 caminhões · 160 t"></i><i style="--v: 0.725" title="22/09 · 5 caminhões · 200 t"></i><i style="--v: 0.725" title="23/09 · 5 caminhões · 200 t"></i><i class="is-hoje" style="--v: 0.580" title="24/09 · 4 caminhões · 160 t"></i><i class="is-futuro" style="--v: 0.000" title="25/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="26/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="27/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="28/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="29/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="30/09 · a carregar"></i><b class="exp-contrato-dias-nec" title="Ritmo necessário: 4,2 caminhões por dia"></b></div>
-                                    <div class="exp-contrato-dias-leg"><span>01/09</span><span class="exp-contrato-parado"><b>2</b> dias sem carregar · 2 em fim de semana</span><span class="exp-contrato-nec">necessário <b>4,2</b> cam./dia</span><span class="exp-contrato-validade">válido até <b>30/09</b> · navio fecha · faltam 6 dias</span></div>
-                                </div>
-                            </div>
-                            <div class="exp-contrato exp-contrato--atencao" data-contrato="035" data-cultura="milho" style="--pct: 80.3; --esperado: 80" hidden>
-                                <div class="exp-contrato-id"><b class="exp-contrato-cliente">Cooperativa Holambra</b><span class="exp-contrato-ref">CT-2026/035 · <svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho · Coop. Holambra · avariados até 6% (mercado interno)</span></div>
-                                <div class="exp-contrato-barra">
-                                    <div class="exp-contrato-track"><span class="exp-contrato-fill"></span><span class="exp-contrato-marca"></span></div>
-                                    <div class="exp-contrato-escala"><span><b>2.810</b> de 3.500 t · 80%</span></div>
-                                </div>
-                                <div class="exp-contrato-ritmo"><span class="exp-contrato-ritmo-sub">ritmo</span><span class="exp-contrato-ritmo-val"><b class=" is-abaixo">99</b> / 115 <small>t/dia</small></span></div>
-                                <span class="class-status class-status--atencao">Ritmo abaixo</span>
-                                <div class="exp-contrato-dias" style="--nec: 0.423">
-                                    <div class="exp-contrato-dias-graf" role="img" aria-label="Caminhões por dia de 01/09 a 30/09: 70 até hoje contra 2,9 por dia necessários; 7 dias sem carregamento, 4 em fim de semana"><i class="is-zero" style="--v: 0.000" title="01/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="02/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="03/09 · 0 caminhões · 0 t"></i><i style="--v: 0.290" title="04/09 · 2 caminhões · 80 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="05/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="06/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.435" title="07/09 · 3 caminhões · 120 t"></i><i style="--v: 0.435" title="08/09 · 3 caminhões · 120 t"></i><i style="--v: 0.435" title="09/09 · 3 caminhões · 120 t"></i><i style="--v: 0.435" title="10/09 · 3 caminhões · 120 t"></i><i style="--v: 0.435" title="11/09 · 3 caminhões · 120 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="12/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="13/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.580" title="14/09 · 4 caminhões · 160 t"></i><i style="--v: 0.580" title="15/09 · 4 caminhões · 160 t"></i><i style="--v: 0.580" title="16/09 · 4 caminhões · 160 t"></i><i style="--v: 0.580" title="17/09 · 4 caminhões · 160 t"></i><i style="--v: 0.725" title="18/09 · 5 caminhões · 200 t"></i><i class="is-fds" style="--v: 0.725" title="19/09 (fim de semana) · 5 caminhões · 200 t"></i><i class="is-fds" style="--v: 0.725" title="20/09 (fim de semana) · 5 caminhões · 200 t"></i><i style="--v: 0.725" title="21/09 · 5 caminhões · 200 t"></i><i style="--v: 0.725" title="22/09 · 5 caminhões · 200 t"></i><i style="--v: 0.870" title="23/09 · 6 caminhões · 240 t"></i><i class="is-hoje" style="--v: 0.870" title="24/09 · 6 caminhões · 240 t"></i><i class="is-futuro" style="--v: 0.000" title="25/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="26/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="27/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="28/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="29/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="30/09 · a carregar"></i><b class="exp-contrato-dias-nec" title="Ritmo necessário: 2,9 caminhões por dia"></b></div>
-                                    <div class="exp-contrato-dias-leg"><span>01/09</span><span class="exp-contrato-parado"><b>7</b> dias sem carregar · 4 em fim de semana</span><span class="exp-contrato-nec">necessário <b>2,9</b> cam./dia</span><span class="exp-contrato-validade">válido até <b>30/09</b> · faltam 6 dias</span></div>
-                                </div>
-                            </div>
-                            <div class="exp-contrato exp-contrato--atencao" data-contrato="029" data-cultura="sorgo" style="--pct: 78.9; --esperado: 80" hidden>
-                                <div class="exp-contrato-id"><b class="exp-contrato-cliente">Frigorífico Aurora</b><span class="exp-contrato-ref">CT-2026/029 · <svg class="grao-icon grao-icon--sorgo grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo · Frig. Aurora</span></div>
-                                <div class="exp-contrato-barra">
-                                    <div class="exp-contrato-track"><span class="exp-contrato-fill"></span><span class="exp-contrato-marca"></span></div>
-                                    <div class="exp-contrato-escala"><span><b>1.420</b> de 1.800 t · 79%</span></div>
-                                </div>
-                                <div class="exp-contrato-ritmo"><span class="exp-contrato-ritmo-sub">ritmo</span><span class="exp-contrato-ritmo-val"><b class=" is-abaixo">50</b> / 63 <small>t/dia</small></span></div>
-                                <span class="class-status class-status--atencao">Atrasando · 20 t</span>
-                                <div class="exp-contrato-dias" style="--nec: 0.652">
-                                    <div class="exp-contrato-dias-graf" role="img" aria-label="Caminhões por dia de 01/09 a 30/09: 36 até hoje contra 1,5 por dia necessários; 5 dias sem carregamento, 5 em fim de semana"><i style="--v: 0.870" title="01/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="02/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="03/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="04/09 · 2 caminhões · 80 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="05/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="06/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.870" title="07/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="08/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="09/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="10/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="11/09 · 2 caminhões · 80 t"></i><i class="is-fds" style="--v: 0.870" title="12/09 (fim de semana) · 2 caminhões · 80 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="13/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.870" title="14/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="15/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="16/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="17/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="18/09 · 2 caminhões · 80 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="19/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="20/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.435" title="21/09 · 1 caminhões · 40 t"></i><i style="--v: 0.870" title="22/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="23/09 · 2 caminhões · 80 t"></i><i class="is-hoje" style="--v: 0.435" title="24/09 · 1 caminhões · 40 t"></i><i class="is-futuro" style="--v: 0.000" title="25/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="26/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="27/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="28/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="29/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="30/09 · a carregar"></i><b class="exp-contrato-dias-nec" title="Ritmo necessário: 1,5 caminhões por dia"></b></div>
-                                    <div class="exp-contrato-dias-leg"><span>01/09</span><span class="exp-contrato-parado"><b>5</b> dias sem carregar · 5 em fim de semana</span><span class="exp-contrato-nec">necessário <b>1,5</b> cam./dia</span><span class="exp-contrato-validade">válido até <b>30/09</b> · faltam 6 dias</span></div>
-                                </div>
-                            </div>
-                            <div class="exp-contrato exp-contrato--ok" data-contrato="038" data-cultura="sorgo" style="--pct: 78.7; --esperado: 53.3" hidden>
-                                <div class="exp-contrato-id"><b class="exp-contrato-cliente">Nutriave Rações</b><span class="exp-contrato-ref">CT-2026/038 · <svg class="grao-icon grao-icon--sorgo grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo · Fáb. Ração Nutriave</span></div>
-                                <div class="exp-contrato-barra">
-                                    <div class="exp-contrato-track"><span class="exp-contrato-fill"></span><span class="exp-contrato-marca"></span></div>
-                                    <div class="exp-contrato-escala"><span><b>1.180</b> de 1.500 t · 79%</span></div>
-                                </div>
-                                <div class="exp-contrato-ritmo"><span class="exp-contrato-ritmo-sub">ritmo</span><span class="exp-contrato-ritmo-val"><b class="">41</b> / 15 <small>t/dia</small></span></div>
-                                <span class="class-status class-status--ok">Adiantado · 380 t</span>
-                                <div class="exp-contrato-dias" style="--nec: 0.362">
-                                    <div class="exp-contrato-dias-graf" role="img" aria-label="Caminhões por dia de 01/09 a 15/10: 30 até hoje contra 0,8 por dia necessários; 7 dias sem carregamento, 3 em fim de semana"><i class="is-zero" style="--v: 0.000" title="01/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="02/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="03/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="04/09 · 0 caminhões · 0 t"></i><i class="is-fds" style="--v: 0.870" title="05/09 (fim de semana) · 2 caminhões · 80 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="06/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.870" title="07/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="08/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="09/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="10/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="11/09 · 2 caminhões · 80 t"></i><i class="is-fds" style="--v: 0.435" title="12/09 (fim de semana) · 1 caminhões · 40 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="13/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.870" title="14/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="15/09 · 2 caminhões · 80 t"></i><i style="--v: 0.435" title="16/09 · 1 caminhões · 40 t"></i><i style="--v: 0.870" title="17/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="18/09 · 2 caminhões · 80 t"></i><i class="is-fds" style="--v: 0.435" title="19/09 (fim de semana) · 1 caminhões · 40 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="20/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.870" title="21/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="22/09 · 2 caminhões · 80 t"></i><i style="--v: 0.435" title="23/09 · 1 caminhões · 40 t"></i><i class="is-hoje" style="--v: 0.870" title="24/09 · 2 caminhões · 80 t"></i><i class="is-futuro" style="--v: 0.000" title="25/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="26/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="27/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="28/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="29/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="30/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="01/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="02/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="03/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="04/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="05/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="06/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="07/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="08/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="09/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="10/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="11/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="12/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="13/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="14/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="15/10 · a carregar"></i><b class="exp-contrato-dias-nec" title="Ritmo necessário: 0,8 caminhões por dia"></b></div>
-                                    <div class="exp-contrato-dias-leg"><span>01/09</span><span class="exp-contrato-parado"><b>7</b> dias sem carregar · 3 em fim de semana</span><span class="exp-contrato-nec">necessário <b>0,8</b> cam./dia</span><span class="exp-contrato-validade">válido até <b>15/10</b> · faltam 21 dias</span></div>
-                                </div>
-                            </div>
-                            <div class="exp-contrato exp-contrato--fora" data-contrato="033" data-cultura="trigo" style="--pct: 58.8; --esperado: 80" hidden>
-                                <div class="exp-contrato-id"><b class="exp-contrato-cliente">Moinho Sul Alimentos</b><span class="exp-contrato-ref">CT-2026/033 · <svg class="grao-icon grao-icon--trigo grao-icon--dot" aria-hidden="true"><use href="#ico-trigo"></use></svg>Trigo · Ind. Moinho Sul</span></div>
-                                <div class="exp-contrato-barra">
-                                    <div class="exp-contrato-track"><span class="exp-contrato-fill"></span><span class="exp-contrato-marca"></span></div>
-                                    <div class="exp-contrato-escala"><span><b>470</b> de 800 t · 59%</span></div>
-                                </div>
-                                <div class="exp-contrato-ritmo"><span class="exp-contrato-ritmo-sub">ritmo</span><span class="exp-contrato-ritmo-val"><b class=" is-abaixo">17</b> / 55 <small>t/dia</small></span></div>
-                                <span class="class-status class-status--fora">Atrasado · 170 t</span>
-                                <div class="exp-contrato-dias" style="--nec: 0.290">
-                                    <div class="exp-contrato-dias-graf" role="img" aria-label="Caminhões por dia de 01/09 a 30/09: 12 até hoje contra 0,7 por dia necessários; 15 dias sem carregamento, 6 em fim de semana"><i class="is-zero" style="--v: 0.000" title="01/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="02/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="03/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="04/09 · 0 caminhões · 0 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="05/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="06/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="07/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="08/09 · 0 caminhões · 0 t"></i><i style="--v: 0.435" title="09/09 · 1 caminhões · 40 t"></i><i style="--v: 0.435" title="10/09 · 1 caminhões · 40 t"></i><i style="--v: 0.870" title="11/09 · 2 caminhões · 80 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="12/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="13/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.435" title="14/09 · 1 caminhões · 40 t"></i><i class="is-zero" style="--v: 0.000" title="15/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="16/09 · 0 caminhões · 0 t"></i><i style="--v: 0.435" title="17/09 · 1 caminhões · 40 t"></i><i style="--v: 0.870" title="18/09 · 2 caminhões · 80 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="19/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="20/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="21/09 · 0 caminhões · 0 t"></i><i style="--v: 0.435" title="22/09 · 1 caminhões · 40 t"></i><i style="--v: 0.435" title="23/09 · 1 caminhões · 40 t"></i><i class="is-hoje" style="--v: 0.870" title="24/09 · 2 caminhões · 80 t"></i><i class="is-futuro" style="--v: 0.000" title="25/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="26/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="27/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="28/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="29/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="30/09 · a carregar"></i><b class="exp-contrato-dias-nec" title="Ritmo necessário: 0,7 caminhões por dia"></b></div>
-                                    <div class="exp-contrato-dias-leg"><span>01/09</span><span class="exp-contrato-parado"><b>15</b> dias sem carregar · 6 em fim de semana</span><span class="exp-contrato-nec">necessário <b>0,7</b> cam./dia</span><span class="exp-contrato-validade">válido até <b>30/09</b> · faltam 6 dias</span></div>
-                                </div>
-                            </div>
-                            <div class="exp-contrato exp-contrato--ok" data-contrato="040" data-cultura="soja" style="--pct: 73; --esperado: 39.3" hidden>
-                                <div class="exp-contrato-id"><b class="exp-contrato-cliente">Rio Verde Commodities</b><span class="exp-contrato-ref">CT-2026/040 · <svg class="grao-icon grao-icon--soja grao-icon--dot" aria-hidden="true"><use href="#ico-soja"></use></svg>Soja · Porto de Santos</span></div>
-                                <div class="exp-contrato-barra">
-                                    <div class="exp-contrato-track"><span class="exp-contrato-fill"></span><span class="exp-contrato-marca"></span></div>
-                                    <div class="exp-contrato-escala"><span><b>1.460</b> de 2.000 t · 73%</span></div>
-                                </div>
-                                <div class="exp-contrato-ritmo"><span class="exp-contrato-ritmo-sub">ritmo</span><span class="exp-contrato-ritmo-val"><b class="">49</b> / 15 <small>t/dia</small></span></div>
-                                <span class="class-status class-status--ok">Adiantado · 670 t</span>
-                                <div class="exp-contrato-dias" style="--nec: 0.356">
-                                    <div class="exp-contrato-dias-graf" role="img" aria-label="Caminhões por dia de 01/09 a 31/10: 36 até hoje contra 0,8 por dia necessários; 6 dias sem carregamento, 5 em fim de semana"><i style="--v: 0.870" title="01/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="02/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="03/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="04/09 · 2 caminhões · 80 t"></i><i class="is-fds" style="--v: 0.870" title="05/09 (fim de semana) · 2 caminhões · 80 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="06/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.870" title="07/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="08/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="09/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="10/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="11/09 · 2 caminhões · 80 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="12/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="13/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.870" title="14/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="15/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="16/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="17/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="18/09 · 2 caminhões · 80 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="19/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="20/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="21/09 · 0 caminhões · 0 t"></i><i style="--v: 0.870" title="22/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="23/09 · 2 caminhões · 80 t"></i><i class="is-hoje" style="--v: 0.870" title="24/09 · 2 caminhões · 80 t"></i><i class="is-futuro" style="--v: 0.000" title="25/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="26/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="27/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="28/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="29/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="30/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="01/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="02/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="03/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="04/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="05/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="06/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="07/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="08/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="09/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="10/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="11/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="12/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="13/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="14/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="15/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="16/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="17/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="18/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="19/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="20/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="21/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="22/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="23/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="24/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="25/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="26/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="27/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="28/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="29/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="30/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="31/10 · a carregar"></i><b class="exp-contrato-dias-nec" title="Ritmo necessário: 0,8 caminhões por dia"></b></div>
-                                    <div class="exp-contrato-dias-leg"><span>01/09</span><span class="exp-contrato-parado"><b>6</b> dias sem carregar · 5 em fim de semana</span><span class="exp-contrato-nec">necessário <b>0,8</b> cam./dia</span><span class="exp-contrato-validade">válido até <b>31/10</b> · navio fecha · faltam 37 dias</span></div>
-                                </div>
-                            </div>
-                        </div>
-                        <p class="exp-contratos-vazio" hidden>Nenhum contrato desta cultura.</p>
-                    </div>
-                </div>
 
                 <!-- Qualidade e dosagem numa tabela so, agrupada por cultura: a linha da
                      cultura (exp-cult-resumo) e' o periodo inteiro - volume, cargas, media de
@@ -4427,6 +4295,178 @@
                 </div>
             </section>
 
+            <!-- Contratos da expedição (07C): o ritmo por contrato saiu da tela 07A
+                 para ter a tela inteira. Em cima o contrato escolhido (barra do
+                 entregue contra o previsto, ritmo atual x necessário e os caminhões
+                 por dia até a validade); embaixo a carteira com todos os contratos,
+                 montada pelo script a partir das próprias linhas (clique numa linha
+                 para abrir o contrato). O filtro de cultura vale para os dois. -->
+            <section class="screen screen--exp-contrato" id="screen-exp-contrato" data-exp-cultura="todas">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--letra">07<span class="screen-badge-letra">C</span></div>
+                    <div class="screen-title-section">
+                        <h2>Contratos da Expedição</h2>
+                        <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">3</span>s</div>
+                    </div>
+                    <div class="exp-filtro">
+                        <div class="class-filtro" role="group" aria-label="Filtrar os contratos por cultura">
+                            <span class="class-filtro-rotulo">Cultura</span>
+                            <button type="button" class="class-filtro-btn is-active" data-exp-cultura="todas" aria-pressed="true">Todas</button>
+                            <button type="button" class="class-filtro-btn" data-exp-cultura="milho" aria-pressed="false"><svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho</button>
+                            <button type="button" class="class-filtro-btn" data-exp-cultura="sorgo" aria-pressed="false"><svg class="grao-icon grao-icon--sorgo grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo</button>
+                            <button type="button" class="class-filtro-btn" data-exp-cultura="trigo" aria-pressed="false"><svg class="grao-icon grao-icon--trigo grao-icon--dot" aria-hidden="true"><use href="#ico-trigo"></use></svg>Trigo</button>
+                            <button type="button" class="class-filtro-btn" data-exp-cultura="soja" aria-pressed="false"><svg class="grao-icon grao-icon--soja grao-icon--dot" aria-hidden="true"><use href="#ico-soja"></use></svg>Soja</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Ritmo por contrato: entregue no mes contra o que o prazo pede ate hoje
+                     (24/09). A marca na barra e onde o contrato deveria estar se fosse
+                     linear do inicio ao prazo; o ritmo atual e a media dos ultimos 7 dias
+                     (volume da semana para o destino / 7) e o necessario e o que falta / dias
+                     restantes. O entregue soma o que foi para aquele destino no mes. O menu
+                     escolhe UM contrato por vez (radio), para a secao nao mudar de tamanho;
+                     a cultura do filtro geral tambem vale: se o escolhido for de outra
+                     cultura, a tela passa para o primeiro contrato daquela cultura.
+                     Embaixo de cada contrato, os dias dele do inicio a validade (ex.: navio
+                     fecha no fim de outubro): uma barra por dia com os caminhoes carregados
+                     e o traco do ritmo necessario (total / dias do contrato / 40 t), para
+                     cobrar o cliente que nao manda caminhao no comeco e sobrecarrega no
+                     fim. Dias sem carregamento contam dias corridos ate ontem (a unidade
+                     carrega no fim de semana) e dizem quantos cairam em sabado/domingo.
+                     Milho: avariados pelo contrato, 6% mercado interno e 5% exportacao. -->
+                <div data-codigo="AVR-EXP-F" class="content-section exp-contratos" id="expContratos" data-contratos-tela>
+                    <div class="section-head section-head--top">
+                        <div class="section-head-text">
+                            <h3>RITMO POR CONTRATO</h3>
+                            <p class="section-sub">entregue até 24/09 · marca = previsto pelo prazo · barras = caminhões por dia · traço = ritmo necessário</p>
+                        </div>
+                        <div class="exp-contratos-menu">
+                            <button type="button" class="exp-contratos-btn" aria-haspopup="true" aria-expanded="false" aria-controls="expContratosLista">Contrato <b class="exp-contratos-conta">Atlântica Grains</b><svg class="exp-contratos-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                            <div class="exp-contratos-lista" id="expContratosLista" role="radiogroup" aria-label="Contrato exibido" hidden>
+                                <label class="exp-contrato-opcao"><input type="radio" name="exp-contrato" value="031" checked><span class="exp-contrato-opcao-txt"><b>Atlântica Grains</b><small>CT-2026/031 · <svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho · Porto de Santos</small></span><span class="exp-contrato-opcao-st exp-contrato-opcao-st--fora">76%</span></label>
+                                <label class="exp-contrato-opcao"><input type="radio" name="exp-contrato" value="027"><span class="exp-contrato-opcao-txt"><b>Sulbrasil Trading</b><small>CT-2026/027 · <svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho · Porto de Paranaguá</small></span><span class="exp-contrato-opcao-st exp-contrato-opcao-st--ok">84%</span></label>
+                                <label class="exp-contrato-opcao"><input type="radio" name="exp-contrato" value="035"><span class="exp-contrato-opcao-txt"><b>Cooperativa Holambra</b><small>CT-2026/035 · <svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho · Coop. Holambra</small></span><span class="exp-contrato-opcao-st exp-contrato-opcao-st--atencao">80%</span></label>
+                                <label class="exp-contrato-opcao"><input type="radio" name="exp-contrato" value="029"><span class="exp-contrato-opcao-txt"><b>Frigorífico Aurora</b><small>CT-2026/029 · <svg class="grao-icon grao-icon--sorgo grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo · Frig. Aurora</small></span><span class="exp-contrato-opcao-st exp-contrato-opcao-st--atencao">79%</span></label>
+                                <label class="exp-contrato-opcao"><input type="radio" name="exp-contrato" value="038"><span class="exp-contrato-opcao-txt"><b>Nutriave Rações</b><small>CT-2026/038 · <svg class="grao-icon grao-icon--sorgo grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo · Fáb. Ração Nutriave</small></span><span class="exp-contrato-opcao-st exp-contrato-opcao-st--ok">79%</span></label>
+                                <label class="exp-contrato-opcao"><input type="radio" name="exp-contrato" value="033"><span class="exp-contrato-opcao-txt"><b>Moinho Sul Alimentos</b><small>CT-2026/033 · <svg class="grao-icon grao-icon--trigo grao-icon--dot" aria-hidden="true"><use href="#ico-trigo"></use></svg>Trigo · Ind. Moinho Sul</small></span><span class="exp-contrato-opcao-st exp-contrato-opcao-st--fora">59%</span></label>
+                                <label class="exp-contrato-opcao"><input type="radio" name="exp-contrato" value="040"><span class="exp-contrato-opcao-txt"><b>Rio Verde Commodities</b><small>CT-2026/040 · <svg class="grao-icon grao-icon--soja grao-icon--dot" aria-hidden="true"><use href="#ico-soja"></use></svg>Soja · Porto de Santos</small></span><span class="exp-contrato-opcao-st exp-contrato-opcao-st--ok">73%</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="exp-contratos-linhas">
+                        <div class="exp-contrato exp-contrato--fora" data-contrato="031" data-cultura="milho" style="--pct: 76.1; --esperado: 80">
+                            <div class="exp-contrato-id"><b class="exp-contrato-cliente">Atlântica Grains</b><span class="exp-contrato-ref">CT-2026/031 · <svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho · Porto de Santos · avariados até 5% (exportação)</span></div>
+                            <div class="exp-contrato-barra">
+                                <div class="exp-contrato-track"><span class="exp-contrato-fill"></span><span class="exp-contrato-marca"></span></div>
+                                <div class="exp-contrato-escala"><span><b>6.090</b> de 8.000 t · 76%</span></div>
+                            </div>
+                            <div class="exp-contrato-ritmo"><span class="exp-contrato-ritmo-sub">ritmo</span><span class="exp-contrato-ritmo-val"><b class=" is-abaixo">214</b> / 318 <small>t/dia</small></span></div>
+                            <span class="class-status class-status--fora">Atrasado · 310 t</span>
+                            <div class="exp-contrato-dias" style="--nec: 0.483">
+                                <div class="exp-contrato-dias-graf" role="img" aria-label="Caminhões por dia de 01/09 a 30/09: 152 até hoje contra 6,7 por dia necessários; 5 dias sem carregamento, 2 em fim de semana"><i class="is-zero" style="--v: 0.000" title="01/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="02/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="03/09 · 0 caminhões · 0 t"></i><i style="--v: 0.290" title="04/09 · 4 caminhões · 160 t"></i><i class="is-fds" style="--v: 0.362" title="05/09 (fim de semana) · 5 caminhões · 200 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="06/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.362" title="07/09 · 5 caminhões · 200 t"></i><i style="--v: 0.435" title="08/09 · 6 caminhões · 240 t"></i><i style="--v: 0.435" title="09/09 · 6 caminhões · 240 t"></i><i style="--v: 0.435" title="10/09 · 6 caminhões · 240 t"></i><i style="--v: 0.507" title="11/09 · 7 caminhões · 280 t"></i><i class="is-fds" style="--v: 0.507" title="12/09 (fim de semana) · 7 caminhões · 280 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="13/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.580" title="14/09 · 8 caminhões · 320 t"></i><i style="--v: 0.580" title="15/09 · 8 caminhões · 320 t"></i><i style="--v: 0.580" title="16/09 · 8 caminhões · 320 t"></i><i style="--v: 0.652" title="17/09 · 9 caminhões · 360 t"></i><i style="--v: 0.652" title="18/09 · 9 caminhões · 360 t"></i><i class="is-fds" style="--v: 0.725" title="19/09 (fim de semana) · 10 caminhões · 400 t"></i><i class="is-fds" style="--v: 0.725" title="20/09 (fim de semana) · 10 caminhões · 400 t"></i><i style="--v: 0.725" title="21/09 · 10 caminhões · 400 t"></i><i style="--v: 0.797" title="22/09 · 11 caminhões · 440 t"></i><i style="--v: 0.797" title="23/09 · 11 caminhões · 440 t"></i><i class="is-hoje" style="--v: 0.870" title="24/09 · 12 caminhões · 480 t"></i><i class="is-futuro" style="--v: 0.000" title="25/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="26/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="27/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="28/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="29/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="30/09 · a carregar"></i><b class="exp-contrato-dias-nec" title="Ritmo necessário: 6,7 caminhões por dia"></b></div>
+                                <div class="exp-contrato-dias-leg"><span>01/09</span><span class="exp-contrato-parado"><b>5</b> dias sem carregar · 2 em fim de semana</span><span class="exp-contrato-nec">necessário <b>6,7</b> cam./dia</span><span class="exp-contrato-validade">válido até <b>30/09</b> · navio fecha · faltam 6 dias</span></div>
+                            </div>
+                        </div>
+                        <div class="exp-contrato exp-contrato--ok" data-contrato="027" data-cultura="milho" style="--pct: 84.4; --esperado: 80" hidden>
+                            <div class="exp-contrato-id"><b class="exp-contrato-cliente">Sulbrasil Trading</b><span class="exp-contrato-ref">CT-2026/027 · <svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho · Porto de Paranaguá · avariados até 5% (exportação)</span></div>
+                            <div class="exp-contrato-barra">
+                                <div class="exp-contrato-track"><span class="exp-contrato-fill"></span><span class="exp-contrato-marca"></span></div>
+                                <div class="exp-contrato-escala"><span><b>4.220</b> de 5.000 t · 84%</span></div>
+                            </div>
+                            <div class="exp-contrato-ritmo"><span class="exp-contrato-ritmo-sub">ritmo</span><span class="exp-contrato-ritmo-val"><b class="">147</b> / 130 <small>t/dia</small></span></div>
+                            <span class="class-status class-status--ok">Adiantado · 220 t</span>
+                            <div class="exp-contrato-dias" style="--nec: 0.604">
+                                <div class="exp-contrato-dias-graf" role="img" aria-label="Caminhões por dia de 01/09 a 30/09: 106 até hoje contra 4,2 por dia necessários; 2 dias sem carregamento, 2 em fim de semana"><i style="--v: 0.580" title="01/09 · 4 caminhões · 160 t"></i><i style="--v: 0.725" title="02/09 · 5 caminhões · 200 t"></i><i style="--v: 0.870" title="03/09 · 6 caminhões · 240 t"></i><i style="--v: 0.580" title="04/09 · 4 caminhões · 160 t"></i><i class="is-fds" style="--v: 0.725" title="05/09 (fim de semana) · 5 caminhões · 200 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="06/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.870" title="07/09 · 6 caminhões · 240 t"></i><i style="--v: 0.580" title="08/09 · 4 caminhões · 160 t"></i><i style="--v: 0.725" title="09/09 · 5 caminhões · 200 t"></i><i style="--v: 0.870" title="10/09 · 6 caminhões · 240 t"></i><i style="--v: 0.580" title="11/09 · 4 caminhões · 160 t"></i><i class="is-fds" style="--v: 0.725" title="12/09 (fim de semana) · 5 caminhões · 200 t"></i><i class="is-fds" style="--v: 0.870" title="13/09 (fim de semana) · 6 caminhões · 240 t"></i><i style="--v: 0.580" title="14/09 · 4 caminhões · 160 t"></i><i style="--v: 0.725" title="15/09 · 5 caminhões · 200 t"></i><i style="--v: 0.725" title="16/09 · 5 caminhões · 200 t"></i><i style="--v: 0.580" title="17/09 · 4 caminhões · 160 t"></i><i style="--v: 0.725" title="18/09 · 5 caminhões · 200 t"></i><i class="is-fds" style="--v: 0.725" title="19/09 (fim de semana) · 5 caminhões · 200 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="20/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.580" title="21/09 · 4 caminhões · 160 t"></i><i style="--v: 0.725" title="22/09 · 5 caminhões · 200 t"></i><i style="--v: 0.725" title="23/09 · 5 caminhões · 200 t"></i><i class="is-hoje" style="--v: 0.580" title="24/09 · 4 caminhões · 160 t"></i><i class="is-futuro" style="--v: 0.000" title="25/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="26/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="27/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="28/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="29/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="30/09 · a carregar"></i><b class="exp-contrato-dias-nec" title="Ritmo necessário: 4,2 caminhões por dia"></b></div>
+                                <div class="exp-contrato-dias-leg"><span>01/09</span><span class="exp-contrato-parado"><b>2</b> dias sem carregar · 2 em fim de semana</span><span class="exp-contrato-nec">necessário <b>4,2</b> cam./dia</span><span class="exp-contrato-validade">válido até <b>30/09</b> · navio fecha · faltam 6 dias</span></div>
+                            </div>
+                        </div>
+                        <div class="exp-contrato exp-contrato--atencao" data-contrato="035" data-cultura="milho" style="--pct: 80.3; --esperado: 80" hidden>
+                            <div class="exp-contrato-id"><b class="exp-contrato-cliente">Cooperativa Holambra</b><span class="exp-contrato-ref">CT-2026/035 · <svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho · Coop. Holambra · avariados até 6% (mercado interno)</span></div>
+                            <div class="exp-contrato-barra">
+                                <div class="exp-contrato-track"><span class="exp-contrato-fill"></span><span class="exp-contrato-marca"></span></div>
+                                <div class="exp-contrato-escala"><span><b>2.810</b> de 3.500 t · 80%</span></div>
+                            </div>
+                            <div class="exp-contrato-ritmo"><span class="exp-contrato-ritmo-sub">ritmo</span><span class="exp-contrato-ritmo-val"><b class=" is-abaixo">99</b> / 115 <small>t/dia</small></span></div>
+                            <span class="class-status class-status--atencao">Ritmo abaixo</span>
+                            <div class="exp-contrato-dias" style="--nec: 0.423">
+                                <div class="exp-contrato-dias-graf" role="img" aria-label="Caminhões por dia de 01/09 a 30/09: 70 até hoje contra 2,9 por dia necessários; 7 dias sem carregamento, 4 em fim de semana"><i class="is-zero" style="--v: 0.000" title="01/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="02/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="03/09 · 0 caminhões · 0 t"></i><i style="--v: 0.290" title="04/09 · 2 caminhões · 80 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="05/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="06/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.435" title="07/09 · 3 caminhões · 120 t"></i><i style="--v: 0.435" title="08/09 · 3 caminhões · 120 t"></i><i style="--v: 0.435" title="09/09 · 3 caminhões · 120 t"></i><i style="--v: 0.435" title="10/09 · 3 caminhões · 120 t"></i><i style="--v: 0.435" title="11/09 · 3 caminhões · 120 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="12/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="13/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.580" title="14/09 · 4 caminhões · 160 t"></i><i style="--v: 0.580" title="15/09 · 4 caminhões · 160 t"></i><i style="--v: 0.580" title="16/09 · 4 caminhões · 160 t"></i><i style="--v: 0.580" title="17/09 · 4 caminhões · 160 t"></i><i style="--v: 0.725" title="18/09 · 5 caminhões · 200 t"></i><i class="is-fds" style="--v: 0.725" title="19/09 (fim de semana) · 5 caminhões · 200 t"></i><i class="is-fds" style="--v: 0.725" title="20/09 (fim de semana) · 5 caminhões · 200 t"></i><i style="--v: 0.725" title="21/09 · 5 caminhões · 200 t"></i><i style="--v: 0.725" title="22/09 · 5 caminhões · 200 t"></i><i style="--v: 0.870" title="23/09 · 6 caminhões · 240 t"></i><i class="is-hoje" style="--v: 0.870" title="24/09 · 6 caminhões · 240 t"></i><i class="is-futuro" style="--v: 0.000" title="25/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="26/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="27/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="28/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="29/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="30/09 · a carregar"></i><b class="exp-contrato-dias-nec" title="Ritmo necessário: 2,9 caminhões por dia"></b></div>
+                                <div class="exp-contrato-dias-leg"><span>01/09</span><span class="exp-contrato-parado"><b>7</b> dias sem carregar · 4 em fim de semana</span><span class="exp-contrato-nec">necessário <b>2,9</b> cam./dia</span><span class="exp-contrato-validade">válido até <b>30/09</b> · faltam 6 dias</span></div>
+                            </div>
+                        </div>
+                        <div class="exp-contrato exp-contrato--atencao" data-contrato="029" data-cultura="sorgo" style="--pct: 78.9; --esperado: 80" hidden>
+                            <div class="exp-contrato-id"><b class="exp-contrato-cliente">Frigorífico Aurora</b><span class="exp-contrato-ref">CT-2026/029 · <svg class="grao-icon grao-icon--sorgo grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo · Frig. Aurora</span></div>
+                            <div class="exp-contrato-barra">
+                                <div class="exp-contrato-track"><span class="exp-contrato-fill"></span><span class="exp-contrato-marca"></span></div>
+                                <div class="exp-contrato-escala"><span><b>1.420</b> de 1.800 t · 79%</span></div>
+                            </div>
+                            <div class="exp-contrato-ritmo"><span class="exp-contrato-ritmo-sub">ritmo</span><span class="exp-contrato-ritmo-val"><b class=" is-abaixo">50</b> / 63 <small>t/dia</small></span></div>
+                            <span class="class-status class-status--atencao">Atrasando · 20 t</span>
+                            <div class="exp-contrato-dias" style="--nec: 0.652">
+                                <div class="exp-contrato-dias-graf" role="img" aria-label="Caminhões por dia de 01/09 a 30/09: 36 até hoje contra 1,5 por dia necessários; 5 dias sem carregamento, 5 em fim de semana"><i style="--v: 0.870" title="01/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="02/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="03/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="04/09 · 2 caminhões · 80 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="05/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="06/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.870" title="07/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="08/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="09/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="10/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="11/09 · 2 caminhões · 80 t"></i><i class="is-fds" style="--v: 0.870" title="12/09 (fim de semana) · 2 caminhões · 80 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="13/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.870" title="14/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="15/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="16/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="17/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="18/09 · 2 caminhões · 80 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="19/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="20/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.435" title="21/09 · 1 caminhões · 40 t"></i><i style="--v: 0.870" title="22/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="23/09 · 2 caminhões · 80 t"></i><i class="is-hoje" style="--v: 0.435" title="24/09 · 1 caminhões · 40 t"></i><i class="is-futuro" style="--v: 0.000" title="25/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="26/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="27/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="28/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="29/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="30/09 · a carregar"></i><b class="exp-contrato-dias-nec" title="Ritmo necessário: 1,5 caminhões por dia"></b></div>
+                                <div class="exp-contrato-dias-leg"><span>01/09</span><span class="exp-contrato-parado"><b>5</b> dias sem carregar · 5 em fim de semana</span><span class="exp-contrato-nec">necessário <b>1,5</b> cam./dia</span><span class="exp-contrato-validade">válido até <b>30/09</b> · faltam 6 dias</span></div>
+                            </div>
+                        </div>
+                        <div class="exp-contrato exp-contrato--ok" data-contrato="038" data-cultura="sorgo" style="--pct: 78.7; --esperado: 53.3" hidden>
+                            <div class="exp-contrato-id"><b class="exp-contrato-cliente">Nutriave Rações</b><span class="exp-contrato-ref">CT-2026/038 · <svg class="grao-icon grao-icon--sorgo grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo · Fáb. Ração Nutriave</span></div>
+                            <div class="exp-contrato-barra">
+                                <div class="exp-contrato-track"><span class="exp-contrato-fill"></span><span class="exp-contrato-marca"></span></div>
+                                <div class="exp-contrato-escala"><span><b>1.180</b> de 1.500 t · 79%</span></div>
+                            </div>
+                            <div class="exp-contrato-ritmo"><span class="exp-contrato-ritmo-sub">ritmo</span><span class="exp-contrato-ritmo-val"><b class="">41</b> / 15 <small>t/dia</small></span></div>
+                            <span class="class-status class-status--ok">Adiantado · 380 t</span>
+                            <div class="exp-contrato-dias" style="--nec: 0.362">
+                                <div class="exp-contrato-dias-graf" role="img" aria-label="Caminhões por dia de 01/09 a 15/10: 30 até hoje contra 0,8 por dia necessários; 7 dias sem carregamento, 3 em fim de semana"><i class="is-zero" style="--v: 0.000" title="01/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="02/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="03/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="04/09 · 0 caminhões · 0 t"></i><i class="is-fds" style="--v: 0.870" title="05/09 (fim de semana) · 2 caminhões · 80 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="06/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.870" title="07/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="08/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="09/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="10/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="11/09 · 2 caminhões · 80 t"></i><i class="is-fds" style="--v: 0.435" title="12/09 (fim de semana) · 1 caminhões · 40 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="13/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.870" title="14/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="15/09 · 2 caminhões · 80 t"></i><i style="--v: 0.435" title="16/09 · 1 caminhões · 40 t"></i><i style="--v: 0.870" title="17/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="18/09 · 2 caminhões · 80 t"></i><i class="is-fds" style="--v: 0.435" title="19/09 (fim de semana) · 1 caminhões · 40 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="20/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.870" title="21/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="22/09 · 2 caminhões · 80 t"></i><i style="--v: 0.435" title="23/09 · 1 caminhões · 40 t"></i><i class="is-hoje" style="--v: 0.870" title="24/09 · 2 caminhões · 80 t"></i><i class="is-futuro" style="--v: 0.000" title="25/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="26/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="27/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="28/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="29/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="30/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="01/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="02/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="03/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="04/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="05/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="06/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="07/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="08/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="09/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="10/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="11/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="12/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="13/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="14/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="15/10 · a carregar"></i><b class="exp-contrato-dias-nec" title="Ritmo necessário: 0,8 caminhões por dia"></b></div>
+                                <div class="exp-contrato-dias-leg"><span>01/09</span><span class="exp-contrato-parado"><b>7</b> dias sem carregar · 3 em fim de semana</span><span class="exp-contrato-nec">necessário <b>0,8</b> cam./dia</span><span class="exp-contrato-validade">válido até <b>15/10</b> · faltam 21 dias</span></div>
+                            </div>
+                        </div>
+                        <div class="exp-contrato exp-contrato--fora" data-contrato="033" data-cultura="trigo" style="--pct: 58.8; --esperado: 80" hidden>
+                            <div class="exp-contrato-id"><b class="exp-contrato-cliente">Moinho Sul Alimentos</b><span class="exp-contrato-ref">CT-2026/033 · <svg class="grao-icon grao-icon--trigo grao-icon--dot" aria-hidden="true"><use href="#ico-trigo"></use></svg>Trigo · Ind. Moinho Sul</span></div>
+                            <div class="exp-contrato-barra">
+                                <div class="exp-contrato-track"><span class="exp-contrato-fill"></span><span class="exp-contrato-marca"></span></div>
+                                <div class="exp-contrato-escala"><span><b>470</b> de 800 t · 59%</span></div>
+                            </div>
+                            <div class="exp-contrato-ritmo"><span class="exp-contrato-ritmo-sub">ritmo</span><span class="exp-contrato-ritmo-val"><b class=" is-abaixo">17</b> / 55 <small>t/dia</small></span></div>
+                            <span class="class-status class-status--fora">Atrasado · 170 t</span>
+                            <div class="exp-contrato-dias" style="--nec: 0.290">
+                                <div class="exp-contrato-dias-graf" role="img" aria-label="Caminhões por dia de 01/09 a 30/09: 12 até hoje contra 0,7 por dia necessários; 15 dias sem carregamento, 6 em fim de semana"><i class="is-zero" style="--v: 0.000" title="01/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="02/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="03/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="04/09 · 0 caminhões · 0 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="05/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="06/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="07/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="08/09 · 0 caminhões · 0 t"></i><i style="--v: 0.435" title="09/09 · 1 caminhões · 40 t"></i><i style="--v: 0.435" title="10/09 · 1 caminhões · 40 t"></i><i style="--v: 0.870" title="11/09 · 2 caminhões · 80 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="12/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="13/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.435" title="14/09 · 1 caminhões · 40 t"></i><i class="is-zero" style="--v: 0.000" title="15/09 · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="16/09 · 0 caminhões · 0 t"></i><i style="--v: 0.435" title="17/09 · 1 caminhões · 40 t"></i><i style="--v: 0.870" title="18/09 · 2 caminhões · 80 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="19/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="20/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="21/09 · 0 caminhões · 0 t"></i><i style="--v: 0.435" title="22/09 · 1 caminhões · 40 t"></i><i style="--v: 0.435" title="23/09 · 1 caminhões · 40 t"></i><i class="is-hoje" style="--v: 0.870" title="24/09 · 2 caminhões · 80 t"></i><i class="is-futuro" style="--v: 0.000" title="25/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="26/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="27/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="28/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="29/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="30/09 · a carregar"></i><b class="exp-contrato-dias-nec" title="Ritmo necessário: 0,7 caminhões por dia"></b></div>
+                                <div class="exp-contrato-dias-leg"><span>01/09</span><span class="exp-contrato-parado"><b>15</b> dias sem carregar · 6 em fim de semana</span><span class="exp-contrato-nec">necessário <b>0,7</b> cam./dia</span><span class="exp-contrato-validade">válido até <b>30/09</b> · faltam 6 dias</span></div>
+                            </div>
+                        </div>
+                        <div class="exp-contrato exp-contrato--ok" data-contrato="040" data-cultura="soja" style="--pct: 73; --esperado: 39.3" hidden>
+                            <div class="exp-contrato-id"><b class="exp-contrato-cliente">Rio Verde Commodities</b><span class="exp-contrato-ref">CT-2026/040 · <svg class="grao-icon grao-icon--soja grao-icon--dot" aria-hidden="true"><use href="#ico-soja"></use></svg>Soja · Porto de Santos</span></div>
+                            <div class="exp-contrato-barra">
+                                <div class="exp-contrato-track"><span class="exp-contrato-fill"></span><span class="exp-contrato-marca"></span></div>
+                                <div class="exp-contrato-escala"><span><b>1.460</b> de 2.000 t · 73%</span></div>
+                            </div>
+                            <div class="exp-contrato-ritmo"><span class="exp-contrato-ritmo-sub">ritmo</span><span class="exp-contrato-ritmo-val"><b class="">49</b> / 15 <small>t/dia</small></span></div>
+                            <span class="class-status class-status--ok">Adiantado · 670 t</span>
+                            <div class="exp-contrato-dias" style="--nec: 0.356">
+                                <div class="exp-contrato-dias-graf" role="img" aria-label="Caminhões por dia de 01/09 a 31/10: 36 até hoje contra 0,8 por dia necessários; 6 dias sem carregamento, 5 em fim de semana"><i style="--v: 0.870" title="01/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="02/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="03/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="04/09 · 2 caminhões · 80 t"></i><i class="is-fds" style="--v: 0.870" title="05/09 (fim de semana) · 2 caminhões · 80 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="06/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.870" title="07/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="08/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="09/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="10/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="11/09 · 2 caminhões · 80 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="12/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="13/09 (fim de semana) · 0 caminhões · 0 t"></i><i style="--v: 0.870" title="14/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="15/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="16/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="17/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="18/09 · 2 caminhões · 80 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="19/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-fds is-zero" style="--v: 0.000" title="20/09 (fim de semana) · 0 caminhões · 0 t"></i><i class="is-zero" style="--v: 0.000" title="21/09 · 0 caminhões · 0 t"></i><i style="--v: 0.870" title="22/09 · 2 caminhões · 80 t"></i><i style="--v: 0.870" title="23/09 · 2 caminhões · 80 t"></i><i class="is-hoje" style="--v: 0.870" title="24/09 · 2 caminhões · 80 t"></i><i class="is-futuro" style="--v: 0.000" title="25/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="26/09 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="27/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="28/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="29/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="30/09 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="01/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="02/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="03/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="04/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="05/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="06/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="07/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="08/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="09/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="10/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="11/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="12/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="13/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="14/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="15/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="16/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="17/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="18/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="19/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="20/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="21/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="22/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="23/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="24/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="25/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="26/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="27/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="28/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="29/10 · a carregar"></i><i class="is-futuro" style="--v: 0.000" title="30/10 · a carregar"></i><i class="is-fds is-futuro" style="--v: 0.000" title="31/10 · a carregar"></i><b class="exp-contrato-dias-nec" title="Ritmo necessário: 0,8 caminhões por dia"></b></div>
+                                <div class="exp-contrato-dias-leg"><span>01/09</span><span class="exp-contrato-parado"><b>6</b> dias sem carregar · 5 em fim de semana</span><span class="exp-contrato-nec">necessário <b>0,8</b> cam./dia</span><span class="exp-contrato-validade">válido até <b>31/10</b> · navio fecha · faltam 37 dias</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="exp-contratos-vazio" hidden>Nenhum contrato desta cultura.</p>
+                </div>
+
+                <div data-codigo="AVR-EXP-H" class="content-section exp-carteira">
+                    <div class="section-head section-head--top">
+                        <div class="section-head-text">
+                            <h3>CARTEIRA DE CONTRATOS</h3>
+                            <p class="section-sub">entregue até 24/09 · ritmo dos últimos 7 dias contra o necessário até a validade · clique para abrir o contrato</p>
+                        </div>
+                    </div>
+                    <div class="table-wrap exp-carteira-wrap">
+                        <table class="data-table exp-carteira-tabela">
+                            <thead><tr><th>Cliente</th><th>Contrato</th><th>Cultura</th><th>Entregue</th><th class="exp-carteira-col-barra">Progresso</th><th>Ritmo t/dia</th><th>Validade</th><th>Situação</th></tr></thead>
+                            <tbody data-exp-carteira></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
             <!-- Screen 7b: Fluxo de caminhões da expedição, no modelo do fluxo da
                  recepção. Na expedição a ordem é outra: o caminhão pesa vazio,
                  CARREGA e só depois classifica (a carga sai já dosada), então o
@@ -4438,7 +4478,7 @@
                  aguardando (4 no pátio e 2 na 1ª pesagem). -->
             <section class="screen screen--exp-fluxo" id="screen-exp-fluxo" data-fluxo-periodo="hoje" data-fluxo-cultura="todas">
                 <div class="screen-header">
-                    <div class="screen-badge">10</div>
+                    <div class="screen-badge screen-badge--letra">07<span class="screen-badge-letra">B</span></div>
                     <div class="screen-title-section">
                         <h2>Fluxo de Caminhões da Expedição</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">4</span>s</div>
@@ -7378,7 +7418,7 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.1.4/leaflet-maplibre-gl.js"></script>
-    <script src="script.js?v=pressao1"></script>
+    <script src="script.js?v=numeros1"></script>
 
 </body>
 </html>
