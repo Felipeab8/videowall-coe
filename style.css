@@ -11560,9 +11560,11 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     position: absolute;
     top: 0;
     bottom: 0;
-    box-sizing: border-box;
-    padding: 0 1px;
-    background-clip: content-box;
+}
+.sa-ar-faixa--quente {
+    background-color: #f1c40f;
+    border-radius: 0 999px 999px 0;
+}
 }
 
 .sa-ar-faixa--umido {
