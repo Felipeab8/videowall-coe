@@ -22654,3 +22654,275 @@ body.theme-dark .pr-tab-atual--fora { color: #f87171; }
     background: none;
     color: var(--accent);
 }
+
+
+/* ============================================
+   PRESSÃO DOS SECADORES · desenho do secador de coluna (SanTec)
+   Cores do desenho: vermelho ar quente, magenta ar de secagem 110 °C,
+   azul ar saturado, ciano recirculação, laranja ar ambiente.
+   ============================================ */
+.screen--pressao {
+    --pr-quente: #e5322d;
+    --pr-secagem: #d63cd6;
+    --pr-saturado: #2f4fe0;
+    --pr-recirc: #19c3d6;
+    --pr-ambiente: #f08a24;
+}
+
+body.theme-dark .screen--pressao {
+    --pr-secagem: #e35be3;
+    --pr-saturado: #5b7cff;
+    --pr-recirc: #3fd8e8;
+}
+
+.pr-d-zona--saturado {
+    fill: color-mix(in srgb, var(--pr-saturado) 12%, transparent);
+    stroke: color-mix(in srgb, var(--text) 55%, transparent);
+}
+
+.pr-d-zona--quente {
+    fill: color-mix(in srgb, var(--pr-quente) 10%, transparent);
+    stroke: color-mix(in srgb, var(--text) 55%, transparent);
+}
+
+.pr-d-zona { stroke-width: 1.5; }
+
+.pr-d-chao { fill: color-mix(in srgb, var(--text) 35%, transparent); }
+
+.pr-d-fornalha,
+.pr-d-duto {
+    fill: color-mix(in srgb, var(--text) 4%, transparent);
+    stroke: var(--text);
+    stroke-width: 1.5;
+}
+
+.pr-d-parede,
+.pr-d-grelha {
+    fill: var(--text);
+    opacity: 0.85;
+}
+
+.pr-d-torre {
+    fill: color-mix(in srgb, var(--text) 6%, transparent);
+    stroke: var(--text);
+    stroke-width: 1.4;
+}
+
+.pr-d-torre-linha {
+    stroke: var(--text);
+    stroke-width: 1;
+    opacity: 0.6;
+}
+
+.pr-d-secao { stroke: var(--text); stroke-width: 1.4; }
+.pr-d-secao--secagem { fill: color-mix(in srgb, var(--pr-secagem) 70%, transparent); }
+.pr-d-secao--resfr { fill: color-mix(in srgb, var(--pr-ambiente) 70%, transparent); }
+
+.pr-d-temp {
+    fill: var(--section-bg);
+    stroke: var(--text);
+    stroke-width: 1;
+}
+
+.pr-d-descarga {
+    fill: var(--section-bg);
+    stroke: var(--pr-secagem);
+    stroke-width: 2;
+}
+
+.pr-d-perna {
+    fill: none;
+    stroke: var(--text);
+    stroke-width: 1.5;
+}
+
+.pr-d-resfr {
+    fill: none;
+    stroke: var(--pr-secagem);
+    stroke-width: 1.5;
+}
+
+.pr-d-registro {
+    fill: none;
+    stroke: var(--pr-recirc);
+    stroke-width: 3;
+    stroke-linecap: round;
+}
+
+.pr-d-vent {
+    fill: none;
+    stroke: var(--pr-ambiente);
+    stroke-width: 2.5;
+    stroke-linejoin: round;
+}
+
+.pr-d-seta {
+    fill: none;
+    stroke-width: 5;
+    stroke-linecap: round;
+}
+
+.pr-d-seta--recirc { stroke: var(--pr-recirc); }
+.pr-d-ponta--recirc { fill: var(--pr-recirc); }
+
+.pr-d-sensor {
+    fill: #1f2937;
+    stroke: #fff;
+    stroke-width: 1.5;
+}
+
+.pr-d-sensor-guia {
+    stroke: var(--pr-quente);
+    stroke-width: 1;
+}
+
+.pr-d-txt {
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 700;
+    fill: var(--text);
+}
+
+.pr-d-txt--peq { font-size: 9.5px; }
+.pr-d-txt--temp { font-size: 9px; }
+.pr-d-txt--alerta { fill: var(--pr-quente); font-style: italic; }
+.pr-d-txt--vertical { display: none; }
+
+.pr-d-txt--ponto {
+    font-size: 15px;
+    font-weight: 800;
+    font-style: italic;
+    fill: var(--pr-quente);
+}
+
+.pr-leg-ar--recirc { --c: var(--pr-recirc); }
+
+
+/* ============================================
+   PRESSÃO · indicadores por secador e leituras no desenho
+   ============================================ */
+.pr-kpis {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.pr-kpis-sec {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0;
+}
+
+.pr-kpis-head {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: max(0.8rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    color: var(--text);
+}
+
+.pr-kpis-head span {
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.pr-kpis-linha {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.4rem;
+}
+
+.pr-kpi {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-width: 0;
+    padding: 0.3rem 0.5rem;
+    background: var(--section-bg);
+    border: 1px solid var(--card-border);
+    border-top: 3px solid var(--card-border);
+    border-radius: 8px;
+}
+
+.pr-kpi--ok { border-top-color: #16a34a; }
+.pr-kpi--limite { border-top-color: #d97706; }
+.pr-kpi--fora { border-top-color: #dc2626; background: color-mix(in srgb, #dc2626 8%, var(--section-bg)); }
+
+.pr-kpi-rot {
+    font-size: max(0.6rem, var(--fs-texto, 0px));
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pr-kpi-val {
+    font-size: 1.2rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.pr-kpi-val small {
+    margin-left: 0.2rem;
+    font-size: 0.5em;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.pr-kpi--fora .pr-kpi-val { color: #dc2626; }
+
+.pr-kpi-sub {
+    font-size: max(0.6rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* etiqueta do ponto no desenho */
+.pr-d-txt--ponto { display: none; }
+
+.pr-d-chip rect {
+    stroke-width: 1.5;
+}
+
+.pr-d-chip text {
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 800;
+    white-space: pre;
+}
+
+.pr-d-chip--ok rect { fill: #16a34a; stroke: #15803d; }
+.pr-d-chip--limite rect { fill: #d97706; stroke: #b45309; }
+.pr-d-chip--fora rect { fill: #dc2626; stroke: #b91c1c; }
+.pr-d-chip text { fill: #fff; }
+
+/* leituras de sensores e registros */
+.pr-d-leitura {
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    fill: var(--text);
+}
+
+.pr-d-leitura.is-fora { fill: #dc2626; }
+.pr-d-leitura--reg { font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
+.pr-d-leitura--aberto { fill: #16a34a; }
+.pr-d-leitura--fechado { fill: var(--muted); }
+body.theme-dark .pr-d-leitura--aberto { fill: #4ade80; }
+
+@media screen and (min-width: 769px) {
+    html.tv .pr-kpi-sub { display: none; }
+}
+
+.pr-sec > .pr-kpis-linha { flex: none; }

@@ -12,7 +12,7 @@
          não carrega e a tela usa o mapa esquemático em SVG. -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css">
-    <link rel="stylesheet" href="style.css?v=numeros1">
+    <link rel="stylesheet" href="style.css?v=pressao4">
 </head>
 <body class="theme-dark" data-visao="tatica">
 
@@ -3116,9 +3116,10 @@
                     <div class="section-head">
                         <h3>DEPRESSÃO POR PONTO · mmca <span class="fluxo-periodo-atual">· <span data-pressao-turno>turno</span></span></h3>
                         <div class="chart-legend chart-legend--inline">
-                            <span class="legend-item"><i class="pr-leg-ar pr-leg-ar--quente"></i>Ar de secagem</span>
-                            <span class="legend-item"><i class="pr-leg-ar pr-leg-ar--secagem"></i>Secagem</span>
+                            <span class="legend-item"><i class="pr-leg-ar pr-leg-ar--quente"></i>Ar quente</span>
+                            <span class="legend-item"><i class="pr-leg-ar pr-leg-ar--secagem"></i>Ar secagem · 110 °C</span>
                             <span class="legend-item"><i class="pr-leg-ar pr-leg-ar--saturado"></i>Ar saturado</span>
+                            <span class="legend-item"><i class="pr-leg-ar pr-leg-ar--recirc"></i>Ar recirculação</span>
                             <span class="legend-item"><i class="pr-leg-ar pr-leg-ar--ambiente"></i>Ar ambiente</span>
                             <span class="legend-item"><i class="pr-leg-marca"></i>Ponto de pressão</span>
                             <span class="legend-item"><i class="pr-leg-faixa pr-leg-faixa--fora"></i>Fora da faixa</span>
@@ -3182,13 +3183,13 @@
   "secadores": {
     "s1": {
       "nome": "Secador 1",
-      "tipo": "cavaletes",
+      "tipo": "coluna",
       "cultura": "Milho",
       "fluxo": "R"
     },
     "s2": {
       "nome": "Secador 2",
-      "tipo": "cavaletes",
+      "tipo": "coluna",
       "cultura": "Sorgo",
       "fluxo": "CI"
     }
@@ -3196,15 +3197,15 @@
   "pontos": [
     {
       "id": "P1",
-      "local": "Saída da fornalha"
+      "local": "Fornalha"
     },
     {
       "id": "P2",
-      "local": "Ar quente · base"
+      "local": "Duto de ar quente"
     },
     {
       "id": "P3",
-      "local": "Ar quente · topo"
+      "local": "Câmara de ar quente"
     },
     {
       "id": "P4",
@@ -3212,7 +3213,7 @@
     },
     {
       "id": "P5",
-      "local": "Ar saturado · exaustão"
+      "local": "Câmara de ar saturado"
     }
   ],
   "horas": [
@@ -3266,7 +3267,47 @@
       "min": 34,
       "motivo": "descarga e recarga"
     }
-  ]
+  ],
+  "instrumentos": {
+    "s1": {
+      "sensores": {
+        "s1": 108,
+        "s3": 46,
+        "s3o": 24
+      },
+      "registros": {
+        "r1": "aberto",
+        "r2": "aberto",
+        "r3": "fechado"
+      }
+    },
+    "s2": {
+      "sensores": {
+        "s1": 104,
+        "s3": 43,
+        "s3o": 22
+      },
+      "registros": {
+        "r1": "aberto",
+        "r2": "aberto",
+        "r3": "fechado"
+      }
+    }
+  },
+  "referencias": {
+    "s1": {
+      "min": 100,
+      "max": 115
+    },
+    "s3": {
+      "min": 35,
+      "max": 55
+    },
+    "s3o": {
+      "min": 15,
+      "max": 30
+    }
+  }
 }
                     </script>
                 </div>
@@ -7418,7 +7459,7 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.1.4/leaflet-maplibre-gl.js"></script>
-    <script src="script.js?v=numeros1"></script>
+    <script src="script.js?v=pressao4"></script>
 
 </body>
 </html>
