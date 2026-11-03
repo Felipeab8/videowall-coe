@@ -22926,3 +22926,181 @@ body.theme-dark .pr-d-leitura--aberto { fill: #4ade80; }
 }
 
 .pr-sec > .pr-kpis-linha { flex: none; }
+
+
+/* ============================================
+   PRESSÃO · layout em 3 colunas sem sobreposição
+   P1–P3 à esquerda · desenho no centro · P4, P5 e instrumentos à direita
+   ============================================ */
+.pr-layout {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: stretch;
+}
+
+.pr-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+.pr-col > .pr-quadro {
+    flex: 1 1 0;
+}
+
+.pr-figura {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 0;
+}
+
+.pr-figura .pr-d {
+    position: static;
+    width: 100%;
+    height: auto;
+    max-height: 34rem;
+    overflow: visible;
+}
+
+.pr-quadro--col {
+    position: static;
+    transform: none;
+    width: auto;
+    justify-content: center;
+    gap: 0.25rem;
+    padding: 0.55rem 0.7rem;
+}
+
+.pr-quadro--col .pr-quadro-head {
+    flex-wrap: nowrap;
+    align-items: center;
+    min-width: 0;
+}
+
+.pr-quadro--col .pr-quadro-local {
+    flex: 1 1 auto;
+    min-width: 0;
+    line-height: 1.15;
+}
+
+.pr-quadro--col .pr-quadro-selo {
+    margin-left: 0;
+    flex: none;
+}
+
+.pr-quadro--col .pr-quadro-valor {
+    align-items: center;
+}
+
+.pr-quadro--col .pr-quadro-valor b {
+    font-size: 2rem;
+}
+
+.pr-quadro--col .pr-quadro-valor .pr-curva {
+    margin-left: auto;
+    width: 4.5rem;
+    height: 1.4rem;
+}
+
+.pr-quadro--col .pr-quadro-sub {
+    justify-content: space-between;
+    flex-wrap: nowrap;
+}
+
+.pr-quadro--col .pr-quadro-sub b {
+    color: var(--text);
+    font-weight: 800;
+}
+
+/* quadro de sensores e registros */
+.pr-quadro--ins {
+    border-left-color: var(--card-border);
+    flex: 1.4 1 0 !important;
+}
+
+.pr-quadro--ins .pr-quadro-id {
+    font-size: max(0.72rem, var(--fs-texto, 0px));
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.pr-ins {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.pr-ins li {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 0.4rem;
+    padding: 0.12rem 0;
+    border-top: 1px solid var(--row-line);
+    font-size: max(0.72rem, var(--fs-texto, 0px));
+}
+
+.pr-ins li:first-child { border-top: 0; }
+.pr-ins li:nth-child(4) { border-top: 2px solid var(--card-border); }
+
+.pr-ins-id {
+    font-weight: 800;
+    color: var(--pr-quente);
+}
+
+.pr-ins-nome {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.pr-ins b {
+    font-weight: 800;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.pr-ins b.is-fora { color: #dc2626; }
+.pr-ins-reg { font-size: 0.85em; letter-spacing: 0.04em; text-transform: uppercase; }
+.pr-ins-reg--aberto { color: #16a34a !important; }
+.pr-ins-reg--fechado { color: var(--muted) !important; }
+body.theme-dark .pr-ins-reg--aberto { color: #4ade80 !important; }
+
+/* desenho limpo: sem textos miúdos nem guias */
+.pr-figura .pr-d-txt--alerta,
+.pr-figura .pr-d-leitura,
+.pr-figura .pr-d-guia { display: none; }
+
+.pr-d-txt--nome {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    fill: var(--muted);
+}
+
+.pr-d-txt--sensor {
+    font-size: 11px;
+    font-weight: 800;
+    fill: var(--pr-quente);
+}
+
+/* o cartão do secador vira coluna: cabeçalho, indicadores, layout */
+.pr-sec {
+    padding: 0.75rem 0.85rem;
+}
+
+.pr-sec > .pr-kpis-linha {
+    margin-bottom: 0.15rem;
+}
