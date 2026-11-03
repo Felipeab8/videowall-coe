@@ -309,6 +309,11 @@ function sincronizarMural() {
         tv.className = 'mural-tv';
         tv.title = abrir ? abrir.title.replace(/^Abrir /, '') : '';
         tv.src = location.pathname + '?telas=' + (quadro.dataset.telas || '') + '&tema=' + temaNaUrl();
+        // ao terminar de carregar, reaplica o tema que estiver valendo agora
+        tv.addEventListener('load', () => {
+            aplicarTemaNoQuadro(tv, temaAtual());
+            setTimeout(() => aplicarTemaNoQuadro(tv, temaAtual()), 300);
+        });
         quadro.prepend(tv);
         muralTamanho.observe(quadro);
         escalarQuadro(quadro);
@@ -619,14 +624,31 @@ function temaNaUrl() {
     return document.body.classList.contains('theme-light') ? 'claro' : 'escuro';
 }
 
-function propagarTemaAoMural(theme) {
-    document.querySelectorAll('.mural-tv').forEach((tv) => {
-        try {
-            tv.contentWindow.postMessage({ tipo: 'videowall:tema', tema: theme }, '*');
-        } catch (err) {
-            // quadro ainda carregando: ele lê o tema pela URL
+function aplicarTemaNoQuadro(tv, theme) {
+    // mesmo site (GitHub Pages ou servidor local): troca a classe direto
+    try {
+        const doc = tv.contentDocument;
+        if (doc && doc.body) {
+            doc.body.classList.remove('theme-light', 'theme-dark');
+            doc.body.classList.add(theme);
+            doc.documentElement.style.colorScheme = theme === 'theme-light' ? 'light' : 'dark';
         }
-    });
+    } catch (err) {
+        // origem diferente (ex.: arquivo aberto direto): segue a mensagem
+    }
+    try {
+        tv.contentWindow.postMessage({ tipo: 'videowall:tema', tema: theme }, '*');
+    } catch (err) {
+        // quadro ainda carregando: ele lê o tema pela URL
+    }
+}
+
+function temaAtual() {
+    return document.body.classList.contains('theme-light') ? 'theme-light' : 'theme-dark';
+}
+
+function propagarTemaAoMural(theme) {
+    document.querySelectorAll('.mural-tv').forEach((tv) => aplicarTemaNoQuadro(tv, theme));
 }
 
 function setHeaderTheme(theme, persist = false) {
@@ -1427,6 +1449,22 @@ if (btnLive) {
 
 setHeaderTheme(temaInicial());
 applyEditMode(false);
+
+// dentro do quadro do mural: acompanha o tema da página-mãe diretamente,
+// mesmo que alguma mensagem se perca
+if (TELAS_DO_QUADRO.length && window.parent !== window) {
+    try {
+        const corpoMae = window.parent.document.body;
+        const seguirMae = () => {
+            const tema = corpoMae.classList.contains('theme-light') ? 'theme-light' : 'theme-dark';
+            if (!document.body.classList.contains(tema)) setHeaderTheme(tema);
+        };
+        seguirMae();
+        new MutationObserver(seguirMae).observe(corpoMae, { attributes: true, attributeFilter: ['class'] });
+    } catch (err) {
+        // origem diferente: vale a URL e a mensagem
+    }
+}
 
 const telasIniciais = allScreens();
 if (telasIniciais.length > 0 && menuItems.length > 0) {
