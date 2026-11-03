@@ -6879,11 +6879,11 @@ function escreverAeracao(card) {
     const pos = (v) => `${(((Math.min(Math.max(v, ini), fim) - ini) / (fim - ini)) * 100).toFixed(1)}%`;
     const trecho = (a, b, cls) => (b <= a ? ''
         : `<i class="sa-ar-faixa sa-ar-faixa--${cls}" style="left: ${pos(a)}; width: calc(${pos(b)} - ${pos(a)})"></i>`);
-    const corteUmido = j.min === null ? fim : Math.min(j.min, j.max);
+       const corteUmido = j.min === null ? fim : Math.min(j.min, j.max);
+    // 3 cores: vermelho (umedece) | verde (pode aerar) | amarelo (não resfria)
     const regua = trecho(ini, corteUmido, 'umido')
-        + (j.aberta ? trecho(j.min, Math.min(j.idealAte, j.max), 'ideal') + trecho(Math.max(j.min, j.idealAte), j.max, 'pouco') : '')
+        + (j.aberta ? trecho(j.min, j.max, 'ideal') : '')
         + trecho(j.max, fim, 'quente')
-        + `<i class="sa-ar-grao" style="left: ${pos(tGrao)}" title="grão ${umPonto(tGrao)} °C"></i>`
         + `<i class="sa-ar-agora" style="left: ${pos(tAgora)}" title="ar ${umPonto(tAgora)} °C · ${ar.texto}"></i>`;
 
     alvo.title = `Quando aerar com o ar de agora (estação: ${umPonto(tAgora)} °C, UR ${Math.round(urAgora)}%). `
