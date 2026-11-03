@@ -5222,8 +5222,23 @@ const PRESSAO_LUGARES = [
 ];
 
 // mmH2O com o sinal de menos tipografico: "−32"
+// depressão em mmca (Tabela 12): valor positivo, faixa com dois dígitos
 function formatarPressao(v) {
-    return String(Math.round(v)).replace('-', '−');
+    return String(Math.round(Math.abs(v)));
+}
+
+function faixaTexto(f) {
+    const d = (v) => String(v).padStart(2, '0');
+    return `${d(f.min)} a ${d(f.max)}`;
+}
+
+// dentro, perto do limite (até 1 mmca da borda) ou fora da faixa do fluxo
+function estadoPressao(v, f) {
+    if (!f) return '';
+    const a = Math.abs(v);
+    if (a < f.min || a > f.max) return 'fora';
+    if (f.max - f.min > 2 && (a - f.min < 1 || f.max - a < 1)) return 'limite';
+    return 'ok';
 }
 
 function dadosPressao(secao) {
@@ -5291,6 +5306,7 @@ function cartaoPressao(dados, sec) {
     const meta = (dados.secadores && dados.secadores[sec]) || { nome: sec.toUpperCase() };
     const horas = dados.horas;
     const n = horas.length;
+    const faixas = (dados.faixas && meta.fluxo && dados.faixas[meta.fluxo]) || [];
     const pct = (v, total) => `${((v / total) * 100).toFixed(2)}%`;
     const { w, h } = PRESSAO_DESENHO;
 
@@ -5310,17 +5326,21 @@ function cartaoPressao(dados, sec) {
             ? `left: 0; width: ${pct(PRESSAO_DESENHO.quadroEsq, w)}`
             : `right: 0; width: ${pct(w - PRESSAO_DESENHO.quadroDir, w)}`;
         const turno = horas.map((hora, k) => `${rotuloHora(hora)} ${formatarPressao(serie[k])}`).join(' · ');
-        return `<div class="pr-quadro pr-quadro--${l.lado}" style="${lado}; top: ${pct(l.qy, h)}" title="${ponto.id} · ${ponto.local} · ${turno} mmH₂O">`
+        const faixa = faixas[i];
+        const estado = estadoPressao(serie[n - 1], faixa);
+        const selo = { ok: 'na faixa', limite: 'no limite', fora: 'fora da faixa' }[estado] || '';
+        const ref = faixa ? `<span class="pr-quadro-faixa">faixa ${faixaTexto(faixa)}</span>` : '';
+        return `<div class="pr-quadro pr-quadro--${l.lado}${estado ? ` pr-quadro--${estado}` : ''}" style="${lado}; top: ${pct(l.qy, h)}" title="${ponto.id} · ${ponto.local} · fluxo ${meta.fluxo || '—'} · faixa ${faixa ? faixaTexto(faixa) : '—'} mmca · ${turno} mmca">`
             + `<div class="pr-quadro-head"><span class="pr-quadro-id">${ponto.id}</span><span class="pr-quadro-local">${ponto.local}</span></div>`
-            + `<div class="pr-quadro-valor"><b>${formatarPressao(serie[n - 1])}</b><small>mmH₂O</small></div>`
-            + `<div class="pr-quadro-sub">${curvaPressao(serie)}<span>média ${formatarPressao(media)}</span></div>`
+            + `<div class="pr-quadro-valor"><b>${formatarPressao(serie[n - 1])}</b><small>mmca</small>${selo ? `<em class="pr-quadro-selo">${selo}</em>` : ''}</div>`
+            + `<div class="pr-quadro-sub">${curvaPressao(serie)}<span>média ${formatarPressao(media)}</span>${ref}</div>`
             + '</div>';
     }).join('');
 
     const rotulos = `<span class="pr-d-rotulo" style="left: ${pct(265, w)}; top: ${pct(602, h)}">Fornalha</span>`
         + `<span class="pr-d-rotulo pr-d-rotulo--esq" style="left: ${pct(518, w)}; top: ${pct(40, h)}">Ventilador</span>`;
 
-    const detalhe = [meta.tipo && `secador de ${meta.tipo}`, meta.cultura].filter(Boolean).join(' · ');
+    const detalhe = [meta.tipo && `secador de ${meta.tipo}`, meta.cultura, meta.fluxo && `fluxo ${meta.fluxo}`].filter(Boolean).join(' · ');
     return `<article class="pr-sec pr-sec--${sec}">`
         + `<div class="pr-sec-head"><i class="pr-leg pr-leg--${sec}" aria-hidden="true"></i>`
         + `<span class="pr-sec-nome">${meta.nome}</span><span class="pr-sec-meta">${detalhe}</span></div>`
@@ -5340,6 +5360,21 @@ function eventosPressao(dados) {
         itens.push('<span class="prod-evento prod-evento--parada"><i class="prod-leg-parada" aria-hidden="true"></i>'
             + `<b>${meta.nome} · ${parseInt(p.h, 10)}h · parado ${p.min} min</b> ${p.motivo} · a depressão cai com o secador parado</span>`);
     });
+    const ultima = dados.horas[dados.horas.length - 1];
+    PRESSAO_SECADORES.forEach((sec) => {
+        const meta = (dados.secadores && dados.secadores[sec]) || { nome: sec };
+        const faixas = (dados.faixas && meta.fluxo && dados.faixas[meta.fluxo]) || [];
+        (ultima[sec] || []).forEach((v, i) => {
+            const f = faixas[i];
+            if (estadoPressao(v, f) !== 'fora') return;
+            const p = dados.pontos[i] || { id: 'P' + (i + 1) };
+            itens.push('<span class="prod-evento prod-evento--parada"><i class="prod-leg-parada" aria-hidden="true"></i>'
+                + `<b>${meta.nome} · ${p.id} ${formatarPressao(v)} mmca</b> fora da faixa ${faixaTexto(f)} (fluxo ${meta.fluxo})</span>`);
+        });
+    });
+    if (dados.fonte) {
+        itens.push(`<span class="prod-evento"><b>Referência</b> ${dados.fonte}</span>`);
+    }
     const agora = dados.horas.find((hora) => hora.agora);
     if (agora) {
         itens.push('<span class="prod-evento"><i class="prod-evento-parcial" aria-hidden="true"></i>'
@@ -7059,7 +7094,7 @@ function atualizarPulmoesAeracao() {
 
     document.querySelectorAll('[data-pulmao-soma]').forEach((lista) => {
         const html = [...somaPorCultura].map(([cultura, minutos]) =>
-            `<span class="pulmao-soma-item" data-cultura="${cultura}"><i class="legend-dot legend-dot--${cultura}"></i>`
+            `<span class="pulmao-soma-item" data-cultura="${cultura}"><svg class="grao-icon grao-icon--${cultura} grao-icon--dot" aria-hidden="true"><use href="#ico-${cultura}"></use></svg>`
             + `${NOME_CULTURA_FLUXO[cultura] || cultura}<b>${formatarHoras(minutos)}</b></span>`).join('');
         if (lista.innerHTML !== html) lista.innerHTML = html;
     });
