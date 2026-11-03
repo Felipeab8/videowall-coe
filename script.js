@@ -308,7 +308,7 @@ function sincronizarMural() {
         const abrir = quadro.querySelector('.mural-abrir');
         tv.className = 'mural-tv';
         tv.title = abrir ? abrir.title.replace(/^Abrir /, '') : '';
-        tv.src = location.pathname + '?telas=' + (quadro.dataset.telas || '');
+        tv.src = location.pathname + '?telas=' + (quadro.dataset.telas || '') + '&tema=' + temaNaUrl();
         quadro.prepend(tv);
         muralTamanho.observe(quadro);
         escalarQuadro(quadro);
@@ -599,16 +599,63 @@ function updateThemeButtonLabel() {
     btnClaro.setAttribute('title', isLight ? 'Ativar modo escuro' : 'Ativar modo claro');
 }
 
-function setHeaderTheme(theme) {
+// Tema claro/escuro: vale para a página e para as 8 TVs da Visão geral.
+// A escolha fica gravada no aparelho; cada quadro do mural recebe o tema
+// pela URL (?tema=claro|escuro) ao abrir e por mensagem quando muda.
+const TEMA_STORAGE_KEY = 'videowall:tema';
+
+function temaInicial() {
+    const pedido = new URLSearchParams(location.search).get('tema');
+    if (pedido === 'claro') return 'theme-light';
+    if (pedido === 'escuro') return 'theme-dark';
+    try {
+        return localStorage.getItem(TEMA_STORAGE_KEY) === 'claro' ? 'theme-light' : 'theme-dark';
+    } catch (err) {
+        return 'theme-dark';
+    }
+}
+
+function temaNaUrl() {
+    return document.body.classList.contains('theme-light') ? 'claro' : 'escuro';
+}
+
+function propagarTemaAoMural(theme) {
+    document.querySelectorAll('.mural-tv').forEach((tv) => {
+        try {
+            tv.contentWindow.postMessage({ tipo: 'videowall:tema', tema: theme }, '*');
+        } catch (err) {
+            // quadro ainda carregando: ele lê o tema pela URL
+        }
+    });
+}
+
+function setHeaderTheme(theme, persist = false) {
+    if (theme !== 'theme-light') theme = 'theme-dark';
     document.body.classList.remove('theme-light', 'theme-dark');
     document.body.classList.add(theme);
+    document.documentElement.style.colorScheme = theme === 'theme-light' ? 'light' : 'dark';
     updateThemeButtonLabel();
+    if (persist && !TELAS_DO_QUADRO.length) {
+        try {
+            localStorage.setItem(TEMA_STORAGE_KEY, theme === 'theme-light' ? 'claro' : 'escuro');
+        } catch (err) {
+            // sem armazenamento: vale só para esta visita
+        }
+    }
+    propagarTemaAoMural(theme);
 }
 
 function toggleTheme() {
     const nextTheme = document.body.classList.contains('theme-light') ? 'theme-dark' : 'theme-light';
-    setHeaderTheme(nextTheme);
+    setHeaderTheme(nextTheme, true);
 }
+
+// dentro do quadro do mural: obedece ao tema da página que o contém
+window.addEventListener('message', (evento) => {
+    const dados = evento.data;
+    if (!dados || dados.tipo !== 'videowall:tema') return;
+    setHeaderTheme(dados.tema);
+});
 
 // ============================================
 // EDIÇÃO DE TEXTO (nomes, rótulos e valores)
@@ -1378,7 +1425,7 @@ if (btnLive) {
     });
 }
 
-setHeaderTheme('theme-dark');
+setHeaderTheme(temaInicial());
 applyEditMode(false);
 
 const telasIniciais = allScreens();
@@ -7639,25 +7686,4 @@ if (TELAS_DO_QUADRO.length) {
             itensDoQuadro[vez].click();
         }, QUADRO_INTERVALO);
     }
-    /* Classificação: ícone da cultura no lugar da bolinha em cada média
-   (umidade média, impureza e total de avariados) */
-function iconesCulturaClassificacao() {
-    const NS = 'http://www.w3.org/2000/svg';
-    document.querySelectorAll('#screen-1 .class-media-item').forEach(item => {
-        if (item.querySelector('.grao-icon')) return;           // já tem ícone
-        const dot = item.querySelector('.legend-dot');
-        const m = dot && dot.className.match(/legend-dot--(milho|sorgo|trigo|soja)/);
-        if (!m) return;
-        const simbolo = document.querySelector(`.grao-sprite symbol[id*="${m[1]}"]`);
-        if (!simbolo) return;
-        const svg = document.createElementNS(NS, 'svg');
-        svg.setAttribute('class', `grao-icon grao-icon--${m[1]}`);
-        svg.setAttribute('aria-hidden', 'true');
-        const use = document.createElementNS(NS, 'use');
-        use.setAttribute('href', '#' + simbolo.id);
-        svg.appendChild(use);
-        dot.replaceWith(svg);
-    });
-}
-document.addEventListener('DOMContentLoaded', iconesCulturaClassificacao);
 }
