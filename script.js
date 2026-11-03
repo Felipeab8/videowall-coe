@@ -5178,7 +5178,7 @@ function expGrafico(m, u) {
     const futuros = n - reais.length;
     const { cadDia, projDia } = expPlanoDias(m);
     const fimIdx = projDia.reduce((acc, v, k) => (v > 0 ? k : acc), -1);
-    const topo = Math.max(m.meta, ...cadDia, ...projDia, ...m.dias.map((d) => d.t)) * 1.15 || 1;
+    const topo = Math.max(m.meta, ...cadDia.filter((v, k) => !m.dias[k].futuro), ...projDia, ...m.dias.map((d) => d.t)) * 1.15 || 1;
     const h = (t) => `${((t / topo) * 100).toFixed(2)}%`;
     const pctX = (k) => `${((k / n) * 100).toFixed(3)}%`;
 
@@ -5190,7 +5190,8 @@ function expGrafico(m, u) {
         const fase = d.futuro ? 'proj' : 'real';
         const valT = d.futuro ? projDia[k] : d.t;
         const rot = d.futuro ? U.dia(projDia[k]) : U.dia(d.t, d.cam);
-        const c = cadDia[k];
+        // cadencia so vale para o que ja foi executado; no projetado, nao
+        const c = d.futuro ? 0 : cadDia[k];
         const base = rot ? Math.min(valT, c) : 0;
         const excedente = rot && valT > c ? valT - c : 0;
         const falta = c > (rot ? valT : 0) ? c - (rot ? valT : 0) : 0;
@@ -5298,10 +5299,11 @@ function expTooltip(col) {
         ? `<li><i class="ecg-sw ecg-sw--proj"></i>Projetado: <b>${nomeQtd(projDia[k])}</b></li>`
         : `<li><i class="ecg-sw ecg-sw--real"></i>Executado: <b>${d.t ? (U.cam ? `${d.cam} caminhões` : `${expFmt(d.t, 0)} t`) : 'sem carga'}</b></li>`;
     tip.innerHTML = `<b class="ecg-tip-d">${d.d}${d.fds ? ' · fim de semana' : ''}${d.hoje ? ' · hoje' : ''}</b><ul>`
-        + `<li><i class="ecg-sw ecg-sw--cad"></i>Cadência: <b>${nomeQtd(cadDia[k])}</b></li>${exec}`
+        + (d.futuro ? '' : `<li><i class="ecg-sw ecg-sw--cad"></i>Cadência: <b>${nomeQtd(cadDia[k])}</b></li>`) + exec
         + `<li><i class="ecg-sw ecg-sw--meta"></i>Meta: <b>${nomeQtd(m.meta)}</b></li>`
         + (() => {
             const v = d.futuro ? projDia[k] : d.t;
+            if (d.futuro) return '';
             const dif = v - cadDia[k];
             if (!dif) return '';
             const txt = `${U.taxa(Math.abs(dif))} ${U.cam ? 'caminhões' : 't'}`;
