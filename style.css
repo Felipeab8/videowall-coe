@@ -11546,12 +11546,25 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     white-space: nowrap;
 }
 
-.sa-ar-regua {
-    position: relative;
-    height: 0.4rem;
-    margin: 0.2rem 0;
-    border-radius: 999px;
-    background: #f1c40f;
+.sa-ar-faixa {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.sa-ar-faixa span {
+    font-size: max(0.55rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    font-style: normal;
+    line-height: 1;
+    white-space: nowrap;
+    color: #0b0f14;
+}
+.sa-ar-faixa--quente span {
+    color: #fff;
 }
 
 /* cores cheias (sem transparencia, que deixava vermelho e laranja barrentos
@@ -11602,7 +11615,7 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     position: absolute;
     top: 50%;
     width: 0.2rem;
-    height: 0.9rem;
+    height: 1.4rem;
     border-radius: 2px;
     background: var(--text);
     box-shadow: 0 0 0 2px var(--bg-bottom);
