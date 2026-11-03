@@ -11562,7 +11562,7 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     bottom: 0;
 }
 .sa-ar-faixa--quente {
-    background-color: var(--danger);
+    background-color: #e74c3c !important;
     border-radius: 0 999px 999px 0;
 }
 }
@@ -11581,7 +11581,7 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 }
 
 .sa-ar-faixa--quente {
-    background-color: var(--warn);
+    background-color: #e74c3c !important;
     border-radius: 0 999px 999px 0;
 }
 
