@@ -4848,6 +4848,7 @@ function escolherCulturaExp(alvo) {
     const contratos = tela.querySelector('.exp-contratos');
     if (contratos) atualizarContratos(contratos);
     atualizarCarteira(tela);
+    if (typeof expRotulosX === 'function') requestAnimationFrame(() => tela.querySelectorAll('.exp-contrato[data-contrato]').forEach((l) => expRotulosX(l)));
     scheduleFit();
 }
 
@@ -4955,7 +4956,7 @@ function montarCarteira(tela) {
             + `<td><b>${txt(linha, '.exp-contrato-cliente')}</b></td>`
             + `<td>${codigo}</td>`
             + `<td>${icone} ${CULTURA_NOME[cultura] || cultura}</td>`
-            + `<td>${txt(linha, '.exp-contrato-escala')}</td>`
+            + `<td>${linha.dataset.cartExec || txt(linha, '.exp-contrato-escala')}</td>`
             + `<td class="exp-carteira-col-barra"><div class="exp-carteira-barra exp-contrato--${estado}" style="${estilo}"><span class="exp-contrato-fill"></span><span class="exp-contrato-marca"></span></div></td>`
             + `<td class="exp-carteira-ritmo">${ritmo ? ritmo.innerHTML : '—'}</td>`
             + `<td>${validade || '—'}</td>`
@@ -4985,6 +4986,7 @@ function abrirContratoDaCarteira(tr) {
     input.checked = true;
     atualizarContratos(bloco);
     atualizarCarteira(tela);
+    requestAnimationFrame(() => tela.querySelectorAll('.exp-contrato[data-contrato]').forEach((l) => expRotulosX(l)));
 }
 
 document.addEventListener('click', (e) => {
@@ -5001,6 +5003,299 @@ document.addEventListener('keydown', (e) => {
 });
 
 montarCarteira(document.getElementById('screen-exp-contrato'));
+
+// ============================================
+// CONTRATOS DA EXPEDICAO (07C) · GRAFICO DO CONTRATO E UNIDADE
+// Le cada contrato das proprias linhas (escala, ritmo, situacao e as barras
+// por dia) uma vez e redesenha tudo na unidade escolhida (toneladas ou
+// caminhoes), sem misturar as duas:
+//   azul-claro ao fundo = cadencia esperada (total / dias do contrato)
+//   barra solida        = executado (cor da situacao do contrato)
+//   barra hachurada     = projetado (ritmo atual dos ultimos 7 dias)
+//   linha pontilhada    = meta (ritmo necessario ate a validade)
+// Ordem fixa: EXECUTADO -> HOJE -> PROJETADO. Zero nao aparece no grafico.
+// ============================================
+const EXP_UNIDADE_KEY = 'videowall:exp-unidade';
+const expModelos = new Map();
+
+function expNum(s) {
+    return parseFloat(String(s).replace(/\./g, '').replace(',', '.')) || 0;
+}
+
+function expLerContrato(linha) {
+    const escala = (linha.querySelector('.exp-contrato-escala') || {}).textContent || '';
+    const me = escala.match(/([\d.]+)\s*de\s*([\d.]+)\s*t/);
+    const ritmoEl = linha.querySelector('.exp-contrato-ritmo-val');
+    const rt = ritmoEl ? ritmoEl.textContent.replace(/\s+/g, ' ') : '';
+    const mr = rt.match(/([\d.,]+)\s*\/\s*([\d.,]+)/);
+    const status = linha.querySelector('.class-status');
+    const parado = linha.querySelector('.exp-contrato-parado');
+    const validade = linha.querySelector('.exp-contrato-validade');
+    const dias = [...linha.querySelectorAll('.exp-contrato-dias-graf i')].map((i) => {
+        const t = i.getAttribute('title') || '';
+        const m = t.match(/^(\d\d\/\d\d)/);
+        const mc = t.match(/·\s*(\d+)\s*caminh/);
+        const mt = t.match(/·\s*([\d.]+)\s*t\b/);
+        return {
+            d: m ? m[1] : '',
+            fds: i.classList.contains('is-fds'),
+            hoje: i.classList.contains('is-hoje'),
+            futuro: i.classList.contains('is-futuro'),
+            cam: mc ? Number(mc[1]) : 0,
+            t: mt ? expNum(mt[1]) : 0,
+        };
+    });
+    const somaCam = dias.reduce((a, d) => a + d.cam, 0);
+    const somaT = dias.reduce((a, d) => a + d.t, 0);
+    const exec = me ? expNum(me[1]) : somaT;
+    const total = me ? expNum(me[2]) : 0;
+    const estado = (linha.className.match(/exp-contrato--(ok|atencao|fora)/) || ['', 'ok'])[1];
+    return {
+        exec,
+        total,
+        peso: somaCam ? somaT / somaCam : 40,
+        ritmo: mr ? expNum(mr[1]) : 0,
+        meta: mr ? expNum(mr[2]) : 0,
+        estado,
+        statusTxt: status ? status.textContent.trim() : '',
+        paradoHtml: parado ? parado.innerHTML : '',
+        validadeHtml: validade ? validade.innerHTML : '',
+        dias,
+    };
+}
+
+// formatos: toneladas inteiras; caminhoes inteiros no total e com uma casa
+// no ritmo por dia (6,7 cam./dia), para nao esconder a diferenca
+function expFmt(v, casas) {
+    return v.toLocaleString('pt-BR', { minimumFractionDigits: casas, maximumFractionDigits: casas });
+}
+
+function expUnid(m, u) {
+    const cam = u === 'cam';
+    const conv = (t) => (cam ? t / m.peso : t);
+    return {
+        cam,
+        total: (t) => expFmt(conv(t), 0),
+        taxa: (t) => {
+            const v = conv(t);
+            return expFmt(v, cam && v < 100 && Math.round(v) !== v ? 1 : 0);
+        },
+        dia: (t, camReal) => {
+            if (!t) return '';
+            if (cam && camReal != null) return String(camReal);
+            const v = conv(t);
+            const s = expFmt(v, cam && Math.round(v) !== v ? 1 : 0);
+            return expNum(s) === 0 ? '' : s;
+        },
+        nome: cam ? 'caminhões' : 't',
+        porDia: cam ? 'cam./dia' : 't/dia',
+        curto: cam ? 'cam.' : 't',
+    };
+}
+
+function expGrafico(m, u) {
+    const U = expUnid(m, u);
+    const n = m.dias.length;
+    const cad = n ? m.total / n : 0;
+    const proj = m.ritmo;
+    const reais = m.dias.filter((d) => !d.futuro);
+    const futuros = n - reais.length;
+    // projetado: ritmo atual por dia, so ate completar o contrato
+    let resta = Math.max(0, m.total - m.exec);
+    const projDia = m.dias.map((d) => {
+        if (!d.futuro) return 0;
+        const v = Math.min(proj, resta);
+        resta -= v;
+        return v;
+    });
+    const fimIdx = projDia.reduce((acc, v, k) => (v > 0 ? k : acc), -1);
+    const topo = Math.max(cad, m.meta, proj, ...m.dias.map((d) => d.t)) * 1.18 || 1;
+    const h = (t) => `${((t / topo) * 100).toFixed(2)}%`;
+    const pctX = (k) => `${((k / n) * 100).toFixed(3)}%`;
+
+    const cols = m.dias.map((d, k) => {
+        const fase = d.futuro ? 'proj' : 'real';
+        const valT = d.futuro ? projDia[k] : d.t;
+        const rot = d.futuro ? U.dia(projDia[k]) : U.dia(d.t, d.cam);
+        return `<div class="ecg-col ecg-col--${fase}${d.hoje ? ' is-hoje' : ''}${d.fds ? ' is-fds' : ''}" data-k="${k}" tabindex="-1">`
+            + `<span class="ecg-cad" style="height:${h(cad)}"></span>`
+            + (valT && rot ? `<span class="ecg-bar" style="height:${h(valT)}"><span class="ecg-val">${rot}</span></span>` : '')
+            + '</div>';
+    }).join('');
+    const datas = m.dias.map((d, k) => `<span class="ecg-x-d${d.hoje ? ' is-hoje' : ''}${d.fds ? ' is-fds' : ''}" data-k="${k}">${d.d}</span>`).join('');
+    const corte = reais.length;
+    const fases = `<div class="ecg-fases" style="--corte:${pctX(corte)}">`
+        + `<span class="ecg-fase ecg-fase--real">Executado</span>`
+        + (futuros ? '<span class="ecg-fase ecg-fase--proj">Projetado</span>' : '')
+        + '</div>';
+    const hoje = m.dias.find((d) => d.hoje);
+    const marcaHoje = `<div class="ecg-hoje" style="left:${pctX(corte)}"><span>Hoje${hoje ? ` · ${hoje.d}` : ''}</span></div>`;
+    const meta = `<div class="ecg-meta" style="bottom:${h(m.meta)}"><span class="ecg-meta-rot">Meta · ${U.taxa(m.meta)} ${U.cam ? 'caminhões/dia' : 't/dia'}</span></div>`;
+
+    const projFim = m.exec + projDia.reduce((a, v) => a + v, 0);
+    const concluiAntes = projFim >= m.total && fimIdx >= 0 && fimIdx < n - 1;
+    const ultimo = m.dias[n - 1];
+    const leg = '<div class="ecg-leg">'
+        + '<span class="ecg-leg-item"><i class="ecg-sw ecg-sw--cad"></i>Cadência</span>'
+        + '<span class="ecg-leg-item"><i class="ecg-sw ecg-sw--real"></i>Executado</span>'
+        + '<span class="ecg-leg-item"><i class="ecg-sw ecg-sw--proj"></i>Projetado</span>'
+        + '<span class="ecg-leg-item"><i class="ecg-sw ecg-sw--meta"></i>Meta</span>'
+        + `<span class="ecg-leg-sep"></span><span class="ecg-leg-dado">cadência <b>${U.taxa(cad)}</b> ${U.porDia}</span>`
+        + (futuros ? `<span class="ecg-leg-dado">projetado até ${ultimo ? ultimo.d : 'o fim'} <b>${U.total(projFim)}</b> ${U.nome} · ${Math.round((projFim / m.total) * 100)}%${concluiAntes ? ` · conclui em <b>${m.dias[fimIdx].d}</b>` : ''}</span>` : '')
+        + `<span class="ecg-leg-dado exp-contrato-parado">${m.paradoHtml}</span>`
+        + `<span class="exp-contrato-validade">${m.validadeHtml}</span>`
+        + '</div>';
+
+    return `<div class="ecg" style="--n:${n}">${fases}`
+        + `<div class="ecg-plot"><div class="ecg-cols">${cols}</div>${meta}${marcaHoje}</div>`
+        + `<div class="ecg-x">${datas}</div>${leg}`
+        + '<div class="ecg-tip" role="status" hidden></div></div>';
+}
+
+function expRenderContrato(linha, u) {
+    const m = expModelos.get(linha.dataset.contrato);
+    if (!m) return;
+    const U = expUnid(m, u);
+    const falta = Math.max(0, m.total - m.exec);
+    const pct = m.total ? Math.round((m.exec / m.total) * 100) : 0;
+    const escala = linha.querySelector('.exp-contrato-escala');
+    if (escala) {
+        escala.innerHTML = `<span class="ecg-exec"><em>Executado</em> <b>${U.total(m.exec)}</b> de ${U.total(m.total)} ${U.nome} · ${pct}%`
+            + (falta ? ` · <span class="ecg-falta">falta <b>${U.total(falta)}</b> ${U.nome}</span>` : '') + '</span>';
+    }
+    const ritmo = linha.querySelector('.exp-contrato-ritmo-val');
+    if (ritmo) {
+        ritmo.innerHTML = `<b class="${m.ritmo < m.meta ? 'is-abaixo' : ''}">${U.taxa(m.ritmo)}</b> / ${U.taxa(m.meta)} <small>${U.porDia}</small>`;
+    }
+    const sub = linha.querySelector('.exp-contrato-ritmo-sub');
+    if (sub) sub.textContent = 'ritmo / meta';
+    const status = linha.querySelector('.class-status');
+    if (status) {
+        status.textContent = m.statusTxt.replace(/([\d.]+)\s*t$/, (x, v) => (U.cam ? `${expFmt(expNum(v) / m.peso, 0)} cam.` : `${v} t`));
+    }
+    const dias = linha.querySelector('.exp-contrato-dias');
+    if (dias) dias.innerHTML = expGrafico(m, u);
+    linha.dataset.cartExec = `${U.total(m.exec)} de ${U.total(m.total)} ${U.curto} · ${pct}%`;
+    expRotulosX(linha);
+}
+
+// datas e valores sem sobrepor: se a coluna for estreita, mostra 1 a cada
+// 2, 3, 5 ou 7 (sempre o primeiro, o hoje e o ultimo); o tooltip tem tudo
+function expRotulosX(linha) {
+    const graf = linha.querySelector('.ecg');
+    const x = linha.querySelector('.ecg-x');
+    if (!graf || !x || !x.clientWidth) return;
+    const n = Number(graf.style.getPropertyValue('--n')) || 1;
+    const larg = x.clientWidth / n;
+    const passo = [1, 2, 3, 5, 7, 10].find((p) => larg * p >= 38) || 10;
+    const hoje = [...x.children].findIndex((s) => s.classList.contains('is-hoje'));
+    const perto = (k, alvo) => alvo >= 0 && k !== alvo && Math.abs(k - alvo) < Math.max(passo, 2);
+    [...x.children].forEach((s, k) => {
+        let mostra = k === hoje || (passo === 1 ? true : k % passo === 0);
+        if (passo > 1 && perto(k, hoje)) mostra = false;
+        s.classList.toggle('is-oculto', !mostra);
+    });
+    graf.classList.toggle('ecg--sem-valor', larg < 24);
+}
+
+function expTooltip(col) {
+    const linha = col.closest('.exp-contrato');
+    const m = linha && expModelos.get(linha.dataset.contrato);
+    const tela = col.closest('#screen-exp-contrato');
+    if (!m || !tela) return;
+    const U = expUnid(m, tela.dataset.expUnidade || 't');
+    const d = m.dias[Number(col.dataset.k)];
+    const cad = m.total / m.dias.length;
+    const tip = linha.querySelector('.ecg-tip');
+    const nomeQtd = (t) => `${U.taxa(t)} ${U.cam ? 'caminhões' : 't'}`;
+    const exec = d.futuro
+        ? `<li><i class="ecg-sw ecg-sw--proj"></i>Projetado: <b>${nomeQtd(m.ritmo)}</b></li>`
+        : `<li><i class="ecg-sw ecg-sw--real"></i>Executado: <b>${d.t ? (U.cam ? `${d.cam} caminhões` : `${expFmt(d.t, 0)} t`) : 'sem carga'}</b></li>`;
+    tip.innerHTML = `<b class="ecg-tip-d">${d.d}${d.fds ? ' · fim de semana' : ''}${d.hoje ? ' · hoje' : ''}</b><ul>`
+        + `<li><i class="ecg-sw ecg-sw--cad"></i>Cadência: <b>${nomeQtd(cad)}</b></li>${exec}`
+        + `<li><i class="ecg-sw ecg-sw--meta"></i>Meta: <b>${nomeQtd(m.meta)}</b></li></ul>`;
+    tip.hidden = false;
+    const plot = linha.querySelector('.ecg');
+    const rc = col.getBoundingClientRect();
+    const rp = plot.getBoundingClientRect();
+    const larg = tip.offsetWidth;
+    let left = rc.left - rp.left + rc.width / 2 - larg / 2;
+    left = Math.max(0, Math.min(left, rp.width - larg));
+    tip.style.left = `${left}px`;
+}
+
+function expAplicarUnidade(tela, u) {
+    if (!tela) return;
+    tela.dataset.expUnidade = u;
+    tela.querySelectorAll('button[data-exp-unidade]').forEach((b) => {
+        const ativo = b.dataset.expUnidade === u;
+        b.classList.toggle('is-active', ativo);
+        b.setAttribute('aria-pressed', String(ativo));
+    });
+    tela.querySelectorAll('.exp-contrato[data-contrato]').forEach((linha) => expRenderContrato(linha, u));
+    const subCart = tela.querySelector('.exp-carteira .section-sub');
+    if (subCart) subCart.textContent = `em ${u === 'cam' ? 'caminhões' : 'toneladas'} · executado até hoje · ritmo dos últimos 7 dias contra a meta até a validade · clique para abrir o contrato`;
+    const sub = tela.querySelector('.exp-contratos .section-sub');
+    if (sub) sub.textContent = `em ${u === 'cam' ? 'caminhões' : 'toneladas'} · executado até hoje · projetado no ritmo dos últimos 7 dias · meta = ritmo necessário até a validade`;
+    const th = tela.querySelectorAll('.exp-carteira-tabela thead th');
+    if (th[3]) th[3].textContent = 'Executado';
+    if (th[5]) th[5].textContent = `Ritmo / meta ${u === 'cam' ? 'cam./dia' : 't/dia'}`;
+    montarCarteira(tela);
+    scheduleFit();
+}
+
+function expIniciarContratos() {
+    const tela = document.getElementById('screen-exp-contrato');
+    if (!tela) return;
+    tela.querySelectorAll('.exp-contrato[data-contrato]').forEach((linha) => {
+        if (!expModelos.has(linha.dataset.contrato)) expModelos.set(linha.dataset.contrato, expLerContrato(linha));
+    });
+    let u = 't';
+    try {
+        u = localStorage.getItem(EXP_UNIDADE_KEY) === 'cam' ? 'cam' : 't';
+    } catch (err) {
+        // sem armazenamento: toneladas
+    }
+    expAplicarUnidade(tela, u);
+    new ResizeObserver(() => tela.querySelectorAll('.exp-contrato[data-contrato]').forEach(expRotulosX))
+        .observe(tela);
+}
+
+document.addEventListener('click', (e) => {
+    if (!(e.target instanceof Element)) return;
+    const btn = e.target.closest('button[data-exp-unidade]');
+    if (!btn) return;
+    e.preventDefault();
+    const u = btn.dataset.expUnidade === 'cam' ? 'cam' : 't';
+    try {
+        localStorage.setItem(EXP_UNIDADE_KEY, u);
+    } catch (err) {
+        // vale so para esta visita
+    }
+    expAplicarUnidade(btn.closest('#screen-exp-contrato'), u);
+});
+
+document.addEventListener('pointerover', (e) => {
+    if (!(e.target instanceof Element)) return;
+    const col = e.target.closest('#screen-exp-contrato .ecg-col');
+    if (col) expTooltip(col);
+});
+
+document.addEventListener('pointerout', (e) => {
+    if (!(e.target instanceof Element)) return;
+    const graf = e.target.closest('#screen-exp-contrato .ecg-cols');
+    if (!graf || (e.relatedTarget instanceof Element && graf.contains(e.relatedTarget))) return;
+    const tip = graf.closest('.ecg').querySelector('.ecg-tip');
+    if (tip) tip.hidden = true;
+});
+
+expIniciarContratos();
+// a linha escolhida so ganha largura quando aparece: refaz os rotulos
+document.addEventListener('change', (e) => {
+    if (e.target instanceof Element && e.target.matches('.exp-contrato-opcao input')) {
+        requestAnimationFrame(() => document.querySelectorAll('#screen-exp-contrato .exp-contrato[data-contrato]').forEach(expRotulosX));
+    }
+});
 
 document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;

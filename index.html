@@ -12,7 +12,7 @@
          não carrega e a tela usa o mapa esquemático em SVG. -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css">
-    <link rel="stylesheet" href="style.css?v=pressao11">
+    <link rel="stylesheet" href="style.css?v=contratos2">
 </head>
 <body class="theme-dark" data-visao="tatica">
 
@@ -4308,7 +4308,12 @@
                         <h2>Contratos da Expedição</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">3</span>s</div>
                     </div>
-                    <div class="exp-filtro">
+                    <div class="exp-filtro exp-filtro--duplo">
+                        <div class="class-filtro exp-unidade" role="group" aria-label="Unidade de medida da tela">
+                            <span class="class-filtro-rotulo">Unidade</span>
+                            <button type="button" class="class-filtro-btn" data-exp-unidade="cam" aria-pressed="false">Caminhões</button>
+                            <button type="button" class="class-filtro-btn is-active" data-exp-unidade="t" aria-pressed="true">Toneladas</button>
+                        </div>
                         <div class="class-filtro" role="group" aria-label="Filtrar os contratos por cultura">
                             <span class="class-filtro-rotulo">Cultura</span>
                             <button type="button" class="class-filtro-btn is-active" data-exp-cultura="todas" aria-pressed="true">Todas</button>
@@ -7418,7 +7423,7 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.1.4/leaflet-maplibre-gl.js"></script>
-    <script src="script.js?v=pressao11"></script>
+    <script src="script.js?v=contratos2"></script>
 
 </body>
 </html>

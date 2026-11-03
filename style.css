@@ -11521,51 +11521,111 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
 }
 
 .sa-ar:empty {
-    display: no.sa-ar-regua {
-    position: relative;
-    height: 1rem;
-    margin: 0.25rem 0;
-    border-radius: 999px;
-    overflow: hidden;
+    display: none;
 }
+
+.sa-ar-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.1rem 0.4rem;
+    font-size: max(0.58rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.sa-ar-tit {
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+.sa-ar-ref {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.sa-ar-regua {
+    position: relative;
+    height: 0.4rem;
+    margin: 0.2rem 0;
+    border-radius: 999px;
+    background: #f1c40f;
+}
+
+/* cores cheias (sem transparencia, que deixava vermelho e laranja barrentos
+   no fundo escuro) e 2px de folga entre os trechos */
 .sa-ar-faixa {
     position: absolute;
     top: 0;
     bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-.sa-ar-faixa span {
-    font-size: max(0.55rem, var(--fs-texto, 0px));
-    font-weight: 800;
-    font-style: normal;
-    line-height: 1;
-    white-space: nowrap;
-    color: #0b0f14;
-}
-.sa-ar-faixa--umido {
-    background-color: #f1c40f;
-}
-.sa-ar-faixa--ideal {
-    background-color: var(--ok);
 }
 .sa-ar-faixa--quente {
     background-color: #e74c3c !important;
+    border-radius: 0 999px 999px 0;
 }
-.sa-ar-faixa--quente span {
-    color: #fff;
 }
+
+.sa-ar-faixa--umido {
+    background-color: #f1c40f;
+    border-radius: 999px 0 0 999px;
+}
+
+.sa-ar-faixa--ideal {
+    background-color: var(--ok);
+}
+
+.sa-ar-faixa--pouco {
+    background-color: color-mix(in srgb, var(--ok) 50%, var(--muted));
+}
+
+.sa-ar-faixa--quente {
+    background-color: #e74c3c !important;
+    border-radius: 0 999px 999px 0;
+}
+
+/* grao: anel na cor do texto, para comparar com o ar de agora */
+.sa-ar-grao {
+    position: absolute;
+    top: 50%;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    border: 2px solid var(--text);
+    background: var(--bg-bottom);
+    transform: translate(-50%, -50%);
+}
+
+/* ar de agora: traco alto na cor do texto, com anel para soltar da regua */
 .sa-ar-agora {
     position: absolute;
-    top: 0;
-    bottom: 0;
+    top: 50%;
     width: 0.2rem;
+    height: 0.9rem;
     border-radius: 2px;
     background: var(--text);
     box-shadow: 0 0 0 2px var(--bg-bottom);
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
+}
+
+.sa-ar-status {
+    font-size: max(0.6rem, var(--fs-texto, 0px));
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.sa-ar-status b {
+    color: var(--muted);
+}
+
+.sa-ar-status[data-estado="quente"] b {
+    color: var(--warn);
+}
+
+.sa-ar-status[data-estado="ideal"] b {
+    color: var(--ok);
 }
 
 /* armazem: o mesmo bloco no alto da coluna de tendencias, separado delas;
@@ -23727,3 +23787,314 @@ body.theme-dark .pr-quadro--col.pr-quadro--fora .pr-quadro-valor b { color: #f87
 }
 
 body.theme-dark .pr-g-eixo span { color: #4ade80; }
+
+
+/* ==========================================================
+   CONTRATOS DA EXPEDIÇÃO (07C) · gráfico do contrato
+   Azul-claro = cadência · sólida = executado · hachurada = projetado
+   · pontilhada = meta. Executado → Hoje → Projetado.
+   ========================================================== */
+#screen-exp-contrato {
+    --ecg-cad: #7dd3fc;
+    --ecg-meta: #e2e8f0;
+}
+
+body.theme-light #screen-exp-contrato {
+    --ecg-cad: #0ea5e9;
+    --ecg-meta: #334155;
+}
+
+.exp-filtro--duplo {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.5rem 1rem;
+}
+
+.exp-unidade .class-filtro-btn.is-active {
+    font-weight: 800;
+}
+
+#screen-exp-contrato .exp-contrato-dias { gap: 0; }
+
+.ecg {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-top: 0.35rem;
+}
+
+/* faixa de fases acima do gráfico */
+.ecg-fases {
+    position: relative;
+    height: 1.25rem;
+    font-size: max(0.62rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.ecg-fase {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    border-bottom: 2px solid;
+}
+
+.ecg-fase--real {
+    left: 0;
+    width: var(--corte);
+    color: var(--text);
+    border-color: color-mix(in srgb, var(--text) 45%, transparent);
+}
+
+.ecg-fase--proj {
+    left: var(--corte);
+    right: 0;
+    justify-content: flex-end;
+    color: var(--muted);
+    border-color: color-mix(in srgb, var(--muted) 45%, transparent);
+    border-bottom-style: dashed;
+}
+
+/* área do gráfico */
+.ecg-plot {
+    position: relative;
+    height: 11rem;
+    border-bottom: 1px solid var(--row-line);
+}
+
+.ecg-cols {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    gap: 3px;
+}
+
+.ecg-col {
+    position: relative;
+    cursor: default;
+    border-radius: 3px 3px 0 0;
+}
+
+.ecg-x-d.is-fds { font-style: italic; opacity: 0.75; }
+.ecg-col:hover { background: color-mix(in srgb, var(--text) 9%, transparent); }
+
+.ecg-cad,
+.ecg-bar {
+    position: absolute;
+    bottom: 0;
+    border-radius: 3px 3px 0 0;
+}
+
+/* cadência: coluna larga azul-claro atrás */
+.ecg-cad {
+    left: 0;
+    right: 0;
+    background: color-mix(in srgb, var(--ecg-cad) 34%, transparent);
+    border-top: 2px solid var(--ecg-cad);
+}
+
+/* executado: barra sólida, mais estreita, na cor da situação */
+.ecg-bar {
+    left: 18%;
+    right: 18%;
+    background: var(--cor);
+}
+
+.ecg-col--real.is-hoje .ecg-bar {
+    box-shadow: 0 0 0 2px var(--text);
+}
+
+/* projetado: mesma cor, transparente e hachurada */
+.ecg-col--proj .ecg-bar {
+    background:
+        repeating-linear-gradient(135deg, color-mix(in srgb, var(--cor) 70%, transparent) 0 3px, transparent 3px 7px),
+        color-mix(in srgb, var(--cor) 18%, transparent);
+    border: 1.5px dashed color-mix(in srgb, var(--cor) 85%, transparent);
+    border-bottom: 0;
+}
+
+.ecg-val {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 2px;
+    font-size: max(0.62rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    color: var(--text);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.ecg-col--proj .ecg-val { color: var(--muted); font-weight: 700; }
+.ecg--sem-valor .ecg-val { display: none; }
+
+/* meta: linha pontilhada com rótulo sempre visível */
+.ecg-meta {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    border-top: 2px dashed var(--ecg-meta);
+    pointer-events: none;
+}
+
+.ecg-meta-rot {
+    position: absolute;
+    right: 0;
+    bottom: 4px;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    font-size: max(0.7rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    white-space: nowrap;
+    color: var(--text);
+    background: var(--section-bg);
+    border: 1.5px dashed var(--ecg-meta);
+}
+
+/* marcador de hoje */
+.ecg-hoje {
+    position: absolute;
+    top: -1.45rem;
+    bottom: -1px;
+    z-index: 3;
+    border-left: 2px solid var(--accent);
+    pointer-events: none;
+}
+
+.ecg-hoje span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateX(-50%);
+    padding: 0.05rem 0.45rem;
+    border-radius: 999px;
+    font-size: max(0.62rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    white-space: nowrap;
+    color: #fff;
+    background: var(--accent);
+}
+
+/* datas no eixo X */
+.ecg-x {
+    display: grid;
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    gap: 3px;
+    font-size: max(0.6rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    color: var(--muted);
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+.ecg-x-d { white-space: nowrap; overflow: visible; }
+.ecg-x-d.is-oculto { visibility: hidden; }
+.ecg-x-d.is-hoje { color: var(--accent); font-weight: 800; }
+
+/* legenda e dados de apoio */
+.ecg-leg {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3rem 0.9rem;
+    margin-top: 0.3rem;
+    font-size: max(0.7rem, var(--fs-texto, 0px));
+    color: var(--muted);
+}
+
+.ecg-leg b { color: var(--text); }
+.ecg-leg-item { display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 700; color: var(--text); }
+.ecg-leg-sep { width: 1px; height: 1rem; background: var(--row-line); }
+.ecg-leg .exp-contrato-validade { margin-left: auto; }
+
+.ecg-sw {
+    display: inline-block;
+    width: 0.85rem;
+    height: 0.65rem;
+    border-radius: 2px;
+    flex: none;
+}
+
+.ecg-sw--cad { background: color-mix(in srgb, var(--ecg-cad) 30%, transparent); border-top: 2px solid var(--ecg-cad); }
+.ecg-sw--real { background: var(--cor, var(--ok)); }
+.ecg-sw--proj {
+    background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--cor, var(--ok)) 75%, transparent) 0 2px, transparent 2px 4px);
+    border: 1px dashed var(--cor, var(--ok));
+}
+.ecg-sw--meta { height: 0; border-top: 2px dashed var(--ecg-meta); border-radius: 0; }
+
+/* executado no topo do contrato */
+.ecg-exec em {
+    font-style: normal;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 0.85em;
+    color: var(--muted);
+}
+
+.ecg-falta { color: var(--muted); }
+
+/* tooltip */
+.ecg-tip {
+    position: absolute;
+    top: 1.4rem;
+    z-index: 10;
+    min-width: 11rem;
+    padding: 0.5rem 0.65rem;
+    border-radius: 8px;
+    background: var(--panel-bg, #0b1220);
+    border: 1px solid var(--card-border);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    font-size: 0.78rem;
+    color: var(--text);
+    pointer-events: none;
+}
+
+.ecg-tip-d { display: block; margin-bottom: 0.25rem; font-size: 0.9rem; }
+.ecg-tip ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.15rem; }
+.ecg-tip li { display: flex; align-items: center; gap: 0.4rem; }
+
+/* o gráfico antigo e a legenda antiga não aparecem mais */
+#screen-exp-contrato .exp-contrato-dias-graf,
+#screen-exp-contrato .exp-contrato-dias-leg { display: none; }
+
+@media screen and (min-width: 769px) {
+    html.tv #screen-exp-contrato .ecg-tip { display: none; }
+}
+
+/* com poucos dias projetados, o rótulo da fase não briga com o Hoje */
+.ecg-fase--proj { padding-left: 3.5rem; }
+
+/* cadência mais clara no navy; rótulo da barra acima da linha da meta */
+body:not(.theme-light) #screen-exp-contrato .ecg-cad {
+    background: color-mix(in srgb, var(--ecg-cad) 42%, #0b1220);
+    opacity: 0.75;
+}
+
+.ecg-val {
+    z-index: 3;
+    padding: 0 0.15rem;
+    border-radius: 3px;
+    background: color-mix(in srgb, var(--section-bg) 85%, transparent);
+}
+
+body:not(.theme-light) #screen-exp-contrato .ecg-cad {
+    background: rgba(125, 211, 252, 0.4);
+    border-top-color: #bae6fd;
+    opacity: 1;
+}
+
+.ecg-tip { background: #0f172a; }
+body.theme-light .ecg-tip { background: #ffffff; }
+body:not(.theme-light) #screen-exp-contrato .ecg-cad { background: rgba(125, 211, 252, 0.55); }
+body:not(.theme-light) #screen-exp-contrato .ecg-sw--cad { background: rgba(125, 211, 252, 0.55); border-top-color: #bae6fd; }
