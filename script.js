@@ -6719,14 +6719,14 @@ const AERACAO = {
     piso: -10,
 };
 
-// faixa ideal da massa por cultura (°C): abaixo e' minima, acima e' maxima
-// (estragando); cultura sem faixa propria usa a de milho
+// faixas da massa por cultura (°C): mínima 0–de | ideal de–ate | máxima (estragando) maxDe–75
+const MASSA_TETO = 75;
 const MASSA_AERACAO = {
-    soja: { de: 20, ate: 30 },
-    sorgo: { de: 20, ate: 30 },
-    milho: { de: 20, ate: 30 },
-    trigo: { de: 20, ate: 28 },
-    cevada: { de: 15, ate: 25 },
+    soja:   { de: 20, ate: 30, maxDe: 30 },
+    sorgo:  { de: 20, ate: 30, maxDe: 30 },
+    milho:  { de: 20, ate: 30, maxDe: 30 },
+    trigo:  { de: 20, ate: 28, maxDe: 29 },
+    cevada: { de: 15, ate: 25, maxDe: 26 },
 };
 const faixaMassa = (cultura) => MASSA_AERACAO[cultura] || MASSA_AERACAO.milho;
 
@@ -6802,16 +6802,13 @@ function escreverAeracao(card) {
 
     // regua do ar ambiente: umedece | ideal | resfria pouco | nao resfria,
     // com o ar de agora (traco) e o grao (anel)
-    const ini = Math.min(j.min === null ? tAgora : j.min, tAgora, tGrao - 10) - 2;
-    const fim = Math.max(tAgora, tGrao) + 2;
-    const pos = (v) => `${(((Math.min(Math.max(v, ini), fim) - ini) / (fim - ini)) * 100).toFixed(1)}%`;
-    const trecho = (a, b, cls) => (b <= a ? ''
-        : `<i class="sa-ar-faixa sa-ar-faixa--${cls}" style="left: ${pos(a)}; width: calc(${pos(b)} - ${pos(a)})"></i>`);
-       const corteUmido = j.min === null ? fim : Math.min(j.min, j.max);
-    // 3 cores: vermelho (umedece) | verde (pode aerar) | amarelo (não resfria)
-    const regua = trecho(ini, corteUmido, 'umido')
-        + (j.aberta ? trecho(j.min, j.max, 'ideal') : '')
-        + trecho(j.max, fim, 'quente')
+        // régua fixa por cultura: 0 a 75 °C, com o limite de cada faixa escrito dentro dela
+    const pos = (v) => `${((Math.min(Math.max(v, 0), MASSA_TETO) / MASSA_TETO) * 100).toFixed(2)}%`;
+    const trecho = (a, b, cls, rotulo) =>
+        `<i class="sa-ar-faixa sa-ar-faixa--${cls}" style="left: ${pos(a)}; width: calc(${pos(b)} - ${pos(a)})"><span>${rotulo}</span></i>`;
+    const regua = trecho(0, fMassa.de, 'umido', `0–${fMassa.de}°`)
+        + trecho(fMassa.de, fMassa.ate, 'ideal', `${fMassa.de}–${fMassa.ate}°`)
+        + trecho(fMassa.ate, MASSA_TETO, 'quente', `${fMassa.maxDe}–${MASSA_TETO}°`)
         + `<i class="sa-ar-agora" style="left: ${pos(tAgora)}" title="ar ${umPonto(tAgora)} °C · ${ar.texto}"></i>`;
 
     alvo.title = `Quando aerar com o ar de agora (estação: ${umPonto(tAgora)} °C, UR ${Math.round(urAgora)}%). `
