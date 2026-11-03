@@ -11519,11 +11519,9 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     flex-direction: column;
     gap: 0.2rem;
 }
-
 .sa-ar:empty {
     display: none;
 }
-
 .sa-ar-head {
     display: flex;
     flex-wrap: wrap;
@@ -11533,19 +11531,24 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     font-weight: 600;
     color: var(--muted);
 }
-
 .sa-ar-tit {
     font-weight: 800;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--text);
 }
-
 .sa-ar-ref {
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
 }
-
+/* régua fixa por cultura (0 a 75 °C) */
+.sa-ar-regua {
+    position: relative;
+    height: 1rem;
+    margin: 0.25rem 0;
+    border-radius: 999px;
+    overflow: hidden;
+}
 .sa-ar-faixa {
     position: absolute;
     top: 0;
@@ -11563,84 +11566,44 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     white-space: nowrap;
     color: #0b0f14;
 }
-.sa-ar-faixa--quente span {
-    color: #fff;
-}
-
-/* cores cheias (sem transparencia, que deixava vermelho e laranja barrentos
-   no fundo escuro) e 2px de folga entre os trechos */
-.sa-ar-faixa {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-}
-.sa-ar-faixa--quente {
-    background-color: #e74c3c !important;
-    border-radius: 0 999px 999px 0;
-}
-}
-
 .sa-ar-faixa--umido {
     background-color: #f1c40f;
-    border-radius: 999px 0 0 999px;
 }
-
 .sa-ar-faixa--ideal {
     background-color: var(--ok);
 }
-
-.sa-ar-faixa--pouco {
-    background-color: color-mix(in srgb, var(--ok) 50%, var(--muted));
-}
-
 .sa-ar-faixa--quente {
     background-color: #e74c3c !important;
-    border-radius: 0 999px 999px 0;
 }
-
-/* grao: anel na cor do texto, para comparar com o ar de agora */
-.sa-ar-grao {
-    position: absolute;
-    top: 50%;
-    width: 0.7rem;
-    height: 0.7rem;
-    border-radius: 50%;
-    border: 2px solid var(--text);
-    background: var(--bg-bottom);
-    transform: translate(-50%, -50%);
+.sa-ar-faixa--quente span {
+    color: #fff;
 }
-
-/* ar de agora: traco alto na cor do texto, com anel para soltar da regua */
+/* traço do valor atual, da altura da régua */
 .sa-ar-agora {
     position: absolute;
-    top: 50%;
+    top: 0;
+    bottom: 0;
     width: 0.2rem;
-    height: 0.5rem;
     border-radius: 2px;
     background: var(--text);
     box-shadow: 0 0 0 2px var(--bg-bottom);
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
 }
-
 .sa-ar-status {
     font-size: max(0.6rem, var(--fs-texto, 0px));
     font-weight: 700;
     color: var(--text);
     font-variant-numeric: tabular-nums;
 }
-
 .sa-ar-status b {
     color: var(--muted);
 }
-
 .sa-ar-status[data-estado="quente"] b {
     color: var(--warn);
 }
-
 .sa-ar-status[data-estado="ideal"] b {
     color: var(--ok);
 }
-
 /* armazem: o mesmo bloco no alto da coluna de tendencias, separado delas;
    a coluna ganha uma linha do tamanho dele antes das tres tendencias, que
    nao encolhem abaixo do que precisam: faltando altura, o cartao transborda
