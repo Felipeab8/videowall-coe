@@ -23106,3 +23106,420 @@ body.theme-dark .pr-ins-reg--aberto { color: #4ade80 !important; }
 .pr-sec > .pr-kpis-linha {
     margin-bottom: 0.15rem;
 }
+
+
+/* ==========================================================
+   PRESSÃO DOS SECADORES (04C) · versão final
+   Só pressão: P1–P5, faixa da Tabela 12, indicadores de pressão
+   e o desenho com as etiquetas dos pontos. Sem temperatura nem
+   registros. Hierarquia: situação do secador e valor do ponto em
+   primeiro; indicadores e etiquetas em segundo; o resto é apoio.
+   Responsivo: o desenho cabe na altura dos quadros (nunca vaza);
+   o secador estreito empilha desenho e quadros.
+   ========================================================== */
+.screen--pressao {
+    --pr-quente: #e5322d;
+    --pr-secagem: #d63cd6;
+    --pr-saturado: #2f4fe0;
+    --pr-recirc: #19c3d6;
+    --pr-ambiente: #f08a24;
+    --pr-ok: #16a34a;
+    --pr-alerta: #d97706;
+    --pr-fora: #dc2626;
+}
+
+body.theme-dark .screen--pressao {
+    --pr-secagem: #e35be3;
+    --pr-saturado: #5b7cff;
+    --pr-recirc: #3fd8e8;
+}
+
+/* cabeçalho da seção: título e legenda quebram em vez de vazar */
+.pr-section > .section-head {
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+}
+
+.pr-legenda {
+    flex-wrap: wrap;
+    gap: 0.3rem 0.9rem;
+    opacity: 0.85;
+}
+
+/* dois secadores lado a lado; estreito, um embaixo do outro */
+.pr-secadores {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 38rem), 1fr));
+    gap: 0.75rem;
+    min-height: 0;
+}
+
+.pr-sec {
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    min-width: 0;
+    padding: 0.8rem 0.9rem;
+    overflow: hidden;
+}
+
+/* --- 1º nível: cabeçalho do secador --- */
+.pr-sec-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.6rem;
+    padding-bottom: 0.55rem;
+    border-bottom: 1px solid var(--row-line);
+}
+
+.pr-sec-nome {
+    font-size: 1.45rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+}
+
+.pr-sec-head .pr-leg {
+    width: 0.35rem;
+    height: 1.35rem;
+    border-radius: 3px;
+}
+
+.pr-status {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.28rem 0.75rem;
+    border-radius: 999px;
+    font-size: max(0.78rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.pr-status::before {
+    content: '';
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.pr-status--ok { color: #15803d; background: color-mix(in srgb, var(--pr-ok) 13%, transparent); }
+.pr-status--limite { color: #b45309; background: color-mix(in srgb, var(--pr-alerta) 16%, transparent); }
+.pr-status--fora { color: #fff; background: var(--pr-fora); }
+body.theme-dark .pr-status--ok { color: #4ade80; }
+body.theme-dark .pr-status--limite { color: #fbbf24; }
+
+/* --- 2º nível: indicadores de pressão numa barra única --- */
+.pr-kpis-linha {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    background: color-mix(in srgb, var(--text) 3%, transparent);
+    border: 1px solid var(--row-line);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.pr-kpi {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 0.4rem 0.7rem;
+    border-left: 1px solid var(--row-line);
+}
+
+.pr-kpi:first-child { border-left: 0; }
+
+.pr-kpi-rot {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: max(0.6rem, var(--fs-texto, 0px));
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.pr-kpi-val {
+    font-size: 1.2rem;
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.pr-kpi-val small {
+    margin-left: 0.2rem;
+    font-size: 0.55em;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.pr-kpi--limite { box-shadow: inset 0 3px 0 var(--pr-alerta); }
+.pr-kpi--limite .pr-kpi-val { color: var(--pr-alerta); }
+.pr-kpi--fora { box-shadow: inset 0 3px 0 var(--pr-fora); background: color-mix(in srgb, var(--pr-fora) 8%, transparent); }
+.pr-kpi--fora .pr-kpi-val { color: var(--pr-fora); }
+
+/* --- corpo: P1–P3 | desenho | P4–P5 --- */
+.pr-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: stretch;
+}
+
+.pr-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+.pr-col > .pr-quadro { flex: 1 1 0; }
+
+/* o desenho ocupa a altura que as colunas de quadros definem: não vaza */
+.pr-figura {
+    position: relative;
+    min-width: 0;
+    min-height: 16rem;
+}
+
+.pr-figura .pr-d {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+/* --- 1º nível: quadro do ponto --- */
+.pr-quadro--col {
+    position: static;
+    transform: none;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.15rem;
+    min-width: 0;
+    padding: 0.55rem 0.75rem 0.5rem;
+    background: var(--section-bg);
+    border: 1px solid var(--card-border);
+    border-left: 4px solid color-mix(in srgb, var(--pr-ok) 55%, var(--card-border));
+    border-radius: 8px;
+}
+
+.pr-quadro--col .pr-quadro-head {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
+}
+
+.pr-quadro--col .pr-quadro-id {
+    flex: none;
+    font-size: 1.05rem;
+    font-weight: 900;
+    color: var(--text);
+}
+
+.pr-quadro--col .pr-quadro-local {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: max(0.66rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--muted);
+}
+
+.pr-quadro--col .pr-quadro-selo {
+    flex: none;
+    margin-left: 0;
+    padding: 0.05rem 0.45rem;
+    border-radius: 999px;
+    font-size: max(0.56rem, var(--fs-texto, 0px));
+    font-style: normal;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.pr-quadro--col .pr-quadro-valor {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.pr-quadro--col .pr-quadro-valor b {
+    font-size: 2.5rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.pr-quadro--col .pr-quadro-valor small {
+    font-size: max(0.7rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.pr-quadro--col .pr-curva {
+    flex: 0 1 4.5rem;
+    width: 4.5rem;
+    min-width: 2.5rem;
+    height: 1.4rem;
+    margin-left: auto;
+    opacity: 0.55;
+}
+
+.pr-quadro--col .pr-quadro-sub {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 0.25rem;
+    border-top: 1px dashed var(--row-line);
+    font-size: max(0.64rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.pr-quadro--col .pr-quadro-sub b {
+    font-weight: 800;
+    color: var(--muted);
+}
+
+/* normal discreto, fora do normal chama atenção */
+.pr-quadro--col.pr-quadro--ok .pr-quadro-selo {
+    padding: 0;
+    font-size: 0;
+}
+
+.pr-quadro--col.pr-quadro--ok .pr-quadro-selo::before {
+    content: '';
+    display: inline-block;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--pr-ok);
+}
+
+.pr-quadro--col.pr-quadro--limite {
+    border-left-color: var(--pr-alerta);
+    background: color-mix(in srgb, var(--pr-alerta) 7%, var(--section-bg));
+}
+
+.pr-quadro--col.pr-quadro--limite .pr-quadro-selo { color: #b45309; background: color-mix(in srgb, var(--pr-alerta) 16%, transparent); }
+.pr-quadro--col.pr-quadro--limite .pr-quadro-valor b { color: var(--pr-alerta); }
+
+.pr-quadro--col.pr-quadro--fora {
+    border-color: var(--pr-fora);
+    border-left: 6px solid var(--pr-fora);
+    background: color-mix(in srgb, var(--pr-fora) 10%, var(--section-bg));
+    box-shadow: 0 0 0 1px var(--pr-fora), 0 6px 18px color-mix(in srgb, var(--pr-fora) 25%, transparent);
+}
+
+.pr-quadro--col.pr-quadro--fora .pr-quadro-selo { color: #fff; background: var(--pr-fora); }
+.pr-quadro--col.pr-quadro--fora .pr-quadro-valor b,
+.pr-quadro--col.pr-quadro--fora .pr-quadro-sub b { color: var(--pr-fora); }
+body.theme-dark .pr-quadro--col.pr-quadro--fora .pr-quadro-valor b { color: #f87171; }
+
+/* --- desenho: contexto, um tom abaixo; etiquetas em destaque --- */
+.pr-figura .pr-d { filter: saturate(0.85); }
+.pr-figura .pr-d-seta { stroke-width: 4; }
+.pr-figura :is(.pr-d-txt--alerta, .pr-d-leitura, .pr-d-guia, .pr-d-sensor, .pr-d-registro, .pr-d-temp, .pr-d-txt--temp, .pr-d-txt--sensor) { display: none; }
+
+.pr-d-txt--nome {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    fill: var(--muted);
+}
+
+.pr-d-chip rect { stroke-width: 1.5; }
+
+.pr-d-chip text {
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 800;
+    white-space: pre;
+}
+
+.pr-d-chip--ok rect { fill: var(--section-bg); stroke: var(--pr-ok); }
+.pr-d-chip--ok text { fill: var(--text); }
+.pr-d-chip--limite rect { fill: var(--pr-alerta); stroke: #b45309; }
+.pr-d-chip--fora rect { fill: var(--pr-fora); stroke: #b91c1c; }
+.pr-d-chip--limite text,
+.pr-d-chip--fora text { fill: #fff; }
+
+/* --- Tabela 12 e ocorrências: apoio --- */
+.pr-tab-box { flex: none; margin-top: 0.25rem; }
+
+.pr-tab-titulo {
+    margin-bottom: 0.3rem;
+    font-size: max(0.62rem, var(--fs-texto, 0px));
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.pr-tab-rolagem { overflow-x: auto; }
+
+.pr-tab {
+    width: 100%;
+    min-width: 34rem;
+    border-collapse: collapse;
+    font-size: max(0.72rem, var(--fs-texto, 0px));
+    font-variant-numeric: tabular-nums;
+}
+
+.pr-tab th,
+.pr-tab td {
+    padding: 0.15rem 0.5rem;
+    border: 1px solid var(--card-border);
+    text-align: center;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.pr-tab thead th { font-weight: 700; color: var(--muted); background: var(--section-bg); }
+.pr-tab tbody th { width: 8rem; text-align: left; font-weight: 800; }
+.pr-tab th small { margin-left: 0.35rem; font-weight: 600; color: var(--muted); }
+
+.pr-section [data-pressao-eventos] { flex-wrap: wrap; }
+
+/* --- secador estreito: desenho em cima, quadros em grade embaixo --- */
+@container (max-width: 44rem) {
+    .pr-layout {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-areas:
+            "fig fig"
+            "esq dir";
+    }
+
+    .pr-figura { grid-area: fig; height: 20rem; min-height: 0; }
+    .pr-col--esq { grid-area: esq; }
+    .pr-col--dir { grid-area: dir; }
+    .pr-quadro--col .pr-quadro-valor b { font-size: 2.1rem; }
+}
+
+@container (max-width: 26rem) {
+    .pr-layout {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas: "fig" "esq" "dir";
+    }
+
+    .pr-figura { height: 16rem; }
+    .pr-kpis-linha { grid-template-columns: minmax(0, 1fr); }
+    .pr-kpi { border-left: 0; border-top: 1px solid var(--row-line); }
+    .pr-kpi:first-child { border-top: 0; }
+    .pr-status { margin-left: 0; }
+}
