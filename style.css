@@ -24652,3 +24652,178 @@ html.pdf-print *::after {
 @media print {
     .pdf-preparo { display: none !important; }
 }
+
+
+
+/* ==========================================================
+   CONFIGURAR PDF · janela antes de gerar
+   ========================================================== */
+.pdfcfg {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    background: rgba(2, 6, 23, 0.6);
+    font-size: 14px;
+}
+
+.pdfcfg[hidden] { display: none; }
+
+.pdfcfg-caixa {
+    display: flex;
+    flex-direction: column;
+    width: min(46rem, 100%);
+    max-height: min(46rem, calc(100vh - 2rem));
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 14px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    color: var(--text);
+    overflow: hidden;
+}
+
+.pdfcfg-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1.1rem;
+    border-bottom: 1px solid var(--row-line);
+}
+
+.pdfcfg-head h3 { margin: 0; font-size: 17px; font-weight: 800; }
+
+.pdfcfg-x {
+    border: 0;
+    background: none;
+    color: var(--muted);
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.pdfcfg-corpo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 1rem 1.1rem;
+    overflow: auto;
+}
+
+.pdfcfg-bloco { margin: 0; padding: 0; border: 0; }
+
+.pdfcfg-bloco legend {
+    margin-bottom: 0.45rem;
+    padding: 0;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.pdfcfg-opcoes { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+.pdfcfg-opcoes label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--card-border);
+    border-radius: 999px;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+}
+
+.pdfcfg-opcoes label:has(input:checked) {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    color: var(--text);
+}
+
+.pdfcfg-opcoes input { accent-color: var(--accent); margin: 0; }
+
+.pdfcfg-lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 0.75rem;
+}
+
+.pdfcfg-grupo {
+    padding: 0.6rem 0.7rem;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--text) 3%, transparent);
+}
+
+.pdfcfg-grupo-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.35rem;
+}
+
+.pdfcfg-grupo-head b { flex: 1; font-size: 13px; }
+
+.pdfcfg-grupo-head button {
+    border: 0;
+    background: none;
+    color: var(--accent);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.pdfcfg-telas { display: flex; flex-direction: column; gap: 0.1rem; }
+
+.pdfcfg-telas label {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.2rem 0.25rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.pdfcfg-telas label:hover { background: color-mix(in srgb, var(--text) 6%, transparent); }
+.pdfcfg-telas input { accent-color: var(--accent); margin: 0; }
+
+.pdfcfg-num {
+    min-width: 2.2rem;
+    font-weight: 800;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.pdfcfg-pe {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.1rem 0.4rem;
+    border-top: 1px solid var(--row-line);
+}
+
+.pdfcfg-resumo { flex: 1; font-weight: 700; color: var(--muted); }
+
+.pdfcfg-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.pdfcfg-btn--ok { border-color: var(--accent); background: var(--accent); color: #fff; }
+.pdfcfg-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.pdfcfg-btn:focus-visible, .pdfcfg-x:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.pdfcfg-dica { margin: 0; padding: 0 1.1rem 0.8rem; font-size: 12px; color: var(--muted); }
+
+@media print { .pdfcfg { display: none !important; } }

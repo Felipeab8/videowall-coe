@@ -2395,12 +2395,12 @@ function tituloDaTela(screen) {
     return h2 ? h2.textContent.trim() : '';
 }
 
-function nomeArquivoPdf(modo) {
+function nomeArquivoPdf(modo, nome) {
     const data = new Date();
     const pad = (n) => String(n).padStart(2, '0');
     const carimbo = `${data.getFullYear()}-${pad(data.getMonth() + 1)}-${pad(data.getDate())}_${pad(data.getHours())}h${pad(data.getMinutes())}`;
-    const tela = modo === 'todas'
-        ? 'Todas as telas'
+    const tela = nome || (modo === 'todas')
+        ? (nome || 'Todas as telas')
         : (tituloDaTela(document.querySelector('.screen.active')) || 'Tela');
     return `COE - ${tela} - ${carimbo}`;
 }
@@ -2412,11 +2412,8 @@ function fecharMenuPdf() {
 }
 
 function abrirMenuPdf() {
-    if (!pdfMenuList) return;
-    pdfMenuList.hidden = false;
-    if (btnPdf) btnPdf.setAttribute('aria-expanded', 'true');
-    const primeiro = pdfMenuList.querySelector('[data-pdf]');
-    if (primeiro) primeiro.focus();
+    // o botao PDF abre a configuracao (tema, grupo e telas) antes de gerar
+    abrirConfigPdf();
 }
 
 // Cada tela sai igual ao monitor. A exportacao passa tela por tela (como
@@ -2480,16 +2477,22 @@ function esperarMural(teto) {
     ]);
 }
 
-async function exportarPdf(modo) {
+async function exportarPdf(modo, opcoes = {}) {
     fecharMenuPdf();
     if (isEditing() || pdfEmAndamento) return;
     pdfEmAndamento = true;
+    const temaAntes = document.body.classList.contains('theme-light') ? 'theme-light' : 'theme-dark';
+    const temaPdf = opcoes.tema === 'claro' ? 'theme-light' : opcoes.tema === 'escuro' ? 'theme-dark' : temaAntes;
 
     const root = document.documentElement;
     const ativaAntes = document.querySelector('.screen.active');
     const itemAntes = document.querySelector('.menu-item.active[data-screen]');
     const tituloOriginal = document.title;
-    const ids = telasDoPdf(modo);
+    const ids = (opcoes.ids && opcoes.ids.length ? opcoes.ids : telasDoPdf(modo))
+        .filter((id) => document.getElementById('screen-' + id));
+    const idAtual = ativaAntes ? ativaAntes.id.replace(/^screen-/, '') : '';
+    // so navega entre telas quando o PDF nao e so a tela que esta aberta
+    const navegar = ids.length > 1 || ids[0] !== idAtual;
     // a Visao geral e medida por ultimo: o mural fica no ar ate imprimir
     const ordem = ids.filter((id) => id !== 'geral').concat(ids.includes('geral') ? ['geral'] : []);
     const medidas = {};
@@ -2512,6 +2515,7 @@ async function exportarPdf(modo) {
         });
         const aviso = document.getElementById('pdfPreparo');
         if (aviso) aviso.remove();
+        if (temaPdf !== temaAntes) setHeaderTheme(temaAntes);
         if (itemAntes) itemAntes.click();
         else if (ativaAntes) ativaAntes.classList.add('active');
         scheduleFit();
@@ -2520,14 +2524,19 @@ async function exportarPdf(modo) {
 
     try {
         if (!ids.length) throw new Error('nenhuma tela');
-        if (modo === 'todas') avisoPdf('Preparando o PDF…', 0, ids.length);
+        if (navegar) avisoPdf('Preparando o PDF…', 0, ids.length);
+        // tema so do PDF: troca agora e volta ao fechar a impressao
+        if (temaPdf !== temaAntes) {
+            setHeaderTheme(temaPdf);
+            await esperarMs(400);
+        }
 
         // 1) mede cada tela do jeito que ela aparece no monitor
         for (let n = 0; n < ordem.length; n++) {
             const id = ordem[n];
             const tela = document.getElementById('screen-' + id);
             try {
-                if (modo === 'todas') {
+                if (navegar) {
                     const item = document.querySelector('.menu-item[data-screen="' + id + '"]');
                     if (item) item.click();
                     await esperarQuadro();
@@ -2547,7 +2556,7 @@ async function exportarPdf(modo) {
             } catch (err) {
                 console.warn('PDF: tela pulada', id, err);
             }
-            if (modo === 'todas') avisoPdf('Preparando o PDF…', n + 1, ids.length);
+            if (navegar) avisoPdf('Preparando o PDF…', n + 1, ids.length);
         }
 
         const valores = Object.values(medidas);
@@ -2574,7 +2583,7 @@ async function exportarPdf(modo) {
             tela.style.setProperty('min-height', '0');
             tela.style.setProperty('max-height', 'none');
         });
-        document.title = nomeArquivoPdf(modo);
+        document.title = nomeArquivoPdf(modo, opcoes.nome);
         await esperarQuadro();
         await esperarMs(300);   // graficos que se redesenham pelo tamanho
         avisoPdf('Pronto para salvar', 1, 1, 'Destino: “Salvar como PDF” · Margens: Nenhuma · Gráficos de plano de fundo: marcado');
@@ -2585,6 +2594,189 @@ async function exportarPdf(modo) {
     } catch (err) {
         console.error('PDF:', err);
         restaurar();
+    }
+}
+
+
+// ============================================
+// CONFIGURAR PDF
+// Antes de gerar: tema (como esta, claro ou escuro) e quais telas
+// (tela atual, um grupo do menu, tudo ou escolhidas uma a uma). Os grupos
+// e as telas saem do proprio menu, entao tela nova entra sozinha. A
+// ultima escolha fica gravada no navegador.
+// ============================================
+const PDF_CFG_KEY = 'videowall:pdf-config';
+const PDF_GRUPOS = [
+    { id: 'avare', nome: 'Telas Avaré', sel: '.sidebar nav.menu[data-visao="tatica"]' },
+    { id: 'est', nome: 'Estratégico Avaré', sel: '.sidebar nav.menu[data-visao="estrategica"]' },
+    { id: 'cam', nome: 'Câmeras', sel: '.sidebar nav.menu[aria-label="Câmeras"]' },
+    { id: 'du', nome: 'Telas demais unidades', sel: '.sidebar nav.menu[data-unidade="Demais unidades"]' },
+];
+
+function rotuloTelaPdf(id) {
+    const tela = document.getElementById('screen-' + id);
+    const badge = tela && tela.querySelector('.screen-badge');
+    const num = badge ? badge.textContent.replace(/\s+/g, '').trim() : '';
+    const titulo = tituloDaTela(tela) || id;
+    return { num, titulo };
+}
+
+function gruposPdf() {
+    const vistas = new Set();
+    return PDF_GRUPOS.map((g) => {
+        const nav = document.querySelector(g.sel);
+        const ids = nav ? [...nav.querySelectorAll('.menu-item[data-screen]')]
+            .map((it) => it.getAttribute('data-screen'))
+            .filter((id) => document.getElementById('screen-' + id) && !vistas.has(id) && vistas.add(id)) : [];
+        return { ...g, ids };
+    }).filter((g) => g.ids.length);
+}
+
+function lerConfigPdf() {
+    try {
+        return JSON.parse(localStorage.getItem(PDF_CFG_KEY)) || {};
+    } catch (err) {
+        return {};
+    }
+}
+
+function gravarConfigPdf(cfg) {
+    try {
+        localStorage.setItem(PDF_CFG_KEY, JSON.stringify(cfg));
+    } catch (err) {
+        // sem armazenamento: vale so agora
+    }
+}
+
+function montarConfigPdf() {
+    let dlg = document.getElementById('pdfConfig');
+    if (dlg) return dlg;
+    const grupos = gruposPdf();
+    const atalhos = [{ id: 'atual', nome: 'Tela atual' }, ...grupos.map((g) => ({ id: g.id, nome: g.nome })), { id: 'tudo', nome: 'Tudo' }];
+    dlg = document.createElement('div');
+    dlg.id = 'pdfConfig';
+    dlg.className = 'pdfcfg';
+    dlg.hidden = true;
+    dlg.innerHTML = `<div class="pdfcfg-caixa" role="dialog" aria-modal="true" aria-labelledby="pdfCfgTitulo">
+        <div class="pdfcfg-head"><h3 id="pdfCfgTitulo">Exportar PDF</h3>
+            <button type="button" class="pdfcfg-x" data-pdfcfg="fechar" aria-label="Fechar">×</button></div>
+        <div class="pdfcfg-corpo">
+            <fieldset class="pdfcfg-bloco"><legend>Tema</legend><div class="pdfcfg-opcoes">
+                <label><input type="radio" name="pdfTema" value="atual"> Como está</label>
+                <label><input type="radio" name="pdfTema" value="claro"> Claro</label>
+                <label><input type="radio" name="pdfTema" value="escuro"> Escuro</label>
+            </div></fieldset>
+            <fieldset class="pdfcfg-bloco"><legend>O que exportar</legend><div class="pdfcfg-opcoes pdfcfg-atalhos">
+                ${atalhos.map((a) => `<label><input type="radio" name="pdfQue" value="${a.id}"> ${a.nome}</label>`).join('')}
+                <label><input type="radio" name="pdfQue" value="escolher"> Escolher telas</label>
+            </div></fieldset>
+            <div class="pdfcfg-bloco pdfcfg-lista">
+                ${grupos.map((g) => `<div class="pdfcfg-grupo" data-grupo="${g.id}">
+                    <div class="pdfcfg-grupo-head"><b>${g.nome}</b>
+                        <button type="button" data-pdfcfg="marcar" data-grupo="${g.id}">marcar</button>
+                        <button type="button" data-pdfcfg="limpar" data-grupo="${g.id}">limpar</button></div>
+                    <div class="pdfcfg-telas">${g.ids.map((id) => {
+                        const r = rotuloTelaPdf(id);
+                        return `<label><input type="checkbox" value="${id}" data-grupo="${g.id}"><span class="pdfcfg-num">${r.num}</span> ${r.titulo}</label>`;
+                    }).join('')}</div></div>`).join('')}
+            </div>
+        </div>
+        <div class="pdfcfg-pe">
+            <span class="pdfcfg-resumo" aria-live="polite"></span>
+            <button type="button" class="pdfcfg-btn" data-pdfcfg="fechar">Cancelar</button>
+            <button type="button" class="pdfcfg-btn pdfcfg-btn--ok" data-pdfcfg="gerar">Gerar PDF</button>
+        </div>
+        <p class="pdfcfg-dica">Na janela de impressão: destino “Salvar como PDF” · margens Nenhuma · gráficos de plano de fundo marcado.</p>
+    </div>`;
+    document.body.appendChild(dlg);
+
+    const caixas = () => [...dlg.querySelectorAll('.pdfcfg-telas input')];
+    const que = () => (dlg.querySelector('input[name="pdfQue"]:checked') || {}).value || 'atual';
+    const atual = () => {
+        const a = document.querySelector('.screen.active');
+        return a ? a.id.replace(/^screen-/, '') : '';
+    };
+    const marcarPor = (valor) => {
+        caixas().forEach((c) => {
+            c.checked = valor === 'tudo' || (valor === 'atual' ? c.value === atual() : c.dataset.grupo === valor);
+        });
+    };
+    const resumo = () => {
+        const n = caixas().filter((c) => c.checked).length;
+        dlg.querySelector('.pdfcfg-resumo').textContent = n ? `${n} ${n === 1 ? 'página' : 'páginas'}` : 'Nenhuma tela marcada';
+        dlg.querySelector('[data-pdfcfg="gerar"]').disabled = !n;
+    };
+    dlg._resumo = resumo;
+    dlg._marcarPor = marcarPor;
+
+    dlg.addEventListener('change', (e) => {
+        const t = e.target;
+        if (!(t instanceof HTMLInputElement)) return;
+        if (t.name === 'pdfQue' && t.value !== 'escolher') marcarPor(t.value);
+        if (t.type === 'checkbox') {
+            const esc = dlg.querySelector('input[name="pdfQue"][value="escolher"]');
+            if (esc) esc.checked = true;
+        }
+        resumo();
+    });
+    dlg.addEventListener('click', (e) => {
+        const b = e.target instanceof Element ? e.target.closest('[data-pdfcfg]') : null;
+        if (e.target === dlg) { fecharConfigPdf(); return; }
+        if (!b) return;
+        const acao = b.dataset.pdfcfg;
+        if (acao === 'fechar') fecharConfigPdf();
+        if (acao === 'marcar' || acao === 'limpar') {
+            caixas().filter((c) => c.dataset.grupo === b.dataset.grupo).forEach((c) => { c.checked = acao === 'marcar'; });
+            const esc = dlg.querySelector('input[name="pdfQue"][value="escolher"]');
+            if (esc) esc.checked = true;
+            resumo();
+        }
+        if (acao === 'gerar') {
+            const ids = caixas().filter((c) => c.checked).map((c) => c.value);
+            if (!ids.length) return;
+            const tema = (dlg.querySelector('input[name="pdfTema"]:checked') || {}).value || 'atual';
+            const q = que();
+            const nomes = { atual: '', tudo: 'Todas as telas', escolher: ids.length === 1 ? '' : `${ids.length} telas` };
+            const grupo = PDF_GRUPOS.find((g) => g.id === q);
+            const nome = grupo ? grupo.nome : nomes[q] || (ids.length === 1 ? rotuloTelaPdf(ids[0]).titulo : '');
+            gravarConfigPdf({ tema, que: q, ids: q === 'escolher' ? ids : [] });
+            fecharConfigPdf();
+            exportarPdf(ids.length > 1 ? 'todas' : 'atual', { ids, tema, nome });
+        }
+    });
+    dlg.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') { e.preventDefault(); fecharConfigPdf(); }
+    });
+    return dlg;
+}
+
+function abrirConfigPdf() {
+    if (isEditing() || pdfEmAndamento) return;
+    const dlg = montarConfigPdf();
+    const cfg = lerConfigPdf();
+    const tema = dlg.querySelector(`input[name="pdfTema"][value="${cfg.tema || 'atual'}"]`) || dlg.querySelector('input[name="pdfTema"]');
+    tema.checked = true;
+    const q = cfg.que && dlg.querySelector(`input[name="pdfQue"][value="${cfg.que}"]`) ? cfg.que : 'atual';
+    dlg.querySelector(`input[name="pdfQue"][value="${q}"]`).checked = true;
+    if (q === 'escolher') {
+        const marcadas = new Set(cfg.ids || []);
+        dlg.querySelectorAll('.pdfcfg-telas input').forEach((c) => { c.checked = marcadas.has(c.value); });
+    } else {
+        dlg._marcarPor(q);
+    }
+    dlg._resumo();
+    dlg.hidden = false;
+    if (btnPdf) btnPdf.setAttribute('aria-expanded', 'true');
+    const foco = dlg.querySelector('[data-pdfcfg="gerar"]');
+    if (foco) foco.focus();
+}
+
+function fecharConfigPdf() {
+    const dlg = document.getElementById('pdfConfig');
+    if (dlg) dlg.hidden = true;
+    if (btnPdf) {
+        btnPdf.setAttribute('aria-expanded', 'false');
+        btnPdf.focus();
     }
 }
 
