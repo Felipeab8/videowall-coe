@@ -11551,7 +11551,7 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     height: 0.4rem;
     margin: 0.2rem 0;
     border-radius: 999px;
-    background: var(--row-line);
+    background: #f1c40f;
 }
 
 /* cores cheias (sem transparencia, que deixava vermelho e laranja barrentos
@@ -11562,13 +11562,13 @@ body.theme-light .motivo-tip-item.is-ruim .motivo-tip-desvio {
     bottom: 0;
 }
 .sa-ar-faixa--quente {
-    background-color: #f1c40f;
+    background-color: var(--danger);
     border-radius: 0 999px 999px 0;
 }
 }
 
 .sa-ar-faixa--umido {
-    background-color: var(--danger);
+    background-color: #f1c40f;
     border-radius: 999px 0 0 999px;
 }
 
