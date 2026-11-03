@@ -19993,7 +19993,7 @@ body.theme-light .du-proj-sel option {
 
 
 /* ============================================
-   EXPEDICAO · FLUXO DE CAMINHOES (tela 10)
+   EXPEDICAO · FLUXO DE CAMINHOES (tela 07B)
    Mesmos cartoes de etapa e tabela do fluxo da recepcao; no meio, o mesmo
    grafico de tempo medio de ciclo por etapa da tela da recepcao.
    A tabela fica com o resto da altura e rola.
@@ -20197,7 +20197,7 @@ body.theme-light .du-proj-sel option {
 
 
 /* ============================================
-   PRESSAO DOS SECADORES (tela 06B)
+   PRESSAO DOS SECADORES (tela 04C)
    No estilo da especificacao de engenharia EE-206 (Medicao em Secadores):
    um cartao por secador com o desenho da torre de cavaletes, o fluxo de ar
    nas cores do documento e os pontos de pressao marcados no lugar da
@@ -22421,4 +22421,236 @@ body.theme-dark .pr-quadro--fora .pr-quadro-valor b { color: #f87171; }
 .pr-leg-faixa--fora {
     border: 2px solid #dc2626;
     background: color-mix(in srgb, #dc2626 12%, transparent);
+}
+
+
+/* Tabela 12 na tela da pressão */
+.pr-tab-box { margin-top: 0.5rem; flex: none; }
+.pr-tab-titulo {
+    margin-bottom: 0.35rem;
+    font-size: max(0.7rem, var(--fs-texto, 0px));
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.pr-tab {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: max(0.8rem, var(--fs-texto, 0px));
+    font-variant-numeric: tabular-nums;
+}
+.pr-tab th,
+.pr-tab td {
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--card-border);
+    text-align: center;
+    color: var(--text);
+}
+.pr-tab thead th { font-weight: 700; background: var(--section-bg); }
+.pr-tab tbody th { text-align: left; font-weight: 800; }
+.pr-tab th small {
+    margin-left: 0.35rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+.pr-tab .is-ativo {
+    font-weight: 700;
+    background: color-mix(in srgb, var(--accent, #2563eb) 8%, transparent);
+}
+.pr-tab-atual {
+    display: inline-block;
+    min-width: 1.8rem;
+    margin-left: 0.5rem;
+    padding: 0 0.35rem;
+    border-radius: 999px;
+    font-weight: 800;
+}
+.pr-tab-atual--ok { color: #15803d; background: color-mix(in srgb, #16a34a 14%, transparent); }
+.pr-tab-atual--limite { color: #b45309; background: color-mix(in srgb, #d97706 16%, transparent); }
+.pr-tab-atual--fora { color: #b91c1c; background: color-mix(in srgb, #dc2626 16%, transparent); }
+body.theme-dark .pr-tab-atual--ok { color: #4ade80; }
+body.theme-dark .pr-tab-atual--limite { color: #fbbf24; }
+body.theme-dark .pr-tab-atual--fora { color: #f87171; }
+
+
+/* ============================================
+   CONTRATOS DA EXPEDIÇÃO (07C)
+   O ritmo por contrato saiu da tela 07A e ganhou a tela inteira: em cima o
+   contrato escolhido com o gráfico dos dias bem alto; embaixo a carteira
+   com todos os contratos, que toma a sobra e rola por dentro.
+   ============================================ */
+#screen-exp-contrato.active {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+#screen-exp-contrato > .screen-header {
+    margin-bottom: 0;
+}
+
+#screen-exp-contrato > .exp-contratos {
+    flex: 0 0 auto;
+}
+
+#screen-exp-contrato .exp-contrato {
+    row-gap: 0.75rem;
+    padding-top: 0.5rem;
+}
+
+#screen-exp-contrato .exp-contrato-cliente {
+    font-size: 1.6rem;
+}
+
+#screen-exp-contrato .exp-contrato-track {
+    height: 1.25rem;
+}
+
+#screen-exp-contrato .exp-contrato-ritmo-val {
+    font-size: 1.6rem;
+}
+
+#screen-exp-contrato .exp-contratos .exp-contrato-dias-graf {
+    height: 9rem;
+    gap: 3px;
+}
+
+#screen-exp-contrato .exp-contrato-dias-leg {
+    font-size: max(0.8rem, var(--fs-texto, 0px));
+}
+
+/* a cultura do filtro vale para o contrato aberto */
+#screen-exp-contrato[data-exp-cultura="milho"] .exp-contrato:not([data-cultura="milho"]),
+#screen-exp-contrato[data-exp-cultura="sorgo"] .exp-contrato:not([data-cultura="sorgo"]),
+#screen-exp-contrato[data-exp-cultura="trigo"] .exp-contrato:not([data-cultura="trigo"]),
+#screen-exp-contrato[data-exp-cultura="soja"] .exp-contrato:not([data-cultura="soja"]) {
+    display: none;
+}
+
+/* carteira: toma a sobra e rola por dentro */
+#screen-exp-contrato > .exp-carteira {
+    flex: 1 1 auto;
+    min-height: 14rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.exp-carteira-wrap {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+}
+
+.exp-carteira-tabela {
+    width: 100%;
+}
+
+.exp-carteira-tabela th,
+.exp-carteira-tabela td {
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.exp-carteira-col-barra {
+    width: 28%;
+}
+
+.exp-carteira-linha {
+    cursor: pointer;
+}
+
+.exp-carteira-linha[hidden] {
+    display: none;
+}
+
+.exp-carteira-linha:hover td {
+    background: var(--row-bg);
+}
+
+.exp-carteira-linha:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+}
+
+.exp-carteira-linha.is-ativo td {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.exp-carteira-linha.is-ativo td:first-child {
+    box-shadow: inset 4px 0 0 var(--accent);
+}
+
+.exp-carteira-barra {
+    --cor: var(--ok);
+    position: relative;
+    height: 0.75rem;
+    border-radius: 999px;
+    background: var(--row-bg);
+    border: 1px solid var(--row-line);
+}
+
+.exp-carteira-barra.exp-contrato--atencao { --cor: var(--warn); }
+.exp-carteira-barra.exp-contrato--fora { --cor: var(--danger); }
+
+.exp-carteira-barra .exp-contrato-marca {
+    top: -0.25rem;
+    bottom: -0.25rem;
+}
+
+.exp-carteira-ritmo b.is-abaixo {
+    color: var(--danger);
+}
+
+/* modo TV: ninguém clica, sai o seletor e a nota */
+@media screen and (min-width: 769px) {
+    html.tv #screen-exp-contrato :is(.section-sub, .exp-contratos-menu) {
+        display: none;
+    }
+}
+
+
+/* ============================================
+   NUMERAÇÃO DAS TELAS · número da área + letra da tela
+   01A/01B Recepção · 04A/04B/04C Secagem · 07A/07B/07C Expedição.
+   Área com uma tela só fica só com o número.
+   ============================================ */
+.screen-badge--letra {
+    width: auto;
+    min-width: 2.5rem;
+    padding: 0 0.45rem;
+    gap: 0.12rem;
+    letter-spacing: 0.01em;
+}
+
+.screen-badge-letra {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.05em;
+    height: 1.25em;
+    padding: 0 0.15em;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.24);
+    font-size: 0.95em;
+    font-weight: 800;
+    line-height: 1;
+}
+
+/* submenu: o código da tela no lugar do marcador */
+.submenu .menu-item[data-num]::before {
+    content: attr(data-num) " ·";
+    width: auto;
+    height: auto;
+    margin-right: 0.4rem;
+    border-radius: 0;
+    background: none;
+    color: var(--faint);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.submenu .menu-item[data-num].active::before {
+    background: none;
+    color: var(--accent);
 }

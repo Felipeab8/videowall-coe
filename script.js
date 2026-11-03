@@ -4836,7 +4836,7 @@ atualizarTabelasFluxo(document.getElementById('screen-fluxo'));
 // os blocos .exp-periodo-bloco. A tabela de cargas so segue a cultura.
 // ============================================
 function escolherCulturaExp(alvo) {
-    const tela = alvo.closest('#screen-7');
+    const tela = alvo.closest('#screen-7, #screen-exp-contrato');
     const cultura = alvo.dataset.expCultura;
     if (!tela || !cultura) return;
     tela.dataset.expCultura = cultura;
@@ -4847,6 +4847,7 @@ function escolherCulturaExp(alvo) {
     });
     const contratos = tela.querySelector('.exp-contratos');
     if (contratos) atualizarContratos(contratos);
+    atualizarCarteira(tela);
     scheduleFit();
 }
 
@@ -4858,7 +4859,7 @@ function escolherCulturaExp(alvo) {
 // Delegado no documento porque o editor remonta o palco.
 // ============================================
 function atualizarContratos(bloco) {
-    const tela = bloco.closest('#screen-7');
+    const tela = bloco.closest('#screen-7, #screen-exp-contrato');
     const cultura = tela ? tela.dataset.expCultura : 'todas';
     const daCultura = (linha) => !cultura || cultura === 'todas' || linha.dataset.cultura === cultura;
     const opcoes = [...bloco.querySelectorAll('.exp-contrato-opcao input')];
@@ -4918,7 +4919,88 @@ document.addEventListener('change', (e) => {
     if (!bloco) return;
     atualizarContratos(bloco);
     abrirMenuContratos(bloco, false);
+    atualizarCarteira(bloco.closest('#screen-exp-contrato'));
 });
+
+// ============================================
+// EXPEDICAO · CARTEIRA DE CONTRATOS (tela 07C)
+// Uma linha por contrato, lida das proprias linhas do ritmo (sem dado
+// duplicado): cliente, contrato, cultura, entregue, barra com a marca do
+// previsto, ritmo, validade e situacao. Clique abre o contrato em cima;
+// a cultura do filtro esconde as linhas de outra cultura.
+// ============================================
+const CULTURA_NOME = { milho: 'Milho', sorgo: 'Sorgo', trigo: 'Trigo', soja: 'Soja', cevada: 'Cevada' };
+
+function montarCarteira(tela) {
+    if (!tela) return;
+    const corpo = tela.querySelector('[data-exp-carteira]');
+    if (!corpo) return;
+    const txt = (el, sel) => {
+        const alvo = el.querySelector(sel);
+        return alvo ? alvo.textContent.replace(/\s+/g, ' ').trim() : '';
+    };
+    corpo.innerHTML = [...tela.querySelectorAll('.exp-contrato[data-contrato]')].map((linha) => {
+        const cultura = linha.dataset.cultura || '';
+        const ref = txt(linha, '.exp-contrato-ref');
+        const codigo = (ref.match(/CT-[\d/]+/) || [''])[0];
+        const status = linha.querySelector('.class-status');
+        const ritmo = linha.querySelector('.exp-contrato-ritmo-val');
+        const validade = txt(linha, '.exp-contrato-validade').replace(/^válido até\s*/i, '').split('·')[0].trim();
+        const estilo = linha.getAttribute('style') || '';
+        const icone = cultura
+            ? `<svg class="grao-icon grao-icon--${cultura} grao-icon--dot" aria-hidden="true"><use href="#ico-${cultura}"></use></svg>`
+            : '';
+        const estado = (linha.className.match(/exp-contrato--(ok|atencao|fora)/) || ['', 'ok'])[1];
+        return `<tr data-contrato="${linha.dataset.contrato}" data-cultura="${cultura}" class="exp-carteira-linha exp-carteira-linha--${estado}" tabindex="0">`
+            + `<td><b>${txt(linha, '.exp-contrato-cliente')}</b></td>`
+            + `<td>${codigo}</td>`
+            + `<td>${icone} ${CULTURA_NOME[cultura] || cultura}</td>`
+            + `<td>${txt(linha, '.exp-contrato-escala')}</td>`
+            + `<td class="exp-carteira-col-barra"><div class="exp-carteira-barra exp-contrato--${estado}" style="${estilo}"><span class="exp-contrato-fill"></span><span class="exp-contrato-marca"></span></div></td>`
+            + `<td class="exp-carteira-ritmo">${ritmo ? ritmo.innerHTML : '—'}</td>`
+            + `<td>${validade || '—'}</td>`
+            + `<td>${status ? status.outerHTML : ''}</td>`
+            + '</tr>';
+    }).join('');
+    atualizarCarteira(tela);
+}
+
+function atualizarCarteira(tela) {
+    if (!tela || tela.id !== 'screen-exp-contrato') return;
+    const cultura = tela.dataset.expCultura || 'todas';
+    const escolhido = tela.querySelector('.exp-contrato-opcao input:checked');
+    tela.querySelectorAll('.exp-carteira-linha').forEach((tr) => {
+        tr.hidden = cultura !== 'todas' && tr.dataset.cultura !== cultura;
+        const ativo = !!escolhido && tr.dataset.contrato === escolhido.value;
+        tr.classList.toggle('is-ativo', ativo);
+        tr.setAttribute('aria-selected', String(ativo));
+    });
+}
+
+function abrirContratoDaCarteira(tr) {
+    const tela = tr.closest('#screen-exp-contrato');
+    const bloco = tela && tela.querySelector('.exp-contratos');
+    const input = bloco && bloco.querySelector('.exp-contrato-opcao input[value="' + tr.dataset.contrato + '"]');
+    if (!input) return;
+    input.checked = true;
+    atualizarContratos(bloco);
+    atualizarCarteira(tela);
+}
+
+document.addEventListener('click', (e) => {
+    if (!(e.target instanceof Element) || isEditing()) return;
+    const tr = e.target.closest('.exp-carteira-linha');
+    if (tr) abrirContratoDaCarteira(tr);
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    if (!(e.target instanceof Element) || !e.target.matches('.exp-carteira-linha')) return;
+    e.preventDefault();
+    abrirContratoDaCarteira(e.target);
+});
+
+montarCarteira(document.getElementById('screen-exp-contrato'));
 
 document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
@@ -5214,11 +5296,11 @@ const PRESSAO_DESENHO = { w: 800, h: 640, quadroEsq: 195, quadroDir: 595 };
 // lugar de cada ponto no desenho (marca) e altura do quadro dele; os da
 // camara de ar quente e da fornalha ficam a esquerda, os outros a direita
 const PRESSAO_LUGARES = [
-    { x: 315, y: 120, lado: 'esq', qy: 110 },   // P1 camara de ar quente, topo
+    { x: 255, y: 530, lado: 'esq', qy: 530 },   // P1 saida da fornalha (entrada de ar quente)
     { x: 222, y: 440, lado: 'esq', qy: 315 },   // P2 camara de ar quente, base
-    { x: 497, y: 150, lado: 'dir', qy: 180 },   // P3 camara de ar saturado (exaustao)
+    { x: 315, y: 120, lado: 'esq', qy: 110 },   // P3 camara de ar quente, topo
     { x: 400, y: 518, lado: 'dir', qy: 470 },   // P4 resfriamento
-    { x: 255, y: 530, lado: 'esq', qy: 530 },   // P5 duto de ar quente, saida da fornalha
+    { x: 497, y: 150, lado: 'dir', qy: 180 },   // P5 ar saturado, exaustao (ventilador)
 ];
 
 // mmH2O com o sinal de menos tipografico: "−32"
@@ -5372,15 +5454,34 @@ function eventosPressao(dados) {
                 + `<b>${meta.nome} · ${p.id} ${formatarPressao(v)} mmca</b> fora da faixa ${faixaTexto(f)} (fluxo ${meta.fluxo})</span>`);
         });
     });
-    if (dados.fonte) {
-        itens.push(`<span class="prod-evento"><b>Referência</b> ${dados.fonte}</span>`);
-    }
     const agora = dados.horas.find((hora) => hora.agora);
     if (agora) {
         itens.push('<span class="prod-evento"><i class="prod-evento-parcial" aria-hidden="true"></i>'
             + `<b>${rotuloHora(agora)}</b> em andamento${agora.min ? ` · ${agora.min} min` : ''} · valores da hora atual</span>`);
     }
     return itens.join('');
+}
+
+// Tabela 12 na tela: faixas por ponto nos dois fluxos, com o fluxo de cada
+// secador marcado e o valor atual dele ao lado da faixa
+function tabelaPressao(dados) {
+    if (!dados.faixas) return '';
+    const ultima = dados.horas[dados.horas.length - 1];
+    const cab = dados.pontos.map((p) => `<th>${p.id}<small>${p.local}</small></th>`).join('');
+    const linhas = Object.keys(dados.faixas).map((f) => {
+        const usados = PRESSAO_SECADORES.filter((s) => dados.secadores[s] && dados.secadores[s].fluxo === f);
+        const quem = usados.map((s) => dados.secadores[s].nome).join(' · ');
+        const cel = dados.faixas[f].map((fx, i) => {
+            const atuais = usados.map((s) => {
+                const v = ultima[s][i];
+                return `<span class="pr-tab-atual pr-tab-atual--${estadoPressao(v, fx)}" title="${dados.secadores[s].nome} agora">${formatarPressao(v)}</span>`;
+            }).join('');
+            return `<td>${faixaTexto(fx)}${atuais}</td>`;
+        }).join('');
+        return `<tr class="${quem ? 'is-ativo' : ''}"><th>Fluxo ${f}${quem ? `<small>${quem}</small>` : ''}</th>${cel}</tr>`;
+    }).join('');
+    return '<div class="pr-tab-titulo">Tabela 12 · valores das depressões nos secadores (mmca) · faixa e valor atual</div>'
+        + `<table class="pr-tab"><thead><tr><th>Local de medição</th>${cab}</tr></thead><tbody>${linhas}</tbody></table>`;
 }
 
 function montarPressao(raiz) {
@@ -5391,6 +5492,8 @@ function montarPressao(raiz) {
         alvo.innerHTML = PRESSAO_SECADORES.map((sec) => cartaoPressao(dados, sec)).join('');
         const eventos = secao.querySelector('[data-pressao-eventos]');
         if (eventos) eventos.innerHTML = eventosPressao(dados);
+        const tabela = secao.querySelector('[data-pressao-tabela]');
+        if (tabela) tabela.innerHTML = tabelaPressao(dados);
         secao.querySelectorAll('[data-pressao-turno]').forEach((el) => {
             el.textContent = `${dados.turno} · ${dados.quando}`;
         });
