@@ -3080,6 +3080,7 @@ body.theme-dark {
     --grao-sorgo: #3987e5;
     --grao-trigo: #d95926;
     --grao-soja: #199e70;
+    --grao-cevada: #b08d2e;
     --grao-texto: #05080d;
 }
 
@@ -3091,6 +3092,7 @@ body.theme-light {
     --grao-sorgo: #2a78d6;
     --grao-trigo: #eb6834;
     --grao-soja: #1baf7a;
+    --grao-cevada: #a8842a;
 }
 
 
@@ -3217,6 +3219,33 @@ body.theme-light {
 }
 
 
+
+.grao-icon--cevada {
+    color: var(--grao-cevada);
+}
+
+.legend-dot--cevada {
+    background: var(--grao-cevada);
+}
+
+/* Classificação: o ícone do grão, colorido, no lugar da bolinha */
+.grao-icon--class {
+    width: 1.05em;
+    height: 1.05em;
+    stroke-width: 2;
+    vertical-align: -0.15em;
+}
+
+.kpi-grid--class .class-media-item .grao-icon--class {
+    width: 1.35rem;
+    height: 1.35rem;
+}
+
+.class-filtro-btn .grao-icon--class {
+    width: 0.95rem;
+    height: 0.95rem;
+    margin-right: 0.1rem;
+}
 
 /* KPI com abertura por grão (umidade média, impureza) */
 .kpi-card--grao {
@@ -14238,6 +14267,20 @@ body.theme-light .kpi-flag--info {
     outline-offset: -2px;
 }
 
+/* tema claro: moldura das TVs em cinza suave, sem o preto do modo escuro */
+body.theme-light .mural-quadro {
+    background: #e2e8f0;
+    box-shadow: 0 0 0 var(--mural-fio) #cbd5e1;
+}
+
+body.theme-light .mural-tv {
+    background: #f1f5f9;
+}
+
+html.tv body.theme-light #screen-geral.active {
+    background: #e2e8f0;
+}
+
 /* dentro do quadro (o iframe): a tela igual à do computador, só sem o
    cabeçalho e o menu */
 html.quadro .header,
@@ -22286,11 +22329,4 @@ html.tv .est-tile-rotulo {
     font-size: max(0.66rem, var(--fs-texto, 0px));
     font-weight: 600;
     color: var(--faint);
-}
-
-/* Classificação: ícone da cultura ao lado de cada média */
-.kpi-grid--class .class-media-item .grao-icon {
-    width: 0.8em;
-    height: 0.8em;
-    stroke-width: 2;
 }
