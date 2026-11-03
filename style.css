@@ -22287,3 +22287,10 @@ html.tv .est-tile-rotulo {
     font-weight: 600;
     color: var(--faint);
 }
+
+/* Classificação: ícone da cultura ao lado de cada média */
+.kpi-grid--class .class-media-item .grao-icon {
+    width: 0.8em;
+    height: 0.8em;
+    stroke-width: 2;
+}
