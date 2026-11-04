@@ -8376,9 +8376,10 @@ function estPilha(prefixo) {
 // O que cada tela mostra. kpis: modo 'ano' (jan até o último mês fechado),
 // '12m' (últimos 12 meses) ou 'pico' (maior mês da janela do gráfico).
 // destaque: o número do cartão da área na visão geral estratégica.
+// codigo: prefixo do ID no videowall; -A nos KPIs, -B no gráfico, -C na tabela.
 const EST_TELAS = {
     recepcao: {
-        nome: 'Recepção', destaque: 'rec', goto: 'est-recepcao',
+        nome: 'Recepção', codigo: 'AVR-ERE', destaque: 'rec', goto: 'est-recepcao',
         kpis: [
             { rotulo: 'Recebido no ano', metrica: 'rec', modo: 'ano' },
             { rotulo: 'Últimos 12 meses', metrica: 'rec', modo: '12m' },
@@ -8393,7 +8394,7 @@ const EST_TELAS = {
         ],
     },
     classificacao: {
-        nome: 'Classificação', destaque: 'umidade', goto: 'est-classificacao',
+        nome: 'Classificação', codigo: 'AVR-ECL', destaque: 'umidade', goto: 'est-classificacao',
         kpis: [
             { rotulo: 'Umidade média', metrica: 'umidade', modo: 'ano' },
             { rotulo: 'Impureza média', metrica: 'impureza', modo: 'ano' },
@@ -8409,7 +8410,7 @@ const EST_TELAS = {
         ],
     },
     moegas: {
-        nome: 'Moegas', destaque: 'vazao', goto: 'est-moegas',
+        nome: 'Moegas', codigo: 'AVR-EMO', destaque: 'vazao', goto: 'est-moegas',
         kpis: [
             { rotulo: 'Vazão média', metrica: 'vazao', modo: 'ano' },
             { rotulo: 'Descarga por caminhão', metrica: 'tempoDescarga', modo: 'ano' },
@@ -8424,7 +8425,7 @@ const EST_TELAS = {
         ],
     },
     secagem: {
-        nome: 'Secagem', destaque: 'secado', goto: 'est-secagem',
+        nome: 'Secagem', codigo: 'AVR-ESE', destaque: 'secado', goto: 'est-secagem',
         kpis: [
             { rotulo: 'Secado no ano', metrica: 'secado', modo: 'ano' },
             { rotulo: 'Cavaco por m³ secado', metrica: 'cavacoKg', modo: 'ano' },
@@ -8439,7 +8440,7 @@ const EST_TELAS = {
         ],
     },
     armazenagem: {
-        nome: 'Silos e armazém', destaque: 'ocupacao', goto: 'est-armazenagem',
+        nome: 'Silos e armazém', codigo: 'AVR-EAR', destaque: 'ocupacao', goto: 'est-armazenagem',
         kpis: [
             { rotulo: 'Ocupação média', metrica: 'ocupacao', modo: 'ano' },
             { rotulo: 'Pico de ocupação', metrica: 'ocupacaoPico', modo: 'ano' },
@@ -8455,7 +8456,7 @@ const EST_TELAS = {
         ],
     },
     expedicao: {
-        nome: 'Expedição', destaque: 'exp', goto: 'est-expedicao',
+        nome: 'Expedição', codigo: 'AVR-EEX', destaque: 'exp', goto: 'est-expedicao',
         kpis: [
             { rotulo: 'Expedido no ano', metrica: 'exp', modo: 'ano' },
             { rotulo: 'Últimos 12 meses', metrica: 'exp', modo: '12m' },
@@ -8470,7 +8471,7 @@ const EST_TELAS = {
         ],
     },
     clima: {
-        nome: 'Clima', destaque: 'chuva', goto: 'est-clima',
+        nome: 'Clima', codigo: 'AVR-ECI', destaque: 'chuva', goto: 'est-clima',
         kpis: [
             { rotulo: 'Chuva no ano', metrica: 'chuva', modo: 'ano' },
             { rotulo: 'Dias de chuva', metrica: 'diasChuva', modo: 'ano' },
@@ -8537,7 +8538,7 @@ function estPicoDe(serie) {
     return estJanela().reduce((a, k) => (serie[k] > serie[a] ? k : a), EST_N - EST_JANELA);
 }
 
-function estKpi(kpi) {
+function estKpi(kpi, codigo) {
     const m = EST_METRICAS[kpi.metrica];
     let valor;
     let rodape;
@@ -8552,7 +8553,7 @@ function estKpi(kpi) {
         rodape = estDeltaHtml(estDelta(m, valor, estAgregar(m, ks.map((k) => k - 12))), sufixo);
     }
     const periodo = kpi.modo === 'ano' ? ` · ${EST_PERIODO_ANO} ${EST_ULTIMO.ano}` : '';
-    return `<div class="kpi-card est-kpi">
+    return `<div data-codigo="${codigo}" class="kpi-card est-kpi">
         <div class="kpi-label">${kpi.rotulo}${periodo}</div>
         <div class="kpi-value">${estValorHtml(m, valor)}</div>
         ${rodape}
@@ -8576,7 +8577,7 @@ function estMetricaDoGrafico(cfg) {
     return EST_METRICAS[cfg.pilha ? cfg.total : cfg.metrica];
 }
 
-function estGrafico(cfg) {
+function estGrafico(cfg, codigo) {
     const ks = estJanela();
     const m = estMetricaDoGrafico(cfg);
     const barras = cfg.tipo === 'barras';
@@ -8635,7 +8636,7 @@ function estGrafico(cfg) {
         + `<span><i class="est-leg ${barras ? 'est-leg--ant' : 'est-leg--linha-ant'}"></i>mesmo mês, ano anterior</span>`
         + (cfg.ref ? `<span><i class="est-leg est-leg--ref"></i>${cfg.ref.rotulo}</span>` : '');
 
-    return `<div class="content-section du-section est-section est-section--grafico">
+    return `<div data-codigo="${codigo}" class="content-section du-section est-section est-section--grafico">
         <div class="section-head">
             <h3>${cfg.titulo.toUpperCase()} · ${m.unidade.toUpperCase()}</h3>
             <span class="du-legenda">${legenda}</span>
@@ -8651,7 +8652,7 @@ function estGrafico(cfg) {
     </div>`;
 }
 
-function estTabela(colunas) {
+function estTabela(colunas, codigo) {
     const head = colunas.map((c) => `<th class="num">${c.rotulo}<small>${EST_METRICAS[c.metrica].unidade}</small></th>`).join('');
     const maximos = colunas.map((c) => Math.max(...EST_ANOS.map((ano) => estAgregar(EST_METRICAS[c.metrica], estMesesDoAno(ano)))));
     const linhas = EST_ANOS.slice().reverse().map((ano) => {
@@ -8669,7 +8670,7 @@ function estTabela(colunas) {
         const nome = parcial ? `${ano}<small>${EST_PERIODO_ANO}</small>` : String(ano);
         return `<tr${parcial ? ' class="est-linha-atual"' : ''}><td class="pv-tabela-nome">${nome}</td>${cels}</tr>`;
     }).join('');
-    return `<div class="content-section du-section est-section">
+    return `<div data-codigo="${codigo}" class="content-section du-section est-section">
         <div class="section-head">
             <h3>ANO A ANO</h3>
             <span class="du-legenda"><span>${EST_ULTIMO.ano} até ${EST_MESES[EST_ULTIMO.mes]} · ▲▼ vs ${EST_PERIODO_ANO} ${EST_ULTIMO.ano - 1}</span></span>
@@ -8702,7 +8703,7 @@ function estGeral() {
         const v = estAgregar(m, ano);
         const d = estDelta(m, v, estAgregar(m, ano.map((k) => k - 12)));
         const kpi = tela.kpis.find((x) => x.metrica === tela.destaque);
-        return `<button type="button" class="est-tile" data-goto="${tela.goto}">
+        return `<button type="button" data-codigo="AVR-EVG-A" class="est-tile" data-goto="${tela.goto}">
             <span class="est-tile-nome">${tela.nome}</span>
             <span class="est-tile-rotulo">${kpi ? kpi.rotulo : ''} · ${EST_PERIODO_ANO} ${EST_ULTIMO.ano}</span>
             <span class="kpi-value">${estValorHtml(m, v)}</span>
@@ -8725,7 +8726,7 @@ function estGeral() {
     }).join('');
 
     return `<div class="est-geral">${tiles}
-        <div class="est-tile est-tile--recordes">
+        <div data-codigo="AVR-EVG-B" class="est-tile est-tile--recordes">
             <span class="est-tile-nome">Recordes · ${EST_JANELA} meses</span>
             <ul class="est-recordes">${recordes}</ul>
         </div>
@@ -8734,8 +8735,8 @@ function estGeral() {
 
 function estTela(chave) {
     const tela = EST_TELAS[chave];
-    return `<div class="kpi-grid kpi-grid--four est-kpis">${tela.kpis.map(estKpi).join('')}</div>
-        <div class="du-split est-split">${estGrafico(tela.grafico)}${estTabela(tela.tabela)}</div>`;
+    return `<div class="kpi-grid kpi-grid--four est-kpis">${tela.kpis.map((kpi) => estKpi(kpi, tela.codigo + '-A')).join('')}</div>
+        <div class="du-split est-split">${estGrafico(tela.grafico, tela.codigo + '-B')}${estTabela(tela.tabela, tela.codigo + '-C')}</div>`;
 }
 
 function montarEstrategica() {
