@@ -24827,3 +24827,36 @@ html.pdf-print *::after {
 .pdfcfg-dica { margin: 0; padding: 0 1.1rem 0.8rem; font-size: 12px; color: var(--muted); }
 
 @media print { .pdfcfg { display: none !important; } }
+
+
+/* PDF: o tema escolhido ganha de qualquer tema salvo ou corrida de iframe */
+html.pdf-tema-dark body {
+    --bg-top: #081221;
+    --bg-bottom: #0d1c30;
+    --header-bg: #0b1a2c;
+    --header-line: #1f6feb;
+    --sidebar-bg: #081321;
+    --sidebar-border: rgba(120, 160, 210, 0.12);
+    --panel-bg: rgba(16, 31, 52, 0.55);
+    --panel-border: rgba(120, 160, 210, 0.14);
+    --section-bg: rgba(11, 24, 41, 0.72);
+    --card-bg-top: rgba(24, 50, 86, 0.75);
+    --card-bg-bottom: rgba(15, 31, 54, 0.75);
+    --card-border: rgba(90, 150, 220, 0.22);
+    --row-bg: rgba(255, 255, 255, 0.03);
+    --row-line: rgba(120, 160, 210, 0.12);
+    --hover: rgba(255, 255, 255, 0.05);
+    --text: #e9eff7;
+    --muted: #8ea3ba;
+    --faint: #6d8199;
+    --accent: #3b82f6;
+    --accent-strong: #2563eb;
+    --accent-soft: rgba(59, 130, 246, 0.16);
+    --shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    --shadow-soft: 0 6px 16px rgba(0, 0, 0, 0.25);
+    color-scheme: dark;
+}
+
+html.pdf-tema-light body {
+    color-scheme: light;
+}
