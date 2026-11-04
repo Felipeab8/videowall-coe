@@ -2465,6 +2465,24 @@ function forcarTemaPdfNoMural(theme) {
                 doc.body.classList.remove('theme-light', 'theme-dark');
                 doc.body.classList.add(theme);
                 doc.documentElement.style.colorScheme = theme === 'theme-light' ? 'light' : 'dark';
+                // Chromium/Edge às vezes imprime o iframe como uma viewport
+                // vazia quando o documento interno entra em @media print.
+                // Esta folha interna neutraliza só o print do quadro; o PDF
+                // externo continua com as regras normais.
+                if (!doc.getElementById('pdfMuralPrintFix')) {
+                    const css = doc.createElement('style');
+                    css.id = 'pdfMuralPrintFix';
+                    css.textContent = '@media print {'
+                        + 'html,body{width:100%!important;height:100%!important;overflow:hidden!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}'
+                        + 'body{background:var(--bg-bottom)!important}'
+                        + '.header,.sidebar,.sidebar-reveal,.sidebar-backdrop{display:none!important}'
+                        + '.container{display:block!important;height:100vh!important;overflow:hidden!important}'
+                        + '.content{display:block!important;height:100vh!important;padding:0!important;overflow:hidden!important}'
+                        + '.screen{display:none!important}'
+                        + '.screen.active{display:block!important;height:100vh!important;min-height:0!important;overflow:hidden!important}'
+                        + '}';
+                    doc.head.appendChild(css);
+                }
             }
         } catch (err) {
             // se a origem nao permitir acesso, a mensagem acima ainda vale
@@ -2637,6 +2655,7 @@ async function exportarPdf(modo, opcoes = {}) {
         await esperarMs(300);   // graficos que se redesenham pelo tamanho
         forcarTemaPdfNoMural(temaPdf);
         await esperarQuadro();
+        await esperarMs(ids.includes('geral') ? 500 : 0);
         avisoPdf('Pronto para salvar', 1, 1, 'Destino: “Salvar como PDF” · Margens: Nenhuma · Gráficos de plano de fundo: marcado');
         window.addEventListener('afterprint', restaurar);
         window.print();
