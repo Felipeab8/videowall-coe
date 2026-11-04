@@ -2436,6 +2436,42 @@ function telasDoPdf(modo) {
         .filter((id) => document.getElementById('screen-' + id) && !vistas.has(id) && vistas.add(id));
 }
 
+// Ordem oficial do PDF = ordem visual do menu. A ordem em que as caixas
+// foram marcadas nunca altera a sequencia das paginas (07A, 07B, 07C).
+function ordemOficialPdf() {
+    const vistos = new Set();
+    return [...document.querySelectorAll('.menu-item[data-screen]')]
+        .map((item) => item.getAttribute('data-screen'))
+        .filter((id) => document.getElementById('screen-' + id) && !vistos.has(id) && vistos.add(id));
+}
+
+function ordenarIdsPdf(ids) {
+    const escolhidos = new Set(ids);
+    return ordemOficialPdf().filter((id) => escolhidos.has(id));
+}
+
+// Trava o tema escolhido tambem dentro das oito TVs da Visao Geral.
+// Reaplica depois do carregamento para vencer tema salvo e qualquer corrida
+// entre iframe, URL e localStorage.
+function forcarTemaPdfNoMural(theme) {
+    setHeaderTheme(theme);
+    document.documentElement.classList.toggle('pdf-tema-dark', theme === 'theme-dark');
+    document.documentElement.classList.toggle('pdf-tema-light', theme === 'theme-light');
+    document.querySelectorAll('.mural-tv').forEach((tv) => {
+        aplicarTemaNoQuadro(tv, theme);
+        try {
+            const doc = tv.contentDocument;
+            if (doc && doc.body) {
+                doc.body.classList.remove('theme-light', 'theme-dark');
+                doc.body.classList.add(theme);
+                doc.documentElement.style.colorScheme = theme === 'theme-light' ? 'light' : 'dark';
+            }
+        } catch (err) {
+            // se a origem nao permitir acesso, a mensagem acima ainda vale
+        }
+    });
+}
+
 function avisoPdf(texto, feito, total, nota) {
     let caixa = document.getElementById('pdfPreparo');
     if (!caixa) {
@@ -2488,8 +2524,8 @@ async function exportarPdf(modo, opcoes = {}) {
     const ativaAntes = document.querySelector('.screen.active');
     const itemAntes = document.querySelector('.menu-item.active[data-screen]');
     const tituloOriginal = document.title;
-    const ids = (opcoes.ids && opcoes.ids.length ? opcoes.ids : telasDoPdf(modo))
-        .filter((id) => document.getElementById('screen-' + id));
+    const ids = ordenarIdsPdf((opcoes.ids && opcoes.ids.length ? opcoes.ids : telasDoPdf(modo))
+        .filter((id) => document.getElementById('screen-' + id)));
     const idAtual = ativaAntes ? ativaAntes.id.replace(/^screen-/, '') : '';
     // so navega entre telas quando o PDF nao e so a tela que esta aberta
     const navegar = ids.length > 1 || ids[0] !== idAtual;
@@ -2498,6 +2534,8 @@ async function exportarPdf(modo, opcoes = {}) {
     const medidas = {};
     const pagina = document.createElement('style');
     pagina.id = 'pdfPagina';
+    const contentPdf = document.querySelector('.content');
+    const filhosOriginais = contentPdf ? [...contentPdf.children] : [];
     let restaurado = false;
 
     const restaurar = () => {
@@ -2506,13 +2544,15 @@ async function exportarPdf(modo, opcoes = {}) {
         window.removeEventListener('afterprint', restaurar);
         pdfTravado = false;
         document.title = tituloOriginal;
-        root.classList.remove('pdf-print');
+        root.classList.remove('pdf-print', 'pdf-tema-dark', 'pdf-tema-light');
         root.style.removeProperty('--fit');
         pagina.remove();
         document.querySelectorAll('.screen.pdf-pag').forEach((s) => {
             s.classList.remove('pdf-pag', 'pdf-ultima', 'active');
             ['zoom', 'width', 'height', 'min-height', 'max-height'].forEach((k) => s.style.removeProperty(k));
         });
+        // devolve exatamente a ordem original dos elementos da tela
+        if (contentPdf) filhosOriginais.forEach((filho) => contentPdf.appendChild(filho));
         const aviso = document.getElementById('pdfPreparo');
         if (aviso) aviso.remove();
         if (temaPdf !== temaAntes) setHeaderTheme(temaAntes);
@@ -2525,11 +2565,10 @@ async function exportarPdf(modo, opcoes = {}) {
     try {
         if (!ids.length) throw new Error('nenhuma tela');
         if (navegar) avisoPdf('Preparando o PDF…', 0, ids.length);
-        // tema so do PDF: troca agora e volta ao fechar a impressao
-        if (temaPdf !== temaAntes) {
-            setHeaderTheme(temaPdf);
-            await esperarMs(400);
-        }
+        // tema so do PDF: aplica sempre (mesmo quando parece ja igual),
+        // porque as TVs internas podem ter guardado outro tema
+        forcarTemaPdfNoMural(temaPdf);
+        await esperarMs(450);
 
         // 1) mede cada tela do jeito que ela aparece no monitor
         for (let n = 0; n < ordem.length; n++) {
@@ -2540,8 +2579,13 @@ async function exportarPdf(modo, opcoes = {}) {
                     const item = document.querySelector('.menu-item[data-screen="' + id + '"]');
                     if (item) item.click();
                     await esperarQuadro();
-                    if (id === 'geral') await esperarMural(12000);
-                    else await esperarMs(200);
+                    if (id === 'geral') {
+                        await esperarMural(12000);
+                        forcarTemaPdfNoMural(temaPdf);
+                        await esperarMs(650);
+                    } else {
+                        await esperarMs(200);
+                    }
                 }
                 fitToScreen();
                 await esperarQuadro();
@@ -2571,8 +2615,13 @@ async function exportarPdf(modo, opcoes = {}) {
         pagina.textContent = `@page { size: ${W}px ${H}px; margin: 0; }`;
         document.head.appendChild(pagina);
         root.classList.add('pdf-print');
+        root.classList.toggle('pdf-tema-dark', temaPdf === 'theme-dark');
+        root.classList.toggle('pdf-tema-light', temaPdf === 'theme-light');
         const telas = ids.map((id) => document.getElementById('screen-' + id))
             .filter((tela) => tela && medidas[tela.id.replace(/^screen-/, '')]);
+        // A impressao segue a ordem fisica do DOM. Move apenas as paginas
+        // escolhidas para a ordem oficial do menu; restaurar() desfaz depois.
+        if (contentPdf) telas.forEach((tela) => contentPdf.appendChild(tela));
         telas.forEach((tela, k) => {
             const m = medidas[tela.id.replace(/^screen-/, '')];
             tela.classList.add('pdf-pag', 'active');
@@ -2586,6 +2635,8 @@ async function exportarPdf(modo, opcoes = {}) {
         document.title = nomeArquivoPdf(modo, opcoes.nome);
         await esperarQuadro();
         await esperarMs(300);   // graficos que se redesenham pelo tamanho
+        forcarTemaPdfNoMural(temaPdf);
+        await esperarQuadro();
         avisoPdf('Pronto para salvar', 1, 1, 'Destino: “Salvar como PDF” · Margens: Nenhuma · Gráficos de plano de fundo: marcado');
         window.addEventListener('afterprint', restaurar);
         window.print();
