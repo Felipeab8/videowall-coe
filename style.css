@@ -19920,6 +19920,11 @@ body.theme-light .du-proj-sel option {
     border-radius: 0.25rem;
 }
 
+/* nas etapas do fluxo o número mora no canto direito: o código fica ao lado */
+.fluxo-etapa[data-codigo]::before {
+    right: 1.75rem;
+}
+
 .secador-chart[data-codigo] {
     padding-top: 0.8rem;
 }
