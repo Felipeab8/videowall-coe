@@ -2460,19 +2460,18 @@ function fixarTelasDoMuralPdf(theme) {
         if (!tv) return;
         const primeira = String(quadro.dataset.telas || '').split(',').map((s) => s.trim()).filter(Boolean)[0];
         if (!primeira) return;
-        // Se o iframe já está na primeira tela, apenas a congela. Caso tenha
-        // rodado para outra tela, recarrega uma única vez com ?pdfquadro=1.
         try {
             const doc = tv.contentDocument;
-            const ativa = doc && doc.querySelector('.screen.active');
-            if (ativa && ativa.id === 'screen-' + primeira && tv.src.includes('pdfquadro=1')) return;
-        } catch (err) { /* recarrega abaixo */ }
-        const url = new URL(location.href);
-        url.search = '';
-        url.searchParams.set('telas', quadro.dataset.telas || primeira);
-        url.searchParams.set('tema', theme === 'theme-light' ? 'claro' : 'escuro');
-        url.searchParams.set('pdfquadro', '1');
-        tv.src = url.pathname + url.search;
+            const win = tv.contentWindow;
+            if (!doc || !win) return;
+            const item = doc.querySelector('.menu-item[data-screen="' + primeira + '"]');
+            if (item) item.click();
+            doc.body.classList.remove('theme-light', 'theme-dark');
+            doc.body.classList.add(theme);
+            doc.documentElement.style.colorScheme = theme === 'theme-light' ? 'light' : 'dark';
+        } catch (err) {
+            aplicarTemaNoQuadro(tv, theme);
+        }
     });
 }
 
@@ -2623,9 +2622,8 @@ async function exportarPdf(modo, opcoes = {}) {
                     if (id === 'geral') {
                         await esperarMural(12000);
                         fixarTelasDoMuralPdf(temaPdf);
-                        await esperarMural(12000);
                         forcarTemaPdfNoMural(temaPdf);
-                        await esperarMs(850);
+                        await esperarMs(900);
                     } else {
                         await esperarMs(200);
                     }
