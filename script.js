@@ -274,6 +274,7 @@ const TV_STORAGE_KEY = 'videowall:modo-tv';
 // desta TV. Vazio fora do quadro. O revezamento esta no fim do arquivo.
 const TELAS_DO_QUADRO = (new URLSearchParams(location.search).get('telas') || '')
     .split(',').map((tela) => tela.trim()).filter(Boolean);
+const PDF_QUADRO_FIXO = new URLSearchParams(location.search).get('pdfquadro') === '1';
 
 // ---- Visao geral: o mural ----
 // Cada .mural-quadro ganha um iframe com esta pagina em ?telas=... so com a
@@ -2453,6 +2454,28 @@ function ordenarIdsPdf(ids) {
 // Trava o tema escolhido tambem dentro das oito TVs da Visao Geral.
 // Reaplica depois do carregamento para vencer tema salvo e qualquer corrida
 // entre iframe, URL e localStorage.
+function fixarTelasDoMuralPdf(theme) {
+    document.querySelectorAll('#screen-geral .mural-quadro').forEach((quadro) => {
+        const tv = quadro.querySelector('.mural-tv');
+        if (!tv) return;
+        const primeira = String(quadro.dataset.telas || '').split(',').map((s) => s.trim()).filter(Boolean)[0];
+        if (!primeira) return;
+        // Se o iframe já está na primeira tela, apenas a congela. Caso tenha
+        // rodado para outra tela, recarrega uma única vez com ?pdfquadro=1.
+        try {
+            const doc = tv.contentDocument;
+            const ativa = doc && doc.querySelector('.screen.active');
+            if (ativa && ativa.id === 'screen-' + primeira && tv.src.includes('pdfquadro=1')) return;
+        } catch (err) { /* recarrega abaixo */ }
+        const url = new URL(location.href);
+        url.search = '';
+        url.searchParams.set('telas', quadro.dataset.telas || primeira);
+        url.searchParams.set('tema', theme === 'theme-light' ? 'claro' : 'escuro');
+        url.searchParams.set('pdfquadro', '1');
+        tv.src = url.pathname + url.search;
+    });
+}
+
 function forcarTemaPdfNoMural(theme) {
     setHeaderTheme(theme);
     document.documentElement.classList.toggle('pdf-tema-dark', theme === 'theme-dark');
@@ -2599,8 +2622,10 @@ async function exportarPdf(modo, opcoes = {}) {
                     await esperarQuadro();
                     if (id === 'geral') {
                         await esperarMural(12000);
+                        fixarTelasDoMuralPdf(temaPdf);
+                        await esperarMural(12000);
                         forcarTemaPdfNoMural(temaPdf);
-                        await esperarMs(650);
+                        await esperarMs(850);
                     } else {
                         await esperarMs(200);
                     }
@@ -2653,9 +2678,10 @@ async function exportarPdf(modo, opcoes = {}) {
         document.title = nomeArquivoPdf(modo, opcoes.nome);
         await esperarQuadro();
         await esperarMs(300);   // graficos que se redesenham pelo tamanho
+        if (ids.includes('geral')) fixarTelasDoMuralPdf(temaPdf);
         forcarTemaPdfNoMural(temaPdf);
         await esperarQuadro();
-        await esperarMs(ids.includes('geral') ? 500 : 0);
+        await esperarMs(ids.includes('geral') ? 850 : 0);
         avisoPdf('Pronto para salvar', 1, 1, 'Destino: “Salvar como PDF” · Margens: Nenhuma · Gráficos de plano de fundo: marcado');
         window.addEventListener('afterprint', restaurar);
         window.print();
@@ -8791,7 +8817,7 @@ if (TELAS_DO_QUADRO.length) {
         .filter(Boolean);
     let vez = 0;
     if (itensDoQuadro.length) itensDoQuadro[0].click();
-    if (itensDoQuadro.length > 1) {
+    if (itensDoQuadro.length > 1 && !PDF_QUADRO_FIXO) {
         setInterval(() => {
             vez = (vez + 1) % itensDoQuadro.length;
             itensDoQuadro[vez].click();
