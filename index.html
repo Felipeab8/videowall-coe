@@ -12,7 +12,7 @@
          não carrega e a tela usa o mapa esquemático em SVG. -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css">
-    <link rel="stylesheet" href="style.css?v=pdf10">
+    <link rel="stylesheet" href="style.css?v=est3">
 </head>
 <body class="theme-dark" data-visao="tatica">
 
@@ -207,17 +207,81 @@
                 <button class="menu-item menu-item--solo" data-screen="8"><span class="menu-text">Previsão do tempo</span></button>
             </nav>
 
-            <!-- Visão estratégica: uma tela por área de Avaré, com os meses
-                 fechados e os anos anteriores. Só aparece com o botão
-                 ESTRATÉGICA do cabeçalho (o resto do menu é da visão tática). -->
+            <!-- Visão estratégica: as mesmas áreas de Avaré em meses e anos, com a
+                 projeção. Cada tela é desenhada pelo estrategico.js (EST_TELAS); o
+                 menu só aparece com o botão ESTRATÉGICA do cabeçalho (ou a tecla V). -->
             <nav class="menu" data-unidade="Unidade Avaré" data-visao="estrategica" aria-label="Telas estratégicas">
                 <button class="menu-item menu-item--geral" data-screen="est-geral"><span class="menu-text">Visão geral</span></button>
-                <button class="menu-item menu-item--solo" data-screen="est-recepcao"><span class="menu-text">Recepção</span></button>
-                <button class="menu-item menu-item--solo" data-screen="est-classificacao"><span class="menu-text">Classificação</span></button>
-                <button class="menu-item menu-item--solo" data-screen="est-moegas"><span class="menu-text">Moegas</span></button>
-                <button class="menu-item menu-item--solo" data-screen="est-secagem"><span class="menu-text">Secagem</span></button>
-                <button class="menu-item menu-item--solo" data-screen="est-armazenagem"><span class="menu-text">Silos e armazém</span></button>
-                <button class="menu-item menu-item--solo" data-screen="est-expedicao"><span class="menu-text">Expedição</span></button>
+                <button class="menu-item menu-item--solo" data-screen="est-projecao"><span class="menu-text">Projeção do ano</span></button>
+                <div class="menu-group" data-group="e1">
+                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-e1">
+                        <span class="menu-text">Recepção</span>
+                        <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="submenu" id="submenu-e1" hidden>
+                        <button class="menu-item" data-screen="est-recepcao" data-num="E1A"><span class="menu-text">Volume recebido</span></button>
+                        <button class="menu-item" data-screen="est-rec-fila" data-num="E1B"><span class="menu-text">Fila e espera</span></button>
+                        <button class="menu-item" data-screen="est-rec-ciclo" data-num="E1C"><span class="menu-text">Ciclo por etapa</span></button>
+                        <button class="menu-item" data-screen="est-rec-porto" data-num="E1D"><span class="menu-text">Retornos do porto</span></button>
+                    </div>
+                </div>
+                <div class="menu-group" data-group="e2">
+                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-e2">
+                        <span class="menu-text">Classificação</span>
+                        <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="submenu" id="submenu-e2" hidden>
+                        <button class="menu-item" data-screen="est-classificacao" data-num="E2A"><span class="menu-text">Qualidade na chegada</span></button>
+                        <button class="menu-item" data-screen="est-cla-trigo" data-num="E2B"><span class="menu-text">Trigo · PH, FN e germinado</span></button>
+                        <button class="menu-item" data-screen="est-cla-prelimpeza" data-num="E2C"><span class="menu-text">Pré-limpeza e descontos</span></button>
+                        <button class="menu-item" data-screen="est-cla-cooperados" data-num="E2D"><span class="menu-text">Cooperados</span></button>
+                    </div>
+                </div>
+                <div class="menu-group" data-group="e3">
+                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-e3">
+                        <span class="menu-text">Moegas</span>
+                        <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="submenu" id="submenu-e3" hidden>
+                        <button class="menu-item" data-screen="est-moegas" data-num="E3A"><span class="menu-text">Cargas e vazão por moega</span></button>
+                        <button class="menu-item" data-screen="est-moe-pulmao" data-num="E3B"><span class="menu-text">Silos pulmão</span></button>
+                    </div>
+                </div>
+                <div class="menu-group" data-group="e4">
+                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-e4">
+                        <span class="menu-text">Secagem</span>
+                        <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="submenu" id="submenu-e4" hidden>
+                        <button class="menu-item" data-screen="est-secagem" data-num="E4A"><span class="menu-text">Secado e ritmo</span></button>
+                        <button class="menu-item" data-screen="est-sec-temperatura" data-num="E4B"><span class="menu-text">Temperatura e umidade</span></button>
+                        <button class="menu-item" data-screen="est-sec-cavaco" data-num="E4C"><span class="menu-text">Cavaco</span></button>
+                        <button class="menu-item" data-screen="est-sec-paradas" data-num="E4D"><span class="menu-text">Paradas e disponibilidade</span></button>
+                        <button class="menu-item" data-screen="est-sec-pressao" data-num="E4E"><span class="menu-text">Pressão dos secadores</span></button>
+                    </div>
+                </div>
+                <div class="menu-group" data-group="e5">
+                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-e5">
+                        <span class="menu-text">Silos e armazém</span>
+                        <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="submenu" id="submenu-e5" hidden>
+                        <button class="menu-item" data-screen="est-armazenagem" data-num="E5A"><span class="menu-text">Ocupação e saldo</span></button>
+                        <button class="menu-item" data-screen="est-arm-temperatura" data-num="E5B"><span class="menu-text">Temperatura e aeração</span></button>
+                    </div>
+                </div>
+                <div class="menu-group" data-group="e6">
+                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-e6">
+                        <span class="menu-text">Expedição</span>
+                        <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="submenu" id="submenu-e6" hidden>
+                        <button class="menu-item" data-screen="est-expedicao" data-num="E6A"><span class="menu-text">Volume expedido</span></button>
+                        <button class="menu-item" data-screen="est-exp-qualidade" data-num="E6B"><span class="menu-text">Qualidade e dosagem</span></button>
+                        <button class="menu-item" data-screen="est-exp-ciclo" data-num="E6C"><span class="menu-text">Ciclo da expedição</span></button>
+                        <button class="menu-item" data-screen="est-exp-contratos" data-num="E6D"><span class="menu-text">Contratos</span></button>
+                    </div>
+                </div>
                 <button class="menu-item menu-item--solo" data-screen="est-clima"><span class="menu-text">Clima</span></button>
             </nav>
 
@@ -7243,97 +7307,274 @@
 
             <!-- ============================================
                  VISÃO ESTRATÉGICA (botão ESTRATÉGICA do cabeçalho)
-                 Os mesmos dados das telas táticas de Avaré, olhando para
-                 trás: 24 meses fechados e os anos de 2022 a 2026. O corpo
-                 de cada tela é desenhado pelo script (montarEstrategica)
-                 a partir da série mensal; aqui fica só a moldura.
+                 Os mesmos dados das telas táticas de Avaré, olhando para trás
+                 (dia a dia desde jan/2022, agrupado por semana, mês, trimestre ou
+                 ano) e para a frente com a projeção. O corpo de cada tela é
+                 desenhado pelo estrategico.js a partir de EST_TELAS; aqui fica só a
+                 moldura (selo, título e a linha de período, preenchida pelo script).
                  ============================================ -->
             <section class="screen du-screen screen--est" id="screen-est-geral">
                 <div class="screen-header">
-                    <div class="screen-badge">E0</div>
+                    <div class="screen-badge screen-badge--letra">E0<span class="screen-badge-letra">A</span></div>
                     <div class="screen-title-section">
                         <h2>Visão Estratégica da Unidade</h2>
-                        <div class="screen-meta">ESTRATÉGICO • MESES FECHADOS ATÉ SET/2026</div>
+                        <div class="screen-meta">ESTRATÉGICO</div>
                     </div>
                 </div>
-                <div class="est-corpo" data-est="geral"></div>
+                <div class="est-corpo" data-est="est-geral"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-projecao">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--letra">E0<span class="screen-badge-letra">B</span></div>
+                    <div class="screen-title-section">
+                        <h2>Projeção do ano</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="est-projecao"></div>
             </section>
 
             <section class="screen du-screen screen--est" id="screen-est-recepcao">
                 <div class="screen-header">
-                    <div class="screen-badge">E1</div>
+                    <div class="screen-badge screen-badge--letra">E1<span class="screen-badge-letra">A</span></div>
                     <div class="screen-title-section">
-                        <h2>Recepção · histórico</h2>
-                        <div class="screen-meta">ESTRATÉGICO • MESES FECHADOS ATÉ SET/2026</div>
+                        <h2>Recepção · volume recebido</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
                     </div>
                 </div>
-                <div class="est-corpo" data-est="recepcao"></div>
+                <div class="est-corpo" data-est="est-recepcao"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-rec-fila">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--letra">E1<span class="screen-badge-letra">B</span></div>
+                    <div class="screen-title-section">
+                        <h2>Recepção · fila e espera</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="est-rec-fila"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-rec-ciclo">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--letra">E1<span class="screen-badge-letra">C</span></div>
+                    <div class="screen-title-section">
+                        <h2>Recepção · ciclo por etapa</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="est-rec-ciclo"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-rec-porto">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--letra">E1<span class="screen-badge-letra">D</span></div>
+                    <div class="screen-title-section">
+                        <h2>Recepção · retornos do porto</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="est-rec-porto"></div>
             </section>
 
             <section class="screen du-screen screen--est" id="screen-est-classificacao">
                 <div class="screen-header">
-                    <div class="screen-badge">E2</div>
+                    <div class="screen-badge screen-badge--letra">E2<span class="screen-badge-letra">A</span></div>
                     <div class="screen-title-section">
-                        <h2>Classificação · histórico</h2>
-                        <div class="screen-meta">ESTRATÉGICO • MESES FECHADOS ATÉ SET/2026</div>
+                        <h2>Classificação · qualidade na chegada</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
                     </div>
                 </div>
-                <div class="est-corpo" data-est="classificacao"></div>
+                <div class="est-corpo" data-est="est-classificacao"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-cla-trigo">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--letra">E2<span class="screen-badge-letra">B</span></div>
+                    <div class="screen-title-section">
+                        <h2>Classificação · trigo (PH, FN e germinado)</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="est-cla-trigo"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-cla-prelimpeza">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--letra">E2<span class="screen-badge-letra">C</span></div>
+                    <div class="screen-title-section">
+                        <h2>Classificação · pré-limpeza e descontos</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="est-cla-prelimpeza"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-cla-cooperados">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--letra">E2<span class="screen-badge-letra">D</span></div>
+                    <div class="screen-title-section">
+                        <h2>Classificação · cooperados</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="est-cla-cooperados"></div>
             </section>
 
             <section class="screen du-screen screen--est" id="screen-est-moegas">
                 <div class="screen-header">
-                    <div class="screen-badge">E3</div>
+                    <div class="screen-badge screen-badge--letra">E3<span class="screen-badge-letra">A</span></div>
                     <div class="screen-title-section">
-                        <h2>Moegas · histórico</h2>
-                        <div class="screen-meta">ESTRATÉGICO • MESES FECHADOS ATÉ SET/2026</div>
+                        <h2>Moegas · cargas e vazão</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
                     </div>
                 </div>
-                <div class="est-corpo" data-est="moegas"></div>
+                <div class="est-corpo" data-est="est-moegas"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-moe-pulmao">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--letra">E3<span class="screen-badge-letra">B</span></div>
+                    <div class="screen-title-section">
+                        <h2>Moegas · silos pulmão</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="est-moe-pulmao"></div>
             </section>
 
             <section class="screen du-screen screen--est" id="screen-est-secagem">
                 <div class="screen-header">
-                    <div class="screen-badge">E4</div>
+                    <div class="screen-badge screen-badge--letra">E4<span class="screen-badge-letra">A</span></div>
                     <div class="screen-title-section">
-                        <h2>Secagem · histórico</h2>
-                        <div class="screen-meta">ESTRATÉGICO • MESES FECHADOS ATÉ SET/2026</div>
+                        <h2>Secagem · secado e ritmo</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
                     </div>
                 </div>
-                <div class="est-corpo" data-est="secagem"></div>
+                <div class="est-corpo" data-est="est-secagem"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-sec-temperatura">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--letra">E4<span class="screen-badge-letra">B</span></div>
+                    <div class="screen-title-section">
+                        <h2>Secagem · temperatura e umidade</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="est-sec-temperatura"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-sec-cavaco">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--letra">E4<span class="screen-badge-letra">C</span></div>
+                    <div class="screen-title-section">
+                        <h2>Secagem · cavaco</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="est-sec-cavaco"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-sec-paradas">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--letra">E4<span class="screen-badge-letra">D</span></div>
+                    <div class="screen-title-section">
+                        <h2>Secagem · paradas e disponibilidade</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="est-sec-paradas"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-sec-pressao">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--letra">E4<span class="screen-badge-letra">E</span></div>
+                    <div class="screen-title-section">
+                        <h2>Secagem · pressão dos secadores</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="est-sec-pressao"></div>
             </section>
 
             <section class="screen du-screen screen--est" id="screen-est-armazenagem">
                 <div class="screen-header">
-                    <div class="screen-badge">E5</div>
+                    <div class="screen-badge screen-badge--letra">E5<span class="screen-badge-letra">A</span></div>
                     <div class="screen-title-section">
-                        <h2>Silos e armazém · histórico</h2>
-                        <div class="screen-meta">ESTRATÉGICO • MESES FECHADOS ATÉ SET/2026</div>
+                        <h2>Silos e armazém · ocupação e saldo</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
                     </div>
                 </div>
-                <div class="est-corpo" data-est="armazenagem"></div>
+                <div class="est-corpo" data-est="est-armazenagem"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-arm-temperatura">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--letra">E5<span class="screen-badge-letra">B</span></div>
+                    <div class="screen-title-section">
+                        <h2>Silos e armazém · temperatura e aeração</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="est-arm-temperatura"></div>
             </section>
 
             <section class="screen du-screen screen--est" id="screen-est-expedicao">
                 <div class="screen-header">
-                    <div class="screen-badge">E6</div>
+                    <div class="screen-badge screen-badge--letra">E6<span class="screen-badge-letra">A</span></div>
                     <div class="screen-title-section">
-                        <h2>Expedição · histórico</h2>
-                        <div class="screen-meta">ESTRATÉGICO • MESES FECHADOS ATÉ SET/2026</div>
+                        <h2>Expedição · volume expedido</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
                     </div>
                 </div>
-                <div class="est-corpo" data-est="expedicao"></div>
+                <div class="est-corpo" data-est="est-expedicao"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-exp-qualidade">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--letra">E6<span class="screen-badge-letra">B</span></div>
+                    <div class="screen-title-section">
+                        <h2>Expedição · qualidade e dosagem</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="est-exp-qualidade"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-exp-ciclo">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--letra">E6<span class="screen-badge-letra">C</span></div>
+                    <div class="screen-title-section">
+                        <h2>Expedição · ciclo da expedição</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="est-exp-ciclo"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-exp-contratos">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--letra">E6<span class="screen-badge-letra">D</span></div>
+                    <div class="screen-title-section">
+                        <h2>Expedição · contratos</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="est-exp-contratos"></div>
             </section>
 
             <section class="screen du-screen screen--est" id="screen-est-clima">
                 <div class="screen-header">
                     <div class="screen-badge">E7</div>
                     <div class="screen-title-section">
-                        <h2>Clima · histórico</h2>
-                        <div class="screen-meta">ESTRATÉGICO • MESES FECHADOS ATÉ SET/2026</div>
+                        <h2>Clima · chuva e temperatura</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
                     </div>
                 </div>
-                <div class="est-corpo" data-est="clima"></div>
+                <div class="est-corpo" data-est="est-clima"></div>
             </section>
 
             <!-- Pagina de Alertas (funcionalidade, fora do rodizio de telas) -->
@@ -7423,7 +7664,8 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.1.4/leaflet-maplibre-gl.js"></script>
-    <script src="script.js?v=pdf10"></script>
+    <script src="script.js?v=est3"></script>
+    <script src="estrategico.js?v=est3"></script>
 
 </body>
 </html>

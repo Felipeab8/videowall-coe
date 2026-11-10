@@ -21576,13 +21576,54 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
 
 /* ============================================
    TELAS ESTRATÉGICAS (est-*)
-   Moldura comum: KPIs do ano, gráfico de 24 meses (du-split à esquerda)
-   e tabela ano a ano à direita. Base visual das demais unidades (du-*).
+   Moldura comum desenhada pelo estrategico.js: filtro de tempo e da tela,
+   KPIs do período (o último é a projeção), gráfico longo e, embaixo, o
+   recorte do período ao lado da tabela ano a ano. Base visual das demais
+   unidades (du-*). Cores das séries: as dos grãos para cultura e a paleta
+   categórica abaixo (mesma ordem em qualquer tela) para o resto.
    ============================================ */
+:root,
+body.theme-dark {
+    --est-c1: #3987e5;
+    --est-c2: #d95926;
+    --est-c3: #199e70;
+    --est-c4: #c98500;
+    --est-c5: #d55181;
+    --est-c6: #008300;
+    --est-c7: #9085e9;
+    --est-c8: #e66767;
+    --est-c-outros: #6d8199;
+    /* rampa sequencial (mapas de calor e calendários): do fundo ao azul claro */
+    --est-seq-0: #15304f;
+    --est-seq-1: #86b6ef;
+    --est-seq-txt: #e9eff7;
+    --est-seq-txt-forte: #0b1a2c;
+}
+
+
+
+body.theme-light {
+    --est-c1: #2a78d6;
+    --est-c2: #eb6834;
+    --est-c3: #1baf7a;
+    --est-c4: #eda100;
+    --est-c5: #e87ba4;
+    --est-c6: #008300;
+    --est-c7: #6250d6;
+    --est-c8: #e34948;
+    --est-c-outros: #838b94;
+    --est-seq-0: #e3eefb;
+    --est-seq-1: #184f95;
+    --est-seq-txt: #24292f;
+    --est-seq-txt-forte: #ffffff;
+}
+
+
+
 .est-corpo {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.6rem;
     flex: 1 1 auto;
     min-height: 0;
 }
@@ -21596,8 +21637,120 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
 
 
 
+/* ---- filtros: tempo (vale para todas as telas) e os da tela ---- */
+.est-filtros {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    flex: 0 0 auto;
+    padding: 0.4rem 0.7rem;
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    background: var(--section-bg);
+}
+
+
+
+.est-filtros-linha {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3rem 0.9rem;
+}
+
+
+
+/* separador entre o filtro de tempo (todas as telas) e os da tela */
+.est-fsep {
+    align-self: stretch;
+    width: 0;
+    min-height: 1.2rem;
+    border-left: 1px solid var(--card-border);
+}
+
+
+
+.est-fgrupo {
+    gap: 0.25rem;
+}
+
+
+
+.est-fgrupo .fluxo-periodo-btn {
+    padding: 0.15rem 0.5rem;
+    letter-spacing: 0.05em;
+}
+
+
+
+.est-fgrupo .fluxo-periodo-btn[disabled] {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+
+
+.est-select {
+    appearance: none;
+    padding: 0.2rem 1.6rem 0.2rem 0.6rem;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    background: var(--accent-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238ea3ba' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 0.45rem center / 0.8rem;
+    color: var(--text);
+    font: inherit;
+    font-size: max(0.6rem, var(--fs-texto, 0px));
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+}
+
+
+
+.est-select:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+
+
+.est-select option {
+    background: var(--header-bg);
+    color: var(--text);
+}
+
+
+
+.est-custom {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-left: 0.2rem;
+    font-size: max(0.6rem, var(--fs-texto, 0px));
+    font-weight: 700;
+    color: var(--muted);
+}
+
+
+
+/* ---- KPIs ---- */
 .est-kpis {
     flex: 0 0 auto;
+    grid-template-columns: repeat(var(--k, 4), minmax(0, 1fr));
+    gap: 0.6rem;
+    margin-bottom: 0;
+}
+
+
+
+.screen--est .est-kpi {
+    padding: 0.6rem 0.9rem;
+    gap: 0.25rem;
+}
+
+
+
+.est-kpi .kpi-value {
+    font-size: 1.75rem;
 }
 
 
@@ -21611,24 +21764,57 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
 
 
 
-.est-split {
-    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+.est-kpi-nome {
+    font-size: 0.7em;
+    line-height: 1.15;
 }
 
 
 
-.est-section {
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
+/* cartão da projeção: contorno tracejado, como a parte projetada do gráfico */
+.est-kpi--proj {
+    border-style: dashed;
+    border-color: var(--accent);
+    background: linear-gradient(135deg, var(--accent-soft), transparent 70%), var(--section-bg);
 }
 
 
 
-/* ---- variação contra o ano anterior: seta + texto, a cor só reforça ---- */
+.est-tag-proj {
+    display: inline-block;
+    margin-right: 0.15rem;
+    padding: 0.05rem 0.3rem;
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    color: var(--accent);
+    font-size: 0.82em;
+    letter-spacing: 0.02em;
+}
+
+
+
+/* o selo divide a linha com o nome do indicador: letras menos espaçadas
+   para o nome caber inteiro ("Passou pelos pulmões"); em tela estreita o
+   nome desce para a segunda linha em vez de sumir nas reticências */
+.est-kpi--proj .kpi-label {
+    letter-spacing: 0.03em;
+    white-space: normal;
+    overflow: visible;
+}
+
+
+
+.est-faixa-txt {
+    color: var(--muted);
+    font-weight: 600;
+}
+
+
+
+/* ---- variação: seta + texto, a cor só reforça ---- */
 .est-delta {
     display: block;
-    font-size: max(0.74rem, var(--fs-texto, 0px));
+    font-size: max(0.72rem, var(--fs-texto, 0px));
     font-weight: 600;
     line-height: 1.25;
     color: var(--muted);
@@ -21661,22 +21847,95 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
 
 
 
-/* ---- gráfico de 24 meses ---- */
+.est-section {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+
+
+/* ---- gráfico ---- */
+.est-section--grafico {
+    flex: 1 1 0;
+    min-height: 10rem;
+}
+
+
+
+.est-section .section-head {
+    flex-wrap: wrap;
+    gap: 0.3rem 0.9rem;
+}
+
+
+
+/* título e botões na 1ª linha; a legenda inteira na 2ª */
+.est-graf-head {
+    flex-wrap: wrap;
+    gap: 0.3rem 0.9rem;
+}
+
+
+
+.est-graf-head h3 {
+    flex: 1 1 auto;
+}
+
+
+
+.est-graf-head .est-modo {
+    order: 1;
+}
+
+
+
+.est-graf-head .du-legenda {
+    order: 2;
+    flex: 1 1 100%;
+    justify-content: flex-start;
+    font-size: max(0.7rem, var(--fs-texto, 0px));
+}
+
+
+
+.est-modo {
+    gap: 0.3rem;
+}
+
+
+
+.est-modo .fluxo-periodo-btn {
+    padding: 0.2rem 0.55rem;
+}
+
+
+
+.est-modo .fluxo-periodo-btn[disabled] {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+
+
 .est-graf {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
     grid-template-rows: minmax(0, 1fr) auto;
     column-gap: 0.5rem;
     flex: 1 1 auto;
-    min-height: 9rem;
+    min-height: 5rem;
     padding-top: 0.6rem;
 }
 
 
 
+/* largura do eixo em letras (não em rem): no modo TV a letra tem piso e
+   "100 mil" era cortado à esquerda */
 .est-eixo-y {
     position: relative;
-    min-width: 2.25rem;
+    min-width: calc(max(0.64rem, var(--fs-texto, 0px)) * 4.1);
 }
 
 
@@ -21686,7 +21945,7 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
     right: 0;
     bottom: calc(var(--y) * 100%);
     transform: translateY(50%);
-    font-size: max(0.66rem, var(--fs-texto, 0px));
+    font-size: max(0.64rem, var(--fs-texto, 0px));
     font-weight: 600;
     color: var(--faint);
     white-space: nowrap;
@@ -21728,11 +21987,38 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
 
 
 
+/* trecho projetado: fundo hachurado bem leve e o rótulo no alto */
+.est-proj-area {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--x0);
+    right: 0;
+    border-left: 1px dashed var(--accent);
+    background: repeating-linear-gradient(135deg, var(--accent-soft) 0 2px, transparent 2px 9px);
+    pointer-events: none;
+}
+
+
+
+.est-proj-area span {
+    position: absolute;
+    top: 0.15rem;
+    left: 0.35rem;
+    font-size: max(0.6rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+
+
 .est-cols {
     position: absolute;
     inset: 0;
     display: grid;
-    grid-template-columns: repeat(24, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
     z-index: 3;
 }
 
@@ -21741,7 +22027,7 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
 .est-col {
     position: relative;
     height: 100%;
-    border-radius: 4px;
+    border-radius: 3px;
 }
 
 
@@ -21766,13 +22052,21 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
 
 .est-barra {
     position: absolute;
-    left: 16%;
-    right: 16%;
+    left: 14%;
+    right: 14%;
     bottom: 0;
     height: calc(var(--h) * 100%);
     display: flex;
     flex-direction: column-reverse;
     gap: 2px;
+}
+
+
+
+.est-graf.is-denso .est-barra {
+    left: 6%;
+    right: 6%;
+    gap: 0;
 }
 
 
@@ -21791,7 +22085,52 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
 
 
 
-/* mesmo mês do ano anterior: traço sobre a coluna */
+/* barra projetada: hachura da cor da série + contorno (não depende só da cor) */
+.est-barra.is-proj i {
+    background: repeating-linear-gradient(135deg, var(--c) 0 3px, transparent 3px 6px);
+    box-shadow: inset 0 0 0 1.5px var(--c);
+}
+
+
+
+/* faixa provável da barra projetada */
+.est-whisker {
+    position: absolute;
+    left: 50%;
+    bottom: calc(var(--lo) * 100%);
+    height: calc((var(--hi) - var(--lo)) * 100%);
+    width: 0;
+    border-left: 2px solid var(--text);
+    opacity: 0.75;
+    z-index: 2;
+}
+
+
+
+.est-whisker::before,
+.est-whisker::after {
+    content: "";
+    position: absolute;
+    left: -0.3rem;
+    width: 0.55rem;
+    border-top: 2px solid var(--text);
+}
+
+
+
+.est-whisker::before {
+    top: 0;
+}
+
+
+
+.est-whisker::after {
+    bottom: 0;
+}
+
+
+
+/* mesmo período do ano anterior: traço sobre a coluna */
 .est-ant {
     position: absolute;
     left: 6%;
@@ -21801,7 +22140,8 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
     border-top: 3px solid var(--text);
     border-radius: 2px;
     box-shadow: 0 0 0 1px var(--section-bg);
-    opacity: 0.85;
+    opacity: 0.8;
+    z-index: 2;
 }
 
 
@@ -21827,16 +22167,57 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
 
 
 
-.est-linha {
-    stroke: var(--viz-real);
-    stroke-width: 3px !important;
+.est-l {
+    stroke: var(--c);
+    stroke-width: 2.5px !important;
 }
 
 
 
-.est-linha-ant {
+.est-l--forte {
+    stroke-width: 3.5px !important;
+}
+
+
+
+.est-l--fraca {
+    stroke-width: 1.5px !important;
+    opacity: 0.7;
+}
+
+
+
+.est-l--proj {
+    stroke-dasharray: 6 4;
+}
+
+
+
+.est-l-ponto {
+    fill: var(--c);
+}
+
+
+
+.est-banda {
+    fill: var(--c);
+    opacity: 0.16;
+    stroke: none;
+}
+
+
+
+.est-l-ant {
     stroke: var(--faint);
     stroke-dasharray: 5 4;
+}
+
+
+
+.est-tend {
+    stroke: var(--muted);
+    stroke-width: 2px !important;
+    stroke-dasharray: 2 4;
 }
 
 
@@ -21845,18 +22226,57 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
     position: absolute;
     left: 50%;
     bottom: calc(var(--h) * 100%);
-    width: 0.6rem;
-    height: 0.6rem;
+    width: 0.55rem;
+    height: 0.55rem;
     border-radius: 50%;
-    background: var(--viz-real);
+    background: var(--c, var(--viz-real));
     box-shadow: 0 0 0 2px var(--section-bg);
     transform: translate(-50%, 50%);
 }
 
 
 
-.est-col.is-anterior .est-ponto {
-    opacity: 0.55;
+.est-ponto.is-proj {
+    background: var(--section-bg);
+    box-shadow: inset 0 0 0 2px var(--c, var(--viz-real));
+}
+
+
+
+/* anos sobrepostos: o nome do ano na ponta da linha */
+.est-rotulo-ano {
+    position: absolute;
+    transform: translate(0.4rem, 50%);
+    padding: 0 0.25rem;
+    border-radius: 4px;
+    background: var(--section-bg);
+    color: var(--muted);
+    font-size: max(0.64rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 4;
+}
+
+
+
+.est-rotulo-ano.is-atual {
+    color: var(--text);
+    box-shadow: inset 0 0 0 1px var(--c);
+}
+
+
+
+/* gráfico com rótulo no fim de cada linha: sobra à direita para ele não ser
+   cortado pela borda do bloco (mais larga quando o rótulo leva o valor) */
+.est-graf--rotulos {
+    padding-right: calc(max(0.64rem, var(--fs-texto, 0px)) * 4.1);
+}
+
+
+
+.est-graf--rotulos-valor {
+    padding-right: calc(max(0.64rem, var(--fs-texto, 0px)) * 8.8);
 }
 
 
@@ -21864,7 +22284,7 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
 .est-eixo-x {
     grid-column: 2;
     display: grid;
-    grid-template-columns: repeat(24, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
     padding-top: 0.3rem;
     border-top: 1px solid var(--card-border);
 }
@@ -21872,12 +22292,13 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
 
 
 .est-eixo-x span {
-    font-size: max(0.62rem, var(--fs-texto, 0px));
+    font-size: max(0.6rem, var(--fs-texto, 0px));
     font-weight: 600;
     line-height: 1.2;
     text-align: center;
     color: var(--faint);
     white-space: nowrap;
+    overflow: visible;
 }
 
 
@@ -21890,7 +22311,7 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
 
 
 
-/* legenda dos traços (as culturas usam o du-dot) */
+/* legenda (as séries usam o du-dot) */
 .est-leg {
     display: inline-block;
     width: 0.9rem;
@@ -21901,7 +22322,14 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
 
 
 .est-leg--barra {
-    background: var(--viz-real);
+    background: var(--c, var(--viz-real));
+}
+
+
+
+.est-leg--proj {
+    background: repeating-linear-gradient(135deg, var(--c, var(--viz-real)) 0 2px, transparent 2px 4px);
+    box-shadow: inset 0 0 0 1px var(--c, var(--viz-real));
 }
 
 
@@ -21916,7 +22344,7 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
 
 .est-leg--linha {
     height: 0;
-    border-top: 3px solid var(--viz-real);
+    border-top: 3px solid var(--c, var(--viz-real));
 }
 
 
@@ -21928,6 +22356,13 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
 
 
 
+.est-leg--tend {
+    height: 0;
+    border-top: 2px dotted var(--muted);
+}
+
+
+
 .est-leg--ref {
     height: 0;
     border-top: 2px dashed var(--muted);
@@ -21935,21 +22370,192 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
 
 
 
-/* ---- tabela ano a ano ---- */
+/* ---- embaixo: recorte do período e ano a ano ---- */
+/* corpo da tela: à esquerda o gráfico (maior área, é o histórico longo)
+   sobre o recorte do período, que rola por dentro; à direita o ano a ano
+   na altura toda (as linhas dividem a folga) */
+.est-meio {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 0.6rem;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+
+
+.est-esq {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    min-height: 0;
+}
+
+
+
+.est-esq > .est-section--grafico {
+    flex: 1.5 1 0;
+}
+
+
+
+.est-esq > .est-recorte {
+    flex: 1 1 0;
+    min-height: 7rem;
+}
+
+
+
+.est-meio > .est-anos {
+    min-height: 0;
+}
+
+
+
+.est-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+
+
+/* a letra reduzida pelo encaixe nunca passa abaixo do piso do modo TV
+   (--fs-texto): lá quem resolve é o ajuste da tela inteira */
+.est-tabela {
+    font-size: max(calc(0.8rem * var(--est-fs, 1)), var(--fs-texto, 0px));
+}
+
+
+
+/* encaixe da tabela (ver "encaixe" no estrategico.js): --est-pad aperta o
+   respiro das linhas e --est-fs reduz a letra, em passos, até caber tudo */
+.est-tabela td {
+    padding-top: calc(0.3rem * var(--est-pad, 1));
+    padding-bottom: calc(0.3rem * var(--est-pad, 1));
+}
+
+
+
+.est-tabela th {
+    padding-bottom: calc(0.4rem * var(--est-pad, 1));
+    font-size: max(calc(0.66rem * var(--est-fs, 1)), var(--fs-texto, 0px));
+}
+
+
+
+.est-scroll.is-apertado .est-tabela {
+    line-height: 1.2;
+}
+
+
+
+.est-scroll.is-apertado .est-tabela td.pv-tabela-nome {
+    min-width: 0;
+}
+
+
+
+/* apertada, a tabela também ganha largura: menos respiro entre colunas e
+   barra mais curta (antes de reduzir a letra) */
+.est-scroll.is-apertado .est-tabela th,
+.est-scroll.is-apertado .est-tabela td {
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+}
+
+
+
+.est-scroll.is-apertado .est-tabela td .du-medidor {
+    grid-template-columns: minmax(1.5rem, 1fr) auto auto;
+    gap: 0.3rem;
+}
+
+
+
+/* a linha de apoio do nome (tipo da moega, porto do cliente) sai quando aperta */
+.est-recorte .est-scroll.is-apertado td.pv-tabela-nome small {
+    display: none;
+}
+
+
+
+.est-tabela th small {
+    display: block;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--faint);
+}
+
+
+
 .est-tabela td .du-medidor {
-    min-width: 7rem;
+    grid-template-columns: minmax(2.5rem, 1fr) auto auto;
+    gap: 0.4rem;
+    min-width: 0;
 }
 
 
 
+/* variação ao lado do valor: a linha não dobra de altura */
 .est-tabela td .est-delta {
-    font-size: max(0.7rem, var(--fs-texto, 0px));
+    display: inline-block;
+    margin-left: 0.35rem;
+    font-size: max(calc(0.64rem * var(--est-fs, 1)), var(--fs-texto, 0px));
+    white-space: nowrap;
 }
 
 
 
-.est-tabela td.num .est-delta {
-    text-align: right;
+.est-tabela .du-medidor .est-delta {
+    margin-left: 0;
+}
+
+
+
+.est-recorte .est-tabela {
+    height: auto;
+}
+
+
+
+.est-recorte tr[data-est-recorte] {
+    cursor: pointer;
+}
+
+
+
+.est-recorte tr[data-est-recorte]:hover td {
+    background: var(--hover);
+}
+
+
+
+.est-recorte tr.is-sel td {
+    background: var(--accent-soft);
+}
+
+
+
+.est-recorte tr.is-sel td:first-child {
+    box-shadow: inset 3px 0 0 var(--accent);
+}
+
+
+
+.est-nome {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+}
+
+
+
+.est-tabela td.pv-tabela-nome small {
+    display: block;
+    font-weight: 600;
+    color: var(--faint);
 }
 
 
@@ -21961,8 +22567,989 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
 
 
 
-.est-linha-atual td.pv-tabela-nome small {
+/* ano a ano na coluna da direita: estreita e alta, então a variação
+   desce para baixo do valor (as linhas têm altura de sobra) */
+.est-anos .est-tabela td .est-delta {
+    display: block;
+    margin-left: 0;
+}
+
+
+
+.est-anos .est-tabela td .du-medidor {
+    grid-template-columns: minmax(1.5rem, 1fr) auto;
+}
+
+
+
+.est-anos .est-tabela .du-medidor .est-delta {
+    grid-column: 1 / -1;
+    justify-self: end;
+}
+
+
+
+.est-anos .est-tabela td.num {
+    text-align: right;
+}
+
+
+
+/* ano projetado: em itálico e separado por um tracejado */
+.est-linha-proj td {
+    font-style: italic;
+    border-bottom: 2px dashed var(--accent);
+}
+
+
+
+.est-faixa-cel {
+    display: block;
+    font-style: normal;
+    font-weight: 600;
+    color: var(--faint);
+    font-size: max(calc(0.62rem * var(--est-fs, 1)), var(--fs-texto, 0px));
+    white-space: nowrap;
+}
+
+
+
+.est-cel-proj b {
+    font-weight: 800;
+}
+
+
+
+.est-nota {
+    flex: 0 0 auto;
+    margin: 0;
+    font-size: max(0.68rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    color: var(--faint);
+}
+
+
+
+/* ---- grade de blocos de cada tela (grid-template-areas vem do script) ---- */
+.est-grade-tela {
+    display: grid;
+    gap: 0.6rem;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+
+
+.est-grade-tela > .est-section,
+.est-grade-tela > .est-section--grafico {
+    min-height: 0;
+}
+
+
+
+/* grade em colunas: cada coluna é uma pilha de blocos (o peso de cada um
+   vem do script). A tabela do recorte fica do tamanho das suas linhas e os
+   vizinhos levam o resto; se a coluna não der, ela encolhe e a tabela se
+   aperta (encaixe) antes de o ano a ano perder a altura mínima dele. */
+.est-grade-tela--cols {
+    grid-template-rows: minmax(0, 1fr);
+}
+
+
+
+.est-coluna {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    min-width: 0;
+    min-height: 0;
+}
+
+
+
+.est-coluna > .est-section {
+    min-height: 8rem;
+}
+
+
+
+/* altura mínima do ano a ano em linhas de texto da tabela (17 linhas da
+   letra em uso: no modo TV a letra tem piso em px e o rem encolhe) */
+.est-coluna > .est-anos {
+    min-height: calc(max(0.8rem, var(--fs-texto, 0px)) * 17);
+}
+
+
+
+.est-coluna > .est-recorte--solta {
+    min-height: 7rem;
+}
+
+
+
+.est-recorte--solta > .est-scroll {
+    flex: 0 1 auto;
+}
+
+
+
+/* tabela do fechamento projetado: a unidade ao lado do nome, uma linha só */
+.est-tabela--proj td.pv-tabela-nome {
+    white-space: nowrap;
+}
+
+
+
+.est-tabela--proj td.pv-tabela-nome small {
+    display: inline;
+    margin-left: 0.4rem;
+}
+
+
+
+/* diferença acima/abaixo de zero */
+.est-barra--div {
+    bottom: calc(var(--b) * 100%);
+}
+
+
+
+.est-barra--div i {
+    border-radius: 2px !important;
+}
+
+
+
+.est-ref--zero {
+    border-top: 1px solid var(--muted);
+}
+
+
+
+.est-l--ponto {
+    stroke-width: 6px !important;
+}
+
+
+
+/* ---- mapa de calor ---- */
+.est-mapa {
+    display: grid;
+    grid-template-columns: max-content repeat(var(--nc), minmax(0, 1fr)) max-content;
+    grid-template-rows: auto;
+    grid-auto-rows: minmax(0, 1fr);
+    gap: 2px;
+    flex: 1 1 auto;
+    min-height: 0;
+    margin-top: 0.4rem;
+    font-size: max(0.66rem, var(--fs-texto, 0px));
+}
+
+
+
+.est-mapa.is-denso {
+    gap: 1px;
+}
+
+
+
+.est-mapa-col {
+    padding-bottom: 0.15rem;
+    font-weight: 700;
+    text-align: center;
+    white-space: nowrap;
+    color: var(--faint);
+}
+
+
+
+.est-mapa-col b {
+    display: block;
     color: var(--muted);
+}
+
+
+
+.est-mapa-rot {
+    display: flex;
+    align-items: center;
+    padding-right: 0.5rem;
+    font-weight: 700;
+    white-space: nowrap;
+    color: var(--muted);
+}
+
+
+
+.est-mapa-rot[data-est-recorte] {
+    cursor: pointer;
+}
+
+
+
+.est-mapa-rot.is-sel {
+    color: var(--text);
+    box-shadow: inset 3px 0 0 var(--accent);
+    padding-left: 0.35rem;
+}
+
+
+
+.est-cel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    border-radius: 3px;
+    background: color-mix(in oklab, var(--est-seq-1) calc(var(--p) * 100%), var(--est-seq-0));
+    color: var(--est-seq-txt);
+    font-style: normal;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+
+
+.est-mapa.is-denso .est-cel {
+    border-radius: 1px;
+}
+
+
+
+.est-cel.is-forte {
+    color: var(--est-seq-txt-forte);
+}
+
+
+
+.est-cel.is-vazio {
+    background: transparent;
+    border: 1px dashed var(--row-line);
+}
+
+
+
+/* célula projetada: hachura e contorno tracejado */
+.est-cel.is-proj {
+    background-image: repeating-linear-gradient(135deg, transparent 0 3px, rgba(255, 255, 255, 0.3) 3px 5px);
+    outline: 1px dashed var(--accent);
+    outline-offset: -1px;
+}
+
+
+
+.est-mapa-tot {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-left: 0.5rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+
+
+.est-escala {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    white-space: nowrap;
+}
+
+
+
+.est-escala-barra {
+    width: 4rem;
+    height: 0.55rem;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--est-seq-0), var(--est-seq-1));
+}
+
+
+
+/* ---- calendário: uma faixa por ano, um traço por dia ---- */
+.est-cal {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1 1 auto;
+    min-height: 0;
+    margin-top: 0.3rem;
+}
+
+
+
+.est-cal-ano {
+    display: grid;
+    grid-template-columns: calc(max(0.64rem, var(--fs-texto, 0px)) * 3.75) minmax(0, 1fr);
+    flex: 1 1 0;
+    min-height: 0.5rem;
+}
+
+
+
+.est-cal-meses {
+    flex: 0 0 auto;
+    min-height: 0;
+}
+
+
+
+.est-cal-rot {
+    align-self: center;
+    font-size: max(0.64rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    color: var(--muted);
+}
+
+
+
+.est-cal-grade {
+    display: grid;
+    grid-template-columns: repeat(366, minmax(0, 1fr));
+    grid-template-rows: minmax(0, 1fr);
+    min-height: 0;
+}
+
+
+
+.est-cal-meses .est-cal-grade span {
+    grid-row: 1;
+    padding-left: 0.15rem;
+    border-left: 1px solid var(--card-border);
+    font-size: max(0.6rem, var(--fs-texto, 0px));
+    font-weight: 700;
+    color: var(--faint);
+    white-space: nowrap;
+}
+
+
+
+.est-dia {
+    grid-row: 1;
+    min-width: 0;
+    background: color-mix(in oklab, var(--est-seq-1) calc(var(--p) * 100%), var(--est-seq-0));
+}
+
+
+
+.est-dia:hover {
+    outline: 2px solid var(--text);
+    z-index: 2;
+}
+
+
+
+.est-dia.is-acima {
+    background: var(--du-danger);
+}
+
+
+
+.est-dia.is-vazio {
+    background: var(--row-bg);
+}
+
+
+
+.est-leg--acima {
+    background: var(--du-danger);
+}
+
+
+
+.est-leg--vazio {
+    background: var(--row-bg);
+    box-shadow: inset 0 0 0 1px var(--row-line);
+}
+
+
+
+.est-leg--faixa {
+    background: color-mix(in srgb, var(--du-ok) 18%, transparent);
+    box-shadow: inset 0 0 0 1px var(--du-ok);
+}
+
+
+
+.est-leg--pt {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: var(--viz-real);
+}
+
+
+
+/* ---- gráficos pequenos lado a lado ---- */
+.est-multiplos {
+    display: grid;
+    grid-template-columns: repeat(var(--mc), minmax(0, 1fr));
+    grid-auto-rows: minmax(0, 1fr);
+    gap: 0.5rem 0.7rem;
+    flex: 1 1 auto;
+    min-height: 0;
+    margin-top: 0.4rem;
+}
+
+
+
+.est-mini {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    padding: 0.35rem 0.5rem 0.25rem;
+    border: 1px solid var(--row-line);
+    border-radius: 8px;
+}
+
+
+
+.est-mini[data-est-recorte] {
+    cursor: pointer;
+}
+
+
+
+.est-mini[data-est-recorte]:hover,
+.est-mini.is-sel {
+    border-color: var(--accent);
+}
+
+
+
+.est-mini.is-sel {
+    box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+
+
+.est-mini.is-apagado {
+    opacity: 0.4;
+}
+
+
+
+.est-mini-head {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.2rem 0.45rem;
+    font-size: max(0.72rem, var(--fs-texto, 0px));
+    font-weight: 700;
+    color: var(--muted);
+}
+
+
+
+.est-mini-head > b {
+    margin-left: auto;
+    font-size: 1.15em;
+    font-weight: 800;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.est-mini-head .est-delta {
+    display: inline;
+}
+
+
+
+.est-mini-leg {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.1rem 0.6rem;
+    margin-left: auto;
+    font-weight: 700;
+}
+
+
+
+.est-mini-leg > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+
+
+.est-mini-graf {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.3rem;
+    flex: 1 1 auto;
+    min-height: 2.5rem;
+    margin-top: 0.25rem;
+}
+
+
+
+.est-mini-y {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: max(0.58rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    text-align: right;
+    color: var(--faint);
+}
+
+
+
+.est-mini-plot {
+    position: relative;
+    min-height: 0;
+    border-bottom: 1px solid var(--card-border);
+}
+
+
+
+.est-mini .est-proj-area span {
+    display: none;
+}
+
+
+
+.est-mini-cols {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    z-index: 3;
+}
+
+
+
+.est-mini-cols i:hover {
+    background: var(--hover);
+}
+
+
+
+.est-mini-x {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 1.6rem;
+    font-size: max(0.58rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    color: var(--faint);
+}
+
+
+
+/* faixa da zona (pressão): a área que está dentro do esperado */
+.est-faixa-zona {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--y0) * 100%);
+    height: calc((var(--y1) - var(--y0)) * 100%);
+    border-top: 1px dashed var(--du-ok);
+    border-bottom: 1px dashed var(--du-ok);
+    background: color-mix(in srgb, var(--du-ok) 12%, transparent);
+    pointer-events: none;
+}
+
+
+
+/* ---- composição de cada ano ---- */
+.est-comp {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    gap: 0.15rem;
+    flex: 1 1 auto;
+    min-height: 0;
+    margin-top: 0.3rem;
+}
+
+
+
+.est-comp-linha {
+    display: grid;
+    grid-template-columns: 6.2rem minmax(0, 1fr) 3.6rem;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1 1 0;
+    min-height: 0.8rem;
+    max-height: 2.6rem;
+}
+
+
+
+.est-comp-rot {
+    font-size: max(0.74rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+
+
+.est-comp-rot {
+    white-space: nowrap;
+}
+
+
+
+.est-comp-rot small {
+    margin-left: 0.3rem;
+    font-size: 0.8em;
+    font-weight: 600;
+    color: var(--faint);
+}
+
+
+
+.est-comp-barra {
+    display: flex;
+    gap: 2px;
+    height: 100%;
+    min-height: 0.7rem;
+    max-height: 1.7rem;
+}
+
+
+
+.est-comp-barra i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 var(--w);
+    min-width: 0;
+    overflow: hidden;
+    background: var(--c);
+    color: #05080d;
+    font-size: max(0.62rem, var(--fs-texto, 0px));
+    font-style: normal;
+    font-weight: 800;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+
+
+.est-comp-barra i:first-child {
+    border-radius: 4px 0 0 4px;
+}
+
+
+
+.est-comp-barra i:last-child {
+    border-radius: 0 4px 4px 0;
+}
+
+
+
+.est-comp-barra i.is-apagado {
+    opacity: 0.3;
+}
+
+
+
+.est-comp-linha.is-proj .est-comp-barra i {
+    background: repeating-linear-gradient(135deg, var(--c) 0 3px, transparent 3px 6px);
+    box-shadow: inset 0 0 0 1.5px var(--c);
+    color: var(--text);
+}
+
+
+
+.est-comp-linha.is-proj .est-comp-rot {
+    font-style: italic;
+}
+
+
+
+.est-comp-linha > b {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+/* ---- Pareto ---- */
+.est-pareto {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    margin-top: 0.3rem;
+}
+
+
+
+.est-par-linha {
+    display: grid;
+    grid-template-columns: minmax(7rem, 1.3fr) minmax(2.5rem, 1fr) 3.4rem 3rem 3.2rem;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1 1 0;
+    min-height: 1.1rem;
+    max-height: 2.4rem;
+    padding: 0 0.3rem;
+    border-bottom: 1px solid var(--row-line);
+    font-size: max(0.76rem, var(--fs-texto, 0px));
+}
+
+
+
+.est-par-linha[data-est-recorte] {
+    cursor: pointer;
+}
+
+
+
+.est-par-linha[data-est-recorte]:hover {
+    background: var(--hover);
+}
+
+
+
+.est-par-linha:not(.is-vital):not(.est-par-head) {
+    opacity: 0.5;
+}
+
+
+
+.est-par-linha.is-sel {
+    background: var(--accent-soft);
+    box-shadow: inset 3px 0 0 var(--accent);
+}
+
+
+
+.est-par-head {
+    flex: 0 0 auto;
+    min-height: 0;
+    padding-bottom: 0.2rem;
+    font-size: max(0.58rem, var(--fs-texto, 0px));
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--faint);
+}
+
+
+
+.est-par-barra {
+    height: 0.7rem;
+    overflow: hidden;
+    border-radius: 3px;
+    background: var(--row-bg);
+}
+
+
+
+.est-par-barra i {
+    display: block;
+    width: calc(var(--p) * 100%);
+    height: 100%;
+    border-radius: 3px;
+    background: var(--c);
+}
+
+
+
+.est-par-linha > b,
+.est-par-linha > span:nth-child(n+3) {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.est-par-linha > span:nth-child(4) {
+    color: var(--muted);
+}
+
+
+
+.est-par-acum {
+    font-weight: 800;
+}
+
+
+
+/* ---- dispersão ---- */
+.est-disp {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    column-gap: 0.4rem;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 0.5rem 1.5rem 0 0;
+}
+
+
+
+.est-disp-y {
+    position: relative;
+    min-width: 2.2rem;
+}
+
+
+
+.est-disp-y span,
+.est-disp-x span {
+    position: absolute;
+    font-size: max(0.62rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    color: var(--faint);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+
+
+.est-disp-y span {
+    right: 0;
+    bottom: calc(var(--y) * 100%);
+    transform: translateY(50%);
+}
+
+
+
+.est-disp-x {
+    grid-column: 2;
+    position: relative;
+    height: 1.1rem;
+}
+
+
+
+.est-disp-x span {
+    top: 0.15rem;
+    left: calc(var(--x) * 100%);
+    transform: translateX(-50%);
+}
+
+
+
+.est-disp-plot {
+    position: relative;
+    min-height: 0;
+    border-left: 1px solid var(--card-border);
+    border-bottom: 1px solid var(--card-border);
+}
+
+
+
+.est-gx {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--x) * 100%);
+    border-left: 1px solid var(--row-line);
+    pointer-events: none;
+}
+
+
+
+.est-media-x,
+.est-media-y {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+}
+
+
+
+.est-media-x {
+    top: 0;
+    bottom: 0;
+    left: calc(var(--x) * 100%);
+    border-left: 2px dashed var(--muted);
+}
+
+
+
+.est-media-y {
+    left: 0;
+    right: 0;
+    bottom: calc(var(--y) * 100%);
+    border-top: 2px dashed var(--muted);
+}
+
+
+
+.est-pt {
+    position: absolute;
+    left: calc(var(--x) * 1%);
+    bottom: calc(var(--y) * 1%);
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    background: var(--c);
+    box-shadow: 0 0 0 2px var(--section-bg);
+    opacity: var(--o, 1);
+    transform: translate(-50%, 50%);
+    z-index: 3;
+}
+
+
+
+.est-pt[data-est-recorte] {
+    cursor: pointer;
+}
+
+
+
+.est-pt.is-sel {
+    box-shadow: 0 0 0 2px var(--section-bg), 0 0 0 4px var(--accent);
+}
+
+
+
+.est-pt--mes {
+    width: 0.55rem;
+    height: 0.55rem;
+    box-shadow: none;
+}
+
+
+
+.est-pt--mes.is-atual {
+    width: 0.75rem;
+    height: 0.75rem;
+    box-shadow: 0 0 0 2px var(--section-bg);
+}
+
+
+
+.est-pt:hover {
+    outline: 2px solid var(--text);
+    z-index: 5;
+}
+
+
+
+.est-pt-rot {
+    position: absolute;
+    left: calc(var(--x) * 1%);
+    bottom: calc(var(--y) * 1%);
+    transform: translate(0.6rem, 50%);
+    font-size: max(0.62rem, var(--fs-texto, 0px));
+    font-weight: 700;
+    color: var(--muted);
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 2;
+}
+
+
+
+.est-tip-linha--txt {
+    font-weight: 700;
+    color: var(--text);
 }
 
 
@@ -21971,7 +23558,8 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
 .est-tip {
     position: fixed;
     z-index: 300;
-    min-width: 11rem;
+    min-width: 12rem;
+    max-width: 22rem;
     padding: 0.55rem 0.7rem;
     border: 1px solid var(--card-border);
     border-radius: 10px;
@@ -22013,6 +23601,7 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
     height: 0.6rem;
     border-radius: 2px;
     background: var(--c);
+    flex: none;
 }
 
 
@@ -22027,6 +23616,14 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
     margin-left: auto;
     padding-left: 0.8rem;
     font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+
+
+.est-tip-linha b small {
+    color: var(--muted);
+    font-weight: 600;
 }
 
 
@@ -22046,91 +23643,318 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
 
 
 
-/* ---- visão geral estratégica: um cartão por área ---- */
+/* ---- visão geral estratégica: o caminho do grão ----
+   Em cima, o gráfico longo e o andamento do ano; embaixo, as etapas na ordem
+   em que o grão passa por elas, numa faixa só (colunas separadas por um fio
+   e uma seta), com o clima e os recordes ao lado. */
 .est-geral {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    grid-template-rows: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem;
+    grid-template-rows: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 0.6rem;
     flex: 1 1 auto;
     min-height: 0;
 }
 
 
 
-.est-tile {
+.est-geral-topo,
+.est-geral-base {
+    display: grid;
+    gap: 0.6rem;
+    min-height: 0;
+}
+
+
+
+.est-geral-topo {
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+}
+
+
+
+.est-geral-base {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 1.05fr) minmax(0, 1.75fr);
+}
+
+
+
+.est-geral .est-section {
+    min-height: 0;
+}
+
+
+
+/* quanto do ano já foi feito */
+.est-fech-corpo {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    gap: 0.4rem;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+
+
+.est-fech-linha {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 0.25rem 0.75rem;
+}
+
+
+
+.est-fech-nome {
+    font-size: max(1rem, var(--fs-texto, 0px));
+    font-weight: 800;
+}
+
+
+
+.est-fech-valor {
+    font-size: max(0.82rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+
+
+.est-fech-valor b {
+    font-size: 1.5em;
+    font-weight: 800;
+    color: var(--text);
+}
+
+
+
+.est-fech-valor em {
+    margin-left: 0.6rem;
+    padding: 0.05rem 0.4rem;
+    border-radius: 4px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-style: normal;
+    font-weight: 800;
+}
+
+
+
+.est-fech-barra {
+    grid-column: 1 / -1;
+    position: relative;
+    height: 1.1rem;
+    border-radius: 4px;
+    background: var(--row-bg);
+}
+
+
+
+.est-fech-barra i {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 4px;
+}
+
+
+
+.est-fech-barra .is-real {
+    background: var(--viz-real);
+}
+
+
+
+.est-fech-barra .is-proj {
+    background: repeating-linear-gradient(135deg, var(--viz-real) 0 3px, transparent 3px 6px);
+    box-shadow: inset 0 0 0 1.5px var(--viz-real);
+}
+
+
+
+/* o fechamento do ano anterior: um traço que passa da barra */
+.est-fech-barra .is-ant {
+    top: -0.25rem;
+    bottom: -0.25rem;
+    width: 3px;
+    margin-left: -1.5px;
+    border-radius: 2px;
+    background: var(--text);
+}
+
+
+
+.est-fech-linha .est-delta {
+    grid-column: 1 / -1;
+}
+
+
+
+/* as etapas, em sequência */
+.est-fluxo-etapas {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+
+
+.est-etapa {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap: 0.3rem;
+    gap: 0.2rem;
+    min-width: 0;
     min-height: 0;
-    padding: 0.9rem 1rem;
-    border: 1px solid var(--panel-border);
-    border-radius: 12px;
-    background: var(--section-bg);
+    padding: 0.3rem 0.75rem 0;
+    border: 0;
+    border-left: 1px solid var(--row-line);
+    border-radius: 0;
+    background: none;
     color: var(--text);
     font: inherit;
     text-align: left;
-}
-
-
-
-button.est-tile {
     cursor: pointer;
-    transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
 
 
-button.est-tile:hover {
-    border-color: var(--accent);
-    transform: translateY(-2px);
+.est-etapa:first-child {
+    padding-left: 0;
+    border-left: 0;
 }
 
 
 
-button.est-tile:focus-visible {
+.est-etapa:last-child {
+    padding-right: 0;
+}
+
+
+
+.est-etapa:hover .est-etapa-nome {
+    color: var(--accent);
+}
+
+
+
+.est-etapa:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
 }
 
 
 
-.est-tile-nome {
-    font-size: max(0.82rem, var(--fs-texto, 0px));
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
+/* a seta fica em cima do fio que separa uma etapa da seguinte */
+.est-etapa.tem-seta::after {
+    content: '';
+    position: absolute;
+    top: 0.55rem;
+    right: -0.45rem;
+    width: 0.8rem;
+    height: 0.8rem;
+    border-top: 2px solid var(--accent);
+    border-right: 2px solid var(--accent);
+    background: var(--section-bg);
+    transform: rotate(45deg) scale(0.7);
+    z-index: 1;
 }
 
 
 
-.est-tile-rotulo {
-    font-size: max(0.7rem, var(--fs-texto, 0px));
+.est-etapa-nome {
+    font-size: max(0.94rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+
+.est-etapa-rotulo {
+    font-size: max(0.72rem, var(--fs-texto, 0px));
     font-weight: 600;
     color: var(--faint);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 
 
-.est-tile .kpi-value {
-    margin-top: 0.2rem;
+.est-etapa .kpi-value {
+    margin-top: 0.15rem;
+    font-size: 1.7rem;
+    white-space: nowrap;
 }
 
 
 
-.est-spark {
+/* no cartão do clima o título do bloco já diz o nome */
+.est-fluxo--clima .est-etapa-nome {
+    display: none;
+}
+
+
+
+/* histórico ano a ano dentro da etapa */
+.est-ha {
     position: relative;
-    display: block;
+    display: grid;
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    align-items: end;
+    gap: 0.3rem;
     flex: 1 1 auto;
-    min-height: 2.5rem;
+    min-height: 2rem;
     margin-top: 0.4rem;
 }
 
 
 
-.est-spark svg {
+.est-ha-barra {
+    height: calc(var(--h) * 100%);
+    min-height: 2px;
+    border-radius: 3px 3px 0 0;
+    background: var(--viz-real);
+    opacity: 0.55;
+}
+
+
+
+.est-ha-barra:last-child {
+    opacity: 1;
+}
+
+
+
+.est-ha-barra.is-proj {
+    background: repeating-linear-gradient(135deg, var(--viz-real) 0 3px, transparent 3px 6px);
+    box-shadow: inset 0 0 0 1.5px var(--viz-real);
+}
+
+
+
+.est-ha-barra.is-parcial {
+    opacity: 0.8;
+}
+
+
+
+.est-ha--linha {
+    display: block;
+}
+
+
+
+.est-ha--linha svg {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -22140,24 +23964,44 @@ button.est-tile:focus-visible {
 
 
 
-.est-spark polyline {
+.est-ha--linha polyline {
     fill: none;
     stroke: var(--viz-real);
     stroke-width: 2px;
     stroke-linejoin: round;
+    opacity: 0.55;
     vector-effect: non-scaling-stroke;
 }
 
 
 
-.est-spark i {
+.est-ha-ponto {
     position: absolute;
-    width: 0.55rem;
-    height: 0.55rem;
+    width: 0.6rem;
+    height: 0.6rem;
     border-radius: 50%;
     background: var(--viz-real);
     box-shadow: 0 0 0 2px var(--section-bg);
     transform: translate(-50%, -50%);
+}
+
+
+
+.est-ha-ponto.is-proj {
+    background: var(--section-bg);
+    box-shadow: inset 0 0 0 2px var(--viz-real);
+}
+
+
+
+.est-ha-eixo {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 0.2rem;
+    border-top: 1px solid var(--card-border);
+    font-size: max(0.64rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    color: var(--faint);
 }
 
 
@@ -22167,7 +24011,8 @@ button.est-tile:focus-visible {
     flex-direction: column;
     justify-content: space-around;
     flex: 1 1 auto;
-    margin: 0.3rem 0 0;
+    min-height: 0;
+    margin: 0;
     padding: 0;
     list-style: none;
 }
@@ -22179,7 +24024,7 @@ button.est-tile:focus-visible {
     grid-template-columns: minmax(0, 1fr) auto auto;
     align-items: baseline;
     gap: 0.6rem;
-    padding: 0.25rem 0;
+    padding: 0.2rem 0;
     border-bottom: 1px solid var(--row-line);
     font-size: max(0.8rem, var(--fs-texto, 0px));
 }
@@ -22202,6 +24047,7 @@ button.est-tile:focus-visible {
 .est-recordes b {
     font-weight: 800;
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
 }
 
 
@@ -22216,14 +24062,86 @@ button.est-tile:focus-visible {
 
 
 
+/* ---- projeção do ano: acumulado ao lado da tabela de fechamento ---- */
+.est-proj-corpo {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: 0.6rem;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+
+
+.est-proj-corpo > .est-section--grafico {
+    min-height: 0;
+}
+
+
+
 @media screen and (max-width: 1024px) {
+    /* uma coluna: cada bloco na sua linha, com altura própria */
+    .est-grade-tela {
+        grid-template-areas: none !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        grid-template-rows: none !important;
+    }
+
+    .est-grade-tela > * {
+        grid-area: auto !important;
+        min-height: 16rem !important;
+    }
+
+    .est-coluna {
+        display: contents;
+    }
+
+    .est-coluna > .est-section {
+        min-height: 16rem;
+    }
+
+    .est-coluna > .est-recorte--solta {
+        min-height: 0;
+    }
+
     .est-geral {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
         grid-template-rows: none;
     }
 
-    .est-split {
+    .est-geral-topo,
+    .est-geral-base {
         grid-template-columns: minmax(0, 1fr);
+    }
+
+    .est-geral .est-section {
+        min-height: 14rem;
+    }
+
+    .est-fluxo-etapas {
+        grid-auto-flow: row;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem 0;
+    }
+
+    .est-fluxo--clima .est-fluxo-etapas {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .est-etapa {
+        min-height: 9rem;
+    }
+
+    .est-etapa.tem-seta::after {
+        display: none;
+    }
+
+    .est-meio,
+    .est-proj-corpo {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .est-kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
@@ -22235,20 +24153,50 @@ button.est-tile:focus-visible {
     }
 
     .est-graf {
-        min-height: 14rem;
+        min-height: 15rem;
     }
 
-    /* 24 rótulos não cabem no celular: só os trimestres */
-    .est-eixo-x span:not(.is-trim) {
-        visibility: hidden;
+    .est-section--grafico {
+        flex: none;
+    }
+
+    .est-meio,
+    .est-esq > .est-recorte {
+        flex: none;
+    }
+
+    .est-esq > .est-section--grafico {
+        flex: none;
+    }
+
+    .est-tabela {
+        min-width: 30rem;
+    }
+
+    .est-scroll,
+    .est-anos .du-tabela-wrap {
+        overflow-x: auto;
+    }
+
+    .est-eixo-x span {
+        font-size: 0.55rem;
     }
 }
 
 
 
-/* TV: de longe, o eixo X fica nos trimestres e o rótulo do KPI pode quebrar */
-html.tv .est-eixo-x span:not(.is-trim) {
-    visibility: hidden;
+/* TV: ninguém clica; os filtros ficam só com a opção em uso (regra geral
+   dos filtros) e a escolha de lista vira texto */
+html.tv .est-select {
+    padding-right: 0.6rem;
+    background-image: none;
+    pointer-events: none;
+}
+
+
+
+html.tv .est-modo .fluxo-periodo-btn:not(.is-active) {
+    display: none;
 }
 
 
@@ -22259,20 +24207,8 @@ html.tv .est-kpi .kpi-label {
 
 
 
-html.tv .est-tile-rotulo {
+html.tv .est-etapa-rotulo {
     display: none;
-}
-
-
-
-.est-spark-eixo {
-    display: flex;
-    justify-content: space-between;
-    padding-top: 0.25rem;
-    border-top: 1px solid var(--row-line);
-    font-size: max(0.66rem, var(--fs-texto, 0px));
-    font-weight: 600;
-    color: var(--faint);
 }
 
 
