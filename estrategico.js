@@ -952,7 +952,7 @@
     const COMPARAR = [{ v: 'ano', n: 'Ano anterior' }, { v: 'media', n: 'Média 3 anos' }, { v: 'tendencia', n: 'Tendência' }];
 
     const EST_KEY = 'videowall:est-filtros';
-    const PADRAO = { periodo: 'tudo', de: KM_ULT - 23, ate: KM_ULT, agrupar: 'mes', projecao: 'dez', comparar: 'ano', modo: 'linha', telas: {} };
+    const PADRAO = { periodo: 'tudo', de: KM_ULT - 23, ate: KM_ULT, agrupar: 'mes', projecao: 'dez', comparar: 'ano', modo: 'linha', filtros: false, telas: {} };
 
     function carregarEstado() {
         let s = null;
@@ -967,7 +967,8 @@
         if (!PROJECOES.some((x) => x.v === e.projecao)) e.projecao = PADRAO.projecao;
         if (!COMPARAR.some((x) => x.v === e.comparar)) e.comparar = PADRAO.comparar;
         if (e.modo !== 'anos') e.modo = 'linha';
-        e.de = clamp(Math.round(Number(e.de)) || 0, 0, KM_ULT);
+        e.filtros = e.filtros === true;
+        e.de =clamp(Math.round(Number(e.de)) || 0, 0, KM_ULT);
         e.ate = clamp(Math.round(Number(e.ate)) || KM_ULT, 0, KM_ULT);
         if (!e.telas || typeof e.telas !== 'object') e.telas = {};
         return e;
@@ -1544,7 +1545,7 @@
             id: 'est-clima', codigo: 'AVR-E7A', dims: ['localidade'],
             kpis: [{ metrica: 'chuva' }, { metrica: 'diasChuva' }, { metrica: 'temp' }, { metrica: 'diasParados' }],
             seletor: [
-                { v: 'chuva', n: 'Chuva', grafico: { tipo: 'barras', metrica: 'chuva', titulo: 'Chuva acumulada' } },
+                { v: 'chuva', n: 'Chuva', grafico: { tipo: 'barras', metrica: 'chuva', titulo: 'Chuva acumulada', rotulos: true } },
                 { v: 'temp', n: 'Temperatura', grafico: { tipo: 'linha', titulo: 'Temperatura', series: [{ metrica: 'tMax', nome: 'Máxima média', cor: 'var(--est-c2)' }, { metrica: 'temp', nome: 'Média', cor: 'var(--est-c4)' }, { metrica: 'tMin', nome: 'Mínima média', cor: 'var(--est-c1)' }] } },
                 { v: 'ur', n: 'Umidade do ar', grafico: { tipo: 'linha', metrica: 'ur', titulo: 'Umidade relativa do ar' } },
             ],
@@ -1560,6 +1561,42 @@
     ];
     const TELA = Object.fromEntries(EST_TELAS.map((t) => [t.id, t]));
 
+    // ---------- vistas: dois blocos por vez ----------
+    // Quatro blocos juntos na tela viravam uma pilha difícil de ler. A tela
+    // de quatro blocos (a, b, c, d) mostra dois por vez, lado a lado, e uma
+    // aba troca o par: "Evolução" (o gráfico longo + o ano a ano) e a vista
+    // de detalhe da tela (o bloco d + a tabela do recorte). As telas de três
+    // blocos ficam inteiras. VISTAS dá o nome da segunda aba, ou os pares
+    // inteiros quando o bloco principal da tela não é o gráfico no tempo.
+    const VISTAS = {
+        'est-recepcao': 'Meses e culturas',
+        'est-rec-fila': 'Dia a dia e turnos',
+        'est-rec-ciclo': 'Etapas',
+        'est-rec-porto': 'Acumulado e culturas',
+        'est-classificacao': 'Meses e culturas',
+        'est-cla-trigo': [{ n: 'Por safra', areas: ['a', 'c'] }, { n: 'Tipos de trigo', areas: ['d', 'b'] }],
+        'est-cla-prelimpeza': 'Diferença da conciliação',
+        'est-moegas': 'Por moega',
+        'est-moe-pulmao': 'Dia a dia e pulmões',
+        'est-secagem': 'Ritmo × umidade',
+        'est-sec-cavaco': 'Eficiência e estoque',
+        'est-sec-paradas': 'Motivos',
+        'est-armazenagem': [{ n: 'Evolução', areas: ['d', 'c'] }, { n: 'Por silo', areas: ['a', 'b'] }],
+        'est-arm-temperatura': [{ n: 'Evolução', areas: ['d', 'c'] }, { n: 'Por silo', areas: ['a', 'b'] }],
+        'est-expedicao': 'Meses e culturas',
+        'est-exp-ciclo': 'Etapas',
+        'est-exp-contratos': 'Clientes',
+        'est-clima': 'Dia a dia e locais',
+    };
+
+    function vistasDe(tela) {
+        const v = VISTAS[tela.id];
+        if (Array.isArray(v)) return v;
+        const areas = (tela.blocos || []).map((b) => b.area);
+        if (areas.length !== 4 || !['a', 'b', 'c', 'd'].every((x) => areas.includes(x))) return null;
+        return [{ n: 'Evolução', areas: ['a', 'c'] }, { n: v || 'Detalhes', areas: ['d', 'b'] }];
+    }
+
     function estadoTela(tela) {
         let t = ESTADO.telas[tela.id];
         if (!t || typeof t !== 'object') t = ESTADO.telas[tela.id] = { dims: {}, sel: null };
@@ -1571,6 +1608,8 @@
             if (!ok) t.dims[dim] = D.semTodos ? D.padrao : '*';
         });
         if (tela.seletor && !tela.seletor.some((o) => o.v === t.sel)) t.sel = tela.seletor[0].v;
+        const vistas = vistasDe(tela);
+        if (!vistas || !(t.vista >= 0 && t.vista < vistas.length)) t.vista = 0;
         return t;
     }
 
@@ -1607,17 +1646,28 @@
     function htmlFiltros(tela, t) {
         const e = ESTADO;
         let tempo = '';
+        let mais = '';    // projeção e comparação: ficam na faixa recolhida
         if (tela.tempo !== false) {
             const per = PERIODOS.map((p) => pill('data-est-periodo', p.v, p.n, e.periodo === p.v)).join('')
                 + (e.periodo === 'custom'
                     ? `<span class="est-custom"><select class="est-select" data-est-de aria-label="Do mês">${opcoesMes(e.de)}</select><span>até</span><select class="est-select" data-est-ate aria-label="Até o mês">${opcoesMes(e.ate)}</select></span>`
                     : '');
             tempo = grupo('Período', per)
-                + grupo('Agrupar', AGRUPAR.map((p) => pill('data-est-agrupar', p.v, p.n, e.agrupar === p.v)).join(''))
-                + grupo('Projeção', PROJECOES.map((p) => pill('data-est-projecao', p.v, p.n, e.projecao === p.v)).join(''))
+                + grupo('Agrupar', AGRUPAR.map((p) => pill('data-est-agrupar', p.v, p.n, e.agrupar === p.v)).join(''));
+            mais = grupo('Projeção', PROJECOES.map((p) => pill('data-est-projecao', p.v, p.n, e.projecao === p.v)).join(''))
                 + grupo('Comparar', COMPARAR.map((p) => pill('data-est-comparar', p.v, p.n, e.comparar === p.v)).join(''));
         }
         let proprios = '';
+        let resumo = '';    // filtros da tela em uso, à vista mesmo com a faixa recolhida
+        (tela.dims || []).forEach((dim) => {
+            const D = DIMS[dim];
+            const v = t.dims[dim];
+            if (v === '*') return;
+            const txt = `${D.rotulo}: ${nomeDim(dim, v)}`;
+            resumo += D.semTodos
+                ? `<span class="est-fchip">${txt}</span>`
+                : `<button type="button" class="est-fchip" data-est-dim="${dim}" data-v="*" title="Tirar este filtro">${txt}<span aria-hidden="true">✕</span></button>`;
+        });
         (tela.dims || []).forEach((dim) => {
             const D = DIMS[dim];
             const v = t.dims[dim];
@@ -1631,11 +1681,18 @@
                 proprios += grupo(D.rotulo, `<select class="est-select" data-est-dimsel="${dim}" aria-label="${D.rotulo}">${opts}</select>`);
             }
         });
-        if (tela.seletor) proprios += grupo('Mostrar', tela.seletor.map((o) => pill('data-est-sel', o.v, o.n, t.sel === o.v)).join(''), 'est-fgrupo--mostrar');
-        // tudo numa faixa só, que quebra onde precisar; os filtros da tela
-        // começam depois de um separador
-        const sep = tempo && proprios ? '<span class="est-fsep" aria-hidden="true"></span>' : '';
-        return `<div class="est-filtros"><div class="est-filtros-linha">${tempo}${sep}${proprios}</div></div>`;
+        const mostrar = tela.seletor ? grupo('Mostrar', tela.seletor.map((o) => pill('data-est-sel', o.v, o.n, t.sel === o.v)).join(''), 'est-fgrupo--mostrar') : '';
+        // Uma linha só à vista: período, agrupamento e o "Mostrar" da tela.
+        // Projeção, comparação e os filtros da tela (cultura, turno...) abrem
+        // em "Mais filtros"; recolhidos, os que estão em uso aparecem como
+        // etiquetas, para ninguém ler a tela sem saber que ela está filtrada.
+        const resto = mais + proprios;
+        if (!resto) return `<div class="est-filtros"><div class="est-filtros-linha">${tempo}${mostrar}</div></div>`;
+        const aberto = e.filtros;
+        const botao = `<button type="button" class="est-fmais${aberto ? ' is-active' : ''}" data-est-filtros aria-expanded="${aberto}">${aberto ? 'Menos filtros' : 'Mais filtros'}</button>`;
+        return `<div class="est-filtros"><div class="est-filtros-linha">${tempo}${mostrar}<span class="est-fresumo">${aberto ? '' : resumo}${botao}</span></div>`
+            + (aberto ? `<div class="est-filtros-linha est-filtros-linha--mais">${resto}</div>` : '')
+            + '</div>';
     }
 
     // ---------- KPIs ----------
@@ -1837,7 +1894,11 @@
         const refs = refsDo(cfg, f);
         refs.forEach((r) => valores.push(r.valor));
         if (diverg) valores.push(0);
-        const esc = escala(valores, barras && !diverg, cfg.escala);
+        // número em cima de cada barra (cfg.rotulos): até 80 barras; com
+        // muitas, o número fica em pé. A escala ganha folga para ele caber.
+        const comRotulos = barras && !diverg && cfg.rotulos && n <= 80;
+        if (comRotulos) valores.push(Math.max(0, ...valores.filter((v) => v != null)) * (n > 16 ? 1.16 : 1.08));
+        const esc =escala(valores, barras && !diverg, cfg.escala);
         const yv = (v) => clamp((v - esc.min) / (esc.max - esc.min), 0, 1);
         const y = (v) => yv(v).toFixed(4);
         const X = (i) => ((i + 0.5) / n * 100).toFixed(3);
@@ -1956,6 +2017,11 @@
                         + partesB.map(([v, cor]) => `<i style="flex-grow: ${v.toFixed(3)}; --c: ${cor}"></i>`).join('')
                         + `</span>`;
                     if (tot.proj) marca += `<span class="est-whisker" style="--lo: ${y(tot.lo)}; --hi: ${y(tot.hi)}"></span>`;
+                    if (comRotulos) {
+                        // colado no topo da barra (na projeção, acima da faixa)
+                        const topo = tot.proj ? tot.hi : tot.c;
+                        marca += `<span class="est-barra-rot${n > 16 ? ' is-pe' : ''}${tot.proj ? ' is-proj' : ''}" style="--h: ${y(topo)}">${fmt(tot.c, mP.casas)}</span>`;
+                    }
                 }
                 if (C && C[i] != null && n <= 80) marca += `<span class="est-ant" style="--h: ${y(C[i])}"></span>`;
             } else if (S.modo === 'simples' && n <= 40) {
@@ -2201,7 +2267,9 @@
             const cels = cols.map((c, i) => {
                 const m = M[c.metrica];
                 const ff = Object.assign({}, f, c.fix || {});
-                const dl = parcial ? delta(m, d.vals[i], deslocado(m, ff, d.ini, d.fim, 1)) : null;
+                // a variação só na primeira coluna (o indicador da tela): em
+                // todas, cada célula virava uma pilha de três números
+                const dl = parcial && i === 0 ? delta(m, d.vals[i], deslocado(m, ff, d.ini, d.fim, 1)) : null;
                 return celula(m, d.vals[i], c.barra, maximos[i], dl);
             }).join('');
             const nome = parcial ? `${d.a}<small>até ${rotDia(NH - 1).slice(0, 5)}</small>` : String(d.a);
@@ -2212,8 +2280,9 @@
                 const m = M[c.metrica];
                 const r = proj[i];
                 const ant = dados.find((d) => d.a === ULT.ano - 1).vals[i];
-                const dl = r ? delta(m, r.c, ant) : null;
-                return celula(m, r ? r.c : null, c.barra, maximos[i], dl).replace('</td>', `<small class="est-faixa-cel">${r ? faixaCurta(m, r) : ''}</small></td>`);
+                const dl = r && i === 0 ? delta(m, r.c, ant) : null;
+                const cel = celula(m, r ? r.c : null, c.barra, maximos[i], dl);
+                return i === 0 ? cel.replace('</td>', `<small class="est-faixa-cel">${r ? faixaCurta(m, r) : ''}</small></td>`) : cel;
             }).join('');
             linhas.unshift(`<tr class="est-linha-proj"><td class="pv-tabela-nome">${ULT.ano}<small>projetado</small></td>${cels}</tr>`);
         }
@@ -2849,12 +2918,24 @@
         const ctx = { t, f, P };
         const kpis = tela.kpis.map((k) => kpiHtml(k, tela, f, P)).join('') + kpiProjecao(tela, f, P);
         const nK = tela.kpis.length + (tela.kpiProj === false || ESTADO.projecao === 'off' ? 0 : 1);
-        const grade = tela.grade || GRADE_PADRAO;
+        // com vistas, a grade é só o par da aba escolhida, lado a lado
+        const vistas = vistasDe(tela);
+        const vista = vistas && vistas[t.vista];
+        const grade = vista
+            ? { areas: [vista.areas.join(' ')], cols: vista.areas.length > 1 ? '1.55fr 1fr' : '1fr', rows: '1fr' }
+            : (tela.grade || GRADE_PADRAO);
+        const abas = vistas
+            ? `<div class="est-vistas" role="tablist" aria-label="O que ver nesta tela">${vistas.map((v, i) => `<button type="button" role="tab" class="est-vista-btn${i === t.vista ? ' is-active' : ''}" data-est-vista="${i}" aria-selected="${i === t.vista}">${v.n}</button>`).join('')}</div>`
+            : '';
         const pilhas = colunasDe(grade);
         const larguras = larguraDasAreas(grade);
         let letra = 66;    // B, C, D... (A são os KPIs)
         const html = {};
+        const naTela = tela.blocos.filter((b) => !vista || vista.areas.includes(b.area));
         tela.blocos.forEach((b) => {
+            // o código do bloco (B, C, D...) é o mesmo em qualquer aba
+            const codigoBloco = tela.codigo + '-' + String.fromCharCode(letra++);
+            if (!naTela.includes(b)) return;
             const pilha = pilhas && pilhas.find((p) => p.some((x) => x.area === b.area));
             // a tabela do recorte fica do tamanho das suas linhas; o resto da
             // coluna é dos vizinhos (sozinha na coluna, ela ocupa tudo)
@@ -2862,7 +2943,7 @@
             let estilo = `grid-area: ${b.area}`;
             if (pilha) estilo = solta ? 'flex: 0 1 auto' : `flex: ${pilha.find((x) => x.area === b.area).peso.toFixed(3)} 1 0`;
             html[b.area] = renderBloco(tela, b, ctx, {
-                codigo: tela.codigo + '-' + String.fromCharCode(letra++),
+                codigo: codigoBloco,
                 area: b.area,
                 estilo,
                 solta,
@@ -2873,9 +2954,10 @@
         const colsCss = `grid-template-columns: ${trilhas(grade.cols)}`;
         const corpo = pilhas
             ? `<div class="est-grade-tela est-grade-tela--cols" style="${colsCss}">${pilhas.map((p) => `<div class="est-coluna">${p.map((x) => html[x.area] || '').join('')}</div>`).join('')}</div>`
-            : `<div class="est-grade-tela" style="grid-template-areas: ${grade.areas.map((a) => `'${a}'`).join(' ')}; ${colsCss}; grid-template-rows: ${trilhas(grade.rows)}">${tela.blocos.map((b) => html[b.area]).join('')}</div>`;
+            : `<div class="est-grade-tela" style="grid-template-areas: ${grade.areas.map((a) => `'${a}'`).join(' ')}; ${colsCss}; grid-template-rows: ${trilhas(grade.rows)}">${naTela.map((b) => html[b.area]).join('')}</div>`;
         return htmlFiltros(tela, t)
             + `<div class="kpi-grid est-kpis" style="--k: ${nK}">${kpis}</div>`
+            + abas
             + corpo
             + (tela.nota ? `<p class="est-nota">${tela.nota}</p>` : '');
     }
@@ -3287,8 +3369,14 @@
         if (!corpo) return;
         const id = corpo.getAttribute('data-est');
         const tela = TELA[id];
-        const alvo = ev.target.closest('[data-est-periodo], [data-est-agrupar], [data-est-projecao], [data-est-comparar], [data-est-modo], [data-est-dim], [data-est-sel], [data-est-recorte]');
+        const alvo = ev.target.closest('[data-est-periodo], [data-est-agrupar], [data-est-projecao], [data-est-comparar], [data-est-modo], [data-est-dim], [data-est-sel], [data-est-recorte], [data-est-vista], [data-est-filtros]');
         if (!alvo || !tela || alvo.disabled) return;
+        if (alvo.hasAttribute('data-est-filtros')) {
+            ESTADO.filtros = !ESTADO.filtros;
+            gravarEstado();
+            remontarTudo();
+            return;
+        }
         const glob = ['periodo', 'agrupar', 'projecao', 'comparar', 'modo'].find((k) => alvo.hasAttribute('data-est-' + k));
         if (glob) {
             ESTADO[glob] = alvo.getAttribute('data-est-' + glob);
@@ -3298,7 +3386,9 @@
             return;
         }
         const t = tela.tipo === 'projecao' ? ESTADO.telas[id] : estadoTela(tela);
-        if (alvo.hasAttribute('data-est-sel')) {
+        if (alvo.hasAttribute('data-est-vista')) {
+            t.vista = Number(alvo.getAttribute('data-est-vista'));
+        } else if (alvo.hasAttribute('data-est-sel')) {
             t.sel = alvo.getAttribute('data-est-sel');
         } else if (alvo.hasAttribute('data-est-dim')) {
             t.dims[alvo.getAttribute('data-est-dim')] = alvo.getAttribute('data-v');
