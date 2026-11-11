@@ -10,6 +10,8 @@
 //   - gráfico longo: linha do tempo ou os anos sobrepostos (jan–dez);
 //   - recorte do período (por cultura, moega, silo, cliente...) e a
 //     tabela ano a ano, com a linha do ano projetado.
+// Fora da moldura: a visão geral, a projeção do ano e a tela de capacidade
+// (volume por ano com a tendência e os sinais de gargalo, ver telaCapacidade).
 // Base: uma série DIÁRIA por indicador, de 01/01/2022 até o último dia
 // fechado (30/09/2026). Enquanto a base histórica não chega, as séries
 // saem de perfis mensais de safra × o porte de cada ano, com variação
@@ -488,6 +490,8 @@
         };
         const horasTot = somaArr([horas.s1, horas.s2]);
         def('horasSec', { rotulo: 'Horas secando', unidade: 'h', base: horasTot, dims: { secador: partes(horas, horasTot), cultura: dCultSec, turno: dTurnoSec } });
+        // dois secadores, 24 h cada: quanto do dia eles ficaram ligados (o dia mais cheio do período)
+        def('secUsoPico', { rotulo: 'Uso dos secadores no dia de pico', unidade: '%', agreg: 'max', base: gerar((d) => horasTot[d] / 48 * 100) });
 
         const SETP = { milho: 100, sorgo: 95, trigo: 80, soja: 85 };
         const tempArC = Object.fromEntries(CULT.map((c, i) => [c, gerar((d) => SETP[c] - 4 + 2.5 * carga[d] + 1.2 * ruidoDia(d, 120 + i))]));
@@ -1179,6 +1183,7 @@
     const EST_TELAS = [
         { id: 'est-geral', tipo: 'painel', codigo: 'AVR-E0A' },
         { id: 'est-projecao', tipo: 'projecao', codigo: 'AVR-E0B', tempo: false, dims: [] },
+        { id: 'est-capacidade', tipo: 'capacidade', codigo: 'AVR-E0C', tempo: false, dims: [] },
 
         // Cada tela tem a grade que mostra melhor o seu dado (ver "blocos das
         // telas"). Sem "grade", vale a GRADE_PADRAO: a = bloco grande à
@@ -3062,6 +3067,38 @@
         </div>`;
     }
 
+    // o que mais piorou no ano corrente contra a média dos 3 anos anteriores:
+    // o ano projetado contra os anos fechados ou, sem projeção, o ano até
+    // hoje contra o mesmo trecho deles. Só entram indicadores com lado bom
+    // e ruim definidos; a piora é medida em proporção do valor de referência.
+    const ATENCAO = [
+        ['Recepção', 'espera', 'est-rec-fila'], ['Recepção', 'diasEspera20', 'est-rec-fila'], ['Recepção', 'ciclo', 'est-rec-ciclo'],
+        ['Retornos do porto', 'custoRetorno', 'est-rec-porto'], ['Classificação', 'descontado', 'est-cla-prelimpeza'],
+        ['Moegas', 'vazao', 'est-moegas'], ['Silos pulmão', 'pulmaoCheio', 'est-moe-pulmao', 'Pulmões acima de 90%'],
+        ['Secagem', 'ritmo', 'est-secagem'], ['Secagem', 'cavacoKgM3', 'est-sec-cavaco'], ['Secagem', 'paradas', 'est-sec-paradas'],
+        ['Silos e armazém', 'ocupDias90', 'est-armazenagem', 'Silos acima de 90%'], ['Silos e armazém', 'focos', 'est-arm-temperatura'],
+        ['Expedição', 'reprovasPct', 'est-expedicao'], ['Expedição', 'cicloExp', 'est-exp-ciclo'], ['Contratos', 'noPrazo', 'est-exp-contratos'],
+        ['Clima', 'diasParados', 'est-clima'],
+    ];
+
+    function pontosDeAtencao(comProj) {
+        const ini = diaDe(ULT.ano, 0, 1);
+        const fim = comProj ? diaDe(ULT.ano, 11, 31) : NH - 1;
+        return ATENCAO.map(([area, id, goto, nome]) => {
+            const m = M[id];
+            if (!m || !m.melhor) return null;
+            const r = comProj ? agregarP(m, {}, ini, fim) : null;
+            const atual = r ? r.c : agregar(m, {}, ini, NH - 1);
+            const ref = referencia(m, {}, ini, fim, 'media');
+            if (atual == null || ref == null) return null;
+            // contagem de dias: 0 → 3 dias não é piora de 300%; o piso é um mês
+            const base = Math.max(Math.abs(ref), m.unidade === 'dias' ? 30 : 1e-9);
+            const piora = (m.melhor === 'maior' ? ref - atual : atual - ref) / base;
+            return { area, m, goto, atual, piora, nome: nome || m.rotulo, dl: delta(m, atual, ref) };
+        }).filter((p) => p && p.piora > 0.02 && p.dl && p.dl.classe === 'is-ruim')
+            .sort((a, b) => b.piora - a.piora).slice(0, 5);
+    }
+
     function telaPainel(tela) {
         const P = periodo();
         const t = { dims: {} };
@@ -3074,18 +3111,14 @@
             ],
         }, {}, P, { codigo: tela.codigo + '-A', key: tela.id + ':a', estilo: '', larg: 0.6 });
         const etapas = ETAPAS.map((a, i) => etapaHtml(a, tela, P, i < ETAPAS.length - 1 ? ' tem-seta' : '')).join('');
-        const recordes = [
-            ['Recebimento', 'rec'], ['Expedição', 'exp'], ['Ocupação', 'ocup'], ['Umidade do grão', 'umidade'], ['Chuva', 'chuva'],
-        ].map(([rot, id]) => {
-            const m = M[id];
-            let melhor = null;
-            buckets('mes', P.ini, P.fim).forEach((b) => {
-                const v = agregar(m, {}, b.ini, b.fim);
-                if (v != null && (!melhor || v > melhor.v)) melhor = { v, b };
-            });
-            return `<li><span>${rot}</span><b>${melhor ? fmtM(m, melhor.v) : '—'}</b><em>${melhor ? melhor.b.rot : ''}</em></li>`;
-        }).join('');
         const comProj = ESTADO.projecao !== 'off';
+        const pontos = pontosDeAtencao(comProj);
+        const atencao = pontos.length
+            ? `<ul class="est-atencao">${pontos.map((p) => `<li><button type="button" class="est-at" data-goto="${p.goto}" title="Abrir ${p.area}">
+                    <span class="est-at-nome">${p.nome}</span><b>${fmtM(p.m, p.atual)}</b>
+                    <span class="est-at-area">${p.area}</span>${deltaHtml(p.dl, '')}
+                </button></li>`).join('')}</ul>`
+            : '<p class="est-nota est-atencao-vazio">Nenhum indicador piorou contra a média dos 3 anos anteriores.</p>';
         return htmlFiltros(tela, t) + `<div class="est-geral">
             <div class="est-geral-topo">${graf}${fechamentoHtml(tela)}</div>
             <div class="est-geral-base">
@@ -3097,9 +3130,9 @@
                     ${cabecalho('Clima')}
                     <div class="est-fluxo-etapas">${etapaHtml(CLIMA, tela, P, '')}</div>
                 </div>
-                <div data-codigo="${tela.codigo}-E" class="content-section du-section est-section est-rec-sec">
-                    ${cabecalho('Recordes de um mês', '<span>' + P.rot + '</span>')}
-                    <ul class="est-recordes">${recordes}</ul>
+                <div data-codigo="${tela.codigo}-E" class="content-section du-section est-section est-atencao-sec">
+                    ${cabecalho('Pontos de atenção · ' + ULT.ano, `<span>${comProj ? 'projetado' : 'até ' + rotDia(NH - 1).slice(0, 5)} vs média ${ULT.ano - 3}–${String(ULT.ano - 1).slice(2)}</span>`)}
+                    ${atencao}
                 </div>
             </div>
         </div>`;
@@ -3169,6 +3202,176 @@
             + `<p class="est-nota">Como a projeção é feita: cada dia que falta repete o mesmo dia de ${ULT.ano - 1}, ${ULT.ano - 2} e ${ULT.ano - 3}, cada um ajustado ao ritmo dos últimos 12 meses. O valor é a média dos três; a faixa vai do mais fraco ao mais forte e abre um pouco a cada mês à frente.</p>`;
     }
 
+    // ---------- capacidade: para onde o ritmo dos anos leva ----------
+    // A tela da decisão de investimento. À esquerda, o volume de cada ano e
+    // os próximos, se o ritmo médio dos anos continuar. À direita, os sinais
+    // de que a estrutura está no limite (dias de fila, pulmão e silo cheios,
+    // uso dos secadores no pico), com a situação de hoje e a de daqui a
+    // HORIZONTE anos. A tendência é uma reta pelos anos (mínimos quadrados),
+    // continuada a partir do ano corrente projetado; a faixa é o maior
+    // desvio dos anos em relação à reta e abre 25% a cada ano à frente.
+    const HORIZONTE = 4;
+    const CAP_VOLUMES = [{ v: 'rec', n: 'Recebido' }, { v: 'secado', n: 'Secado' }, { v: 'exp', n: 'Expedido' }];
+    const CAP_SINAIS = [
+        { area: 'Recepção', curto: 'Recepção · espera acima de 20 min', metrica: 'diasEspera20', nome: 'dias do ano com espera média acima de 20 min', goto: 'est-rec-fila' },
+        { area: 'Silos pulmão', curto: 'Pulmões · acima de 90%', metrica: 'pulmaoCheio', nome: 'dias do ano com os pulmões acima de 90%', goto: 'est-moe-pulmao' },
+        { area: 'Secagem', curto: 'Secadores · uso no dia de pico', metrica: 'secUsoPico', nome: 'horas ligados no dia mais cheio, das 48 h dos dois secadores', goto: 'est-secagem' },
+        { area: 'Silos e armazém', curto: 'Silos · acima de 90%', metrica: 'ocupDias90', nome: 'dias do ano com a ocupação média acima de 90%', goto: 'est-armazenagem' },
+        { area: 'Silos e armazém', curto: 'Silos · pico de ocupação', metrica: 'ocupPico', nome: 'o dia mais cheio do ano', goto: 'est-armazenagem' },
+        { area: 'Expedição', curto: 'Expedição · ciclo acima de 75 min', metrica: 'diasCiclo75', nome: 'dias do ano com o ciclo médio acima de 75 min', goto: 'est-exp-ciclo' },
+    ];
+    const SITUACAO = { limite: ['No limite', 2], atencao: ['Atenção', 1], folga: ['Com folga', 0] };
+
+    // um valor por ano fechado e o ano corrente projetado até dezembro
+    function serieAnual(m) {
+        return ANOS.map((a) => {
+            const ini = diaDe(a, 0, 1);
+            const fim = diaDe(a, 11, 31);
+            const r = agregarP(m, {}, ini, fim);
+            return r && r.c != null && isFinite(r.c) ? { a, v: r.c, lo: r.lo, hi: r.hi, proj: r.proj } : null;
+        }).filter(Boolean);
+    }
+
+    function tendenciaAnual(pts, m) {
+        const n = pts.length;
+        if (n < 3) return null;
+        const mx = pts.reduce((s, p) => s + p.a, 0) / n;
+        const my = pts.reduce((s, p) => s + p.v, 0) / n;
+        const sxx = pts.reduce((s, p) => s + (p.a - mx) ** 2, 0);
+        const porAno = pts.reduce((s, p) => s + (p.a - mx) * (p.v - my), 0) / sxx;
+        const desvio = Math.max(...pts.map((p) => Math.abs(p.v - (my + porAno * (p.a - mx)))));
+        const ult = pts[n - 1];
+        const teto = m.unidade === 'dias' ? 365 : Infinity;
+        const futuros = [];
+        for (let k = 1; k <= HORIZONTE; k++) {
+            const bruto = ult.v + porAno * k;
+            const e = desvio * (1 + 0.25 * k);
+            futuros.push({ a: ult.a + k, v: clamp(bruto, 0, teto), lo: clamp(bruto - e, 0, teto), hi: clamp(bruto + e, 0, teto), tend: true });
+        }
+        return { porAno, futuros, ult };
+    }
+
+    // o sinal de um gargalo: os anos, a tendência e a situação. Em dias, 30
+    // por ano (um mês inteiro) já é limite; em % da capacidade, 95%.
+    function sinalDe(s) {
+        const m = M[s.metrica];
+        const pts = serieAnual(m);
+        const T = tendenciaAnual(pts, m);
+        if (!T) return null;
+        const atual = T.ult.v;
+        const fim = T.futuros[T.futuros.length - 1];
+        const pct = m.unidade === '%';
+        const cheio = pct ? T.futuros.find((x) => x.v >= 100) : null;
+        let sit = 'folga';
+        if (pct) {
+            if (atual >= 95 || (cheio && cheio.a <= ULT.ano + 2)) sit = 'limite';
+            else if (atual >= 85 || cheio) sit = 'atencao';
+        } else if (atual >= 30) sit = 'limite';
+        else if (atual >= 10 || fim.v >= 30) sit = 'atencao';
+        return { s, m, pts, T, atual, fim, pct, cheio, sit, peso: SITUACAO[sit][1] * 10 + (pct ? atual / 100 : Math.min(1, atual / 60)) };
+    }
+
+    const sitHtml = (sit) => `<span class="est-sit is-${sit}">${SITUACAO[sit][0]}</span>`;
+
+    function miniAnos(x) {
+        const todos = x.pts.concat(x.T.futuros);
+        const topo = Math.max(x.pct ? 100 : 1e-9, ...todos.map((p) => p.v));
+        return `<span class="est-cap-mini" style="--n: ${todos.length}" aria-hidden="true">${todos.map((p) => `<i class="${p.tend ? 'is-tend' : (p.proj ? 'is-proj' : '')}" style="--h: ${clamp(p.v / topo, 0, 1).toFixed(3)}" data-tip="${tipDe([p.a + (p.tend ? ' · tendência' : (p.proj ? ' · projetado' : '')), fmtM(x.m, p.v)])}"></i>`).join('')}</span>`;
+    }
+
+    function graficoHorizonte(tela, m) {
+        const pts = serieAnual(m);
+        const T = tendenciaAnual(pts, m);
+        const todos = pts.concat(T ? T.futuros : []);
+        const topo = Math.max(1e-9, ...todos.map((p) => p.hi)) * 1.04;
+        const dv = divisorDe(topo);
+        const fr = (v) => clamp(v / topo, 0, 1).toFixed(4);
+        const cols = todos.map((p) => {
+            const tipo = p.tend ? 'is-tend' : (p.proj ? 'is-proj' : '');
+            const faixa = p.hi - p.lo > 1e-9;
+            const tip = tipDe([
+                p.a + (p.tend ? ' · tendência' : (p.proj ? ' · projetado' : ' · fechado')),
+                fmtM(m, p.v),
+                faixa ? 'faixa: ' + faixaTxt(m, { lo: p.lo, hi: p.hi, proj: true }) : '',
+            ]);
+            return `<div class="est-cap-col ${tipo}" data-tip="${tip}">
+                <div class="est-cap-pista">
+                    <span class="est-cap-val" style="--hi: ${fr(p.hi)}">${curto(m, p.v, dv)}</span>
+                    <i class="est-cap-barra" style="--h: ${fr(p.v)}"></i>
+                    ${faixa ? `<i class="est-cap-faixa" style="--lo: ${fr(p.lo)}; --hi: ${fr(p.hi)}"></i>` : ''}
+                </div>
+                <span class="est-cap-ano">${p.a}${p.proj ? '*' : ''}</span>
+            </div>`;
+        }).join('');
+        const leg = legItem('est-leg--barra', 'ano fechado', 'var(--viz-real)')
+            + legItem('est-leg--proj', ULT.ano + '* projetado', 'var(--viz-real)')
+            + '<span><i class="est-leg est-leg--cap-tend"></i>se o ritmo dos anos continuar</span>'
+            + '<span><i class="est-leg est-leg--cap-faixa"></i>faixa provável</span>';
+        return `<div data-codigo="${tela.codigo}-B" class="content-section du-section est-section est-cap-graf">
+            ${cabecalho(m.rotulo + ' por ano · ' + unidadeTxt(m, dv), leg)}
+            <div class="est-cap-barras" style="--n: ${todos.length}">${cols}</div>
+        </div>`;
+    }
+
+    function telaCapacidade(tela) {
+        const t = estadoTela(tela);
+        if (!CAP_VOLUMES.some((x) => x.v === t.sel)) t.sel = 'rec';
+        const m = M[t.sel];
+        const pts = serieAnual(m);
+        const T = tendenciaAnual(pts, m);
+        const sinais = CAP_SINAIS.map(sinalDe).filter(Boolean);
+        const anoFim = ULT.ano + HORIZONTE;
+
+        // KPIs: o ritmo de crescimento, onde ele leva, a safra concentrada e o gargalo
+        const prim = pts[0];
+        const ult = pts[pts.length - 1];
+        const cagr = prim && ult && prim.v > 0 && ult.a > prim.a ? ((ult.v / prim.v) ** (1 / (ult.a - prim.a)) - 1) * 100 : null;
+        const fut = T ? T.futuros[T.futuros.length - 1] : null;
+        const anoFechado = ULT.ano - 1;
+        const meses = MESES.map((_, i) => agregar(m, {}, diaDe(anoFechado, i, 1), fimMes((anoFechado - ANO0) * 12 + i)) || 0);
+        const totalAno = meses.reduce((s, v) => s + v, 0);
+        const ordem = meses.map((v, i) => ({ v, i })).sort((a, b) => b.v - a.v).slice(0, 3);
+        const conc = totalAno > 0 ? ordem.reduce((s, x) => s + x.v, 0) / totalAno * 100 : null;
+        const pior = sinais.slice().sort((a, b) => b.peso - a.peso)[0];
+        const sub = (txt) => `<span class="est-delta is-neutro"><span>${txt}</span></span>`;
+        const kp = kpiCard(tela.codigo + '-A', `Crescimento · ${m.rotulo.toLowerCase()}`, cagr == null ? '—' : `${cagr >= 0 ? '+' : '−'}${fmt(Math.abs(cagr), 1)} <span class="kpi-value-unit">% ao ano</span>`, sub(prim && ult ? `de ${fmtM(m, prim.v)} em ${prim.a} para ${fmtM(m, ult.v)} em ${ult.a}${ult.proj ? ' (projetado)' : ''}` : ''))
+            + kpiCard(tela.codigo + '-A', `<span class="est-tag-proj">Tendência</span> ${m.rotulo} em ${anoFim}`, fut ? valorHtml(m, fut.v) : '—', sub(fut ? `se o ritmo continuar · faixa ${faixaTxt(m, { lo: fut.lo, hi: fut.hi, proj: true })}` : ''), 'est-kpi--proj')
+            + kpiCard(tela.codigo + '-A', `Safra concentrada · ${anoFechado}`, conc == null ? '—' : `${fmt(conc, 0)} <span class="kpi-value-unit">% em 3 meses</span>`, sub(`${ordem.map((x) => MESES[x.i]).join(', ')}: é o pico, não o total do ano, que pede estrutura`))
+            + kpiCard(tela.codigo + '-A', 'Gargalo mais próximo', pior ? `<span class="est-kpi-texto">${pior.s.area}</span>` : '—', pior ? `<span class="est-delta is-neutro">${sitHtml(pior.sit)} <span>${fmtM(pior.m, pior.atual)} ${pior.s.nome.replace(/^dias do ano /, "")} em ${ULT.ano}</span></span>` : '');
+
+        const linhas = sinais.map((x) => {
+            const dl = delta(x.m, x.atual + x.T.porAno, x.atual);
+            const adiante = x.cheio
+                ? `<b>100%</b><small class="est-faixa-cel">em ${x.cheio.a}</small>`
+                : `<b>${fmt(x.fim.v, x.m.casas)}</b><small class="est-faixa-cel">${fmt(x.fim.lo, x.m.casas)} a ${fmt(x.fim.hi, x.m.casas)}</small>`;
+            return `<tr class="est-cap-linha" data-goto="${x.s.goto}" title="Abrir ${x.s.area}">
+                <td class="pv-tabela-nome">${x.s.curto}<small>${x.s.nome}</small></td>
+                <td>${miniAnos(x)}</td>
+                <td class="num"><b>${fmtM(x.m, x.atual)}</b></td>
+                <td class="num">${deltaHtml(dl && dl.seta === '=' ? { txt: 'estável', classe: 'is-neutro', seta: '=' } : dl, '')}</td>
+                <td class="num est-cel-proj">${adiante}</td>
+                <td class="num">${sitHtml(x.sit)}</td>
+            </tr>`;
+        }).join('');
+        const tabela = `<div data-codigo="${tela.codigo}-C" class="content-section du-section est-section est-anos est-cap-sinais">
+            <div class="section-head">
+                <h3>ONDE A ESTRUTURA APERTA</h3>
+                <span class="du-legenda"><span>cada barrinha é um ano, de ${ANOS[0]} a ${anoFim} · clique na linha para abrir a tela</span></span>
+            </div>
+            <div class="table-scroll table-scroll--livre est-scroll">
+                <table class="pv-tabela du-tabela est-tabela est-tabela--proj est-tabela--cap">
+                    <thead><tr><th>Etapa e sinal</th><th>${ANOS[0]}–${anoFim}</th><th class="num">${ULT.ano}<small>projetado</small></th><th class="num">▲▼<small>por ano</small></th><th class="num">${anoFim}<small>nesse ritmo</small></th><th class="num">Situação</th></tr></thead>
+                    <tbody>${linhas}</tbody>
+                </table>
+            </div>
+        </div>`;
+        const sel = CAP_VOLUMES.map((o) => pill('data-est-sel', o.v, o.n, t.sel === o.v)).join('');
+        const filtros = `<div class="est-filtros"><div class="est-filtros-linha">${grupo('Volume', sel, 'est-fgrupo--mostrar')}</div></div>`;
+        return filtros + `<div class="kpi-grid est-kpis" style="--k: 4">${kp}</div>`
+            + `<div class="est-proj-corpo est-cap-corpo">${graficoHorizonte(tela, m)}${tabela}</div>`
+            + `<p class="est-nota">Como ler: ${ULT.ano} é a projeção até dezembro; ${ULT.ano + 1} a ${anoFim} continuam o ritmo médio de ${ANOS[0]} a ${ULT.ano} (uma reta pelos anos). Mostra para onde o ritmo atual leva a estrutura, não prevê safra. Situação: "No limite" a partir de 30 dias por ano acima do limite ou 95% da capacidade; "Atenção" a partir de 10 dias, 85% ou quando a tendência chega lá até ${anoFim}.</p>`;
+    }
+
     // ---------- montagem ----------
     let versao = 0;
     const versaoTela = {};
@@ -3184,6 +3387,7 @@
         let html;
         if (tela.tipo === 'painel') html = telaPainel(tela);
         else if (tela.tipo === 'projecao') html = telaProjecao(tela);
+        else if (tela.tipo === 'capacidade') html = telaCapacidade(tela);
         else html = telaPadrao(tela);
         corpo.innerHTML = html;
         const meta = corpo.closest('.screen') && corpo.closest('.screen').querySelector('.screen-meta');
@@ -3191,7 +3395,9 @@
             const P = periodo();
             meta.textContent = tela.tipo === 'projecao'
                 ? `ESTRATÉGICO • REAL ATÉ ${ULT_ROT} • PROJEÇÃO ATÉ ${rotDia(NT - 1)}`
-                : `ESTRATÉGICO • ${P.rot.toUpperCase()} • REAL ATÉ ${ULT_ROT}${P.comProj ? ' • PROJEÇÃO ATÉ ' + rotDia(P.fimProj) : ''}`;
+                : tela.tipo === 'capacidade'
+                ? `ESTRATÉGICO • ${ANOS[0]}–${ULT.ano} • REAL ATÉ ${ULT_ROT} • TENDÊNCIA ATÉ ${ULT.ano + HORIZONTE}`
+                :`ESTRATÉGICO • ${P.rot.toUpperCase()} • REAL ATÉ ${ULT_ROT}${P.comProj ? ' • PROJEÇÃO ATÉ ' + rotDia(P.fimProj) : ''}`;
         }
         versaoTela[id] = versao;
         vigiar(id, corpo);

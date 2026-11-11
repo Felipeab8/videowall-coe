@@ -23794,7 +23794,7 @@ button.est-fchip:focus-visible {
 
 
 .est-geral-base {
-    grid-template-columns: minmax(0, 6fr) minmax(0, 1.05fr) minmax(0, 1.75fr);
+    grid-template-columns: minmax(0, 6fr) minmax(0, 1.05fr) minmax(0, 2.1fr);
 }
 
 
@@ -24127,7 +24127,8 @@ button.est-fchip:focus-visible {
 
 
 
-.est-recordes {
+/* pontos de atenção: o que mais piorou no ano, cada linha abre a sua tela */
+.est-atencao {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -24140,32 +24141,59 @@ button.est-fchip:focus-visible {
 
 
 
-.est-recordes li {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto auto;
-    align-items: baseline;
-    gap: 0.6rem;
-    padding: 0.2rem 0;
+.est-atencao li {
     border-bottom: 1px solid var(--row-line);
-    font-size: max(0.8rem, var(--fs-texto, 0px));
 }
 
 
 
-.est-recordes li:last-child {
+.est-atencao li:last-child {
     border-bottom: 0;
 }
 
 
 
-.est-recordes span {
-    color: var(--muted);
-    font-weight: 600;
+.est-at {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 0 0.6rem;
+    width: 100%;
+    padding: 0.2rem 0;
+    border: 0;
+    background: none;
+    color: var(--text);
+    font: inherit;
+    font-size: max(0.8rem, var(--fs-texto, 0px));
+    text-align: left;
+    cursor: pointer;
 }
 
 
 
-.est-recordes b {
+.est-at:hover .est-at-nome {
+    color: var(--accent);
+}
+
+
+
+.est-at:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+
+
+.est-at-nome {
+    overflow: hidden;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+
+.est-at b {
     font-weight: 800;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
@@ -24173,12 +24201,256 @@ button.est-fchip:focus-visible {
 
 
 
-.est-recordes em {
-    min-width: 3.2rem;
-    font-style: normal;
-    font-weight: 700;
-    text-align: right;
+.est-at-area {
+    font-size: max(0.7rem, var(--fs-texto, 0px));
+    font-weight: 600;
     color: var(--faint);
+}
+
+
+
+.est-at .est-delta {
+    text-align: right;
+}
+
+
+
+.est-atencao-vazio {
+    margin: auto 0;
+}
+
+
+
+/* ---- capacidade: volume por ano com a tendência + sinais de gargalo ---- */
+.est-cap-corpo {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+}
+
+
+
+.est-cap-barras {
+    display: grid;
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    gap: 0.7rem;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding-top: 0.4rem;
+}
+
+
+
+.est-cap-col {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    min-width: 0;
+    min-height: 0;
+}
+
+
+
+.est-cap-pista {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: stretch;
+    min-height: 0;
+    border-bottom: 1px solid var(--card-border);
+}
+
+
+
+/* o valor fica acima da ponta da faixa (ou da barra, quando não há faixa) */
+.est-cap-val {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--hi) * (100% - 2.6rem) + 0.2rem);
+    font-size: max(0.78rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2rem;
+    text-align: center;
+    white-space: nowrap;
+}
+
+
+
+/* a pista reserva 2.6rem em cima: o valor e a ponta da faixa provável */
+.est-cap-barra {
+    flex: 0 0 auto;
+    height: calc(var(--h) * (100% - 2.6rem));
+    min-height: 2px;
+    border-radius: 4px 4px 0 0;
+    background: var(--viz-real);
+    opacity: 0.6;
+}
+
+
+
+.est-cap-col.is-proj .est-cap-barra {
+    background: repeating-linear-gradient(135deg, var(--viz-real) 0 4px, transparent 4px 8px);
+    box-shadow: inset 0 0 0 1.5px var(--viz-real);
+    opacity: 1;
+}
+
+
+
+.est-cap-col.is-tend .est-cap-barra {
+    border: 1.5px dashed var(--viz-real);
+    border-bottom: 0;
+    background: color-mix(in srgb, var(--viz-real) 14%, transparent);
+    opacity: 1;
+}
+
+
+
+.est-cap-col.is-tend .est-cap-val,
+.est-cap-col.is-tend .est-cap-ano {
+    color: var(--muted);
+}
+
+
+
+.est-cap-faixa {
+    position: absolute;
+    left: 50%;
+    bottom: calc(var(--lo) * (100% - 2.6rem));
+    width: 0.7rem;
+    height: calc((var(--hi) - var(--lo)) * (100% - 2.6rem));
+    border: solid var(--text);
+    border-width: 2px 0;
+    transform: translateX(-50%);
+    background: linear-gradient(var(--text), var(--text)) center / 2px 100% no-repeat;
+    opacity: 0.75;
+    pointer-events: none;
+}
+
+
+
+.est-cap-ano {
+    padding-top: 0.25rem;
+    font-size: max(0.74rem, var(--fs-texto, 0px));
+    font-weight: 700;
+    text-align: center;
+    color: var(--text);
+}
+
+
+
+.est-leg--cap-tend {
+    border: 1.5px dashed var(--viz-real);
+    background: color-mix(in srgb, var(--viz-real) 14%, transparent);
+}
+
+
+
+.est-leg--cap-faixa {
+    width: 0.6rem;
+    border: solid var(--text);
+    border-width: 2px 0;
+    border-radius: 0;
+    background: linear-gradient(var(--text), var(--text)) center / 2px 100% no-repeat;
+}
+
+
+
+.est-cap-linha {
+    cursor: pointer;
+}
+
+
+
+.est-cap-linha:hover td.pv-tabela-nome {
+    color: var(--accent);
+}
+
+
+
+.est-tabela--cap td.pv-tabela-nome {
+    white-space: normal;
+}
+
+
+
+.est-tabela--cap td.pv-tabela-nome small {
+    display: block;
+    margin-left: 0;
+}
+
+
+
+.est-cap-mini {
+    display: inline-grid;
+    grid-template-columns: repeat(var(--n), 0.55rem);
+    align-items: end;
+    gap: 2px;
+    height: calc(2rem * var(--est-fs, 1));
+    border-bottom: 1px solid var(--card-border);
+    vertical-align: middle;
+}
+
+
+
+.est-cap-mini i {
+    height: calc(var(--h) * 100%);
+    min-height: 2px;
+    border-radius: 2px 2px 0 0;
+    background: var(--viz-real);
+    opacity: 0.6;
+}
+
+
+
+.est-cap-mini i.is-proj {
+    opacity: 1;
+}
+
+
+
+.est-cap-mini i.is-tend {
+    background: color-mix(in srgb, var(--viz-real) 22%, transparent);
+    box-shadow: inset 0 0 0 1px var(--viz-real);
+    opacity: 1;
+}
+
+
+
+/* situação: o texto diz, a cor reforça */
+.est-sit {
+    display: inline-block;
+    padding: 0.1rem 0.5rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    font-size: max(calc(0.68rem * var(--est-fs, 1)), var(--fs-texto, 0px));
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+}
+
+
+
+.est-sit.is-folga {
+    color: var(--du-ok);
+}
+
+
+
+.est-sit.is-atencao {
+    color: var(--du-warn);
+}
+
+
+
+.est-sit.is-limite {
+    color: var(--du-danger);
+    background: color-mix(in srgb, var(--du-danger) 14%, transparent);
+}
+
+
+
+.est-kpi-texto {
+    font-size: 0.72em;
 }
 
 
