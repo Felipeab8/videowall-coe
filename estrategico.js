@@ -712,7 +712,7 @@
         const ocB = gerar((d) => UNI.reduce((s, u) => s + oc[u][d], 0) / UNI.length);
         const dOc = desvios(oc, ocB);
         def('ocup', { rotulo: 'Ocupação média', unidade: '%', agreg: 'media', limite: [0, 100], base: ocB, dims: { unidadeArm: dOc } });
-        def('ocupPico', { rotulo: 'Pico de ocupação', unidade: '%', agreg: 'max', limite: [0, 100], base: ocB, dims: { unidadeArm: dOc } });
+        def('ocupPico', { rotulo: 'Pico de ocupação', unidade: '%', agreg: 'max', limite: [0, 100], base: ocB, dims: { unidadeArm: dOc }, capacidade: UNI.length * CAP_UNI, capUnidade: CAP_UNI });
         def('ocupDias90', { rotulo: 'Dias acima de 90%', unidade: 'dias', agreg: 'acima', de: 'ocup', limiar: 90, melhor: 'menor' });
         const estB = gerar((d) => ocB[d] * UNI.length * CAP_UNI / 100);
         const estU = Object.fromEntries(UNI.map((u) => [u, gerar((d) => oc[u][d] * CAP_UNI / 100)]));
@@ -2972,12 +2972,12 @@
     // já foi feito. Embaixo, as etapas na ordem em que o grão passa por elas,
     // cada uma com o histórico ano a ano (o mês a mês só mostrava a safra).
     const ETAPAS = [
-        { nome: 'Recepção', metrica: 'rec', goto: 'est-recepcao' },
+        { nome: 'Recepção', metrica: 'rec', goto: 'est-recepcao', sinais: ['diasEspera20'] },
         { nome: 'Classificação', metrica: 'umidade', goto: 'est-classificacao' },
-        { nome: 'Moegas', metrica: 'vazao', goto: 'est-moegas' },
-        { nome: 'Secagem', metrica: 'secado', goto: 'est-secagem' },
-        { nome: 'Armazenagem', metrica: 'ocup', goto: 'est-armazenagem' },
-        { nome: 'Expedição', metrica: 'exp', goto: 'est-expedicao' },
+        { nome: 'Moegas', metrica: 'vazao', goto: 'est-moegas', sinais: ['pulmaoCheio'] },
+        { nome: 'Secagem', metrica: 'secado', goto: 'est-secagem', sinais: ['secUsoPico'] },
+        { nome: 'Armazenagem', metrica: 'ocup', goto: 'est-armazenagem', sinais: ['ocupDias90', 'ocupPico'] },
+        { nome: 'Expedição', metrica: 'exp', goto: 'est-expedicao', sinais: ['diasCiclo75'] },
     ];
     const CLIMA = { nome: 'Clima', metrica: 'chuva', goto: 'est-clima' };
     const FECHAMENTO = [['Recebido', 'rec'], ['Secado', 'secado'], ['Expedido', 'exp']];
@@ -3015,9 +3015,16 @@
     function etapaHtml(a, tela, P, cls) {
         const m = M[a.metrica];
         const v = agregar(m, {}, P.ini, P.fim);
+        // a pior situação entre os sinais de capacidade da etapa (ver
+        // sinaisDeCapacidade). A marca vai na linha do rótulo, onde sobra
+        // espaço; na TV o rótulo some e ela aparece ao lado do nome.
+        const pior = (a.sinais || []).map((id) => sinaisDeCapacidade().find((x) => x.s.metrica === id)).filter(Boolean).sort((x, y) => y.peso - x.peso)[0];
+        const aviso = pior && pior.sit !== 'folga'
+            ? `<i class="est-etapa-marca is-${pior.sit}" data-tip="${tipDe([a.nome + ' · ' + SITUACAO[pior.sit][0], pior.s.curto, fmtM(pior.m, pior.atual) + ' em ' + ULT.ano, 'detalhe em Capacidade e gargalos'])}">!</i>`
+            : '';
         return `<button type="button" class="est-etapa${cls || ''}" data-goto="${a.goto}" title="Abrir ${a.nome}">
-            <span class="est-etapa-nome">${a.nome}</span>
-            <span class="est-etapa-rotulo">${m.rotulo}</span>
+            <span class="est-etapa-nome">${a.nome}${aviso.replace('est-etapa-marca ', 'est-etapa-marca est-etapa-marca--tv ')}</span>
+            <span class="est-etapa-rotulo">${m.rotulo}${aviso}</span>
             <span class="kpi-value">${valorHtml(m, v)}</span>
             ${rodapeKpi(m, {}, P, v)}
             ${historicoAnos(m)}
@@ -3084,7 +3091,7 @@
     function pontosDeAtencao(comProj) {
         const ini = diaDe(ULT.ano, 0, 1);
         const fim = comProj ? diaDe(ULT.ano, 11, 31) : NH - 1;
-        return ATENCAO.map(([area, id, goto, nome]) => {
+        const todos = ATENCAO.map(([area, id, goto, nome]) => {
             const m = M[id];
             if (!m || !m.melhor) return null;
             const r = comProj ? agregarP(m, {}, ini, fim) : null;
@@ -3095,8 +3102,11 @@
             const base = Math.max(Math.abs(ref), m.unidade === 'dias' ? 30 : 1e-9);
             const piora = (m.melhor === 'maior' ? ref - atual : atual - ref) / base;
             return { area, m, goto, atual, piora, nome: nome || m.rotulo, dl: delta(m, atual, ref) };
-        }).filter((p) => p && p.piora > 0.02 && p.dl && p.dl.classe === 'is-ruim')
-            .sort((a, b) => b.piora - a.piora).slice(0, 5);
+        }).filter((p) => p && p.dl);
+        const pioras = todos.filter((p) => p.piora > 0.02 && p.dl.classe === 'is-ruim').sort((a, b) => b.piora - a.piora);
+        const melhora = todos.filter((p) => p.piora < -0.02 && p.dl.classe === 'is-bom').sort((a, b) => a.piora - b.piora)[0];
+        // a última linha é do que mais melhorou: a leitura do ano não é só má notícia
+        return pioras.slice(0, melhora ? 4 : 5).concat(melhora ? [Object.assign({ bom: true }, melhora)] : []);
     }
 
     function telaPainel(tela) {
@@ -3114,11 +3124,11 @@
         const comProj = ESTADO.projecao !== 'off';
         const pontos = pontosDeAtencao(comProj);
         const atencao = pontos.length
-            ? `<ul class="est-atencao">${pontos.map((p) => `<li><button type="button" class="est-at" data-goto="${p.goto}" title="Abrir ${p.area}">
+            ? `<ul class="est-atencao">${pontos.map((p) => `<li><button type="button" class="est-at${p.bom ? ' est-at--bom' : ''}" data-goto="${p.goto}" title="Abrir ${p.area}">
                     <span class="est-at-nome">${p.nome}</span><b>${fmtM(p.m, p.atual)}</b>
-                    <span class="est-at-area">${p.area}</span>${deltaHtml(p.dl, '')}
+                    <span class="est-at-area">${p.bom ? 'melhor evolução · ' : ''}${p.area}</span>${deltaHtml(p.dl, '')}
                 </button></li>`).join('')}</ul>`
-            : '<p class="est-nota est-atencao-vazio">Nenhum indicador piorou contra a média dos 3 anos anteriores.</p>';
+            : '<p class="est-nota est-atencao-vazio">Nenhum indicador mudou de forma relevante contra a média dos 3 anos anteriores.</p>';
         return htmlFiltros(tela, t) + `<div class="est-geral">
             <div class="est-geral-topo">${graf}${fechamentoHtml(tela)}</div>
             <div class="est-geral-base">
@@ -3271,6 +3281,13 @@
         return { s, m, pts, T, atual, fim, pct, cheio, sit, peso: SITUACAO[sit][1] * 10 + (pct ? atual / 100 : Math.min(1, atual / 60)) };
     }
 
+    // os sinais leem o ano inteiro, sem filtro: uma conta só por carga
+    let sinaisCache = null;
+    function sinaisDeCapacidade() {
+        if (!sinaisCache) sinaisCache = CAP_SINAIS.map(sinalDe).filter(Boolean);
+        return sinaisCache;
+    }
+
     const sitHtml = (sit) => `<span class="est-sit is-${sit}">${SITUACAO[sit][0]}</span>`;
 
     function miniAnos(x) {
@@ -3313,13 +3330,44 @@
         </div>`;
     }
 
+    // quanto de armazenagem falta: o pico dos silos no fim do horizonte
+    // contra a capacidade estática com 0, 1, 2... unidades a mais. A meta é
+    // o pico abaixo de 90% (acima disso a tela já conta "dia cheio").
+    function ampliacaoHtml(tela, sinais) {
+        const x = sinais.find((y) => y.s.metrica === 'ocupPico');
+        if (!x || !x.m.capacidade) return '';
+        const cap = x.m.capacidade;
+        const uni = x.m.capUnidade;
+        const n0 = Math.round(cap / uni);
+        const pico = x.fim.v;
+        const falta = Math.max(0, pico / 90 * cap - cap);
+        const nFalta = Math.ceil(falta / uni - 1e-9);
+        const sitDe = (p) => (p >= 95 ? 'limite' : (p >= 85 ? 'atencao' : 'folga'));
+        const ops = [];
+        for (let n = 0; n <= clamp(nFalta + 1, 3, 4); n++) ops.push({ n, p: pico * n0 / (n0 + n) });
+        const alvo = ops.find((o) => o.p < 90);
+        const frase = falta > 0
+            ? `Para o pico de ${x.fim.a} ficar abaixo de 90%, faltam <b>${fmt(Math.ceil(falta / 100) * 100, 0)} t</b> de capacidade estática: <b>${nFalta} ${nFalta === 1 ? 'unidade' : 'unidades'}</b> de ${fmt(uni, 0)} t.${x.cheio ? ` Sem ampliar, o pico passa de 100% em ${x.cheio.a}.` : ''}`
+            : `A capacidade atual segura o pico abaixo de 90% até ${x.fim.a}, se o ritmo dos anos continuar.`;
+        const cartoes = ops.map((o) => `<div class="est-cap-op${o === alvo ? ' is-alvo' : ''}">
+                <span>${o.n ? '+' + o.n + (o.n === 1 ? ' unidade' : ' unidades') : 'Estrutura atual'}<small>${fmt((cap + o.n * uni) / 1000, 1)} mil t</small></span>
+                <b>${fmt(o.p, 0)}%</b>
+                ${sitHtml(sitDe(o.p))}
+            </div>`).join('');
+        return `<div data-codigo="${tela.codigo}-D" class="content-section du-section est-section est-cap-amp">
+            ${cabecalho('Ampliar a armazenagem · pico dos silos em ' + x.fim.a, `<span>hoje: ${n0} unidades de ${fmt(uni, 0)} t</span>`)}
+            <p class="est-cap-frase">${frase}</p>
+            <div class="est-cap-ops" style="--n: ${ops.length}">${cartoes}</div>
+        </div>`;
+    }
+
     function telaCapacidade(tela) {
         const t = estadoTela(tela);
         if (!CAP_VOLUMES.some((x) => x.v === t.sel)) t.sel = 'rec';
         const m = M[t.sel];
         const pts = serieAnual(m);
         const T = tendenciaAnual(pts, m);
-        const sinais = CAP_SINAIS.map(sinalDe).filter(Boolean);
+        const sinais = sinaisDeCapacidade();
         const anoFim = ULT.ano + HORIZONTE;
 
         // KPIs: o ritmo de crescimento, onde ele leva, a safra concentrada e o gargalo
@@ -3368,7 +3416,7 @@
         const sel = CAP_VOLUMES.map((o) => pill('data-est-sel', o.v, o.n, t.sel === o.v)).join('');
         const filtros = `<div class="est-filtros"><div class="est-filtros-linha">${grupo('Volume', sel, 'est-fgrupo--mostrar')}</div></div>`;
         return filtros + `<div class="kpi-grid est-kpis" style="--k: 4">${kp}</div>`
-            + `<div class="est-proj-corpo est-cap-corpo">${graficoHorizonte(tela, m)}${tabela}</div>`
+            + `<div class="est-proj-corpo est-cap-corpo"><div class="est-cap-esq">${graficoHorizonte(tela, m)}${ampliacaoHtml(tela, sinais)}</div>${tabela}</div>`
             + `<p class="est-nota">Como ler: ${ULT.ano} é a projeção até dezembro; ${ULT.ano + 1} a ${anoFim} continuam o ritmo médio de ${ANOS[0]} a ${ULT.ano} (uma reta pelos anos). Mostra para onde o ritmo atual leva a estrutura, não prevê safra. Situação: "No limite" a partir de 30 dias por ano acima do limite ou 95% da capacidade; "Atenção" a partir de 10 dias, 85% ou quando a tendência chega lá até ${anoFim}.</p>`;
     }
 

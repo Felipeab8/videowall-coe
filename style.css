@@ -24000,6 +24000,42 @@ button.est-fchip:focus-visible {
 
 
 
+/* etapa fora da folga na tela de capacidade: marca ao lado do nome (a dica diz o sinal) */
+.est-etapa-marca {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.15em;
+    height: 1.15em;
+    margin-left: 0.35em;
+    border-radius: 50%;
+    font-size: 0.85em;
+    font-style: normal;
+    font-weight: 800;
+    color: #fff;
+    vertical-align: 0.05em;
+}
+
+
+
+.est-etapa-marca--tv {
+    display: none;
+}
+
+
+
+.est-etapa-marca.is-atencao {
+    background: var(--du-warn);
+}
+
+
+
+.est-etapa-marca.is-limite {
+    background: var(--du-danger);
+}
+
+
+
 .est-etapa-rotulo {
     font-size: max(0.72rem, var(--fs-texto, 0px));
     font-weight: 600;
@@ -24215,6 +24251,13 @@ button.est-fchip:focus-visible {
 
 
 
+/* a última linha: o que mais melhorou */
+.est-at--bom .est-at-area {
+    color: var(--du-ok);
+}
+
+
+
 .est-atencao-vazio {
     margin: auto 0;
 }
@@ -24334,6 +24377,102 @@ button.est-fchip:focus-visible {
     font-weight: 700;
     text-align: center;
     color: var(--text);
+}
+
+
+
+/* coluna da esquerda: o gráfico e, embaixo, o tamanho da ampliação */
+.est-cap-esq {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    min-width: 0;
+    min-height: 0;
+}
+
+
+
+.est-cap-esq > .est-cap-graf {
+    flex: 1 1 0;
+    min-height: 0;
+}
+
+
+
+.est-cap-amp {
+    flex: 0 0 auto;
+}
+
+
+
+.est-cap-frase {
+    margin: 0 0 0.5rem;
+    font-size: max(0.84rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--muted);
+}
+
+
+
+.est-cap-frase b {
+    font-weight: 800;
+    color: var(--text);
+}
+
+
+
+.est-cap-ops {
+    display: grid;
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    gap: 0.5rem;
+}
+
+
+
+.est-cap-op {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
+    min-width: 0;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid var(--row-line);
+    border-radius: 8px;
+}
+
+
+
+/* a primeira opção que deixa o pico abaixo de 90% */
+.est-cap-op.is-alvo {
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+
+
+.est-cap-op > span {
+    font-size: max(0.72rem, var(--fs-texto, 0px));
+    font-weight: 700;
+    color: var(--muted);
+}
+
+
+
+.est-cap-op small {
+    display: block;
+    font-size: max(0.66rem, calc(var(--fs-texto, 0px) * 0.85));
+    font-weight: 600;
+    color: var(--faint);
+}
+
+
+
+.est-cap-op > b {
+    font-size: max(1.3rem, calc(var(--fs-texto, 0px) * 1.3));
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
 }
 
 
@@ -24596,6 +24735,37 @@ html.tv .est-modo .fluxo-periodo-btn:not(.is-active) {
 
 html.tv .est-kpi .kpi-label {
     white-space: normal;
+}
+
+
+
+/* na TV, cada opção da ampliação vira uma linha (nome e pico) para o
+   gráfico de cima não ser esmagado */
+html.tv .est-etapa-marca--tv {
+    display: inline-flex;
+}
+
+
+
+html.tv .est-cap-op {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0 0.5rem;
+    padding: 0.3rem 0.6rem;
+}
+
+
+
+html.tv .est-cap-op :is(small, .est-sit) {
+    display: none;
+}
+
+
+
+html.tv .est-cap-frase {
+    margin-bottom: 0.3rem;
 }
 
 
