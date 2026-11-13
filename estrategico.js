@@ -216,6 +216,10 @@
             { v: 's5', n: 'Silo 5' }, { v: 's6', n: 'Silo 6' }, { v: 's7', n: 'Silo 7' }, { v: 's8', n: 'Silo 8' },
             { v: 'a1', n: 'Armazém · área 1' }, { v: 'a2', n: 'Armazém · área 2' },
         ]) },
+        tratamento: { rotulo: 'Tratamento', todos: 'Todos', valores: lista([
+            { v: 'limpeza', n: 'Limpeza do silo', sub: 'setup antes de encher' }, { v: 'residual', n: 'Pulverização residual', sub: 'setup antes de encher' },
+            { v: 'preventivo', n: 'Tratamento preventivo', sub: 'no grão, na entrada' }, { v: 'expurgo', n: 'Expurgo', sub: 'fosfina' },
+        ]) },
         tipoTrigo: { rotulo: 'Tipo', todos: 'Todos', valores: lista([
             { v: 'superior', n: 'Superior', faixa: 'PH ≥ 78 · FN ≥ 250' }, { v: 'intermediario', n: 'Intermediário', faixa: 'PH 72–77 · FN 170–249' },
             { v: 'ap', n: 'AP', faixa: 'PH 68–71 · FN 150–169' }, { v: 'triguilho', n: 'Triguilho', faixa: 'abaixo do AP' },
@@ -735,6 +739,39 @@
         def('tempMaxMed', { rotulo: 'Máxima média', unidade: '°C', casas: 1, agreg: 'media', melhor: 'menor', base: tmxB, dims: { unidadeArm: desvios(tmx, tmxB) } });
         def('focos', { rotulo: 'Focos quentes', unidade: 'focos', melhor: 'menor', base: focT, dims: { unidadeArm: partes(focU, focT) } });
         def('aeracao', { rotulo: 'Horas de aeração', unidade: 'h', base: aerT, dims: { unidadeArm: partes(aerU, aerT) } });
+
+        // aeração por cultura: as horas do dia repartidas pelo grão guardado
+        // (o recebido dos últimos 4 meses de cada cultura) e pelo quanto cada
+        // cultura pede de ar
+        const AER_F = { milho: 1, sorgo: 0.9, trigo: 0.75, soja: 1.15 };
+        const guardado = Object.fromEntries(CULT.map((c) => [c, mediaMovel(rec[c], 120)]));
+        const aerC = Object.fromEntries(CULT.map((c) => [c, gerar((d) => {
+            const tot = CULT.reduce((s, x) => s + (guardado[x][d] + 4) * AER_F[x], 0);
+            return aerT[d] * (guardado[c][d] + 4) * AER_F[c] / tot;
+        })]));
+        def('aerCult', { rotulo: 'Horas de aeração', unidade: 'h', base: aerT, dims: { cultura: partes(aerC, aerT), unidadeArm: partes(aerU, aerT) } });
+
+        // ---- profilaxia de grãos: o histórico dos setups de silo (limpeza e
+        // pulverização residual antes de encher), do tratamento preventivo do
+        // grão na entrada, dos expurgos e das ocorrências de pragas ----
+        const SETUP_P = [0.02, 0.006, 0.002, 0.002, 0.006, 0.02, 0.01, 0.002, 0.002, 0.002, 0.003, 0.01];
+        const setupDia = (d) => perfilNoDia(SETUP_P, d) * UNI.length;
+        const profT = {
+            limpeza: eventos(setupDia, 300),
+            residual: eventos((d) => 0.9 * setupDia(d), 301),
+            preventivo: eventos((d) => recTotal[d] / 2500, 302),
+            expurgo: eventos((d) => 0.004 + 0.02 * Math.max(0, tmB[d] - 23), 303),
+        };
+        const profTot = somaPor(profT);
+        const dUniProf = cotas(UNI, () => 1, 304, 0.3);
+        def('profAplic', { rotulo: 'Aplicações de profilaxia', unidade: 'aplicações', base: profTot, dims: { tratamento: partes(profT, profTot), unidadeArm: dUniProf } });
+        def('profPragas', {
+            rotulo: 'Ocorrências de pragas', unidade: 'ocorrências', melhor: 'menor',
+            base: eventos((d) => (0.01 + 0.035 * Math.max(0, tmB[d] - 22.5)) * doAno([1.3, 1.15, 1.05, 1, 0.85], d), 305),
+            dims: { unidadeArm: cotas(UNI, () => 1, 306, 0.4) },
+        });
+        def('profGrao', { rotulo: 'Grão tratado na entrada', unidade: 't', melhor: 'maior', base: gerar((d) => recTotal[d] * clamp(doAno([0.55, 0.62, 0.7, 0.76, 0.8], d) + 0.05 * ruidoDia(d, 307), 0, 1)) });
+        def('profGraoPct', { rotulo: 'Recebido com tratamento', unidade: '%', agreg: 'razao', num: 'profGrao', den: 'rec', fator: 100, melhor: 'maior', limite: [0, 100] });
 
         def('diasParados', { rotulo: 'Recepção parada por chuva', unidade: 'dias', melhor: 'menor', base: gerar((d) => (chuva[d] > 18 && carga[d] > 0.25 ? 1 : 0)) });
     }
@@ -1473,6 +1510,39 @@
                 { area: 'd', tipo: 'tempo', seletor: true },
             ],
         },
+        {
+            // histórico de aeração por cultura: quanto cada grão pediu de ar
+            id: 'est-arm-aeracao', codigo: 'AVR-E5C', dims: ['cultura', 'unidadeArm'],
+            kpis: [
+                { metrica: 'aerCult' }, { metrica: 'aerCult', modo: 'topDim', dim: 'cultura', rotulo: 'Cultura com mais aeração' },
+                { metrica: 'aerCult', modo: 'pico' }, { metrica: 'tempMassa' },
+            ],
+            blocos: [
+                { area: 'a', tipo: 'tempo', grafico: { tipo: 'barras', metrica: 'aerCult', pilha: 'cultura', titulo: 'Horas de aeração por cultura' } },
+                { area: 'b', tipo: 'recorte', dim: 'cultura', colunas: [{ metrica: 'aerCult', rotulo: 'Horas', barra: true }, { share: true, rotulo: 'Do total' }] },
+                { area: 'c', tipo: 'anos', colunas: [{ metrica: 'aerCult', rotulo: 'Total', barra: true }, { metrica: 'aerCult', fix: { cultura: 'milho' }, rotulo: 'Milho' }, { metrica: 'aerCult', fix: { cultura: 'sorgo' }, rotulo: 'Sorgo' }, { metrica: 'aerCult', fix: { cultura: 'trigo' }, rotulo: 'Trigo' }, { metrica: 'aerCult', fix: { cultura: 'soja' }, rotulo: 'Soja' }] },
+                { area: 'd', tipo: 'mapa', modo: 'dim', dim: 'cultura', metrica: 'aerCult', escalaPorLinha: true, titulo: 'Quando cada cultura pede aeração' },
+            ],
+        },
+        {
+            // profilaxia de grãos: o histórico dos setups de silo e dos tratamentos
+            id: 'est-arm-profilaxia', codigo: 'AVR-E5D', dims: ['tratamento', 'unidadeArm'],
+            kpis: [
+                { metrica: 'profAplic' }, { metrica: 'profAplic', fix: { tratamento: 'limpeza' }, rotulo: 'Setups de silo' },
+                { metrica: 'profGraoPct' }, { metrica: 'profPragas' },
+            ],
+            seletor: [
+                { v: 'aplic', n: 'Aplicações', grafico: { tipo: 'barras', metrica: 'profAplic', pilha: 'tratamento', titulo: 'Aplicações de profilaxia por período' } },
+                { v: 'pragas', n: 'Pragas', grafico: { tipo: 'barras', metrica: 'profPragas', titulo: 'Ocorrências de pragas' } },
+                { v: 'grao', n: 'Grão tratado', grafico: { tipo: 'linha', metrica: 'profGraoPct', titulo: 'Recebido com tratamento preventivo', escala: { min: 0, max: 100, passo: 25 } } },
+            ],
+            blocos: [
+                { area: 'a', tipo: 'tempo', seletor: true },
+                { area: 'b', tipo: 'recorte', dim: 'tratamento', colunas: [{ metrica: 'profAplic', rotulo: 'Aplicações', barra: true }, { share: true, rotulo: 'Do total' }] },
+                { area: 'c', tipo: 'anos', colunas: [{ metrica: 'profAplic', rotulo: 'Aplicações', barra: true }, { metrica: 'profAplic', fix: { tratamento: 'limpeza' }, rotulo: 'Setups' }, { metrica: 'profAplic', fix: { tratamento: 'expurgo' }, rotulo: 'Expurgos' }, { metrica: 'profPragas', rotulo: 'Pragas' }, { metrica: 'profGraoPct', rotulo: 'Grão tratado' }] },
+                { area: 'd', tipo: 'mapa', modo: 'dim', dim: 'unidadeArm', metrica: 'profAplic', titulo: 'Aplicações por silo e período' },
+            ],
+        },
 
         // ---- expedição ----
         {
@@ -1588,6 +1658,8 @@
         'est-sec-paradas': 'Motivos',
         'est-armazenagem': [{ n: 'Evolução', areas: ['d', 'c'] }, { n: 'Por silo', areas: ['a', 'b'] }],
         'est-arm-temperatura': [{ n: 'Evolução', areas: ['d', 'c'] }, { n: 'Por silo', areas: ['a', 'b'] }],
+        'est-arm-aeracao': 'Culturas',
+        'est-arm-profilaxia': 'Tratamentos e silos',
         'est-expedicao': 'Meses e culturas',
         'est-exp-ciclo': 'Etapas',
         'est-exp-contratos': 'Clientes',

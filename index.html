@@ -269,6 +269,8 @@
                     <div class="submenu" id="submenu-e5" hidden>
                         <button class="menu-item" data-screen="est-armazenagem" data-num="E5A"><span class="menu-text">Ocupação e saldo</span></button>
                         <button class="menu-item" data-screen="est-arm-temperatura" data-num="E5B"><span class="menu-text">Temperatura e aeração</span></button>
+                        <button class="menu-item" data-screen="est-arm-aeracao" data-num="E5C"><span class="menu-text">Aeração por cultura</span></button>
+                        <button class="menu-item" data-screen="est-arm-profilaxia" data-num="E5D"><span class="menu-text">Profilaxia de grãos</span></button>
                     </div>
                 </div>
                 <div class="menu-group" data-group="e6">
@@ -3249,13 +3251,20 @@
       "nome": "Secador 1",
       "tipo": "coluna",
       "cultura": "Milho",
-      "fluxo": "R"
+      "fluxo": "R",
+      "modo": "automatico",
+      "modoMin": 215,
+      "nivelAlto": true,
+      "nivelBaixo": false
     },
     "s2": {
       "nome": "Secador 2",
       "tipo": "coluna",
       "cultura": "Sorgo",
-      "fluxo": "CI"
+      "fluxo": "CI",
+      "modo": "manual",
+      "nivelAlto": false,
+      "nivelBaixo": true
     }
   },
   "pontos": [
@@ -4585,45 +4594,52 @@
                 </div>
 
                 <div data-codigo="AVR-EXF-A" class="content-section content-section--etapas">
-                    <h3>ETAPAS DA EXPEDIÇÃO · DO PÁTIO À SAÍDA <span class="fluxo-periodo-atual">· <span data-fluxo-periodo-nome>hoje</span></span></h3>
-                    <div class="fluxo-etapas fluxo-etapas--seis">
-                        <div class="fluxo-etapa" data-alerta="t1 hoje 7d">
+                    <h3>ETAPAS DA EXPEDIÇÃO · DO AGENDAMENTO À SAÍDA <span class="fluxo-periodo-atual">· <span data-fluxo-periodo-nome>hoje</span></span></h3>
+                    <div class="fluxo-etapas fluxo-etapas--seis fluxo-etapas--sete">
+                        <div class="fluxo-etapa fluxo-etapa--agendados">
                             <span class="fluxo-etapa-num">1</span>
+                            <span class="fluxo-etapa-nome">Agendados</span>
+                            <span class="fluxo-etapa-valor"><b data-periodo="t1">6 <small>a chegar</small></b><b data-periodo="t2">14 <small>agendados</small></b><b data-periodo="t3">11 <small>agendados</small></b><b data-periodo="hoje">6 <small>a chegar</small></b><b data-periodo="7d">204 <small>agendados</small></b><b data-periodo="30d">852 <small>agendados</small></b></span>
+                            <span class="fluxo-etapa-sub"><span data-periodo="t1">de <b>45</b> agendados para hoje</span><span data-periodo="t2"><b>14</b> compareceram</span><span data-periodo="t3"><b>11</b> compareceram</span><span data-periodo="hoje">de <b>45</b> agendados para hoje</span><span data-periodo="7d"><b>196</b> compareceram</span><span data-periodo="30d"><b>820</b> compareceram</span></span>
+                            <span class="fluxo-etapa-estado"><b data-periodo="t1">Ainda não chegaram</b><b data-periodo="t2">Encerrado</b><b data-periodo="t3">Encerrado</b><b data-periodo="hoje">Ainda não chegaram</b><b data-periodo="7d">Encerrado</b><b data-periodo="30d">Encerrado</b></span>
+                        </div>
+                        <div class="fluxo-etapa" data-alerta="t1 hoje 7d">
+                            <span class="fluxo-etapa-num">2</span>
                             <span class="fluxo-etapa-nome">Fila</span>
                             <span class="fluxo-etapa-valor"><b data-periodo="t1">4 <small>no pátio</small></b><b data-periodo="t2">14 <small>atendidos</small></b><b data-periodo="t3">11 <small>atendidos</small></b><b data-periodo="hoje">4 <small>no pátio</small></b><b data-periodo="7d">196 <small>atendidos</small></b><b data-periodo="30d">820 <small>atendidos</small></b></span>
                             <span class="fluxo-etapa-sub">tempo médio <b data-periodo="t1">22 min</b><b data-periodo="t2">15 min</b><b data-periodo="t3">9 min</b><b data-periodo="hoje">22 min</b><b data-periodo="7d">18 min</b><b data-periodo="30d">16 min</b></span>
                             <span class="fluxo-etapa-estado"><b data-periodo="t1">Espera acima do limite</b><b data-periodo="t2">Dentro do limite</b><b data-periodo="t3">Dentro do limite</b><b data-periodo="hoje">Espera acima do limite</b><b data-periodo="7d">Espera acima do limite</b><b data-periodo="30d">Dentro do limite</b></span>
                         </div>
                         <div class="fluxo-etapa">
-                            <span class="fluxo-etapa-num">2</span>
+                            <span class="fluxo-etapa-num">3</span>
                             <span class="fluxo-etapa-nome">1ª Pesagem</span>
                             <span class="fluxo-etapa-valor"><b data-periodo="t1">1 <small>pesando</small></b><b data-periodo="t2">14 <small>pesados</small></b><b data-periodo="t3">11 <small>pesados</small></b><b data-periodo="hoje">1 <small>pesando</small></b><b data-periodo="7d">196 <small>pesados</small></b><b data-periodo="30d">820 <small>pesados</small></b></span>
                             <span class="fluxo-etapa-sub">tempo médio <b data-periodo="t1">4 min</b><b data-periodo="t2">4 min</b><b data-periodo="t3">3 min</b><b data-periodo="hoje">4 min</b><b data-periodo="7d">4 min</b><b data-periodo="30d">4 min</b></span>
                             <span class="fluxo-etapa-estado"><b data-periodo="t1">Operando</b><b data-periodo="t2">Dentro do limite</b><b data-periodo="t3">Dentro do limite</b><b data-periodo="hoje">Operando</b><b data-periodo="7d">Dentro do limite</b><b data-periodo="30d">Dentro do limite</b></span>
                         </div>
                         <div class="fluxo-etapa">
-                            <span class="fluxo-etapa-num">3</span>
+                            <span class="fluxo-etapa-num">4</span>
                             <span class="fluxo-etapa-nome">Carregamento</span>
                             <span class="fluxo-etapa-valor"><b data-periodo="t1">3 <small>carregando</small></b><b data-periodo="t2">14 <small>carregados</small></b><b data-periodo="t3">11 <small>carregados</small></b><b data-periodo="hoje">3 <small>carregando</small></b><b data-periodo="7d">196 <small>carregados</small></b><b data-periodo="30d">818 <small>carregados</small></b></span>
                             <span class="fluxo-etapa-sub">tempo médio <b data-periodo="t1">20 min</b><b data-periodo="t2">21 min</b><b data-periodo="t3">19 min</b><b data-periodo="hoje">20 min</b><b data-periodo="7d">20 min</b><b data-periodo="30d">20 min</b></span>
                             <span class="fluxo-etapa-estado"><b data-periodo="t1">Operando</b><b data-periodo="t2">Dentro do limite</b><b data-periodo="t3">Dentro do limite</b><b data-periodo="hoje">Operando</b><b data-periodo="7d">Dentro do limite</b><b data-periodo="30d">Dentro do limite</b></span>
                         </div>
                         <div class="fluxo-etapa">
-                            <span class="fluxo-etapa-num">4</span>
+                            <span class="fluxo-etapa-num">5</span>
                             <span class="fluxo-etapa-nome">Classificação</span>
                             <span class="fluxo-etapa-valor"><b data-periodo="t1">2 <small>classificando</small></b><b data-periodo="t2">13 <small>classificados</small></b><b data-periodo="t3">11 <small>classificados</small></b><b data-periodo="hoje">2 <small>classificando</small></b><b data-periodo="7d">194 <small>classificados</small></b><b data-periodo="30d">814 <small>classificados</small></b></span>
                             <span class="fluxo-etapa-sub">tempo médio <b data-periodo="t1">9 min</b><b data-periodo="t2">8 min</b><b data-periodo="t3">8 min</b><b data-periodo="hoje">9 min</b><b data-periodo="7d">9 min</b><b data-periodo="30d">9 min</b></span>
                             <span class="fluxo-etapa-estado"><b data-periodo="t1">Operando</b><b data-periodo="t2">Dentro do limite</b><b data-periodo="t3">Dentro do limite</b><b data-periodo="hoje">Operando</b><b data-periodo="7d">Dentro do limite</b><b data-periodo="30d">Dentro do limite</b></span>
                         </div>
                         <div class="fluxo-etapa">
-                            <span class="fluxo-etapa-num">5</span>
+                            <span class="fluxo-etapa-num">6</span>
                             <span class="fluxo-etapa-nome">2ª Pesagem</span>
                             <span class="fluxo-etapa-valor"><b data-periodo="t1">1 <small>pesando</small></b><b data-periodo="t2">13 <small>pesados</small></b><b data-periodo="t3">11 <small>pesados</small></b><b data-periodo="hoje">1 <small>pesando</small></b><b data-periodo="7d">194 <small>pesados</small></b><b data-periodo="30d">812 <small>pesados</small></b></span>
                             <span class="fluxo-etapa-sub">tempo médio <b data-periodo="t1">5 min</b><b data-periodo="t2">5 min</b><b data-periodo="t3">4 min</b><b data-periodo="hoje">5 min</b><b data-periodo="7d">5 min</b><b data-periodo="30d">5 min</b></span>
                             <span class="fluxo-etapa-estado"><b data-periodo="t1">Operando</b><b data-periodo="t2">Dentro do limite</b><b data-periodo="t3">Dentro do limite</b><b data-periodo="hoje">Operando</b><b data-periodo="7d">Dentro do limite</b><b data-periodo="30d">Dentro do limite</b></span>
                         </div>
                         <div class="fluxo-etapa fluxo-etapa--liberados">
-                            <span class="fluxo-etapa-num">6</span>
+                            <span class="fluxo-etapa-num">7</span>
                             <span class="fluxo-etapa-nome">Concluídos</span>
                             <span class="fluxo-etapa-valor"><b data-periodo="t1">20 <small>caminhões</small></b><b data-periodo="t2">13 <small>caminhões</small></b><b data-periodo="t3">11 <small>caminhões</small></b><b data-periodo="hoje">28 <small>caminhões</small></b><b data-periodo="7d">194 <small>caminhões</small></b><b data-periodo="30d">812 <small>caminhões</small></b></span>
                             <span class="fluxo-etapa-sub"><span data-periodo="t1"><b>17</b> liberados · <b>3</b> reprovados</span><span data-periodo="t2"><b>12</b> liberados · <b>1</b> reprovados</span><span data-periodo="t3"><b>10</b> liberados · <b>1</b> reprovados</span><span data-periodo="hoje"><b>24</b> liberados · <b>4</b> reprovados</span><span data-periodo="7d"><b>180</b> liberados · <b>14</b> reprovados</span><span data-periodo="30d"><b>764</b> liberados · <b>48</b> reprovados</span></span>
@@ -4965,6 +4981,12 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <tr data-janela="hoje" data-turno="t1" data-etapa="agendado" data-cultura="milho"><td class="fluxo-dt fluxo-dt--vazio">—</td><td>EVK5B37</td><td><svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho</td><td class="exf-contrato">Atlântica Grains<small>Porto de Santos</small></td><td><span class="exf-frete exf-frete--cif" title="CIF: frete por conta da cooperativa até o destino">CIF</span></td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--agendado">Agendado</span></td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
+                                <tr data-janela="hoje" data-turno="t1" data-etapa="agendado" data-cultura="milho"><td class="fluxo-dt fluxo-dt--vazio">—</td><td>SDW2H94</td><td><svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho</td><td class="exf-contrato">Sulbrasil Trading<small>Porto de Paranaguá</small></td><td><span class="exf-frete exf-frete--cif" title="CIF: frete por conta da cooperativa até o destino">CIF</span></td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--agendado">Agendado</span></td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
+                                <tr data-janela="hoje" data-turno="t1" data-etapa="agendado" data-cultura="milho"><td class="fluxo-dt fluxo-dt--vazio">—</td><td>GTA7C60</td><td><svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho</td><td class="exf-contrato">Coop. Holambra<small>Coop. Holambra</small></td><td><span class="exf-frete exf-frete--cif" title="CIF: frete por conta da cooperativa até o destino">CIF</span></td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--agendado">Agendado</span></td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
+                                <tr data-janela="hoje" data-turno="t1" data-etapa="agendado" data-cultura="sorgo"><td class="fluxo-dt fluxo-dt--vazio">—</td><td>RPL4J18</td><td><svg class="grao-icon grao-icon--sorgo grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo</td><td class="exf-contrato">Frig. Aurora<small>Frig. Aurora</small></td><td><span class="exf-frete exf-frete--fob" title="FOB: o comprador retira e paga o frete">FOB</span></td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--agendado">Agendado</span></td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
+                                <tr data-janela="hoje" data-turno="t1" data-etapa="agendado" data-cultura="soja"><td class="fluxo-dt fluxo-dt--vazio">—</td><td>FNO9D52</td><td><svg class="grao-icon grao-icon--soja grao-icon--dot" aria-hidden="true"><use href="#ico-soja"></use></svg>Soja</td><td class="exf-contrato">Rio Verde<small>Porto de Santos</small></td><td><span class="exf-frete exf-frete--fob" title="FOB: o comprador retira e paga o frete">FOB</span></td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--agendado">Agendado</span></td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
+                                <tr data-janela="hoje" data-turno="t1" data-etapa="agendado" data-cultura="trigo"><td class="fluxo-dt fluxo-dt--vazio">—</td><td>BQY3M85</td><td><svg class="grao-icon grao-icon--trigo grao-icon--dot" aria-hidden="true"><use href="#ico-trigo"></use></svg>Trigo</td><td class="exf-contrato">Moinho Sul<small>Ind. Moinho Sul</small></td><td><span class="exf-frete exf-frete--fob" title="FOB: o comprador retira e paga o frete">FOB</span></td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--agendado">Agendado</span></td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td></tr>
                                 <tr data-janela="hoje" data-turno="t1" data-etapa="fila" data-cultura="milho"><td><span class="fluxo-tag">E2806995000040136FD3A1C474</span></td><td>RKD4E21</td><td><svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho</td><td class="exf-contrato">Atlântica Grains<small>Porto de Santos</small></td><td><span class="exf-frete exf-frete--cif" title="CIF: frete por conta da cooperativa até o destino">CIF</span></td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--fila">Na fila · pátio</span></td><td class="fluxo-dt fluxo-dt--cheia">14:29</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td>11 min</td></tr>
                                 <tr data-janela="hoje" data-turno="t1" data-etapa="fila" data-cultura="milho"><td><span class="fluxo-tag">E2806995000050136FD3B1C774</span></td><td>TGB8J03</td><td><svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho</td><td class="exf-contrato">Coop. Holambra<small>Coop. Holambra</small></td><td><span class="exf-frete exf-frete--cif" title="CIF: frete por conta da cooperativa até o destino">CIF</span></td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--fila">Na fila · pátio</span></td><td class="fluxo-dt fluxo-dt--cheia">14:21</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td>19 min</td></tr>
                                 <tr data-janela="hoje" data-turno="t1" data-etapa="fila" data-cultura="milho"><td><span class="fluxo-tag">E2806995000040136FD3C1CA74</span></td><td>MHA2C77</td><td><svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho</td><td class="exf-contrato">Sulbrasil Trading<small>Porto de Paranaguá</small></td><td><span class="exf-frete exf-frete--cif" title="CIF: frete por conta da cooperativa até o destino">CIF</span></td><td><span class="fluxo-etapa-pill fluxo-etapa-pill--fila">Na fila · pátio</span></td><td class="fluxo-dt fluxo-dt--cheia">14:15</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td class="fluxo-dt fluxo-dt--vazio">—</td><td>25 min</td></tr>
@@ -7532,6 +7554,28 @@
                     </div>
                 </div>
                 <div class="est-corpo" data-est="est-arm-temperatura"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-arm-aeracao">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--letra">E5<span class="screen-badge-letra">C</span></div>
+                    <div class="screen-title-section">
+                        <h2>Silos e armazém · histórico de aeração por cultura</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="est-arm-aeracao"></div>
+            </section>
+
+            <section class="screen du-screen screen--est" id="screen-est-arm-profilaxia">
+                <div class="screen-header">
+                    <div class="screen-badge screen-badge--letra">E5<span class="screen-badge-letra">D</span></div>
+                    <div class="screen-title-section">
+                        <h2>Silos e armazém · profilaxia de grãos</h2>
+                        <div class="screen-meta">ESTRATÉGICO</div>
+                    </div>
+                </div>
+                <div class="est-corpo" data-est="est-arm-profilaxia"></div>
             </section>
 
             <section class="screen du-screen screen--est" id="screen-est-expedicao">

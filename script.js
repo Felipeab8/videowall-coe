@@ -6271,6 +6271,35 @@ function seloSecador(dados, sec) {
     return `<span class="pr-status pr-status--ok">${atual.length}/${atual.length} na faixa</span>`;
 }
 
+// modo do secador: automatico (fogo no secador, secando) ou manual (so para
+// limpeza). No automatico mostra ha quanto tempo esta nesse modo (modoMin,
+// em minutos). Sem "modo" no JSON nao mostra nada.
+function modoSecador(meta) {
+    if (meta.modo === 'manual') {
+        return '<span class="pr-modo pr-modo--manual" title="Modo manual: só para limpeza">Manual</span>';
+    }
+    if (meta.modo !== 'automatico') return '';
+    const min = Math.max(0, Math.round(Number(meta.modoMin)));
+    let tempo = '';
+    if (Number.isFinite(min)) {
+        const h = Math.floor(min / 60);
+        const m = min % 60;
+        tempo = h ? `${h}h${m ? String(m).padStart(2, '0') : ''}` : `${m} min`;
+    }
+    return '<span class="pr-modo pr-modo--auto" title="Modo automático: fogo no secador">Automático'
+        + (tempo ? ` <small>há ${tempo}</small>` : '') + '</span>';
+}
+
+// sensores de nivel do secador: uma bolinha para o nivel alto e outra para o
+// nivel baixo, acesa quando o sensor esta ativado (nivelAlto / nivelBaixo no
+// JSON, true ou false). Sem os campos nao mostra nada.
+function niveisSecador(meta) {
+    if (meta.nivelAlto === undefined && meta.nivelBaixo === undefined) return '';
+    const bolinha = (ligado, nome) => `<span class="pr-nivel${ligado ? ' is-on' : ''}" title="${nome} ${ligado ? 'ativado' : 'não ativado'}">`
+        + `<i aria-hidden="true"></i>${nome}</span>`;
+    return `<span class="pr-niveis">${bolinha(!!meta.nivelAlto, 'Nível alto')}${bolinha(!!meta.nivelBaixo, 'Nível baixo')}</span>`;
+}
+
 // grafico do ponto no turno: faixa da Tabela 12 em verde, a linha das
 // leituras e, em cada hora, o valor (em cima) e a hora (embaixo). Valor
 // fora da faixa em vermelho; a hora em andamento em destaque.
@@ -6383,7 +6412,7 @@ function cartaoPressao(dados, sec) {
     const detalhe = [meta.cultura, meta.fluxo && `fluxo ${meta.fluxo}`].filter(Boolean).join(' · ');
     return `<article class="pr-sec pr-sec--${sec}">`
         + `<div class="pr-sec-head"><i class="pr-leg pr-leg--${sec}" aria-hidden="true"></i>`
-        + `<span class="pr-sec-nome">${meta.nome}</span><span class="pr-sec-meta">${detalhe}</span>${seloSecador(dados, sec)}</div>`
+        + `<span class="pr-sec-nome">${meta.nome}</span><span class="pr-sec-meta">${detalhe}</span>${modoSecador(meta)}${niveisSecador(meta)}${seloSecador(dados, sec)}</div>`
         + `<div class="pr-layout pr-layout--v2"><div class="pr-col pr-col--esq">${lado([0, 1, 2])}</div>`
         + `<div class="pr-figura"><div class="pr-figura-in" style="--ar:${R.w} / ${R.h}; --arn:${(R.w / R.h).toFixed(4)}">${svg}</div></div>`
         + `<div class="pr-col pr-col--dir">${lado([3, 4])}<div class="pr-q pr-q--ocorr"><div class="pr-q-head"><span class="pr-q-id pr-q-id--peq">Ocorrências</span></div><div class="pr-ocorr">${eventosPressao(dados, sec)}</div></div></div></div>`
@@ -7708,7 +7737,7 @@ function escreverAeracao(card) {
         const pos = ini[i] + ((t - cortes[i]) / (cortes[i + 1] - cortes[i] || 1)) * larg[i];
         const nomes = ['mínima', 'ideal', 'máxima'];
         const rotIni = [0, fMassa.de, fMassa.maxDe || fMassa.ate];
-        const seg = ['min', 'ideal', 'max'].map((cls, k) => `<span class="sa-mg-seg sa-mg-seg--${cls}${k === i ? ' is-atual' : ''}" style="width:${larg[k]}%" title="${nomes[k]}${k === 2 ? ' · estragando' : ''}: ${rotIni[k]} a ${cortes[k + 1]} °C">${rotIni[k]}–${cortes[k + 1]}</span>`).join('');
+        const seg = ['min', 'ideal', 'max'].map((cls, k) => `<span class="sa-mg-seg sa-mg-seg--${cls}${k === i ? ' is-atual' : ''}" style="width:${larg[k]}%" title="${nomes[k]}${k === 2 ? ' · estragando' : ''}: ${rotIni[k]} a ${cortes[k + 1]} °C">${rotIni[k]}–${cortes[k + 1]}°C</span>`).join('');
         return `<div class="sa-mg" aria-label="Massa ${umPonto(tGrao)} °C · ${massa.texto}">${seg}`
             + `<i class="sa-mg-agora" style="left:${pos.toFixed(1)}%"></i></div>`;
     })();

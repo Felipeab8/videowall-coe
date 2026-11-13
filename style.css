@@ -12752,6 +12752,15 @@ body.theme-light .kpi-card--destaque .kpi-value {
     right: calc(-1.5rem + 0.4rem);
 }
 
+/* expedição: sete cartões, com os agendados (ainda fora da unidade) antes da fila */
+.fluxo-etapas--sete {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.fluxo-etapa--agendados {
+    border-style: dashed;
+}
+
 
 
 .fluxo-etapa {
@@ -13260,6 +13269,14 @@ body.theme-light .fluxo-tag {
 }
 
 
+
+/* agendado: ainda não chegou, então sai neutro e tracejado */
+.fluxo-etapa-pill--agendado {
+    color: var(--muted);
+    background: color-mix(in srgb, var(--muted) 12%, transparent);
+    border-color: color-mix(in srgb, var(--muted) 45%, transparent);
+    border-style: dashed;
+}
 
 .fluxo-etapa-pill--moega {
     color: var(--warn);
@@ -20775,6 +20792,10 @@ body.theme-light .du-proj-sel option {
         --fluxo-n: 6;
     }
 
+    html.tv .fluxo-etapas--sete {
+        --fluxo-n: 7;
+    }
+
     html.tv .fluxo-etapa:not(:last-child)::after {
         right: calc(-1.1rem + 0.3rem);
         width: 0.6rem;
@@ -25654,6 +25675,71 @@ body.theme-dark .screen--pressao {
 .pr-status--fora { color: #fff; background: var(--pr-fora); }
 body.theme-dark .pr-status--ok { color: #4ade80; }
 body.theme-dark .pr-status--limite { color: #fbbf24; }
+
+/* modo do secador (automático há quanto tempo / manual), ao lado do nome */
+.pr-modo {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    padding: 0.28rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid currentColor;
+    font-size: max(0.78rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+}
+
+.pr-modo small {
+    font-size: 0.9em;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: 0;
+    opacity: 0.85;
+}
+
+.pr-modo--auto { color: #15803d; }
+.pr-modo--manual { color: #b45309; }
+body.theme-dark .pr-modo--auto { color: #4ade80; }
+body.theme-dark .pr-modo--manual { color: #fbbf24; }
+#screen-pressao .pr-modo { font-size: 1rem; padding: 0.35rem 0.9rem; }
+
+/* sensores de nível do secador: bolinha acesa = ativado, vazada = não */
+.pr-niveis {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+}
+
+.pr-nivel {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: max(0.78rem, var(--fs-texto, 0px));
+    font-weight: 700;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.pr-nivel i {
+    width: 0.85rem;
+    height: 0.85rem;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    box-sizing: border-box;
+}
+
+.pr-nivel.is-on { color: var(--text); }
+
+.pr-nivel.is-on i {
+    border-color: var(--pr-ok);
+    background: var(--pr-ok);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--pr-ok) 25%, transparent);
+}
+
+#screen-pressao .pr-nivel { font-size: 1rem; }
+#screen-pressao .pr-nivel i { width: 1rem; height: 1rem; }
 
 /* --- 2º nível: indicadores de pressão numa barra única --- */
 .pr-kpis-linha {
