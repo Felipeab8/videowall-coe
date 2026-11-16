@@ -13041,6 +13041,20 @@ body.theme-light .kpi-card--destaque .kpi-value {
     border: 1px solid rgba(46, 204, 113, 0.35);
 }
 
+/* Agendados com o periodo em andamento (turno atual / hoje): o selo diz
+   quantos ainda faltam chegar, em vermelho (nao e um estado positivo) */
+:is(#screen-fluxo, #screen-exp-fluxo):is([data-fluxo-periodo="t1"], [data-fluxo-periodo="hoje"]) .fluxo-etapa--agendados .fluxo-etapa-estado {
+    color: var(--danger);
+    background: rgba(231, 76, 60, 0.16);
+    border-color: rgba(231, 76, 60, 0.4);
+}
+
+body.theme-light :is(#screen-fluxo, #screen-exp-fluxo):is([data-fluxo-periodo="t1"], [data-fluxo-periodo="hoje"]) .fluxo-etapa--agendados .fluxo-etapa-estado {
+    color: #b3261e;
+    background: rgba(179, 38, 30, 0.12);
+    border-color: rgba(179, 38, 30, 0.35);
+}
+
 
 
 /* O alerta tambem segue o periodo: data-alerta lista em quais janelas a
