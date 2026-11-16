@@ -24644,6 +24644,297 @@ button.est-fchip:focus-visible {
     min-height: 0;
 }
 
+/* ---- profilaxia e expurgo: silos, linha do tempo e as duas tabelas ---- */
+.prof-corpo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    grid-template-rows: minmax(0, 0.85fr) minmax(0, 1fr);
+    gap: 0.6rem;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.prof-corpo > * {
+    margin-bottom: 0;
+    min-height: 0;
+}
+
+.prof-silos {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-auto-rows: minmax(0, 1fr);
+    gap: 0.4rem;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.prof-silo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+    min-height: 0;
+    padding: 0.4rem 0.5rem;
+    border: 1px solid var(--card-border);
+    border-left: 3px solid var(--du-ok);
+    border-radius: 10px;
+    background: var(--row-bg);
+    color: var(--text);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.prof-silo:hover {
+    background: var(--hover);
+}
+
+.prof-silo:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.prof-silo.is-atencao {
+    border-left-color: var(--du-warn);
+}
+
+.prof-silo.is-limite {
+    border-left-color: var(--du-danger);
+}
+
+.prof-silo.is-vazio {
+    border-left-color: var(--card-border);
+    color: var(--muted);
+}
+
+.prof-silo.is-sel {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.prof-silo-nome {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.1rem 0.4rem;
+    font-size: max(0.68rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.prof-silo-cults {
+    display: inline-flex;
+    gap: 0.4rem;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--text);
+}
+
+.prof-cult {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    white-space: nowrap;
+}
+
+.prof-cult .du-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    flex: 0 0 auto;
+}
+
+.prof-silo-dias {
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+}
+
+.prof-silo-dias small,
+.prof-silo-pe small,
+.prof-silo-txt {
+    font-size: max(0.6rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.prof-silo-dias small {
+    display: block;
+}
+
+.prof-silo-barra {
+    height: 0.3rem;
+    margin-top: auto;
+    border-radius: 999px;
+    background: var(--row-line);
+    overflow: hidden;
+}
+
+.prof-silo-barra i {
+    display: block;
+    width: var(--p);
+    height: 100%;
+    background: var(--du-ok);
+}
+
+.prof-silo.is-atencao .prof-silo-barra i {
+    background: var(--du-warn);
+}
+
+.prof-silo.is-limite .prof-silo-barra i {
+    background: var(--du-danger);
+}
+
+.prof-silo-pe {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.1rem 0.3rem;
+}
+
+/* linha do tempo: uma faixa por silo; o ciclo é a barra na cor da cultura,
+   a profilaxia o losango e o expurgo o círculo */
+.prof-gantt {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.prof-g-linha {
+    display: grid;
+    grid-template-columns: 4.6rem minmax(0, 1fr);
+    gap: 0.4rem;
+    flex: 1 1 0;
+    min-height: 0.9rem;
+    max-height: 3rem;
+    cursor: pointer;
+}
+
+.prof-g-nome {
+    align-self: center;
+    overflow: hidden;
+    font-size: max(0.66rem, var(--fs-texto, 0px));
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: var(--muted);
+}
+
+.prof-g-linha:hover .prof-g-nome,
+.prof-g-linha.is-sel .prof-g-nome {
+    color: var(--accent);
+}
+
+.prof-g-trilho {
+    position: relative;
+    border-radius: 4px;
+    background: var(--row-bg);
+}
+
+.prof-g-ciclo {
+    position: absolute;
+    left: var(--x);
+    top: calc(var(--l) * 100% / var(--nl) + 1px);
+    width: var(--w);
+    height: calc(100% / var(--nl) - 2px);
+    border: 1px solid var(--c);
+    border-radius: 3px;
+    background: color-mix(in srgb, var(--c) 40%, transparent);
+}
+
+.prof-g-marca {
+    position: absolute;
+    left: var(--x);
+    top: calc((var(--l) + 0.5) * 100% / var(--nl));
+    z-index: 1;
+    width: 0.6rem;
+    height: 0.6rem;
+    border: 1px solid var(--header-bg);
+    translate: -50% -50%;
+}
+
+.prof-g-marca--prof {
+    rotate: 45deg;
+    background: var(--du-ok);
+}
+
+.prof-g-marca--exp {
+    border-radius: 50%;
+    background: var(--text);
+}
+
+.prof-g-marca.is-ruim {
+    background: var(--du-danger);
+}
+
+.prof-g-marca--leg {
+    position: static;
+    display: inline-block;
+    flex: 0 0 auto;
+    translate: none;
+}
+
+.prof-g-eixo {
+    position: relative;
+    flex: 0 0 auto;
+    height: 1rem;
+    margin-left: 5rem;
+    font-size: max(0.62rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    color: var(--faint);
+}
+
+.prof-g-eixo span {
+    position: absolute;
+    left: var(--x);
+    padding-left: 0.25rem;
+    border-left: 1px solid var(--card-border);
+    white-space: nowrap;
+}
+
+.prof-tabela td {
+    white-space: nowrap;
+}
+
+.prof-ok {
+    font-weight: 700;
+    color: var(--du-ok);
+}
+
+.prof-ruim {
+    font-weight: 700;
+    color: var(--du-danger);
+}
+
+.prof-tabela td.prof-vazio {
+    padding: 1rem;
+    text-align: center;
+    color: var(--muted);
+}
+
+@media screen and (max-width: 1024px) {
+    .prof-corpo {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: none;
+    }
+
+    .prof-silos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-auto-rows: auto;
+    }
+
+    .prof-gantt {
+        min-height: 16rem;
+    }
+}
+
 
 
 @media screen and (max-width: 1024px) {
