@@ -1696,29 +1696,59 @@
         return `<div class="class-filtro est-fgrupo${cls ? ' ' + cls : ''}" role="group" aria-label="${rot}"><span class="class-filtro-rotulo">${rot}</span>${inner}</div>`;
     }
 
-    function opcoesMes(sel) {
-        let h = '';
-        for (let km = 0; km <= KM_ULT; km++) h += `<option value="${km}"${km === sel ? ' selected' : ''}>${rotMes(km)}</option>`;
-        return h;
+    function opcoesMes() {
+        const ops = [];
+        for (let km = 0; km <= KM_ULT; km++) ops.push({ v: km, n: rotMes(km) });
+        return ops;
     }
 
     function icone(x) {
         return x.icone ? `<svg class="grao-icon grao-icon--${x.icone} grao-icon--dot" aria-hidden="true"><use href="#ico-${x.icone}"></use></svg>` : '';
     }
 
-    // todo filtro da estratégica é uma lista suspensa: attr diz o que ela muda
-    // (data-est-glob="periodo", data-est-selsel, data-est-dimsel="cultura"...)
+    // a marca de um valor de dimensão: o ícone do grão na cultura (como nas
+    // telas táticas), a bolinha colorida no resto (silo, turno, moega...)
+    function marca(x, cor) {
+        if (x && x.icone) return icone(x);
+        const c = cor || (x && x.cor);
+        return c ? `<i class="du-dot" style="--du-c: ${c}"></i>` : '';
+    }
+
+    // o valor da cultura pelo nome ("Milho"): para listas que só guardam o nome
+    const CULT_POR_NOME = {};
+    DIMS.cultura.valores.forEach((x) => { CULT_POR_NOME[x.n] = x; });
+    const marcaNome = (nome, cor) => marca(CULT_POR_NOME[nome], cor);
+
+    // a opção da lista carrega o mesmo atributo de clique dos botões:
+    // data-est-glob="periodo" → data-est-periodo="v", data-est-selsel →
+    // data-est-sel="v", data-est-dimsel="cultura" → data-est-dim + data-v
+    function attrOpcao(attr, v) {
+        let m = attr.match(/^data-est-glob="(\w+)"$/);
+        if (m) return `data-est-${m[1]}="${v}"`;
+        if (attr === 'data-est-selsel') return `data-est-sel="${v}"`;
+        m = attr.match(/^data-est-dimsel="(\w+)"$/);
+        if (m) return `data-est-dim="${m[1]}" data-v="${v}"`;
+        m = attr.match(/^data-est-(de|ate)$/);
+        if (m) return `data-est-mes="${m[1]}" data-v="${v}"`;
+        return '';
+    }
+
+    // todo filtro é uma lista suspensa (a mesma das telas táticas, .fsel):
+    // o botão mostra a escolha, com o ícone do grão quando é cultura
     function listaSel(attr, rot, ops, atual) {
-        return `<select class="est-select" ${attr} aria-label="${rot}">`
-            + ops.map((o) => `<option value="${o.v}"${o.v === atual ? ' selected' : ''}>${o.n}</option>`).join('')
-            + '</select>';
+        const at = ops.find((o) => o.v === atual) || ops[0];
+        const txt = (o) => icone(o) + o.n;
+        return `<div class="fsel"><button type="button" class="est-select fsel-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="${rot}"><span class="fsel-val">${at ? txt(at) : ''}</span></button>`
+            + `<div class="fsel-lista" role="listbox" aria-label="${rot}" hidden>`
+            + ops.map((o) => `<button type="button" role="option" class="fsel-op${o.v === atual ? ' is-active' : ''}" aria-selected="${o.v === atual}" ${attrOpcao(attr, o.v)}>${txt(o)}</button>`).join('')
+            + '</div></div>';
     }
 
     function filtroPeriodo() {
         const e = ESTADO;
         return grupo('Período', listaSel('data-est-glob="periodo"', 'Período', PERIODOS, e.periodo)
             + (e.periodo === 'custom'
-                ? `<span class="est-custom"><select class="est-select" data-est-de aria-label="Do mês">${opcoesMes(e.de)}</select><span>até</span><select class="est-select" data-est-ate aria-label="Até o mês">${opcoesMes(e.ate)}</select></span>`
+                ? `<span class="est-custom">${listaSel('data-est-de', 'Do mês', opcoesMes(), e.de)}<span>até</span>${listaSel('data-est-ate', 'Até o mês', opcoesMes(), e.ate)}</span>`
                 : ''));
     }
 
@@ -2091,7 +2121,7 @@
 
         // legenda
         let leg = '';
-        if (S.modo !== 'simples') leg += S.lista.map((s) => `<span><i class="du-dot" style="--du-c: ${s.cor}"></i>${s.nome}</span>`).join('');
+        if (S.modo !== 'simples') leg += S.lista.map((s) => `<span>${s.icone ? marca(s) : marcaNome(s.nome, s.cor)}${s.nome}</span>`).join('');
         else if (diverg) leg += cfg.divergente.map((x) => legItem('est-leg--barra', x.rotulo, x.cor)).join('');
         else leg += legItem(barras ? 'est-leg--barra' : 'est-leg--linha', barras ? 'período' : 'média do período', S.lista[0].cor);
         if (i0 >= 0) leg += legItem('est-leg--proj', S.modo === 'simples' || barras ? 'projeção e faixa provável' : 'projeção', S.lista[0].cor);
@@ -2281,7 +2311,7 @@
             const ativo = sel === l.x.v;
             const sub = l.x.sub || l.x.faixa;
             return `<tr data-est-recorte="${R.dim}" data-v="${l.x.v}" class="${ativo ? 'is-sel' : ''}" title="Filtrar a tela por ${l.x.n}">
-                <td class="pv-tabela-nome"><span class="est-nome"><i class="du-dot" style="--du-c: ${l.x.cor}"></i>${l.x.n}</span>${sub ? `<small>${sub}</small>` : ''}</td>${cels}</tr>`;
+                <td class="pv-tabela-nome"><span class="est-nome">${marca(l.x)}${l.x.n}</span>${sub ? `<small>${sub}</small>` : ''}</td>${cels}</tr>`;
         }).join('');
         const titulo = R.titulo || ('Por ' + D.rotulo.toLowerCase());
         // a comparação só entra na legenda quando há base para comparar (no
@@ -2530,7 +2560,7 @@
             + cols.map((c) => `<span class="est-mapa-col">${c.rot}${c.ano ? `<b>${c.ano}</b>` : ''}</span>`).join('')
             + `<span class="est-mapa-col est-mapa-tot">${nomeTot}</span>`;
         linhas.forEach((l) => {
-            const rot = l.cor ? `<span class="est-nome"><i class="du-dot" style="--du-c: ${l.cor}"></i>${l.rot}</span>` : l.rot;
+            const rot = l.cor ? `<span class="est-nome">${marcaNome(l.rot, l.cor)}${l.rot}</span>` : l.rot;
             html += `<span class="est-mapa-rot${l.sel ? ' is-sel' : ''}"${l.dim ? ` data-est-recorte="${l.dim}" data-v="${l.v}" title="Filtrar a tela por ${aspas(l.rot)}"` : ''}>${rot}</span>`;
             html += l.cels.map((c) => {
                 if (!c) return '<i class="est-cel is-vazio"></i>';
@@ -2623,7 +2653,7 @@
             : `<b>${fmtM(s0.m, valor)}</b>${dl ? deltaHtml(dl, '') : ''}`;
         const attrs = it.dim ? ` data-est-recorte="${it.dim}" data-v="${it.v}" title="Filtrar a tela por ${aspas(it.nome)}"` : '';
         return `<div class="est-mini${it.apagado ? ' is-apagado' : ''}${it.sel ? ' is-sel' : ''}"${attrs}>
-            <div class="est-mini-head"><span class="est-nome">${it.cor ? `<i class="du-dot" style="--du-c: ${it.cor}"></i>` : ''}${it.nome}</span>${legS}</div>
+            <div class="est-mini-head"><span class="est-nome">${marcaNome(it.nome, it.cor)}${it.nome}</span>${legS}</div>
             <div class="est-mini-graf">
                 <span class="est-mini-y" aria-hidden="true"><span>${abrev(esc.max, esc.passo)}</span><span>${abrev(esc.min, esc.passo)}</span></span>
                 <div class="est-mini-plot">${faixa}${refs}${projArea}<svg class="est-linhas" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${svg}</svg><div class="est-mini-cols" style="--n: ${n}">${cols}</div></div>
@@ -2711,7 +2741,7 @@
             return `<div class="est-comp-linha${l.proj ? ' is-proj' : ''}"><span class="est-comp-rot">${l.rot}${l.sub ? `<small>${l.sub}</small>` : ''}</span><span class="est-comp-barra">${segs}</span><b>${curto(m, l.total, dv)}</b></div>`;
         }).join('');
         const presentes = D.valores.filter((x) => linhas.some((l) => l.partes.some((p) => p.x.v === x.v && p.v > 0)));
-        const leg = presentes.map((x) => `<span><i class="du-dot" style="--du-c: ${x.cor}"></i>${x.n}</span>`).join('');
+        const leg = presentes.map((x) => `<span>${marca(x)}${x.n}</span>`).join('');
         const titulo = b.titulo + ' · ' + (pct ? '% · total em ' : '') + unidadeTxt(m, dv);
         return secao(op, 'est-comp-sec', cabecalho(titulo, leg), `<div class="est-comp">${corpo}</div>`);
     }
@@ -2731,7 +2761,7 @@
             const antes = acum;
             acum += l.v / total * 100;
             return `<div class="est-par-linha${antes < 80 ? ' is-vital' : ''}${sel === l.x.v ? ' is-sel' : ''}" data-est-recorte="${b.dim}" data-v="${l.x.v}" data-tip="${tipDe([l.x.n, fmtM(m, l.v), fmt(l.v / total * 100, 1) + '% do total · acumulado ' + fmt(acum, 0) + '%'])}">
-                <span class="est-nome"><i class="du-dot" style="--du-c: ${l.x.cor}"></i>${l.x.n}</span>
+                <span class="est-nome">${marca(l.x)}${l.x.n}</span>
                 <span class="est-par-barra"><i style="--p: ${(l.v / max).toFixed(3)}; --c: ${l.x.cor}"></i></span>
                 <b>${fmt(l.v, m.casas)}</b><span>${fmt(l.v / total * 100, 1)}</span><span class="est-par-acum">${fmt(acum, 0)}</span>
             </div>`;
@@ -3541,6 +3571,7 @@
     }
 
     const PROF_SIT = { folga: 'Protegido', atencao: 'Atenção', limite: 'Proteção vencida' };
+    const PROF_SIT_CURTO = { folga: 'Protegido', atencao: 'Atenção', limite: 'Vencida' };
 
     function telaProfilaxia(tela) {
         const t = estadoTela(tela);
@@ -3553,7 +3584,7 @@
         const daCultura = (c) => fC === '*' || c.cultura.v === fC;
         const ciclos = CICLOS.filter((c) => (fU === '*' || c.u.v === fU) && daCultura(c));
         const sub = (txt) => `<span class="est-delta is-neutro"><span>${txt}</span></span>`;
-        const cultHtml = (c) => `<span class="prof-cult"><i class="du-dot" style="--du-c: ${c.cultura.cor}"></i>${c.cultura.n}</span>`;
+        const cultHtml = (c) => `<span class="prof-cult">${marca(c.cultura)}${c.cultura.n}</span>`;
         const simNao = (v) => (v ? '<span class="prof-ok">Feita</span>' : '<span class="prof-ruim">Não feita</span>');
 
         // ---- o que aconteceu no período ----
@@ -3595,23 +3626,32 @@
             const meus = CICLOS.filter((c) => c.u.v === u.v && c.aberto && daCultura(c)).map(protecaoDe).sort((a, b) => b.p - a.p);
             const sel = fU === u.v;
             const base = `type="button" data-est-recorte="unidadeArm" data-v="${u.v}" aria-pressed="${sel}" title="${sel ? 'Voltar a ver todos os silos' : 'Ver o histórico completo de ' + u.n}"`;
+            // cartão compacto, em quatro linhas curtas (nada corta no bloco):
+            // nome + culturas · dias + situação · desde quando · barra do esperado
+            const nome = u.n.replace('Armazém · área', 'Arm. área');
             if (!meus.length) {
                 return `<button ${base} class="prof-silo is-vazio${sel ? ' is-sel' : ''}">
-                    <span class="prof-silo-nome">${u.n}</span>
+                    <span class="prof-silo-topo"><span class="prof-silo-nome">${nome}</span></span>
                     <span class="prof-silo-txt">${fC === '*' ? 'Vazio hoje' : 'Sem ' + nomeDim('cultura', fC).toLowerCase() + ' hoje'}</span>
                 </button>`;
             }
             const pior = meus[0];
-            return `<button ${base} class="prof-silo is-${pior.sit}${sel ? ' is-sel' : ''}">
-                <span class="prof-silo-nome">${u.n}<span class="prof-silo-cults">${meus.map((a) => cultHtml(a.c)).join('')}</span></span>
-                <b class="prof-silo-dias">${pior.desde}<small>dias desde ${pior.ult ? 'o último expurgo' : 'a profilaxia'}</small></b>
+            // uma cultura: ícone e nome; duas (armazém em lotes): só os ícones
+            const cults = meus.length === 1 ? cultHtml(meus[0].c) : meus.map((a) => marca(a.c.cultura)).join('');
+            const dica = tipDe([`${u.n} · ${meus.map((a) => a.c.cultura.n).join(' e ')}`,
+                `${pior.desde} dias desde ${pior.ult ? 'o último expurgo' : 'a profilaxia'}`,
+                `proteção esperada: ${pior.esperado} dias · ${PROF_SIT[pior.sit].toLowerCase()}`,
+                sel ? 'clique para voltar a ver todos os silos' : 'clique para ver o histórico do silo']);
+            return `<button ${base.replace(/ title="[^"]*"/, '')} class="prof-silo is-${pior.sit}${sel ? ' is-sel' : ''}" data-tip="${dica}">
+                <span class="prof-silo-topo"><span class="prof-silo-nome">${nome}</span><span class="prof-silo-cults">${cults}</span></span>
+                <span class="prof-silo-meio"><b class="prof-silo-dias">${pior.desde}<small>/${pior.esperado} d</small></b><span class="est-sit is-${pior.sit}">${PROF_SIT_CURTO[pior.sit]}</span></span>
+                <span class="prof-silo-txt">desde ${pior.ult ? 'o expurgo' : 'a profilaxia'}</span>
                 <span class="prof-silo-barra" aria-hidden="true"><i style="--p: ${(clamp(pior.p, 0, 1) * 100).toFixed(1)}%"></i></span>
-                <span class="prof-silo-pe"><span class="est-sit is-${pior.sit}">${PROF_SIT[pior.sit]}</span><small>de ${pior.esperado} esperados</small></span>
             </button>`;
         }).join('');
         const visao = `<div data-codigo="${tela.codigo}-B" class="content-section du-section est-section prof-visao">
             <div class="section-head">
-                <h3>SILOS DE AVARÉ · SITUAÇÃO HOJE</h3>
+                <h3>SILOS DE ${(window.unidadeAtual ? window.unidadeAtual().n : 'Avaré').toUpperCase()} · SITUAÇÃO HOJE</h3>
                 <span class="du-legenda"><span>proteção esperada: ${PROTECAO.boa} dias bem executado, ${PROTECAO.ruim} mal · clique no silo para ver o histórico</span></span>
             </div>
             <div class="prof-silos">${cartoes}</div>
@@ -3657,7 +3697,7 @@
         for (let km = P.kmIni; km <= P.kmFim; km++) {
             if (km % passoEixo === 0 && iniMes(km) >= ini) eixo += `<span style="--x: ${X(iniMes(km))}">${passoEixo === 12 ? ANO0 + km / 12 : rotMes(km)}</span>`;
         }
-        const legG = DIMS.cultura.valores.filter((x) => fC === '*' || x.v === fC).map((x) => `<span><i class="du-dot" style="--du-c: ${x.cor}"></i>${x.n}</span>`).join('')
+        const legG = DIMS.cultura.valores.filter((x) => fC === '*' || x.v === fC).map((x) => `<span>${marca(x)}${x.n}</span>`).join('')
             + '<span><i class="prof-g-marca prof-g-marca--prof prof-g-marca--leg"></i>profilaxia</span>'
             + '<span><i class="prof-g-marca prof-g-marca--exp prof-g-marca--leg"></i>expurgo</span>'
             + '<span><i class="prof-g-marca prof-g-marca--exp is-ruim prof-g-marca--leg"></i>mal executado / ineficiente</span>';
@@ -3942,8 +3982,15 @@
         if (!corpo) return;
         const id = corpo.getAttribute('data-est');
         const tela = TELA[id];
-        const alvo = ev.target.closest('[data-est-periodo], [data-est-agrupar], [data-est-projecao], [data-est-comparar], [data-est-modo], [data-est-dim], [data-est-sel], [data-est-recorte], [data-est-vista], [data-est-filtros]');
+        const alvo = ev.target.closest('[data-est-periodo], [data-est-agrupar], [data-est-projecao], [data-est-comparar], [data-est-modo], [data-est-dim], [data-est-sel], [data-est-recorte], [data-est-vista], [data-est-filtros], [data-est-mes]');
         if (!alvo || !tela || alvo.disabled) return;
+        if (alvo.hasAttribute('data-est-mes')) {
+            ESTADO[alvo.getAttribute('data-est-mes')] = Number(alvo.getAttribute('data-v'));
+            ESTADO.periodo = 'custom';
+            gravarEstado();
+            remontarTudo();
+            return;
+        }
         if (alvo.hasAttribute('data-est-filtros')) {
             ESTADO.filtros = !ESTADO.filtros;
             gravarEstado();

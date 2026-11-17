@@ -12,7 +12,7 @@
          não carrega e a tela usa o mapa esquemático em SVG. -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css">
-    <link rel="stylesheet" href="style.css?v=est8">
+    <link rel="stylesheet" href="style.css?v=fsel1">
 </head>
 <body class="theme-dark" data-visao="tatica">
 
@@ -102,6 +102,24 @@
                     <span class="brand-main">COE</span>
                     <span class="brand-sub">Cooperativa Holambra · Unidade Avaré</span>
                 </h1>
+                <!-- Unidade em cena: troca o nome da unidade no cabeçalho, no menu e
+                     nos títulos (data-unidade-nome). A escolha fica guardada no
+                     navegador e pode vir no endereço (?unidade=itabera). -->
+                <div class="unidade-sel" role="group" aria-label="Unidade">
+                    <span class="class-filtro-rotulo">Unidade</span>
+                    <div class="fsel">
+                        <button type="button" class="est-select fsel-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Unidade" title="Escolher a unidade"><span class="fsel-val">Avaré</span></button>
+                        <div class="fsel-lista" role="listbox" aria-label="Unidade" hidden>
+                            <button type="button" role="option" class="is-active" data-unidade-sel="avare" aria-pressed="true">Avaré</button>
+                            <button type="button" role="option" data-unidade-sel="matriz" aria-pressed="false">Matriz</button>
+                            <button type="button" role="option" data-unidade-sel="itabera" aria-pressed="false">Itaberá</button>
+                            <button type="button" role="option" data-unidade-sel="sao-manuel" aria-pressed="false">São Manuel</button>
+                            <button type="button" role="option" data-unidade-sel="takaoka" aria-pressed="false">Takaoka</button>
+                            <button type="button" role="option" data-unidade-sel="taquarituba" aria-pressed="false">Taquarituba</button>
+                            <button type="button" role="option" data-unidade-sel="taquarivai" aria-pressed="false">Taquarivaí</button>
+                        </div>
+                    </div>
+                </div>
                 <!-- Tática: as telas do dia a dia (turno, hoje, agora). Estratégica:
                      os mesmos dados da unidade em meses e anos, para a gestão. -->
                 <div class="visao-toggle" role="group" aria-label="Visão das telas">
@@ -131,13 +149,13 @@
         <!-- Sidebar Menu -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-top">
-                <div class="sidebar-header"><span data-visao="tatica">TELAS AVARÉ</span><span data-visao="estrategica">ESTRATÉGICO AVARÉ</span></div>
+                <div class="sidebar-header"><span data-visao="tatica">TELAS <span data-unidade-nome="alta">AVARÉ</span></span><span data-visao="estrategica">ESTRATÉGICO <span data-unidade-nome="alta">AVARÉ</span></span></div>
                 <button class="sidebar-toggle" id="btnSidebarToggle" type="button" title="Recolher menu (Ctrl+B)" aria-label="Recolher menu de telas" aria-expanded="true" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
             </div>
             <nav class="menu" data-unidade="Unidade Avaré" data-visao="tatica">
-                <button class="menu-item menu-item--geral active" data-screen="geral"><span class="menu-text">Visão geral</span></button>
+                <button class="menu-item menu-item--geral active" data-screen="geral" data-num="00"><span class="menu-text">Visão geral</span></button>
                 <div class="menu-group" data-group="0">
-                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-0">
+                    <button class="menu-parent" type="button" data-num="01" aria-expanded="false" aria-controls="submenu-0">
                         <span class="menu-text">Recepção</span>
                         <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
@@ -147,25 +165,25 @@
                     </div>
                 </div>
                 <div class="menu-group" data-group="1">
-                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-1">
+                    <button class="menu-parent" type="button" data-num="02" aria-expanded="false" aria-controls="submenu-1">
                         <span class="menu-text">Classificação</span>
                         <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
                     <div class="submenu" id="submenu-1" hidden>
-                        <button class="menu-item" data-screen="1"><span class="menu-text">Tela da classificação</span></button>
+                        <button class="menu-item" data-screen="1" data-num="02"><span class="menu-text">Tela da classificação</span></button>
                     </div>
                 </div>
                 <div class="menu-group" data-group="2">
-                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-2">
+                    <button class="menu-parent" type="button" data-num="03" aria-expanded="false" aria-controls="submenu-2">
                         <span class="menu-text">Moegas</span>
                         <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
                     <div class="submenu" id="submenu-2" hidden>
-                        <button class="menu-item" data-screen="2"><span class="menu-text">Tela das moegas</span></button>
+                        <button class="menu-item" data-screen="2" data-num="03"><span class="menu-text">Tela das moegas</span></button>
                     </div>
                 </div>
                 <div class="menu-group" data-group="3">
-                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-3">
+                    <button class="menu-parent" type="button" data-num="04" aria-expanded="false" aria-controls="submenu-3">
                         <span class="menu-text">Secagem</span>
                         <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
@@ -176,25 +194,25 @@
                     </div>
                 </div>
                 <div class="menu-group" data-group="5">
-                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-5">
+                    <button class="menu-parent" type="button" data-num="05" aria-expanded="false" aria-controls="submenu-5">
                         <span class="menu-text">Silos</span>
                         <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
                     <div class="submenu" id="submenu-5" hidden>
-                        <button class="menu-item" data-screen="5"><span class="menu-text">Silos e aeração</span></button>
+                        <button class="menu-item" data-screen="5" data-num="05"><span class="menu-text">Silos e aeração</span></button>
                     </div>
                 </div>
                 <div class="menu-group" data-group="6">
-                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-6">
+                    <button class="menu-parent" type="button" data-num="06" aria-expanded="false" aria-controls="submenu-6">
                         <span class="menu-text">Armazém</span>
                         <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
                     <div class="submenu" id="submenu-6" hidden>
-                        <button class="menu-item" data-screen="6"><span class="menu-text">Tela do armazém</span></button>
+                        <button class="menu-item" data-screen="6" data-num="06"><span class="menu-text">Tela do armazém</span></button>
                     </div>
                 </div>
                 <div class="menu-group" data-group="7">
-                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-7">
+                    <button class="menu-parent" type="button" data-num="07" aria-expanded="false" aria-controls="submenu-7">
                         <span class="menu-text">Expedição · Dosagem</span>
                         <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
@@ -204,18 +222,18 @@
                         <button class="menu-item" data-screen="exp-contrato" data-num="07C"><span class="menu-text">Contratos</span></button>
                     </div>
                 </div>
-                <button class="menu-item menu-item--solo" data-screen="8"><span class="menu-text">Previsão do tempo</span></button>
+                <button class="menu-item menu-item--solo" data-screen="8" data-num="08"><span class="menu-text">Previsão do tempo</span></button>
             </nav>
 
             <!-- Visão estratégica: as mesmas áreas de Avaré em meses e anos, com a
                  projeção. Cada tela é desenhada pelo estrategico.js (EST_TELAS); o
                  menu só aparece com o botão ESTRATÉGICA do cabeçalho (ou a tecla V). -->
             <nav class="menu" data-unidade="Unidade Avaré" data-visao="estrategica" aria-label="Telas estratégicas">
-                <button class="menu-item menu-item--geral" data-screen="est-geral"><span class="menu-text">Visão geral</span></button>
-                <button class="menu-item menu-item--solo" data-screen="est-projecao"><span class="menu-text">Projeção do ano</span></button>
-                <button class="menu-item menu-item--solo" data-screen="est-capacidade"><span class="menu-text">Capacidade e gargalos</span></button>
+                <button class="menu-item menu-item--geral" data-screen="est-geral" data-num="E0A"><span class="menu-text">Visão geral</span></button>
+                <button class="menu-item menu-item--solo" data-screen="est-projecao" data-num="E0B"><span class="menu-text">Projeção do ano</span></button>
+                <button class="menu-item menu-item--solo" data-screen="est-capacidade" data-num="E0C"><span class="menu-text">Capacidade e gargalos</span></button>
                 <div class="menu-group" data-group="e1">
-                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-e1">
+                    <button class="menu-parent" type="button" data-num="E1" aria-expanded="false" aria-controls="submenu-e1">
                         <span class="menu-text">Recepção</span>
                         <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
@@ -227,7 +245,7 @@
                     </div>
                 </div>
                 <div class="menu-group" data-group="e2">
-                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-e2">
+                    <button class="menu-parent" type="button" data-num="E2" aria-expanded="false" aria-controls="submenu-e2">
                         <span class="menu-text">Classificação</span>
                         <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
@@ -239,7 +257,7 @@
                     </div>
                 </div>
                 <div class="menu-group" data-group="e3">
-                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-e3">
+                    <button class="menu-parent" type="button" data-num="E3" aria-expanded="false" aria-controls="submenu-e3">
                         <span class="menu-text">Moegas</span>
                         <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
@@ -249,7 +267,7 @@
                     </div>
                 </div>
                 <div class="menu-group" data-group="e4">
-                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-e4">
+                    <button class="menu-parent" type="button" data-num="E4" aria-expanded="false" aria-controls="submenu-e4">
                         <span class="menu-text">Secagem</span>
                         <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
@@ -262,7 +280,7 @@
                     </div>
                 </div>
                 <div class="menu-group" data-group="e5">
-                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-e5">
+                    <button class="menu-parent" type="button" data-num="E5" aria-expanded="false" aria-controls="submenu-e5">
                         <span class="menu-text">Silos e armazém</span>
                         <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
@@ -274,7 +292,7 @@
                     </div>
                 </div>
                 <div class="menu-group" data-group="e6">
-                    <button class="menu-parent" type="button" aria-expanded="false" aria-controls="submenu-e6">
+                    <button class="menu-parent" type="button" data-num="E6" aria-expanded="false" aria-controls="submenu-e6">
                         <span class="menu-text">Expedição</span>
                         <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
@@ -285,7 +303,7 @@
                         <button class="menu-item" data-screen="est-exp-contratos" data-num="E6D"><span class="menu-text">Contratos</span></button>
                     </div>
                 </div>
-                <button class="menu-item menu-item--solo" data-screen="est-clima"><span class="menu-text">Clima</span></button>
+                <button class="menu-item menu-item--solo" data-screen="est-clima" data-num="E7"><span class="menu-text">Clima</span></button>
             </nav>
 
             <!-- Câmeras: seção própria, com todas as câmeras de Avaré numa tela
@@ -293,13 +311,13 @@
             <div class="sidebar-section" data-visao="tatica">
                 <div class="sidebar-header">CÂMERAS</div>
                 <nav class="menu" data-unidade="Unidade Avaré" aria-label="Câmeras">
-                    <button class="menu-item menu-item--geral" data-screen="cameras"><span class="menu-text">Todas as câmeras</span></button>
-                    <button class="menu-item menu-item--solo" data-screen="cam-recepcao"><span class="menu-text">Recepção</span></button>
-                    <button class="menu-item menu-item--solo" data-screen="cam-classificacao"><span class="menu-text">Classificação</span></button>
-                    <button class="menu-item menu-item--solo" data-screen="cam-moegas"><span class="menu-text">Moegas · Tombadores · Caçamba</span></button>
-                    <button class="menu-item menu-item--solo" data-screen="cam-fornalha"><span class="menu-text">Fornalha · Elevador</span></button>
-                    <button class="menu-item menu-item--solo" data-screen="cam-silos"><span class="menu-text">Silos · Armazém</span></button>
-                    <button class="menu-item menu-item--solo" data-screen="cam-expedicao"><span class="menu-text">Expedição</span></button>
+                    <button class="menu-item menu-item--geral" data-screen="cameras" data-num="C0"><span class="menu-text">Todas as câmeras</span></button>
+                    <button class="menu-item menu-item--solo" data-screen="cam-recepcao" data-num="C1"><span class="menu-text">Recepção</span></button>
+                    <button class="menu-item menu-item--solo" data-screen="cam-classificacao" data-num="C2"><span class="menu-text">Classificação</span></button>
+                    <button class="menu-item menu-item--solo" data-screen="cam-moegas" data-num="C3"><span class="menu-text">Moegas · Tombadores · Caçamba</span></button>
+                    <button class="menu-item menu-item--solo" data-screen="cam-fornalha" data-num="C4"><span class="menu-text">Fornalha · Elevador</span></button>
+                    <button class="menu-item menu-item--solo" data-screen="cam-silos" data-num="C5"><span class="menu-text">Silos · Armazém</span></button>
+                    <button class="menu-item menu-item--solo" data-screen="cam-expedicao" data-num="C6"><span class="menu-text">Expedição</span></button>
                 </nav>
             </div>
 
@@ -308,12 +326,12 @@
             <div class="sidebar-section" data-visao="tatica">
                 <div class="sidebar-header">TELAS DEMAIS UNIDADES</div>
                 <nav class="menu" data-unidade="Demais unidades" aria-label="Telas das demais unidades">
-                    <button class="menu-item menu-item--geral" data-screen="du-geral"><span class="menu-text">Visão geral</span></button>
-                    <button class="menu-item menu-item--solo" data-screen="du-recebimento"><span class="menu-text">Recebimento e filas</span></button>
-                    <button class="menu-item menu-item--solo" data-screen="du-armazenagem"><span class="menu-text">Armazenagem</span></button>
-                    <button class="menu-item menu-item--solo" data-screen="du-termometria"><span class="menu-text">Termometria</span></button>
-                    <button class="menu-item menu-item--solo" data-screen="du-secagem"><span class="menu-text">Secagem</span></button>
-                    <button class="menu-item menu-item--solo" data-screen="du-clima"><span class="menu-text">Clima das unidades</span></button>
+                    <button class="menu-item menu-item--geral" data-screen="du-geral" data-num="U0"><span class="menu-text">Visão geral</span></button>
+                    <button class="menu-item menu-item--solo" data-screen="du-recebimento" data-num="U1"><span class="menu-text">Recebimento e filas</span></button>
+                    <button class="menu-item menu-item--solo" data-screen="du-armazenagem" data-num="U2"><span class="menu-text">Armazenagem</span></button>
+                    <button class="menu-item menu-item--solo" data-screen="du-termometria" data-num="U3"><span class="menu-text">Termometria</span></button>
+                    <button class="menu-item menu-item--solo" data-screen="du-secagem" data-num="U4"><span class="menu-text">Secagem</span></button>
+                    <button class="menu-item menu-item--solo" data-screen="du-clima" data-num="U5"><span class="menu-text">Clima das unidades</span></button>
                 </nav>
             </div>
         </aside>
@@ -639,33 +657,36 @@
                          data-fluxo-cultura / data-fluxo-periodo. O periodo vale para tudo
                          (etapas, selos e tabela); a cultura vale para a tabela e para a
                          contagem dos selos — os cartoes de etapa seguem so o periodo. -->
-                    <div class="fluxo-filtro">
-                        <div class="class-filtro" role="group" aria-label="Filtrar caminhões por cultura">
-                            <span class="class-filtro-rotulo">Cultura</span>
-                            <button type="button" class="class-filtro-btn is-active" data-fluxo-cultura="todas" aria-pressed="true">Todas</button>
-                            <button type="button" class="class-filtro-btn" data-fluxo-cultura="milho" aria-pressed="false"><svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho</button>
-                            <button type="button" class="class-filtro-btn" data-fluxo-cultura="sorgo" aria-pressed="false"><svg class="grao-icon grao-icon--sorgo grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo</button>
-                            <button type="button" class="class-filtro-btn" data-fluxo-cultura="trigo" aria-pressed="false"><svg class="grao-icon grao-icon--trigo grao-icon--dot" aria-hidden="true"><use href="#ico-trigo"></use></svg>Trigo</button>
-                            <button type="button" class="class-filtro-btn" data-fluxo-cultura="soja" aria-pressed="false"><svg class="grao-icon grao-icon--soja grao-icon--dot" aria-hidden="true"><use href="#ico-soja"></use></svg>Soja</button>
-                        </div>
-                        <!-- os tres turnos da recepcao. Cada um mostra a ultima vez que
-                             aconteceu: o 1o e' o turno em andamento; o 2o e o 3o sao os
-                             ultimos fechados (2o de ontem, 3o da noite que acabou as 07:00).
-                             Os horarios se cruzam na troca (16:00–16:20 e 22:00–22:20).
-                             Turno e periodo sao a mesma escolha (data-fluxo-periodo) e vao
-                             juntos na segunda linha do filtro. -->
-                        <div class="fluxo-filtro-tempo">
-                        <div class="fluxo-periodo fluxo-periodo--turnos" role="group" aria-label="Turno dos dados da tela">
-                            <span class="class-filtro-rotulo">Turno</span>
-                            <button type="button" class="fluxo-periodo-btn" data-fluxo-periodo="t1" aria-pressed="false" title="1º turno · 07:00–16:20">07:00–16:20</button>
-                            <button type="button" class="fluxo-periodo-btn" data-fluxo-periodo="t2" aria-pressed="false" title="2º turno · 16:00–22:20">16:00–22:20</button>
-                            <button type="button" class="fluxo-periodo-btn" data-fluxo-periodo="t3" aria-pressed="false" title="3º turno · 22:00–07:00">22:00–07:00</button>
-                        </div>
-                        <div class="fluxo-periodo" role="group" aria-label="Período dos dados da tela">
-                            <button type="button" class="fluxo-periodo-btn is-active" data-fluxo-periodo="hoje" aria-pressed="true">Hoje</button>
-                            <button type="button" class="fluxo-periodo-btn" data-fluxo-periodo="7d" aria-pressed="false">7 dias</button>
-                            <button type="button" class="fluxo-periodo-btn" data-fluxo-periodo="30d" aria-pressed="false">30 dias</button>
-                        </div>
+                    <div class="est-filtros filtros-tela">
+                        <div class="est-filtros-linha">
+                            <div class="class-filtro est-fgrupo" role="group" aria-label="Período dos dados da tela">
+                                <span class="class-filtro-rotulo">Período</span>
+                                <div class="fsel">
+                                    <button type="button" class="est-select fsel-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Período"><span class="fsel-val">Hoje</span></button>
+                                    <div class="fsel-lista" role="listbox" aria-label="Período" hidden>
+                                        <button role="option" type="button" class="fluxo-periodo-btn is-active" data-fluxo-periodo="hoje" aria-pressed="true">Hoje</button>
+                                        <button role="option" type="button" class="fluxo-periodo-btn" data-fluxo-periodo="7d" aria-pressed="false">7 dias</button>
+                                        <button role="option" type="button" class="fluxo-periodo-btn" data-fluxo-periodo="30d" aria-pressed="false">30 dias</button>
+                                        <span class="fsel-sep" aria-hidden="true">Turno</span>
+                                        <button role="option" data-fsel-rotulo="1º turno · 07:00–16:20" type="button" class="fluxo-periodo-btn" data-fluxo-periodo="t1" aria-pressed="false" title="1º turno · 07:00–16:20">1º turno · 07:00–16:20</button>
+                                        <button role="option" data-fsel-rotulo="2º turno · 16:00–22:20" type="button" class="fluxo-periodo-btn" data-fluxo-periodo="t2" aria-pressed="false" title="2º turno · 16:00–22:20">2º turno · 16:00–22:20</button>
+                                        <button role="option" data-fsel-rotulo="3º turno · 22:00–07:00" type="button" class="fluxo-periodo-btn" data-fluxo-periodo="t3" aria-pressed="false" title="3º turno · 22:00–07:00">3º turno · 22:00–07:00</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="class-filtro est-fgrupo" role="group" aria-label="Filtrar caminhões por cultura">
+                                <span class="class-filtro-rotulo">Cultura</span>
+                                <div class="fsel">
+                                    <button type="button" class="est-select fsel-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Cultura"><span class="fsel-val">Todas</span></button>
+                                    <div class="fsel-lista" role="listbox" aria-label="Cultura" hidden>
+                                        <button role="option" type="button" class="class-filtro-btn is-active" data-fluxo-cultura="todas" aria-pressed="true">Todas</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-fluxo-cultura="milho" aria-pressed="false"><svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-fluxo-cultura="sorgo" aria-pressed="false"><svg class="grao-icon grao-icon--sorgo grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-fluxo-cultura="trigo" aria-pressed="false"><svg class="grao-icon grao-icon--trigo grao-icon--dot" aria-hidden="true"><use href="#ico-trigo"></use></svg>Trigo</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-fluxo-cultura="soja" aria-pressed="false"><svg class="grao-icon grao-icon--soja grao-icon--dot" aria-hidden="true"><use href="#ico-soja"></use></svg>Soja</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -857,27 +878,36 @@
                          conciliacao; o historico segue a cultura escolhida. data-cult-<cultura>
                          na section diz se a cultura esta no recorte (todas "on" em Todas,
                          so a escolhida nas outras). -->
-                    <div class="fluxo-filtro">
-                        <div class="class-filtro" role="group" aria-label="Filtrar a classificação por cultura">
-                            <span class="class-filtro-rotulo">Cultura</span>
-                            <button type="button" class="class-filtro-btn is-active" data-class-cultura="todas" aria-pressed="true">Todas</button>
-                            <button type="button" class="class-filtro-btn" data-class-cultura="milho" aria-pressed="false"><svg class="grao-icon grao-icon--milho grao-icon--class grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho</button>
-                            <button type="button" class="class-filtro-btn" data-class-cultura="sorgo" aria-pressed="false"><svg class="grao-icon grao-icon--sorgo grao-icon--class grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo</button>
-                            <button type="button" class="class-filtro-btn" data-class-cultura="trigo" aria-pressed="false"><svg class="grao-icon grao-icon--trigo grao-icon--class grao-icon--dot" aria-hidden="true"><use href="#ico-trigo"></use></svg>Trigo</button>
-                            <button type="button" class="class-filtro-btn" data-class-cultura="soja" aria-pressed="false"><svg class="grao-icon grao-icon--soja grao-icon--class grao-icon--dot" aria-hidden="true"><use href="#ico-soja"></use></svg>Soja</button>
-                        </div>
-                        <div class="fluxo-filtro-tempo">
-                        <div class="fluxo-periodo fluxo-periodo--turnos" role="group" aria-label="Turno dos dados da tela">
-                            <span class="class-filtro-rotulo">Turno</span>
-                            <button type="button" class="class-periodo-btn" data-class-periodo="t1" aria-pressed="false" title="1º turno · 07:00–16:20">07:00–16:20</button>
-                            <button type="button" class="class-periodo-btn" data-class-periodo="t2" aria-pressed="false" title="2º turno · 16:00–22:20">16:00–22:20</button>
-                            <button type="button" class="class-periodo-btn" data-class-periodo="t3" aria-pressed="false" title="3º turno · 22:00–07:00">22:00–07:00</button>
-                        </div>
-                        <div class="fluxo-periodo" role="group" aria-label="Período dos dados da tela">
-                            <button type="button" class="class-periodo-btn is-active" data-class-periodo="hoje" aria-pressed="true">Hoje</button>
-                            <button type="button" class="class-periodo-btn" data-class-periodo="7d" aria-pressed="false">7 dias</button>
-                            <button type="button" class="class-periodo-btn" data-class-periodo="30d" aria-pressed="false">30 dias</button>
-                        </div>
+                    <div class="est-filtros filtros-tela">
+                        <div class="est-filtros-linha">
+                            <div class="class-filtro est-fgrupo" role="group" aria-label="Período dos dados da tela">
+                                <span class="class-filtro-rotulo">Período</span>
+                                <div class="fsel">
+                                    <button type="button" class="est-select fsel-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Período"><span class="fsel-val">Hoje</span></button>
+                                    <div class="fsel-lista" role="listbox" aria-label="Período" hidden>
+                                        <button role="option" type="button" class="class-periodo-btn is-active" data-class-periodo="hoje" aria-pressed="true">Hoje</button>
+                                        <button role="option" type="button" class="class-periodo-btn" data-class-periodo="7d" aria-pressed="false">7 dias</button>
+                                        <button role="option" type="button" class="class-periodo-btn" data-class-periodo="30d" aria-pressed="false">30 dias</button>
+                                        <span class="fsel-sep" aria-hidden="true">Turno</span>
+                                        <button role="option" data-fsel-rotulo="1º turno · 07:00–16:20" type="button" class="class-periodo-btn" data-class-periodo="t1" aria-pressed="false" title="1º turno · 07:00–16:20">1º turno · 07:00–16:20</button>
+                                        <button role="option" data-fsel-rotulo="2º turno · 16:00–22:20" type="button" class="class-periodo-btn" data-class-periodo="t2" aria-pressed="false" title="2º turno · 16:00–22:20">2º turno · 16:00–22:20</button>
+                                        <button role="option" data-fsel-rotulo="3º turno · 22:00–07:00" type="button" class="class-periodo-btn" data-class-periodo="t3" aria-pressed="false" title="3º turno · 22:00–07:00">3º turno · 22:00–07:00</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="class-filtro est-fgrupo" role="group" aria-label="Filtrar a classificação por cultura">
+                                <span class="class-filtro-rotulo">Cultura</span>
+                                <div class="fsel">
+                                    <button type="button" class="est-select fsel-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Cultura"><span class="fsel-val">Todas</span></button>
+                                    <div class="fsel-lista" role="listbox" aria-label="Cultura" hidden>
+                                        <button role="option" type="button" class="class-filtro-btn is-active" data-class-cultura="todas" aria-pressed="true">Todas</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-class-cultura="milho" aria-pressed="false"><svg class="grao-icon grao-icon--milho grao-icon--class grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-class-cultura="sorgo" aria-pressed="false"><svg class="grao-icon grao-icon--sorgo grao-icon--class grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-class-cultura="trigo" aria-pressed="false"><svg class="grao-icon grao-icon--trigo grao-icon--class grao-icon--dot" aria-hidden="true"><use href="#ico-trigo"></use></svg>Trigo</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-class-cultura="soja" aria-pressed="false"><svg class="grao-icon grao-icon--soja grao-icon--class grao-icon--dot" aria-hidden="true"><use href="#ico-soja"></use></svg>Soja</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1482,27 +1512,36 @@
                          as moegas e os pulmoes de outra cultura apagam e ficam no lugar,
                          para a posicao de cada moega nao mudar. Moega vazia continua acesa,
                          porque pode receber a cultura escolhida. -->
-                    <div class="fluxo-filtro">
-                        <div class="class-filtro" role="group" aria-label="Filtrar moegas e pulmões por cultura">
-                            <span class="class-filtro-rotulo">Cultura</span>
-                            <button type="button" class="class-filtro-btn is-active" data-moega-cultura="todas" aria-pressed="true">Todas</button>
-                            <button type="button" class="class-filtro-btn" data-moega-cultura="milho" aria-pressed="false"><svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho</button>
-                            <button type="button" class="class-filtro-btn" data-moega-cultura="sorgo" aria-pressed="false"><svg class="grao-icon grao-icon--sorgo grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo</button>
-                            <button type="button" class="class-filtro-btn" data-moega-cultura="trigo" aria-pressed="false"><svg class="grao-icon grao-icon--trigo grao-icon--dot" aria-hidden="true"><use href="#ico-trigo"></use></svg>Trigo</button>
-                            <button type="button" class="class-filtro-btn" data-moega-cultura="soja" aria-pressed="false"><svg class="grao-icon grao-icon--soja grao-icon--dot" aria-hidden="true"><use href="#ico-soja"></use></svg>Soja</button>
-                        </div>
-                        <div class="fluxo-filtro-tempo">
-                        <div class="fluxo-periodo fluxo-periodo--turnos" role="group" aria-label="Turno dos dados da tela">
-                            <span class="class-filtro-rotulo">Turno</span>
-                            <button type="button" class="fluxo-periodo-btn" data-moega-periodo="t1" aria-pressed="false" title="1º turno · 07:00–16:20">07:00–16:20</button>
-                            <button type="button" class="fluxo-periodo-btn" data-moega-periodo="t2" aria-pressed="false" title="2º turno · 16:00–22:20">16:00–22:20</button>
-                            <button type="button" class="fluxo-periodo-btn" data-moega-periodo="t3" aria-pressed="false" title="3º turno · 22:00–07:00">22:00–07:00</button>
-                        </div>
-                        <div class="fluxo-periodo" role="group" aria-label="Período dos dados da tela">
-                            <button type="button" class="fluxo-periodo-btn is-active" data-moega-periodo="hoje" aria-pressed="true">Hoje</button>
-                            <button type="button" class="fluxo-periodo-btn" data-moega-periodo="7d" aria-pressed="false">7 dias</button>
-                            <button type="button" class="fluxo-periodo-btn" data-moega-periodo="30d" aria-pressed="false">30 dias</button>
-                        </div>
+                    <div class="est-filtros filtros-tela">
+                        <div class="est-filtros-linha">
+                            <div class="class-filtro est-fgrupo" role="group" aria-label="Período dos dados da tela">
+                                <span class="class-filtro-rotulo">Período</span>
+                                <div class="fsel">
+                                    <button type="button" class="est-select fsel-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Período"><span class="fsel-val">Hoje</span></button>
+                                    <div class="fsel-lista" role="listbox" aria-label="Período" hidden>
+                                        <button role="option" type="button" class="fluxo-periodo-btn is-active" data-moega-periodo="hoje" aria-pressed="true">Hoje</button>
+                                        <button role="option" type="button" class="fluxo-periodo-btn" data-moega-periodo="7d" aria-pressed="false">7 dias</button>
+                                        <button role="option" type="button" class="fluxo-periodo-btn" data-moega-periodo="30d" aria-pressed="false">30 dias</button>
+                                        <span class="fsel-sep" aria-hidden="true">Turno</span>
+                                        <button role="option" data-fsel-rotulo="1º turno · 07:00–16:20" type="button" class="fluxo-periodo-btn" data-moega-periodo="t1" aria-pressed="false" title="1º turno · 07:00–16:20">1º turno · 07:00–16:20</button>
+                                        <button role="option" data-fsel-rotulo="2º turno · 16:00–22:20" type="button" class="fluxo-periodo-btn" data-moega-periodo="t2" aria-pressed="false" title="2º turno · 16:00–22:20">2º turno · 16:00–22:20</button>
+                                        <button role="option" data-fsel-rotulo="3º turno · 22:00–07:00" type="button" class="fluxo-periodo-btn" data-moega-periodo="t3" aria-pressed="false" title="3º turno · 22:00–07:00">3º turno · 22:00–07:00</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="class-filtro est-fgrupo" role="group" aria-label="Filtrar moegas e pulmões por cultura">
+                                <span class="class-filtro-rotulo">Cultura</span>
+                                <div class="fsel">
+                                    <button type="button" class="est-select fsel-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Cultura"><span class="fsel-val">Todas</span></button>
+                                    <div class="fsel-lista" role="listbox" aria-label="Cultura" hidden>
+                                        <button role="option" type="button" class="class-filtro-btn is-active" data-moega-cultura="todas" aria-pressed="true">Todas</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-moega-cultura="milho" aria-pressed="false"><svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-moega-cultura="sorgo" aria-pressed="false"><svg class="grao-icon grao-icon--sorgo grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-moega-cultura="trigo" aria-pressed="false"><svg class="grao-icon grao-icon--trigo grao-icon--dot" aria-hidden="true"><use href="#ico-trigo"></use></svg>Trigo</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-moega-cultura="soja" aria-pressed="false"><svg class="grao-icon grao-icon--soja grao-icon--dot" aria-hidden="true"><use href="#ico-soja"></use></svg>Soja</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2264,19 +2303,23 @@
                         <h2>Produtividade da Secagem</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">4</span>s</div>
                     </div>
-                    <div class="fluxo-filtro">
-                        <div class="fluxo-filtro-tempo">
-                        <div class="fluxo-periodo fluxo-periodo--turnos" role="group" aria-label="Turno dos dados da tela">
-                            <span class="class-filtro-rotulo">Turno</span>
-                            <button type="button" class="fluxo-periodo-btn is-active" data-prod-periodo="t1" aria-pressed="true" title="1º turno · 07:00–16:20 · hoje">07:00–16:20</button>
-                            <button type="button" class="fluxo-periodo-btn" data-prod-periodo="t2" aria-pressed="false" title="2º turno · 16:00–22:20 · ontem">16:00–22:20</button>
-                            <button type="button" class="fluxo-periodo-btn" data-prod-periodo="t3" aria-pressed="false" title="3º turno · 22:00–07:00 · esta noite">22:00–07:00</button>
-                        </div>
-                        <div class="fluxo-periodo" role="group" aria-label="Período dos dados da tela">
-                            <button type="button" class="fluxo-periodo-btn" data-prod-periodo="hoje" aria-pressed="false">Hoje</button>
-                            <button type="button" class="fluxo-periodo-btn" data-prod-periodo="7d" aria-pressed="false">7 dias</button>
-                            <button type="button" class="fluxo-periodo-btn" data-prod-periodo="30d" aria-pressed="false">30 dias</button>
-                        </div>
+                    <div class="est-filtros filtros-tela">
+                        <div class="est-filtros-linha">
+                            <div class="class-filtro est-fgrupo" role="group" aria-label="Período dos dados da tela">
+                                <span class="class-filtro-rotulo">Período</span>
+                                <div class="fsel">
+                                    <button type="button" class="est-select fsel-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Período"><span class="fsel-val">1º turno · 07:00–16:20</span></button>
+                                    <div class="fsel-lista" role="listbox" aria-label="Período" hidden>
+                                        <button role="option" type="button" class="fluxo-periodo-btn" data-prod-periodo="hoje" aria-pressed="false">Hoje</button>
+                                        <button role="option" type="button" class="fluxo-periodo-btn" data-prod-periodo="7d" aria-pressed="false">7 dias</button>
+                                        <button role="option" type="button" class="fluxo-periodo-btn" data-prod-periodo="30d" aria-pressed="false">30 dias</button>
+                                        <span class="fsel-sep" aria-hidden="true">Turno</span>
+                                        <button role="option" data-fsel-rotulo="1º turno · 07:00–16:20" type="button" class="fluxo-periodo-btn is-active" data-prod-periodo="t1" aria-pressed="true" title="1º turno · 07:00–16:20 · hoje">1º turno · 07:00–16:20</button>
+                                        <button role="option" data-fsel-rotulo="2º turno · 16:00–22:20" type="button" class="fluxo-periodo-btn" data-prod-periodo="t2" aria-pressed="false" title="2º turno · 16:00–22:20 · ontem">2º turno · 16:00–22:20</button>
+                                        <button role="option" data-fsel-rotulo="3º turno · 22:00–07:00" type="button" class="fluxo-periodo-btn" data-prod-periodo="t3" aria-pressed="false" title="3º turno · 22:00–07:00 · esta noite">3º turno · 22:00–07:00</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -3404,19 +3447,23 @@
                         <span class="arm-clima-val"><b>18,0<small>°C</small></b>temperatura</span>
                         <span class="arm-clima-val"><b>55<small>%</small></b>umidade relativa</span>
                     </div>
-                    <div class="fluxo-filtro">
-                        <div class="fluxo-filtro-tempo">
-                        <div class="fluxo-periodo fluxo-periodo--turnos" role="group" aria-label="Turno dos dados da tela">
-                            <span class="class-filtro-rotulo">Turno</span>
-                            <button type="button" class="fluxo-periodo-btn" data-silo-periodo="t1" aria-pressed="false" title="1º turno · 07:00–16:20">07:00–16:20</button>
-                            <button type="button" class="fluxo-periodo-btn" data-silo-periodo="t2" aria-pressed="false" title="2º turno · 16:00–22:20">16:00–22:20</button>
-                            <button type="button" class="fluxo-periodo-btn" data-silo-periodo="t3" aria-pressed="false" title="3º turno · 22:00–07:00">22:00–07:00</button>
-                        </div>
-                        <div class="fluxo-periodo" role="group" aria-label="Período dos dados da tela">
-                            <button type="button" class="fluxo-periodo-btn is-active" data-silo-periodo="24h" aria-pressed="true" title="Para situação crítica: curva hora a hora com projeção">24 h</button>
-                            <button type="button" class="fluxo-periodo-btn" data-silo-periodo="7d" aria-pressed="false">7 dias</button>
-                            <button type="button" class="fluxo-periodo-btn" data-silo-periodo="30d" aria-pressed="false">30 dias</button>
-                        </div>
+                    <div class="est-filtros filtros-tela">
+                        <div class="est-filtros-linha">
+                            <div class="class-filtro est-fgrupo" role="group" aria-label="Período dos dados da tela">
+                                <span class="class-filtro-rotulo">Período</span>
+                                <div class="fsel">
+                                    <button type="button" class="est-select fsel-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Período"><span class="fsel-val">24 h</span></button>
+                                    <div class="fsel-lista" role="listbox" aria-label="Período" hidden>
+                                        <button role="option" type="button" class="fluxo-periodo-btn is-active" data-silo-periodo="24h" aria-pressed="true" title="Para situação crítica: curva hora a hora com projeção">24 h</button>
+                                        <button role="option" type="button" class="fluxo-periodo-btn" data-silo-periodo="7d" aria-pressed="false">7 dias</button>
+                                        <button role="option" type="button" class="fluxo-periodo-btn" data-silo-periodo="30d" aria-pressed="false">30 dias</button>
+                                        <span class="fsel-sep" aria-hidden="true">Turno</span>
+                                        <button role="option" data-fsel-rotulo="1º turno · 07:00–16:20" type="button" class="fluxo-periodo-btn" data-silo-periodo="t1" aria-pressed="false" title="1º turno · 07:00–16:20">1º turno · 07:00–16:20</button>
+                                        <button role="option" data-fsel-rotulo="2º turno · 16:00–22:20" type="button" class="fluxo-periodo-btn" data-silo-periodo="t2" aria-pressed="false" title="2º turno · 16:00–22:20">2º turno · 16:00–22:20</button>
+                                        <button role="option" data-fsel-rotulo="3º turno · 22:00–07:00" type="button" class="fluxo-periodo-btn" data-silo-periodo="t3" aria-pressed="false" title="3º turno · 22:00–07:00">3º turno · 22:00–07:00</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -3974,20 +4021,33 @@
                     <!-- filtro geral da tela: cultura (subiu da tabela de cargas) e periodo.
                          A tela guarda as duas escolhas em data-exp-cultura / data-exp-periodo
                          e o CSS faz o resto. -->
-                    <div class="exp-filtro">
-                        <div class="class-filtro" role="group" aria-label="Filtrar a expedição por cultura">
-                            <span class="class-filtro-rotulo">Cultura</span>
-                            <button type="button" class="class-filtro-btn is-active" data-exp-cultura="todas" aria-pressed="true">Todas</button>
-                            <button type="button" class="class-filtro-btn" data-exp-cultura="milho" aria-pressed="false"><svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho</button>
-                            <button type="button" class="class-filtro-btn" data-exp-cultura="sorgo" aria-pressed="false"><svg class="grao-icon grao-icon--sorgo grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo</button>
-                            <button type="button" class="class-filtro-btn" data-exp-cultura="trigo" aria-pressed="false"><svg class="grao-icon grao-icon--trigo grao-icon--dot" aria-hidden="true"><use href="#ico-trigo"></use></svg>Trigo</button>
-                            <button type="button" class="class-filtro-btn" data-exp-cultura="soja" aria-pressed="false"><svg class="grao-icon grao-icon--soja grao-icon--dot" aria-hidden="true"><use href="#ico-soja"></use></svg>Soja</button>
-                        </div>
-                        <div class="fluxo-periodo" role="group" aria-label="Período da expedição">
-                            <button type="button" class="fluxo-periodo-btn is-active" data-exp-periodo="dia" aria-pressed="true">Dia</button>
-                            <button type="button" class="fluxo-periodo-btn" data-exp-periodo="semana" aria-pressed="false">Semana</button>
-                            <button type="button" class="fluxo-periodo-btn" data-exp-periodo="mes" aria-pressed="false">Mês</button>
-                            <button type="button" class="fluxo-periodo-btn" data-exp-periodo="ano" aria-pressed="false">Ano</button>
+                    <div class="est-filtros filtros-tela">
+                        <div class="est-filtros-linha">
+                            <div class="class-filtro est-fgrupo" role="group" aria-label="Período dos dados da tela">
+                                <span class="class-filtro-rotulo">Período</span>
+                                <div class="fsel">
+                                    <button type="button" class="est-select fsel-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Período"><span class="fsel-val">Dia</span></button>
+                                    <div class="fsel-lista" role="listbox" aria-label="Período" hidden>
+                                        <button role="option" type="button" class="fluxo-periodo-btn is-active" data-exp-periodo="dia" aria-pressed="true">Dia</button>
+                                        <button role="option" type="button" class="fluxo-periodo-btn" data-exp-periodo="semana" aria-pressed="false">Semana</button>
+                                        <button role="option" type="button" class="fluxo-periodo-btn" data-exp-periodo="mes" aria-pressed="false">Mês</button>
+                                        <button role="option" type="button" class="fluxo-periodo-btn" data-exp-periodo="ano" aria-pressed="false">Ano</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="class-filtro est-fgrupo" role="group" aria-label="Filtrar a expedição por cultura">
+                                <span class="class-filtro-rotulo">Cultura</span>
+                                <div class="fsel">
+                                    <button type="button" class="est-select fsel-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Cultura"><span class="fsel-val">Todas</span></button>
+                                    <div class="fsel-lista" role="listbox" aria-label="Cultura" hidden>
+                                        <button role="option" type="button" class="class-filtro-btn is-active" data-exp-cultura="todas" aria-pressed="true">Todas</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-exp-cultura="milho" aria-pressed="false"><svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-exp-cultura="sorgo" aria-pressed="false"><svg class="grao-icon grao-icon--sorgo grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-exp-cultura="trigo" aria-pressed="false"><svg class="grao-icon grao-icon--trigo grao-icon--dot" aria-hidden="true"><use href="#ico-trigo"></use></svg>Trigo</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-exp-cultura="soja" aria-pressed="false"><svg class="grao-icon grao-icon--soja grao-icon--dot" aria-hidden="true"><use href="#ico-soja"></use></svg>Soja</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -4382,19 +4442,31 @@
                         <h2>Contratos da Expedição</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ATUALIZADO HÁ <span class="time-update">3</span>s</div>
                     </div>
-                    <div class="exp-filtro exp-filtro--duplo">
-                        <div class="class-filtro exp-unidade" role="group" aria-label="Unidade de medida da tela">
-                            <span class="class-filtro-rotulo">Unidade</span>
-                            <button type="button" class="class-filtro-btn" data-exp-unidade="cam" aria-pressed="false">Caminhões</button>
-                            <button type="button" class="class-filtro-btn is-active" data-exp-unidade="t" aria-pressed="true">Toneladas</button>
-                        </div>
-                        <div class="class-filtro" role="group" aria-label="Filtrar os contratos por cultura">
-                            <span class="class-filtro-rotulo">Cultura</span>
-                            <button type="button" class="class-filtro-btn is-active" data-exp-cultura="todas" aria-pressed="true">Todas</button>
-                            <button type="button" class="class-filtro-btn" data-exp-cultura="milho" aria-pressed="false"><svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho</button>
-                            <button type="button" class="class-filtro-btn" data-exp-cultura="sorgo" aria-pressed="false"><svg class="grao-icon grao-icon--sorgo grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo</button>
-                            <button type="button" class="class-filtro-btn" data-exp-cultura="trigo" aria-pressed="false"><svg class="grao-icon grao-icon--trigo grao-icon--dot" aria-hidden="true"><use href="#ico-trigo"></use></svg>Trigo</button>
-                            <button type="button" class="class-filtro-btn" data-exp-cultura="soja" aria-pressed="false"><svg class="grao-icon grao-icon--soja grao-icon--dot" aria-hidden="true"><use href="#ico-soja"></use></svg>Soja</button>
+                    <div class="est-filtros filtros-tela">
+                        <div class="est-filtros-linha">
+                            <div class="class-filtro est-fgrupo" role="group" aria-label="Unidade de medida da tela">
+                                <span class="class-filtro-rotulo">Medida</span>
+                                <div class="fsel">
+                                    <button type="button" class="est-select fsel-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Medida"><span class="fsel-val">Toneladas</span></button>
+                                    <div class="fsel-lista" role="listbox" aria-label="Medida" hidden>
+                                        <button role="option" type="button" class="class-filtro-btn" data-exp-unidade="cam" aria-pressed="false">Caminhões</button>
+                                        <button role="option" type="button" class="class-filtro-btn is-active" data-exp-unidade="t" aria-pressed="true">Toneladas</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="class-filtro est-fgrupo" role="group" aria-label="Filtrar os contratos por cultura">
+                                <span class="class-filtro-rotulo">Cultura</span>
+                                <div class="fsel">
+                                    <button type="button" class="est-select fsel-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Cultura"><span class="fsel-val">Todas</span></button>
+                                    <div class="fsel-lista" role="listbox" aria-label="Cultura" hidden>
+                                        <button role="option" type="button" class="class-filtro-btn is-active" data-exp-cultura="todas" aria-pressed="true">Todas</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-exp-cultura="milho" aria-pressed="false"><svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-exp-cultura="sorgo" aria-pressed="false"><svg class="grao-icon grao-icon--sorgo grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-exp-cultura="trigo" aria-pressed="false"><svg class="grao-icon grao-icon--trigo grao-icon--dot" aria-hidden="true"><use href="#ico-trigo"></use></svg>Trigo</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-exp-cultura="soja" aria-pressed="false"><svg class="grao-icon grao-icon--soja grao-icon--dot" aria-hidden="true"><use href="#ico-soja"></use></svg>Soja</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -4568,27 +4640,36 @@
                          tabela; a cultura vale para a tabela e destaca a linha dela no ciclo.
                          1o turno e hoje sao a foto de agora; 2o (ontem) e 3o turno (esta
                          noite), 7 e 30 dias sao o acumulado do periodo. -->
-                    <div class="fluxo-filtro">
-                        <div class="class-filtro" role="group" aria-label="Filtrar caminhões por cultura">
-                            <span class="class-filtro-rotulo">Cultura</span>
-                            <button type="button" class="class-filtro-btn is-active" data-fluxo-cultura="todas" aria-pressed="true">Todas</button>
-                            <button type="button" class="class-filtro-btn" data-fluxo-cultura="milho" aria-pressed="false"><svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho</button>
-                            <button type="button" class="class-filtro-btn" data-fluxo-cultura="sorgo" aria-pressed="false"><svg class="grao-icon grao-icon--sorgo grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo</button>
-                            <button type="button" class="class-filtro-btn" data-fluxo-cultura="trigo" aria-pressed="false"><svg class="grao-icon grao-icon--trigo grao-icon--dot" aria-hidden="true"><use href="#ico-trigo"></use></svg>Trigo</button>
-                            <button type="button" class="class-filtro-btn" data-fluxo-cultura="soja" aria-pressed="false"><svg class="grao-icon grao-icon--soja grao-icon--dot" aria-hidden="true"><use href="#ico-soja"></use></svg>Soja</button>
-                        </div>
-                        <div class="fluxo-filtro-tempo">
-                        <div class="fluxo-periodo fluxo-periodo--turnos" role="group" aria-label="Turno dos dados da tela">
-                            <span class="class-filtro-rotulo">Turno</span>
-                            <button type="button" class="fluxo-periodo-btn" data-fluxo-periodo="t1" aria-pressed="false" title="1º turno · 07:00–16:20">07:00–16:20</button>
-                            <button type="button" class="fluxo-periodo-btn" data-fluxo-periodo="t2" aria-pressed="false" title="2º turno · 16:00–22:20">16:00–22:20</button>
-                            <button type="button" class="fluxo-periodo-btn" data-fluxo-periodo="t3" aria-pressed="false" title="3º turno · 22:00–07:00">22:00–07:00</button>
-                        </div>
-                        <div class="fluxo-periodo" role="group" aria-label="Período dos dados da tela">
-                            <button type="button" class="fluxo-periodo-btn is-active" data-fluxo-periodo="hoje" aria-pressed="true">Hoje</button>
-                            <button type="button" class="fluxo-periodo-btn" data-fluxo-periodo="7d" aria-pressed="false">7 dias</button>
-                            <button type="button" class="fluxo-periodo-btn" data-fluxo-periodo="30d" aria-pressed="false">30 dias</button>
-                        </div>
+                    <div class="est-filtros filtros-tela">
+                        <div class="est-filtros-linha">
+                            <div class="class-filtro est-fgrupo" role="group" aria-label="Período dos dados da tela">
+                                <span class="class-filtro-rotulo">Período</span>
+                                <div class="fsel">
+                                    <button type="button" class="est-select fsel-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Período"><span class="fsel-val">Hoje</span></button>
+                                    <div class="fsel-lista" role="listbox" aria-label="Período" hidden>
+                                        <button role="option" type="button" class="fluxo-periodo-btn is-active" data-fluxo-periodo="hoje" aria-pressed="true">Hoje</button>
+                                        <button role="option" type="button" class="fluxo-periodo-btn" data-fluxo-periodo="7d" aria-pressed="false">7 dias</button>
+                                        <button role="option" type="button" class="fluxo-periodo-btn" data-fluxo-periodo="30d" aria-pressed="false">30 dias</button>
+                                        <span class="fsel-sep" aria-hidden="true">Turno</span>
+                                        <button role="option" data-fsel-rotulo="1º turno · 07:00–16:20" type="button" class="fluxo-periodo-btn" data-fluxo-periodo="t1" aria-pressed="false" title="1º turno · 07:00–16:20">1º turno · 07:00–16:20</button>
+                                        <button role="option" data-fsel-rotulo="2º turno · 16:00–22:20" type="button" class="fluxo-periodo-btn" data-fluxo-periodo="t2" aria-pressed="false" title="2º turno · 16:00–22:20">2º turno · 16:00–22:20</button>
+                                        <button role="option" data-fsel-rotulo="3º turno · 22:00–07:00" type="button" class="fluxo-periodo-btn" data-fluxo-periodo="t3" aria-pressed="false" title="3º turno · 22:00–07:00">3º turno · 22:00–07:00</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="class-filtro est-fgrupo" role="group" aria-label="Filtrar caminhões por cultura">
+                                <span class="class-filtro-rotulo">Cultura</span>
+                                <div class="fsel">
+                                    <button type="button" class="est-select fsel-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Cultura"><span class="fsel-val">Todas</span></button>
+                                    <div class="fsel-lista" role="listbox" aria-label="Cultura" hidden>
+                                        <button role="option" type="button" class="class-filtro-btn is-active" data-fluxo-cultura="todas" aria-pressed="true">Todas</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-fluxo-cultura="milho" aria-pressed="false"><svg class="grao-icon grao-icon--milho grao-icon--dot" aria-hidden="true"><use href="#ico-milho"></use></svg>Milho</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-fluxo-cultura="sorgo" aria-pressed="false"><svg class="grao-icon grao-icon--sorgo grao-icon--dot" aria-hidden="true"><use href="#ico-sorgo"></use></svg>Sorgo</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-fluxo-cultura="trigo" aria-pressed="false"><svg class="grao-icon grao-icon--trigo grao-icon--dot" aria-hidden="true"><use href="#ico-trigo"></use></svg>Trigo</button>
+                                        <button role="option" type="button" class="class-filtro-btn" data-fluxo-cultura="soja" aria-pressed="false"><svg class="grao-icon grao-icon--soja grao-icon--dot" aria-hidden="true"><use href="#ico-soja"></use></svg>Soja</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -5082,7 +5163,7 @@
                         <!-- Próximas 24h: linha de temperatura sobre barras de chuva (mm). -->
                         <div data-codigo="AVR-PRV-B" class="content-section pv-section pv-horas">
                             <div class="section-head">
-                                <h3>PRÓXIMAS 24 HORAS · AVARÉ · CLIMATEMPO</h3>
+                                <h3>PRÓXIMAS 24 HORAS · <span data-unidade-nome="alta">AVARÉ</span> · CLIMATEMPO</h3>
                                 <span class="pv-legenda"><i class="pv-legenda-temp"></i>temperatura<i class="pv-legenda-chuva"></i>chuva (mm)</span>
                             </div>
                                                         <div class="pv-meteo" role="img" aria-label="Próximas 24 horas: temperatura cai de 28° para 19° e chuva entre 18h e 22h, 4 mm">
@@ -5494,7 +5575,7 @@
                              So a unidade tem destaque: as demais linhas sao todas iguais. -->
                         <div data-codigo="AVR-PRV-D" class="content-section pv-section pv-coop">
                             <div class="section-head">
-                                <h3>AVARÉ E COOPERADOS · AMANHÃ</h3>
+                                <h3><span data-unidade-nome="alta">AVARÉ</span> E COOPERADOS · AMANHÃ</h3>
                                 <span class="pv-legenda">a unidade + 6 cooperados</span>
                             </div>
                             <table class="pv-tabela pv-tabela--filtro">
@@ -5522,7 +5603,7 @@
                              que ja choveu, o hachurado o previsto e o traco a media historica. -->
                         <div data-codigo="AVR-PRV-E" class="content-section pv-section pv-acum" data-pv-chuva-vista="mes">
                             <div class="section-head">
-                                <h3>CHUVA · AVARÉ</h3>
+                                <h3>CHUVA · <span data-unidade-nome="alta">AVARÉ</span></h3>
                                 <span class="pv-legenda">medida na unidade · previsto Climatempo</span>
                             </div>
                             <div class="pv-acum-grid">
@@ -6299,7 +6380,7 @@
                  alertas do dia. Cada alerta leva à tela do assunto (data-goto). -->
             <section class="screen du-screen" id="screen-du-geral">
                 <div class="screen-header">
-                    <div class="screen-badge">00</div>
+                    <div class="screen-badge screen-badge--letra">U0</div>
                     <div class="screen-title-section">
                         <h2>Visão Geral das Unidades</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • 7 UNIDADES • ATUALIZADO HÁ <span class="time-update">5</span>s</div>
@@ -6482,7 +6563,7 @@
                  À direita, o recebido hoje de cada unidade separado por cultura. -->
             <section class="screen du-screen" id="screen-du-recebimento">
                 <div class="screen-header">
-                    <div class="screen-badge">01</div>
+                    <div class="screen-badge screen-badge--letra">U1</div>
                     <div class="screen-title-section">
                         <h2>Recebimento e Filas</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • COMPARATIVO ENTRE UNIDADES • ATUALIZADO HÁ <span class="time-update">5</span>s</div>
@@ -6737,7 +6818,7 @@
                  coluna Capacidade. -->
             <section class="screen du-screen" id="screen-du-armazenagem">
                 <div class="screen-header">
-                    <div class="screen-badge">02</div>
+                    <div class="screen-badge screen-badge--letra">U2</div>
                     <div class="screen-title-section">
                         <h2>Armazenagem por Unidade</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • ESTOQUE × CAPACIDADE ESTÁTICA • ATUALIZADO HÁ <span class="time-update">8</span>s</div>
@@ -6951,7 +7032,7 @@
                  quente perde grão. -->
             <section class="screen du-screen" id="screen-du-termometria">
                 <div class="screen-header">
-                    <div class="screen-badge">03</div>
+                    <div class="screen-badge screen-badge--letra">U3</div>
                     <div class="screen-title-section">
                         <h2>Termometria</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • SILOS • ATUALIZADO HÁ <span class="time-update">6</span>s</div>
@@ -7069,7 +7150,7 @@
                  em horas. É decisão imediata: secador parado segura a recepção. -->
             <section class="screen du-screen" id="screen-du-secagem">
                 <div class="screen-header">
-                    <div class="screen-badge">04</div>
+                    <div class="screen-badge screen-badge--letra">U4</div>
                     <div class="screen-title-section">
                         <h2>Secagem</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • SECADORES • ATUALIZADO HÁ <span class="time-update">6</span>s</div>
@@ -7248,7 +7329,7 @@
                  por isso São Manuel aparece mesmo sem comunicação. -->
             <section class="screen du-screen" id="screen-du-clima">
                 <div class="screen-header">
-                    <div class="screen-badge">05</div>
+                    <div class="screen-badge screen-badge--letra">U5</div>
                     <div class="screen-title-section">
                         <h2>Clima das Unidades</h2>
                         <div class="screen-meta"><span class="live-dot"></span>LIVE • PREVISÃO POR UNIDADE • ATUALIZADO HÁ <span class="time-update">2</span>s</div>
@@ -7720,8 +7801,8 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.1.4/leaflet-maplibre-gl.js"></script>
-    <script src="script.js?v=est3"></script>
-    <script src="estrategico.js?v=est5"></script>
+    <script src="script.js?v=fsel1"></script>
+    <script src="estrategico.js?v=fsel1"></script>
 
 </body>
 </html>

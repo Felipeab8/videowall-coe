@@ -8293,3 +8293,208 @@ if (TELAS_DO_QUADRO.length) {
         }, QUADRO_INTERVALO);
     }
 }
+
+// ============================================
+// FILTROS EM LISTA SUSPENSA (.fsel) · mesmo padrão na tática e na estratégica
+// O botão (.fsel-btn) mostra a escolha em uso; a lista (.fsel-lista) traz as
+// opções. Na tática as opções são os próprios botões de sempre
+// (data-fluxo-cultura, data-moega-periodo...): o clique segue para o script
+// de cada tela e aqui só se abre, fecha e atualiza o rótulo. Na estratégica
+// a tela é redesenhada a cada escolha (estrategico.js).
+// A lista abre em position: fixed, para não ser cortada pelo cabeçalho.
+// ============================================
+let fselAberta = null;
+
+function fselOpcoes(lista) {
+    return Array.from(lista.querySelectorAll('button:not([disabled])'));
+}
+
+function fselFechar(foco) {
+    if (!fselAberta) return;
+    const { fsel, lista, btn } = fselAberta;
+    lista.hidden = true;
+    btn.setAttribute('aria-expanded', 'false');
+    fsel.classList.remove('is-aberta');
+    fselAberta = null;
+    if (foco) btn.focus();
+}
+
+function fselPosicionar() {
+    if (!fselAberta) return;
+    const { lista, btn } = fselAberta;
+    const r = btn.getBoundingClientRect();
+    lista.style.minWidth = Math.max(r.width, 140) + 'px';
+    const alt = lista.offsetHeight;
+    const larg = lista.offsetWidth;
+    let topo = r.bottom + 4;
+    if (topo + alt > window.innerHeight - 8 && r.top - alt - 4 > 8) topo = r.top - alt - 4;
+    let esq = r.left;
+    if (esq + larg > window.innerWidth - 8) esq = Math.max(8, window.innerWidth - larg - 8);
+    lista.style.top = Math.round(topo) + 'px';
+    lista.style.left = Math.round(esq) + 'px';
+}
+
+function fselAbrir(fsel) {
+    const btn = fsel.querySelector('.fsel-btn');
+    const lista = fsel.querySelector('.fsel-lista');
+    if (!btn || !lista) return;
+    fselFechar();
+    lista.hidden = false;
+    btn.setAttribute('aria-expanded', 'true');
+    fsel.classList.add('is-aberta');
+    fselAberta = { fsel, lista, btn };
+    fselPosicionar();
+    const atual = lista.querySelector('button.is-active') || fselOpcoes(lista)[0];
+    if (atual) atual.focus({ preventScroll: true });
+}
+
+// o rótulo do botão é a opção em uso (com o ícone do grão, quando houver);
+// data-fsel-rotulo troca o texto quando a opção sozinha não diz tudo
+// ("07:00–16:20" vira "1º turno · 07:00–16:20")
+function fselRotulo(fsel) {
+    const val = fsel.querySelector('.fsel-val');
+    const lista = fsel.querySelector('.fsel-lista');
+    if (!val || !lista) return;
+    const atual = lista.querySelector('button.is-active, button[aria-pressed="true"]');
+    if (!atual) return;
+    const html = atual.hasAttribute('data-fsel-rotulo')
+        ? (atual.querySelector('svg') ? atual.querySelector('svg').outerHTML : '') + atual.getAttribute('data-fsel-rotulo')
+        : atual.innerHTML;
+    if (val.innerHTML !== html) val.innerHTML = html;
+    fselOpcoes(lista).forEach((b) => b.setAttribute('aria-selected', String(b === atual)));
+}
+
+function fselRotularTudo(raiz) {
+    (raiz || document).querySelectorAll('.fsel').forEach(fselRotulo);
+}
+
+document.addEventListener('click', (e) => {
+    if (!(e.target instanceof Element)) return;
+    const btn = e.target.closest('.fsel-btn');
+    if (btn) {
+        if (isEditing()) return;
+        const fsel = btn.closest('.fsel');
+        if (fselAberta && fselAberta.fsel === fsel) fselFechar();
+        else fselAbrir(fsel);
+        return;
+    }
+    const opcao = e.target.closest('.fsel-lista button');
+    if (opcao) {
+        const fsel = opcao.closest('.fsel');
+        fselFechar(true);
+        // o script da tela troca o .is-active no mesmo clique; o rótulo vem depois
+        setTimeout(() => { if (fsel.isConnected) fselRotulo(fsel); }, 0);
+        return;
+    }
+    if (fselAberta && !e.target.closest('.fsel-lista')) fselFechar();
+});
+
+document.addEventListener('keydown', (e) => {
+    if (!fselAberta) return;
+    const ops = fselOpcoes(fselAberta.lista);
+    const i = ops.indexOf(document.activeElement);
+    // com a lista aberta, as setas e o Esc são dela (não trocam de tela)
+    if (['Escape', 'ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].indexOf(e.key) >= 0) e.stopPropagation();
+    if (e.key === 'Escape') {
+        e.preventDefault();
+        fselFechar(true);
+    } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        const n = e.key === 'ArrowDown' ? i + 1 : i - 1;
+        const alvo = ops[(n + ops.length) % ops.length];
+        if (alvo) alvo.focus();
+    } else if (e.key === 'Home' || e.key === 'End') {
+        e.preventDefault();
+        const alvo = e.key === 'Home' ? ops[0] : ops[ops.length - 1];
+        if (alvo) alvo.focus();
+    } else if (e.key === 'Tab') {
+        fselFechar();
+    }
+}, true);
+
+window.addEventListener('resize', fselPosicionar);
+document.addEventListener('scroll', (e) => {
+    if (fselAberta && !(e.target instanceof Element && e.target.closest('.fsel-lista'))) fselFechar();
+}, true);
+
+// a escolha também muda por fora (limpar filtros ao editar, layout salvo,
+// mural): o rótulo acompanha qualquer troca de .is-active numa lista
+if (typeof MutationObserver === 'function') {
+    new MutationObserver((ms) => {
+        const tocadas = new Set();
+        ms.forEach((m) => {
+            const fsel = m.target instanceof Element && m.target.parentElement && m.target.parentElement.closest('.fsel-lista')
+                ? m.target.closest('.fsel') : null;
+            if (fsel) tocadas.add(fsel);
+        });
+        tocadas.forEach(fselRotulo);
+    }).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class', 'aria-pressed'] });
+}
+
+fselRotularTudo();
+
+// ============================================
+// UNIDADE EM CENA · lista "Unidade" no cabeçalho, ao lado de Tática/Estratégica
+// Troca o nome da unidade no cabeçalho (brand-sub), no menu (TELAS AVARÉ,
+// data-unidade das seções) e nos títulos marcados com data-unidade-nome
+// ("alta" = em maiúsculas). Os números das telas ainda são os do protótipo
+// (Avaré) até cada unidade ter a sua fonte de dados.
+// ============================================
+const UNIDADE_STORAGE_KEY = 'videowall:unidade';
+
+function unidadeOpcoes() {
+    return Array.from(document.querySelectorAll('button[data-unidade-sel]'));
+}
+
+function unidadeAtual() {
+    const b = document.querySelector('button[data-unidade-sel].is-active') || unidadeOpcoes()[0];
+    return b ? { v: b.getAttribute('data-unidade-sel'), n: b.textContent.trim() } : { v: 'avare', n: 'Avaré' };
+}
+window.unidadeAtual = unidadeAtual;
+
+function setUnidade(v, persist = true) {
+    const ops = unidadeOpcoes();
+    const alvo = ops.find((b) => b.getAttribute('data-unidade-sel') === v) || ops[0];
+    if (!alvo) return;
+    ops.forEach((b) => {
+        const on = b === alvo;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-pressed', String(on));
+    });
+    const nome = alvo.textContent.trim();
+    document.body.setAttribute('data-unidade', alvo.getAttribute('data-unidade-sel'));
+    document.querySelectorAll('[data-unidade-nome]').forEach((el) => {
+        el.textContent = el.getAttribute('data-unidade-nome') === 'alta' ? nome.toUpperCase() : nome;
+    });
+    // as seções da unidade (não a de "Demais unidades") levam o nome dela
+    document.querySelectorAll('.sidebar [data-unidade^="Unidade "]').forEach((el) => {
+        el.setAttribute('data-unidade', 'Unidade ' + nome);
+    });
+    syncUnidadeNoCabecalho();
+    document.querySelectorAll('.unidade-sel .fsel').forEach(fselRotulo);
+    if (persist) {
+        try {
+            localStorage.setItem(UNIDADE_STORAGE_KEY, alvo.getAttribute('data-unidade-sel'));
+        } catch (err) {
+            // sem armazenamento: vale só para esta visita
+        }
+    }
+    if (window.EST && typeof window.EST.remontarTudo === 'function') window.EST.remontarTudo();
+}
+
+function unidadeInicial() {
+    const pedido = new URLSearchParams(location.search).get('unidade');
+    if (pedido) return pedido;
+    try {
+        return localStorage.getItem(UNIDADE_STORAGE_KEY) || 'avare';
+    } catch (err) {
+        return 'avare';
+    }
+}
+
+document.addEventListener('click', (e) => {
+    const b = e.target instanceof Element ? e.target.closest('button[data-unidade-sel]') : null;
+    if (b) setUnidade(b.getAttribute('data-unidade-sel'));
+});
+
+setUnidade(unidadeInicial(), false);

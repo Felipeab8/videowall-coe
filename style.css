@@ -21546,6 +21546,45 @@ html:not(.pdf-print) body.print-all[data-visao="estrategica"] .screen:not(.scree
 
 
 
+/* unidade em cena: mesma lista suspensa dos filtros, na moldura do botão
+   Tática/Estratégica, logo antes dele */
+.unidade-sel {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-left: 0.5rem;
+    padding: 0.1875rem 0.1875rem 0.1875rem 0.8rem;
+    border: 1px solid var(--panel-border);
+    border-radius: 999px;
+    background: var(--hover);
+}
+
+.unidade-sel .class-filtro-rotulo {
+    margin-right: 0;
+}
+
+.unidade-sel .fsel-btn {
+    padding: 0.33rem 1.7rem 0.33rem 0.85rem;
+    font-size: max(0.66rem, var(--fs-texto, 0px));
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.unidade-sel + .visao-toggle {
+    margin-left: 0.4rem;
+}
+
+@media screen and (max-width: 768px) {
+    .unidade-sel {
+        margin-left: 0;
+        padding-left: 0.6rem;
+    }
+
+    .unidade-sel .class-filtro-rotulo {
+        display: none;
+    }
+}
+
 .visao-toggle {
     display: inline-flex;
     align-items: center;
@@ -21854,6 +21893,139 @@ button.est-fchip:focus-visible {
     font-size: max(0.6rem, var(--fs-texto, 0px));
     font-weight: 700;
     color: var(--muted);
+}
+
+
+
+/* ============================================
+   FILTRO EM LISTA SUSPENSA (.fsel) · tática e estratégica
+   O botão usa o visual do .est-select (pílula com a seta); a lista abre
+   por cima de tudo (position: fixed, posicionada pelo script.js).
+   ============================================ */
+.fsel {
+    position: relative;
+    display: inline-flex;
+    min-width: 0;
+}
+
+.fsel-btn {
+    display: inline-flex;
+    align-items: center;
+    max-width: 22rem;
+    line-height: 1.35;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.fsel.is-aberta .fsel-btn {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent) inset;
+}
+
+.fsel-val {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fsel-lista {
+    position: fixed;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    max-height: min(60vh, 26rem);
+    overflow-y: auto;
+    padding: 0.3rem;
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    background: var(--header-bg);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+}
+
+.fsel-lista[hidden] {
+    display: none;
+}
+
+/* as opções: na tática são os botões de sempre (.class-filtro-btn,
+   .fluxo-periodo-btn...), aqui sem o visual de pílula */
+.fsel-lista > button,
+.fsel-lista > button.is-active {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.45rem;
+    width: 100%;
+    margin: 0;
+    padding: 0.38rem 0.65rem;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    box-shadow: none;
+    color: var(--text);
+    font: inherit;
+    font-size: max(0.66rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    text-decoration: none;
+    opacity: 1;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.fsel-lista > button:hover,
+.fsel-lista > button:focus-visible {
+    background: var(--hover);
+    outline: none;
+}
+
+.fsel-lista > button.is-active {
+    background: var(--accent-soft);
+    font-weight: 800;
+}
+
+.fsel-lista > button.is-active::after {
+    content: "";
+    width: 0.4rem;
+    height: 0.4rem;
+    margin-left: auto;
+    padding-left: 0;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+/* subtítulo dentro da lista (os turnos depois das janelas de tempo) */
+.fsel-sep {
+    margin-top: 0.2rem;
+    padding: 0.4rem 0.65rem 0.15rem;
+    border-top: 1px solid var(--card-border);
+    font-size: max(0.56rem, var(--fs-texto, 0px));
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--faint);
+}
+
+/* TÁTICA: a faixa de filtros da tela ocupa a linha de baixo do cabeçalho,
+   como na estratégica (mesma moldura, rótulo e lista) */
+.screen-header:has(> .filtros-tela) {
+    flex-wrap: wrap;
+    row-gap: 0.7rem;
+}
+
+.screen-header > .filtros-tela {
+    flex: 1 0 100%;
+    order: 10;
+}
+
+html.tv .fsel-btn {
+    padding-right: 0.6rem;
+    background-image: none;
+    pointer-events: none;
 }
 
 
@@ -24645,18 +24817,29 @@ button.est-fchip:focus-visible {
 }
 
 /* ---- profilaxia e expurgo: silos, linha do tempo e as duas tabelas ---- */
+/* 12 colunas: em cima os silos ficam com mais largura que a linha do
+   tempo (7 + 5), embaixo as duas tabelas dividem ao meio (6 + 6) */
 .prof-corpo {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
-    grid-template-rows: minmax(0, 0.85fr) minmax(0, 1fr);
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
     gap: 0.6rem;
     flex: 1 1 auto;
     min-height: 0;
 }
 
 .prof-corpo > * {
+    grid-column: span 6;
     margin-bottom: 0;
     min-height: 0;
+}
+
+.prof-corpo > .prof-visao {
+    grid-column: span 7;
+}
+
+.prof-corpo > .prof-tempo {
+    grid-column: span 5;
 }
 
 .prof-silos {
@@ -24671,7 +24854,8 @@ button.est-fchip:focus-visible {
 .prof-silo {
     display: flex;
     flex-direction: column;
-    gap: 0.15rem;
+    container: prof-silo / inline-size;
+    gap: 0.2rem;
     min-width: 0;
     min-height: 0;
     padding: 0.4rem 0.5rem;
@@ -24713,24 +24897,33 @@ button.est-fchip:focus-visible {
     background: var(--accent-soft);
 }
 
-.prof-silo-nome {
+.prof-silo-topo,
+.prof-silo-meio {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.1rem 0.4rem;
-    font-size: max(0.68rem, var(--fs-texto, 0px));
+    gap: 0.35rem;
+    min-width: 0;
+}
+
+.prof-silo-nome {
+    overflow: hidden;
+    font-size: max(0.66rem, var(--fs-texto, 0px));
     font-weight: 800;
     letter-spacing: 0.05em;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     text-transform: uppercase;
     color: var(--muted);
 }
 
 .prof-silo-cults {
     display: inline-flex;
-    gap: 0.4rem;
-    letter-spacing: 0;
-    text-transform: none;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.2rem;
+    font-size: max(0.66rem, var(--fs-texto, 0px));
+    font-weight: 700;
     color: var(--text);
 }
 
@@ -24750,23 +24943,47 @@ button.est-fchip:focus-visible {
 .prof-silo-dias {
     font-size: 1.35rem;
     font-weight: 700;
-    line-height: 1.1;
+    line-height: 1;
+    white-space: nowrap;
     font-variant-numeric: tabular-nums;
 }
 
-.prof-silo-dias small,
-.prof-silo-pe small,
-.prof-silo-txt {
+.prof-silo-dias small {
+    margin-left: 0.1rem;
     font-size: max(0.6rem, var(--fs-texto, 0px));
     font-weight: 600;
     color: var(--muted);
 }
 
-.prof-silo-dias small {
-    display: block;
+/* cartão estreito (monitor menor): o esperado sai do número e fica na
+   barra e na dica; a situação continua inteira */
+@container prof-silo (max-width: 10.5rem) {
+    .prof-silo-dias small {
+        display: none;
+    }
+}
+
+.prof-silo-meio .est-sit {
+    padding: 0.05rem 0.4rem;
+    font-size: max(0.58rem, var(--fs-texto, 0px));
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.prof-silo-txt {
+    overflow: hidden;
+    font-size: max(0.6rem, var(--fs-texto, 0px));
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: var(--muted);
 }
 
 .prof-silo-barra {
+    flex: 0 0 auto;
     height: 0.3rem;
     margin-top: auto;
     border-radius: 999px;
@@ -24787,14 +25004,6 @@ button.est-fchip:focus-visible {
 
 .prof-silo.is-limite .prof-silo-barra i {
     background: var(--du-danger);
-}
-
-.prof-silo-pe {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.1rem 0.3rem;
 }
 
 /* linha do tempo: uma faixa por silo; o ciclo é a barra na cor da cultura,
@@ -24923,6 +25132,12 @@ button.est-fchip:focus-visible {
     .prof-corpo {
         grid-template-columns: minmax(0, 1fr);
         grid-template-rows: none;
+    }
+
+    .prof-corpo > *,
+    .prof-corpo > .prof-visao,
+    .prof-corpo > .prof-tempo {
+        grid-column: auto;
     }
 
     .prof-silos {
@@ -25406,20 +25621,33 @@ body.theme-dark .pr-tab-atual--fora { color: #f87171; }
     line-height: 1;
 }
 
-/* submenu: o código da tela no lugar do marcador */
-.submenu .menu-item[data-num]::before {
-    content: attr(data-num) " ·";
-    width: auto;
+/* MENU: todo item leva o código da tela (data-num), o mesmo do selo no
+   topo da tela, numa coluna de largura fixa (os nomes ficam alinhados).
+   Prefixos: sem letra = tática de Avaré (00, 01A...), E = estratégica,
+   C = câmeras, U = demais unidades. O grupo mostra o número da área. */
+.sidebar .menu-parent[data-num]::before,
+.sidebar .menu-item[data-num]::before {
+    content: attr(data-num);
+    display: inline-block;
+    flex: 0 0 auto;
+    width: 2.6em;
     height: auto;
-    margin-right: 0.4rem;
+    margin-right: 0.35rem;
     border-radius: 0;
     background: none;
     color: var(--faint);
     font-weight: 700;
     font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+    text-align: left;
 }
 
-.submenu .menu-item[data-num].active::before {
+.sidebar .menu-parent[data-num] {
+    gap: 0;
+}
+
+.sidebar .menu-item[data-num].active::before,
+.sidebar .menu-group.is-current > .menu-parent[data-num]::before {
     background: none;
     color: var(--accent);
 }
