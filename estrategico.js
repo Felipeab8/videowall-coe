@@ -1538,7 +1538,7 @@
             ],
             kpis: [
                 { metrica: 'aerCult' }, { metrica: 'aerCult', modo: 'realProj' },
-                { metrica: 'aerCultKwh', modo: 'mesAtual', rotulo: 'Energia gasta' }, { metrica: 'aerCultKwh', modo: 'anoAtual', rotulo: 'Energia gasta' },
+                { metrica: 'aerCultKwh', modo: 'mesAtual', rotulo: 'Energia' }, { metrica: 'aerCultKwh', modo: 'anoAtual', rotulo: 'Energia' },
                 { metrica: 'aerCult', modo: 'topDim', dim: 'cultura', rotulo: 'Cultura com mais aeração' },
                 { metrica: 'aerCult', modo: 'pico' },
             ],
@@ -1836,7 +1836,7 @@
             const p = real != null && proj && proj.c ? real / proj.c : null;
             return kpiCard(cod, `Realizado × proj. ${ULT.ano}`,
                 valorHtml(m, real) + `<span class="est-kpi-barra" aria-hidden="true"><i style="--p: ${p == null ? 0 : (clamp(p, 0, 1) * 100).toFixed(1)}%"></i></span>`,
-                `<span class="est-delta is-neutro"><b>${p == null ? '—' : fmt(p * 100, 0) + '%'}</b> <span>de ${proj ? fmtM(m, proj.c) : '—'} projetadas</span></span>`);
+                `<span class="est-delta is-neutro"><b>${p == null ? '—' : fmt(p * 100, 0) + '%'}</b> <span>de ${proj ? fmtM(m, proj.c) : '—'}</span></span>`);
         }
         // o último mês e o ano até hoje, contra o mesmo período do ano anterior
         if (k.modo === 'mesAtual' || k.modo === 'anoAtual') {
@@ -1844,9 +1844,10 @@
             const ini = k.modo === 'mesAtual' ? iniMes(CAL.km[fim]) : diaDe(ULT.ano, 0, 1);
             const v = agregar(m, ff, ini, fim);
             const dl = delta(m, v, deslocado(m, ff, ini, fim, 1));
-            const quando = k.modo === 'mesAtual' ? rotMes(CAL.km[fim]) : `${ULT.ano} até ${rotDia(fim).slice(0, 5)}`;
-            return kpiCard(cod, `${rot} · ${k.modo === 'mesAtual' ? 'mês' : 'ano'}`, valorHtml(m, v),
-                `<span class="est-delta ${dl ? dl.classe : 'is-neutro'}">${dl ? `<b>${dl.seta} ${dl.txt}</b> ` : ''}<span>${quando} · vs ${ULT.ano - 1}</span></span>`);
+            const mes = k.modo === 'mesAtual';
+            const quando = mes ? rotMes(CAL.km[fim]) : String(ULT.ano);
+            return kpiCard(cod, `${rot} · ${quando}`, valorHtml(m, v),
+                `<span class="est-delta ${dl ? dl.classe : 'is-neutro'}">${dl ? `<b>${dl.seta} ${dl.txt}</b> ` : ''}<span>vs ${mes ? rotMes(CAL.km[fim] - 12) : ULT.ano - 1}</span></span>`);
         }
         if (k.modo === 'topDim' || k.modo === 'contagem' || k.modo === 'concentracao') {
             const vals = DIMS[k.dim].valores.map((x) => ({ x, v: agregar(m, Object.assign({}, ff, { [k.dim]: x.v }), P.ini, P.fim) }))
@@ -2577,7 +2578,10 @@
                     rot: x.n, cor: x.cor, dim: b.dim, v: x.v, sel: ctx.f[b.dim] === x.v,
                     cels: bs.map((bk) => {
                         const r = agregarP(m, ff, bk.ini, bk.fim);
-                        return r ? { r, tip: x.n + ' · ' + bk.rot } : null;
+                        if (!r) return null;
+                        // por silo: a cultura que estava guardada nele na época
+                        const cs = b.culturaNaCel && b.dim === 'unidadeArm' && bk.ini < NH ? culturasNoSilo(x.v, bk.ini, Math.min(bk.fim, NH - 1)) : null;
+                        return { r, tip: x.n + ' · ' + bk.rot + (cs ? ' · ' + (cs.length ? cs.map((c) => c.n).join(' e ') : 'vazio') : ''), cult: cs };
                     }),
                     total: agregar(m, ff, P.ini, P.fim),
                 };
@@ -2623,7 +2627,7 @@
             + cols.map((c) => `<span class="est-mapa-col">${c.rot}${c.ano ? `<b>${c.ano}</b>` : ''}</span>`).join('')
             + `<span class="est-mapa-col est-mapa-tot">${nomeTot}</span>`;
         linhas.forEach((l) => {
-            const rot = l.cor ? `<span class="est-nome">${marcaNome(l.rot, l.cor)}${l.rot}</span>` : l.rot;
+            const rot = l.cor && !b.culturaNaCel ? `<span class="est-nome">${marcaNome(l.rot, l.cor)}${l.rot}</span>` : l.rot;
             html += `<span class="est-mapa-rot${l.sel ? ' is-sel' : ''}"${l.dim ? ` data-est-recorte="${l.dim}" data-v="${l.v}" title="Filtrar a tela por ${aspas(l.rot)}"` : ''}>${rot}</span>`;
             html += l.cels.map((c) => {
                 if (!c) return '<i class="est-cel is-vazio"></i>';
@@ -2631,7 +2635,8 @@
                     ? clamp((c.r.c - l.min) / (l.max - l.min), 0, 1)
                     : clamp((c.r.c - min) / (max - min), 0, 1);
                 const tip = tipDe([c.tip + (c.r.proj ? ' · projeção' : ''), fmtM(m, c.r.c), c.r.proj && c.r.hi - c.r.lo > 1e-9 ? 'faixa ' + faixaTxt(m, c.r) : '']);
-                return `<i class="est-cel${p > 0.55 ? ' is-forte' : ''}${c.r.proj ? ' is-proj' : ''}" style="--p: ${p.toFixed(3)}" data-tip="${tip}">${texto ? curto(m, c.r.c, dv) : ''}</i>`;
+                const cult = c.cult && c.cult.length ? `; --cc: ${c.cult[0].cor}; --cc2: ${(c.cult[1] || c.cult[0]).cor}` : '';
+                return `<i class="est-cel${p > 0.55 ? ' is-forte' : ''}${c.r.proj ? ' is-proj' : ''}${cult ? ' is-cult' : ''}" style="--p: ${p.toFixed(3)}${cult}" data-tip="${tip}">${texto ? curto(m, c.r.c, dv) : ''}</i>`;
             }).join('');
             html += `<b class="est-mapa-tot">${l.total == null ? '' : curto(m, l.total, dv)}</b>`;
         });
@@ -2640,7 +2645,8 @@
         const leg = b.escalaPorLinha
             ? `<span class="est-escala"><span>menor</span><i class="est-escala-barra"></i><span>maior da linha</span></span>` + (temProj ? legItem('est-leg--proj', 'projeção', 'var(--est-seq-1)') : '')
             : legendaEscala(m, min, max, dv, temProj);
-        return secao(op, 'est-mapa-sec', cabecalho(titulo, leg), html);
+        const legCult = b.culturaNaCel ? DIMS.cultura.valores.map((x) => `<span>${marca(x)}${x.n}</span>`).join('') : '';
+        return secao(op, 'est-mapa-sec', cabecalho(titulo, legCult + leg), html);
     }
 
     // ---- calendário: uma faixa por ano, um traço por dia ----
@@ -3584,6 +3590,7 @@
     // o mesmo silo guarda culturas diferentes em ciclos distintos e o armazém
     // guarda duas ao mesmo tempo (dois lotes).
     const PROTECAO = { boa: 180, ruim: 90 };    // dias de proteção esperados: bem e mal executado
+    const ESPERA_EXP = 180;                      // espera entre um expurgo e outro: 6 meses, em dias
     const PRAGAS = [
         { v: 'gorgulho', n: 'Gorgulho', sub: 'Sitophilus' },
         { v: 'besourinho', n: 'Besourinho', sub: 'Rhyzopertha' },
@@ -3618,11 +3625,11 @@
                         const p1 = reinc ? ant.pragas[0] : PRAGAS[Math.floor(r01(se, 407) * PRAGAS.length) % PRAGAS.length];
                         const p2 = PRAGAS[Math.floor(r01(se, 413) * PRAGAS.length) % PRAGAS.length];
                         const pragas = r01(se, 414) > 0.7 && p2 !== p1 ? [p1, p2] : [p1];
-                        const mort = Math.round(clamp(84 + 17 * r01(se, 408) + 0.6 * melhora, 80, 100));
-                        const eficiente = mort >= 95;
-                        const aer = -(0.4 + 4.2 * r01(se, 409));    // °C na massa, 15 dias depois
-                        exps.push({ d: e, pragas, mort, eficiente, reinc, intervalo, aer, aerOk: aer <= -2 });
-                        e += Math.round((eficiente ? 165 : 50) * (0.8 + 0.45 * r01(se, 410)));
+                        exps.push({ d: e, pragas, reinc, intervalo });
+                        // o próximo vem por volta dos 180 dias; às vezes a praga volta antes
+                        e += r01(se, 415) < 0.08
+                            ? Math.round(50 + 35 * r01(se, 410))
+                            : Math.round(ESPERA_EXP * (0.85 + 0.3 * r01(se, 410)));
                     }
                     out.push({
                         u, lote: l, lotes, cultura: cult[Math.floor(r01(s, 401) * cult.length) % cult.length],
@@ -3645,6 +3652,14 @@
         return nomes.join(cs.some((c) => c.lotes > 1) ? ' e ' : ' → ');
     }
 
+    // as culturas guardadas num silo entre dois dias (uma por lote no armazém)
+    function culturasNoSilo(uv, ini, fim) {
+        const cs = CICLOS.filter((c) => c.u.v === uv && c.ench <= fim && c.fim >= ini).sort((a, b) => a.lote - b.lote || b.ench - a.ench);
+        const out = [];
+        cs.forEach((c) => { if (!out.includes(c.cultura) && out.length < 2) out.push(c.cultura); });
+        return out;
+    }
+
     const mediaDe = (a) => (a.length ? a.reduce((s, v) => s + v, 0) / a.length : null);
     const diasTxt = (v) => (v == null ? '—' : `${fmt(v, 0)} <span class="kpi-value-unit">dias</span>`);
     const pctDe = (n, tot) => (tot ? n / tot * 100 : null);
@@ -3655,7 +3670,7 @@
         const hoje = NH - 1;
         const ult = c.exps[c.exps.length - 1];
         const desde = hoje - (ult ? ult.d : c.prof.d);
-        const esperado = (ult ? ult.eficiente : c.prof.boa) ? PROTECAO.boa : PROTECAO.ruim;
+        const esperado = ESPERA_EXP;
         const p = desde / esperado;
         return { c, ult, desde, esperado, p, sit: p > 1 ? 'limite' : (p >= 0.75 ? 'atencao' : 'folga') };
     }
@@ -3672,7 +3687,7 @@
         const ciclos = CICLOS.filter((c) => (fU === '*' || c.u.v === fU) && daCultura(c));
         const sub = (txt) => `<span class="est-delta is-neutro"><span>${txt}</span></span>`;
         const cultHtml = (c) => `<span class="prof-cult">${marca(c.cultura)}${c.cultura.n}</span>`;
-        const simNao = (v) => (v ? '<span class="prof-ok">Feita</span>' : '<span class="prof-ruim">Não feita</span>');
+        const simNao = (v) => (v ? '<span class="prof-sn prof-sn--sim" title="Feita">✓</span>' : '<span class="prof-sn prof-sn--nao" title="Não feita">✕</span>');
 
         // ---- o que aconteceu no período ----
         const profs = ciclos.filter((c) => noPer(c.prof.d));
@@ -3686,26 +3701,24 @@
         // rola no videowall); com o silo escolhido, o histórico completo
         const TOPO = 14;
         const corta = (arr) => (fU === '*' ? arr.slice(0, TOPO) : arr);
-        const recorteTxt = (n) => (fU === '*' && n > TOPO ? `as ${TOPO} mais recentes de ${n} · escolha um silo para ver tudo` : `${n} no período`);
-        const nEfic = exps.filter((r) => r.x.eficiente).length;
+        const recorteTxt = (n) => (fU === '*' && n > TOPO ? `${TOPO} mais recentes de ${n}` : `${n} no período`);
         const nReinc = exps.filter((r) => r.x.reinc).length;
-        const nBoas = profs.filter((c) => c.prof.boa).length;
-        const pBoa = mediaDe(primeiros.filter((x) => x.boa).map((x) => x.dias));
-        const pRuim = mediaDe(primeiros.filter((x) => !x.boa).map((x) => x.dias));
+        // profilaxias e expurgos de cada silo no período (com o filtro de cultura)
+        const silosVis = DIMS.unidadeArm.valores.filter((u) => fU === '*' || u.v === fU);
+        const expSilo = Object.fromEntries(silosVis.map((u) => [u.v, exps.filter((r) => r.c.u.v === u.v).length]));
+        const profSilo = Object.fromEntries(silosVis.map((u) => [u.v, profs.filter((c) => c.u.v === u.v).length]));
+        const porSilo = (n) => (silosVis.length > 1 ? sub(`${fmt(n / silosVis.length, 1)} por silo`) : sub('no período'));
         const pct = (v) => (v == null ? '—' : `${fmt(v, 0)} <span class="kpi-value-unit">%</span>`);
+        const esperado = sub(`esperado ${ESPERA_EXP} dias`);
         const cod = tela.codigo + '-A';
-        const kp = kpiCard(cod, 'Entre um expurgo e outro', diasTxt(mediaDe(intervalos)),
-            sub(intervalos.length ? `${intervalos.length} intervalos · de ${Math.min(...intervalos)} a ${Math.max(...intervalos)} dias` : 'sem dois expurgos no mesmo ciclo'))
-            + kpiCard(cod, 'Da profilaxia ao 1º expurgo', diasTxt(mediaDe(primeiros.map((x) => x.dias))),
-                sub(`bem executada: ${pBoa == null ? '—' : fmt(pBoa, 0) + ' d'} (esperado ${PROTECAO.boa}) · mal: ${pRuim == null ? '—' : fmt(pRuim, 0) + ' d'} (esperado ${PROTECAO.ruim})`))
-            + kpiCard(cod, 'Desde o último expurgo · maior', comExp.length ? diasTxt(comExp[0].desde) : '—',
-                sub(comExp.length ? `${comExp[0].c.u.n} · ${comExp[0].c.cultura.n} · média de ${fmt(mediaDe(comExp.map((a) => a.desde)), 0)} dias em ${comExp.length} com grão` : 'nenhum silo com grão já expurgado neste filtro'))
-            + kpiCard(cod, 'Aplicações no período', `${profs.length + exps.length} <span class="kpi-value-unit">aplicações</span>`,
-                sub(`${profs.length} profilaxias · ${exps.length} expurgos`))
-            + kpiCard(cod, 'Profilaxia bem executada', pct(pctDe(nBoas, profs.length)),
-                sub(profs.length ? `${nBoas} de ${profs.length} · limpeza feita em ${profs.filter((c) => c.prof.limpeza).length}` : 'sem profilaxia no período'))
-            + kpiCard(cod, 'Expurgos eficientes', pct(pctDe(nEfic, exps.length)),
-                sub(exps.length ? `reincidência de pragas em ${fmt(pctDe(nReinc, exps.length), 0)}%` : 'sem expurgo no período'));
+        const kp = kpiCard(cod, 'Profilaxias', `${profs.length}`, porSilo(profs.length))
+            + kpiCard(cod, 'Expurgos', `${exps.length}`, porSilo(exps.length))
+            + kpiCard(cod, 'Entre expurgos', diasTxt(mediaDe(intervalos)), esperado)
+            + kpiCard(cod, 'Profilaxia → 1º expurgo', diasTxt(mediaDe(primeiros.map((x) => x.dias))), esperado)
+            + kpiCard(cod, 'Desde o último expurgo', comExp.length ? diasTxt(comExp[0].desde) : '—',
+                sub(comExp.length ? `maior: ${comExp[0].c.u.n}` : 'sem silo expurgado'))
+            + kpiCard(cod, 'Reincidência de pragas', pct(pctDe(nReinc, exps.length)),
+                sub(exps.length ? `${nReinc} de ${exps.length} expurgos` : 'sem expurgo'));
 
         // ---- linha do tempo: os ciclos de cada silo e cada intervenção ----
         // uma faixa por silo; o ciclo é a pílula na cor da cultura (aberta à
@@ -3742,6 +3755,7 @@
             });
             return `<div class="prof-g-linha${fU === u.v ? ' is-sel' : ''}" data-est-recorte="unidadeArm" data-v="${u.v}" title="${fU === u.v ? 'Voltar a ver todos os silos' : 'Ver só ' + u.n}">
                 <span class="prof-g-nome">${u.n.replace('Armazém · ', 'Arm. ')}</span>
+                <span class="prof-g-ns" data-tip="${tipDe([u.n, `${profSilo[u.v]} profilaxia${profSilo[u.v] === 1 ? '' : 's'} no período`, `${expSilo[u.v]} expurgo${expSilo[u.v] === 1 ? '' : 's'} no período`])}"><b class="prof-g-n${profSilo[u.v] ? '' : ' is-zero'}"><i class="prof-g-ico prof-g-ico--prof"></i>${profSilo[u.v]}</b><b class="prof-g-n${expSilo[u.v] ? '' : ' is-zero'}"><i class="prof-g-ico prof-g-ico--exp"></i>${expSilo[u.v]}</b></span>
                 <div class="prof-g-trilho">${marcas}</div>
             </div>`;
         }).join('');
@@ -3761,7 +3775,7 @@
         if (hoje >= ini && hoje <= fim && fim - hoje < span) grade += `<i class="prof-g-hoje" style="--x: ${X(hoje)}"><span>hoje</span></i>`;
         const legG = DIMS.cultura.valores.filter((x) => fC === '*' || x.v === fC).map((x) => `<span>${marca(x)}${x.n}</span>`).join('')
             + '<span><i class="prof-g-marca prof-g-marca--prof prof-g-marca--leg"></i>profilaxia</span>'
-            + '<span><i class="prof-g-marca prof-g-marca--prof is-ruim prof-g-marca--leg"></i>profilaxia mal executada</span>'
+            + '<span><i class="prof-g-marca prof-g-marca--prof is-ruim prof-g-marca--leg"></i>mal executada</span>'
             + '<span><i class="prof-g-marca prof-g-marca--exp prof-g-marca--leg"></i>expurgo</span>';
         const tempo = `<div data-codigo="${tela.codigo}-B" class="content-section du-section est-section prof-tempo">
             <div class="section-head">
@@ -3778,52 +3792,49 @@
         // ---- profilaxia: antes de receber o produto ----
         const linhasP = corta(profs.slice().sort((a, b) => b.prof.d - a.prof.d)).map((c) => {
             const x1 = c.exps[0];
-            const esperado = c.prof.boa ? PROTECAO.boa : PROTECAO.ruim;
+            const esperado = ESPERA_EXP;
             const durou = x1 ? x1.d - c.prof.d : null;
             return `<tr>
                 <td class="num">${rotDia(c.prof.d)}</td>
                 <td class="pv-tabela-nome">${u2(c)}</td>
                 <td>${cultHtml(c)}</td>
-                <td>${simNao(c.prof.limpeza)}</td>
-                <td>${simNao(c.prof.residual)}</td>
-                <td>${simNao(c.prof.preventivo)}</td>
-                <td><span class="est-sit is-${c.prof.boa ? 'folga' : 'limite'}">${c.prof.boa ? 'Bem executada' : 'Mal executada'}</span></td>
-                <td class="num">${durou == null ? '<small class="est-faixa-cel">sem expurgo até hoje</small>' : `<b class="${durou >= esperado * 0.85 ? 'prof-ok' : 'prof-ruim'}">${durou} d</b><small class="est-faixa-cel">esperado ${esperado}</small>`}</td>
+                <td class="prof-c">${simNao(c.prof.limpeza)}</td>
+                <td class="prof-c">${simNao(c.prof.residual)}</td>
+                <td class="prof-c">${simNao(c.prof.preventivo)}</td>
+                <td class="num">${durou == null ? '<span class="prof-nada">—</span>' : `<b class="${durou >= esperado * 0.85 ? 'prof-ok' : 'prof-ruim'}">${durou} dias</b>`}</td>
             </tr>`;
         }).join('');
         const tabP = `<div data-codigo="${tela.codigo}-C" class="content-section du-section est-section est-anos prof-tab">
             <div class="section-head">
                 <h3>PROFILAXIA · ANTES DE RECEBER O PRODUTO</h3>
-                <span class="du-legenda"><span>${recorteTxt(profs.length)} · ${nBoas} bem executadas</span></span>
+                <span class="du-legenda"><span>${recorteTxt(profs.length)}</span></span>
             </div>
             <div class="table-scroll table-scroll--livre est-scroll">
                 <table class="pv-tabela du-tabela est-tabela prof-tabela">
-                    <thead><tr><th class="num">Data</th><th>Silo</th><th>Cultura<small>do ciclo</small></th><th>Limpeza<small>do silo</small></th><th>Pulverização<small>residual</small></th><th>Tratamento<small>preventivo</small></th><th>Execução</th><th class="num">Protegeu<small>até o 1º expurgo</small></th></tr></thead>
-                    <tbody>${linhasP || '<tr><td colspan="8" class="prof-vazio">Nenhuma profilaxia neste período e filtro.</td></tr>'}</tbody>
+                    <thead><tr><th class="num">Data</th><th>Armazenamento</th><th>Cultura</th><th class="prof-c">Limpeza</th><th class="prof-c">Pulverização</th><th class="prof-c">Preventivo</th><th class="num">Até o 1º expurgo<small>esperado ${ESPERA_EXP} dias</small></th></tr></thead>
+                    <tbody>${linhasP || '<tr><td colspan="7" class="prof-vazio">Nenhuma profilaxia neste período e filtro.</td></tr>'}</tbody>
                 </table>
             </div>
         </div>`;
 
         // ---- expurgo: depois de armazenar ----
-        const contagem = PRAGAS.map((p) => ({ p, n: exps.filter((r) => r.x.pragas.includes(p)).length })).filter((x) => x.n).sort((a, b) => b.n - a.n);
         const linhasE = corta(exps.slice().sort((a, b) => b.x.d - a.x.d)).map(({ c, x }) => `<tr>
                 <td class="num">${rotDia(x.d)}</td>
                 <td class="pv-tabela-nome">${u2(c)}</td>
                 <td>${cultHtml(c)}</td>
                 <td>${x.pragas.map((p) => p.n).join(', ')}</td>
-                <td><span class="est-sit is-${x.eficiente ? 'folga' : 'limite'}">${x.eficiente ? 'Eficiente' : 'Ineficiente'}</span></td>
-                <td class="num">${x.intervalo == null ? `<b>${x.d - c.prof.d} d</b><small class="est-faixa-cel">da profilaxia</small>` : `<b>${x.intervalo} d</b><small class="est-faixa-cel">do anterior</small>`}</td>
-                <td>${x.reinc ? '<span class="prof-ruim">Sim</span>' : 'Não'}</td>
+                <td class="num">${((dias, de) => `<b class="${dias >= ESPERA_EXP * 0.85 ? 'prof-ok' : 'prof-ruim'}" title="${de}">${dias} dias</b>`)(x.intervalo == null ? x.d - c.prof.d : x.intervalo, x.intervalo == null ? 'desde a profilaxia' : 'desde o expurgo anterior')}</td>
+                <td class="prof-c">${x.reinc ? '<span class="prof-ruim">Sim</span>' : '<span class="prof-nada">—</span>'}</td>
             </tr>`).join('');
         const tabE = `<div data-codigo="${tela.codigo}-D" class="content-section du-section est-section est-anos prof-tab">
             <div class="section-head">
                 <h3>EXPURGO · APÓS ARMAZENAR O PRODUTO</h3>
-                <span class="du-legenda"><span>${recorteTxt(exps.length)}</span><span>${contagem.length ? 'pragas: ' + contagem.map((x) => `${x.p.n} ${x.n}`).join(' · ') : 'sem pragas no período'}</span></span>
+                <span class="du-legenda"><span>${recorteTxt(exps.length)}</span></span>
             </div>
             <div class="table-scroll table-scroll--livre est-scroll">
                 <table class="pv-tabela du-tabela est-tabela prof-tabela">
-                    <thead><tr><th class="num">Data</th><th>Silo</th><th>Cultura<small>do ciclo</small></th><th>Pragas<small>identificadas</small></th><th>Eficiência</th><th class="num">Intervalo</th><th>Reincidência</th></tr></thead>
-                    <tbody>${linhasE || '<tr><td colspan="7" class="prof-vazio">Nenhum expurgo neste período e filtro.</td></tr>'}</tbody>
+                    <thead><tr><th class="num">Data</th><th>Armazenamento</th><th>Cultura</th><th>Pragas</th><th class="num">Intervalo<small>esperado ${ESPERA_EXP} dias</small></th><th class="prof-c">Reincidência</th></tr></thead>
+                    <tbody>${linhasE || '<tr><td colspan="6" class="prof-vazio">Nenhum expurgo neste período e filtro.</td></tr>'}</tbody>
                 </table>
             </div>
         </div>`;
@@ -3831,8 +3842,7 @@
         const filtros = `<div class="est-filtros"><div class="est-filtros-linha">${filtroPeriodo()}${filtroDim('unidadeArm', fU)}${filtroDim('cultura', fC)}</div></div>`;
         return filtros
             + `<div class="kpi-grid est-kpis" style="--k: 6">${kp}</div>`
-            + `<div class="prof-corpo">${tempo}${tabP}${tabE}</div>`
-            + `<p class="est-nota">Como ler: cada linha é um ciclo de armazenagem (um silo, uma cultura, do enchimento à saída). Profilaxia bem executada: limpeza do silo e pulverização residual feitas. Expurgo eficiente: mortalidade a partir de 95%. Reincidência: novo expurgo em menos de 90 dias no mesmo ciclo. Referência de proteção: cerca de ${PROTECAO.boa} dias com o procedimento bem executado e ${PROTECAO.ruim} quando mal executado.</p>`;
+            + `<div class="prof-corpo">${tempo}${tabP}${tabE}</div>`;
     }
 
     // o silo do ciclo; no armazém, com o lote (duas culturas ao mesmo tempo)

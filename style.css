@@ -23150,6 +23150,15 @@ html.tv .fsel-btn {
     border-radius: 1px;
 }
 
+/* a cultura que estava no silo: filete na base da célula (metade de cada
+   cor quando o armazém guarda duas) */
+.est-cel.is-cult {
+    background-image: linear-gradient(90deg, var(--cc) 50%, var(--cc2) 50%);
+    background-size: 100% max(5px, 16%);
+    background-position: bottom;
+    background-repeat: no-repeat;
+}
+
 
 
 .est-cel.is-forte {
@@ -24903,7 +24912,7 @@ html.tv .fsel-btn {
    cultura, a profilaxia o losango e o expurgo o círculo. Os fios dos
    meses atravessam todas as faixas; "hoje" é o fio de destaque. */
 .prof-gantt {
-    --gn: 4.8rem;    /* coluna do nome do silo */
+    --gn: 9.6rem;    /* coluna do nome do silo + nº de profilaxias e expurgos */
     --gg: 0.5rem;
     position: relative;
     display: flex;
@@ -24966,8 +24975,7 @@ html.tv .fsel-btn {
 .prof-g-linha {
     position: relative;
     display: grid;
-    grid-template-columns: var(--gn) minmax(0, 1fr);
-    gap: var(--gg);
+    grid-template-columns: calc(var(--gn) - 4.8rem) 4.8rem minmax(0, 1fr);
     flex: 1 1 0;
     min-height: 1rem;
     max-height: 3rem;
@@ -24998,9 +25006,54 @@ html.tv .fsel-btn {
     color: var(--accent);
 }
 
+/* quantas profilaxias e quantos expurgos o silo teve no período */
+.prof-g-ns {
+    display: flex;
+    align-self: center;
+    justify-content: flex-end;
+    gap: 0.25rem;
+}
+
+.prof-g-n {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 2.1rem;
+    padding: 0.1rem 0.35rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--text) 10%, transparent);
+    font-size: max(0.7rem, var(--fs-texto, 0px));
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+    color: var(--text);
+}
+
+.prof-g-n.is-zero {
+    opacity: 0.4;
+}
+
+.prof-g-ico {
+    flex: 0 0 auto;
+    width: 0.45rem;
+    height: 0.45rem;
+}
+
+.prof-g-ico--prof {
+    rotate: 45deg;
+    border-radius: 1px;
+    background: var(--du-ok);
+}
+
+.prof-g-ico--exp {
+    border-radius: 50%;
+    background: var(--text);
+}
+
 /* faixas alternadas, bem leves: o olho segue a linha até o fim */
 .prof-g-trilho {
     position: relative;
+    margin-left: var(--gg);
     z-index: 1;
     border-radius: 999px;
 }
@@ -25139,6 +25192,36 @@ html.tv .fsel-btn {
 .prof-ruim {
     font-weight: 700;
     color: var(--du-danger);
+}
+
+.prof-tabela .prof-c {
+    text-align: center;
+}
+
+/* feita / não feita: só o sinal, a cor diz o resto */
+.prof-sn {
+    display: inline-grid;
+    place-items: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.prof-sn--sim {
+    color: var(--du-ok);
+    background: color-mix(in srgb, var(--du-ok) 16%, transparent);
+}
+
+.prof-sn--nao {
+    color: var(--du-danger);
+    background: color-mix(in srgb, var(--du-danger) 18%, transparent);
+}
+
+.prof-nada {
+    color: var(--faint);
 }
 
 .prof-tabela td.prof-vazio {
