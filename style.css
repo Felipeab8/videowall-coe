@@ -21666,6 +21666,9 @@ body.theme-dark {
     --est-c6: #008300;
     --est-c7: #9085e9;
     --est-c8: #e66767;
+    /* 9 e 10: só para as duas áreas do armazém (10 linhas por silo) */
+    --est-c9: #22b8c9;
+    --est-c10: #b8a07a;
     --est-c-outros: #6d8199;
     /* rampa sequencial (mapas de calor e calendários): do fundo ao azul claro */
     --est-seq-0: #15304f;
@@ -21685,6 +21688,8 @@ body.theme-light {
     --est-c6: #008300;
     --est-c7: #6250d6;
     --est-c8: #e34948;
+    --est-c9: #0f97a8;
+    --est-c10: #8c6d3f;
     --est-c-outros: #838b94;
     --est-seq-0: #e3eefb;
     --est-seq-1: #184f95;
@@ -23949,6 +23954,48 @@ html.tv .fsel-btn {
 
 
 
+/* barra do cartão "realizado × projetado": quanto do ano já foi */
+/* na linha do número, à direita do valor: não muda a altura do cartão */
+.kpi-value:has(> .est-kpi-barra) {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.kpi-value:has(> .est-kpi-barra) .kpi-value-unit {
+    margin-left: 0.3rem;
+}
+
+.est-kpi-barra {
+    display: block;
+    flex: 1 1 auto;
+    min-width: 1.5rem;
+    max-width: 5rem;
+    height: 0.4rem;
+    margin-left: 0.7rem;
+    border-radius: 999px;
+    background: var(--row-line);
+    overflow: hidden;
+}
+
+.est-kpi-barra i {
+    display: block;
+    width: var(--p);
+    height: 100%;
+    border-radius: inherit;
+    background: var(--accent);
+}
+
+/* a cultura guardada no silo na época (dica das linhas por silo) */
+.est-tip-cult {
+    margin-left: 0.3rem;
+    font-size: 0.85em;
+    font-style: normal;
+    font-weight: 700;
+    color: var(--text);
+    opacity: 0.8;
+}
+
 .est-tip-linha b small {
     color: var(--muted);
     font-weight: 600;
@@ -24816,9 +24863,9 @@ html.tv .fsel-btn {
     min-height: 0;
 }
 
-/* ---- profilaxia e expurgo: silos, linha do tempo e as duas tabelas ---- */
-/* 12 colunas: em cima os silos ficam com mais largura que a linha do
-   tempo (7 + 5), embaixo as duas tabelas dividem ao meio (6 + 6) */
+/* ---- profilaxia e expurgo: linha do tempo e as duas tabelas ---- */
+/* 12 colunas: a linha do tempo à esquerda ocupa as duas linhas (5); à direita a
+   tabela de profilaxia em cima e a de expurgo embaixo (7) */
 .prof-corpo {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -24829,102 +24876,14 @@ html.tv .fsel-btn {
 }
 
 .prof-corpo > * {
-    grid-column: span 6;
+    grid-column: span 7;
     margin-bottom: 0;
     min-height: 0;
 }
 
-.prof-corpo > .prof-visao {
-    grid-column: span 7;
-}
-
 .prof-corpo > .prof-tempo {
     grid-column: span 5;
-}
-
-.prof-silos {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    grid-auto-rows: minmax(0, 1fr);
-    gap: 0.4rem;
-    flex: 1 1 auto;
-    min-height: 0;
-}
-
-.prof-silo {
-    display: flex;
-    flex-direction: column;
-    container: prof-silo / inline-size;
-    gap: 0.2rem;
-    min-width: 0;
-    min-height: 0;
-    padding: 0.4rem 0.5rem;
-    border: 1px solid var(--card-border);
-    border-left: 3px solid var(--du-ok);
-    border-radius: 10px;
-    background: var(--row-bg);
-    color: var(--text);
-    font: inherit;
-    text-align: left;
-    cursor: pointer;
-    overflow: hidden;
-}
-
-.prof-silo:hover {
-    background: var(--hover);
-}
-
-.prof-silo:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-}
-
-.prof-silo.is-atencao {
-    border-left-color: var(--du-warn);
-}
-
-.prof-silo.is-limite {
-    border-left-color: var(--du-danger);
-}
-
-.prof-silo.is-vazio {
-    border-left-color: var(--card-border);
-    color: var(--muted);
-}
-
-.prof-silo.is-sel {
-    border-color: var(--accent);
-    background: var(--accent-soft);
-}
-
-.prof-silo-topo,
-.prof-silo-meio {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.35rem;
-    min-width: 0;
-}
-
-.prof-silo-nome {
-    overflow: hidden;
-    font-size: max(0.66rem, var(--fs-texto, 0px));
-    font-weight: 800;
-    letter-spacing: 0.05em;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    text-transform: uppercase;
-    color: var(--muted);
-}
-
-.prof-silo-cults {
-    display: inline-flex;
-    flex: 0 0 auto;
-    align-items: center;
-    gap: 0.2rem;
-    font-size: max(0.66rem, var(--fs-texto, 0px));
-    font-weight: 700;
-    color: var(--text);
+    grid-row: span 2;
 }
 
 .prof-cult {
@@ -24940,100 +24899,98 @@ html.tv .fsel-btn {
     flex: 0 0 auto;
 }
 
-.prof-silo-dias {
-    font-size: 1.35rem;
-    font-weight: 700;
-    line-height: 1;
-    white-space: nowrap;
-    font-variant-numeric: tabular-nums;
-}
-
-.prof-silo-dias small {
-    margin-left: 0.1rem;
-    font-size: max(0.6rem, var(--fs-texto, 0px));
-    font-weight: 600;
-    color: var(--muted);
-}
-
-/* cartão estreito (monitor menor): o esperado sai do número e fica na
-   barra e na dica; a situação continua inteira */
-@container prof-silo (max-width: 10.5rem) {
-    .prof-silo-dias small {
-        display: none;
-    }
-}
-
-.prof-silo-meio .est-sit {
-    padding: 0.05rem 0.4rem;
-    font-size: max(0.58rem, var(--fs-texto, 0px));
-    flex: 0 1 auto;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.prof-silo-txt {
-    overflow: hidden;
-    font-size: max(0.6rem, var(--fs-texto, 0px));
-    font-weight: 600;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    color: var(--muted);
-}
-
-.prof-silo-barra {
-    flex: 0 0 auto;
-    height: 0.3rem;
-    margin-top: auto;
-    border-radius: 999px;
-    background: var(--row-line);
-    overflow: hidden;
-}
-
-.prof-silo-barra i {
-    display: block;
-    width: var(--p);
-    height: 100%;
-    background: var(--du-ok);
-}
-
-.prof-silo.is-atencao .prof-silo-barra i {
-    background: var(--du-warn);
-}
-
-.prof-silo.is-limite .prof-silo-barra i {
-    background: var(--du-danger);
-}
-
-/* linha do tempo: uma faixa por silo; o ciclo é a barra na cor da cultura,
-   a profilaxia o losango e o expurgo o círculo */
+/* linha do tempo: uma faixa por silo; o ciclo é a pílula na cor da
+   cultura, a profilaxia o losango e o expurgo o círculo. Os fios dos
+   meses atravessam todas as faixas; "hoje" é o fio de destaque. */
 .prof-gantt {
+    --gn: 4.8rem;    /* coluna do nome do silo */
+    --gg: 0.5rem;
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
     flex: 1 1 auto;
     min-height: 0;
+    padding-top: 0.35rem;
+}
+
+.prof-g-grade {
+    position: absolute;
+    top: 0.35rem;
+    bottom: 1.3rem;
+    left: calc(var(--gn) + var(--gg));
+    right: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.prof-g-fio {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--x);
+    border-left: 1px solid var(--row-line);
+}
+
+.prof-g-fio.is-fraco {
+    border-left-style: dotted;
+    opacity: 0.55;
+}
+
+.prof-g-fio.is-ano {
+    border-left: 1px dashed var(--card-border);
+    opacity: 1;
+}
+
+.prof-g-hoje {
+    position: absolute;
+    top: -0.35rem;
+    bottom: 0;
+    left: var(--x);
+    border-left: 2px solid var(--accent);
+    z-index: 3;
+}
+
+.prof-g-hoje span {
+    position: absolute;
+    top: 0;
+    right: 0.25rem;
+    font-size: max(0.56rem, var(--fs-texto, 0px));
+    font-style: normal;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
 }
 
 .prof-g-linha {
+    position: relative;
     display: grid;
-    grid-template-columns: 4.6rem minmax(0, 1fr);
-    gap: 0.4rem;
+    grid-template-columns: var(--gn) minmax(0, 1fr);
+    gap: var(--gg);
     flex: 1 1 0;
-    min-height: 0.9rem;
+    min-height: 1rem;
     max-height: 3rem;
+    border-radius: 8px;
     cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.prof-g-linha:hover,
+.prof-g-linha.is-sel {
+    background: var(--hover);
 }
 
 .prof-g-nome {
     align-self: center;
     overflow: hidden;
+    padding-left: 0.3rem;
     font-size: max(0.66rem, var(--fs-texto, 0px));
     font-weight: 700;
     white-space: nowrap;
     text-overflow: ellipsis;
     color: var(--muted);
+    transition: color 0.2s ease;
 }
 
 .prof-g-linha:hover .prof-g-nome,
@@ -25041,37 +24998,85 @@ html.tv .fsel-btn {
     color: var(--accent);
 }
 
+/* faixas alternadas, bem leves: o olho segue a linha até o fim */
 .prof-g-trilho {
     position: relative;
-    border-radius: 4px;
-    background: var(--row-bg);
+    z-index: 1;
+    border-radius: 999px;
 }
 
+.prof-g-linha:nth-child(even) .prof-g-trilho {
+    background: color-mix(in srgb, var(--row-bg) 70%, transparent);
+}
+
+/* ciclo: pílula com degradê da cor da cultura; entra crescendo da
+   esquerda, faixa a faixa */
 .prof-g-ciclo {
     position: absolute;
     left: var(--x);
-    top: calc(var(--l) * 100% / var(--nl) + 1px);
+    top: calc((var(--l) + 0.5) * 100% / var(--nl));
+    translate: 0 -50%;
     width: var(--w);
-    height: calc(100% / var(--nl) - 2px);
-    border: 1px solid var(--c);
-    border-radius: 3px;
-    background: color-mix(in srgb, var(--c) 40%, transparent);
+    min-width: 4px;
+    height: min(calc(100% / var(--nl) - 4px), 1.2rem);
+    border: 1px solid color-mix(in srgb, var(--c) 75%, transparent);
+    border-radius: 999px;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--c) 55%, transparent), color-mix(in srgb, var(--c) 28%, transparent));
+    box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 12%, transparent);
+    transform-origin: left center;
+    animation: prof-g-cresce 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--i) * 40ms);
+    transition: filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* ciclo em andamento: aberto à direita, esmaecendo até o "hoje" */
+.prof-g-ciclo.is-aberto {
+    border-right: 0;
+    border-radius: 999px 0 0 999px;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--c) 55%, transparent) 0%, color-mix(in srgb, var(--c) 35%, transparent) 75%, color-mix(in srgb, var(--c) 10%, transparent) 100%);
+}
+
+/* ciclo que começou antes do período: entra reto pela esquerda */
+.prof-g-ciclo.is-antes {
+    border-left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.prof-g-linha:hover .prof-g-ciclo,
+.prof-g-linha.is-sel .prof-g-ciclo {
+    filter: brightness(1.18) saturate(1.1);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--c) 40%, transparent), 0 0 10px color-mix(in srgb, var(--c) 30%, transparent);
 }
 
 .prof-g-marca {
     position: absolute;
     left: var(--x);
     top: calc((var(--l) + 0.5) * 100% / var(--nl));
-    z-index: 1;
-    width: 0.6rem;
-    height: 0.6rem;
-    border: 1px solid var(--header-bg);
+    z-index: 2;
+    width: 0.62rem;
+    height: 0.62rem;
+    border: 1.5px solid var(--section-bg, var(--header-bg));
     translate: -50% -50%;
+    animation: prof-g-surge 0.4s ease-out both;
+    animation-delay: calc(0.35s + var(--i) * 40ms);
+    transition: transform 0.18s ease;
+}
+
+.prof-g-marca:hover {
+    transform: scale(1.45);
 }
 
 .prof-g-marca--prof {
     rotate: 45deg;
+    border-radius: 2px;
     background: var(--du-ok);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--du-ok) 55%, transparent);
+}
+
+.prof-g-marca--prof.is-ruim {
+    background: var(--du-danger);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--du-danger) 60%, transparent);
 }
 
 .prof-g-marca--exp {
@@ -25079,22 +25084,19 @@ html.tv .fsel-btn {
     background: var(--text);
 }
 
-.prof-g-marca.is-ruim {
-    background: var(--du-danger);
-}
-
 .prof-g-marca--leg {
     position: static;
     display: inline-block;
     flex: 0 0 auto;
     translate: none;
+    animation: none;
 }
 
 .prof-g-eixo {
     position: relative;
     flex: 0 0 auto;
-    height: 1rem;
-    margin-left: 5rem;
+    height: 1.1rem;
+    margin-left: calc(var(--gn) + var(--gg));
     font-size: max(0.62rem, var(--fs-texto, 0px));
     font-weight: 600;
     color: var(--faint);
@@ -25104,8 +25106,25 @@ html.tv .fsel-btn {
     position: absolute;
     left: var(--x);
     padding-left: 0.25rem;
-    border-left: 1px solid var(--card-border);
     white-space: nowrap;
+}
+
+@keyframes prof-g-cresce {
+    from { transform: scaleX(0); opacity: 0; }
+    to { transform: scaleX(1); opacity: 1; }
+}
+
+@keyframes prof-g-surge {
+    from { opacity: 0; scale: 0.4; }
+    to { opacity: 1; scale: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .prof-g-ciclo,
+    .prof-g-marca {
+        animation: none;
+        transition: none;
+    }
 }
 
 .prof-tabela td {
@@ -25135,17 +25154,12 @@ html.tv .fsel-btn {
     }
 
     .prof-corpo > *,
-    .prof-corpo > .prof-visao,
     .prof-corpo > .prof-tempo {
         grid-column: auto;
+        grid-row: auto;
     }
 
-    .prof-silos {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        grid-auto-rows: auto;
-    }
-
-    .prof-gantt {
+    .prof-corpo > .prof-tempo {
         min-height: 16rem;
     }
 }
