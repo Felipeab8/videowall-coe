@@ -358,7 +358,7 @@
 
         def('rec', { rotulo: 'Recebido', unidade: 't', melhor: 'maior', base: recTotal, dims: dimsRec });
         def('cam', { rotulo: 'Caminhões', unidade: 'cam.', melhor: 'maior', base: gerar((d) => recTotal[d] / 27.5), dims: dimsRec });
-        def('recTagPct', { rotulo: 'Com tag', unidade: '%', casas: 1, agreg: 'razao', num: 'rec', den: 'rec', fix: { tag: 'com' }, fator: 100, melhor: 'maior', limite: [0, 100] });
+        def('recTagPct', { rotulo: 'Recebido com tag', unidade: '%', casas: 1, agreg: 'razao', num: 'rec', den: 'rec', fix: { tag: 'com' }, fator: 100, melhor: 'maior', limite: [0, 100] });
 
         const espera = gerar((d) => (5 + 14 * carga[d]) * melhora(d) * (1 + 0.1 * ruidoDia(d, 8)));
         def('espera', {
@@ -368,7 +368,7 @@
         const filaMed = gerar((d) => (1 + 8 * Math.pow(carga[d], 1.5)) * melhora(d) * (1 + 0.14 * ruidoDia(d, 9)) * (CAL.dow[d] === 0 ? 0.3 : 1));
         const dimsFila = { cultura: dCultRec, turno: fatores({ t1: 1.1, t2: 1, t3: 0.7 }), tag: dTag };
         def('filaMedia', { rotulo: 'Fila média', unidade: 'cam.', casas: 1, agreg: 'media', melhor: 'menor', base: filaMed, dims: dimsFila });
-        def('filaPico', { rotulo: 'Pico de fila', unidade: 'cam.', agreg: 'max', melhor: 'menor', base: gerar((d) => filaMed[d] * (1.8 + 0.4 * (ruido(d, 10) + 1))), dims: dimsFila });
+        def('filaPico', { rotulo: 'Fila máxima', unidade: 'cam.', agreg: 'max', melhor: 'menor', base: gerar((d) => filaMed[d] * (1.8 + 0.4 * (ruido(d, 10) + 1))), dims: dimsFila });
         def('diasEspera20', { rotulo: 'Dias com espera acima de 20 min', unidade: 'dias', agreg: 'acima', de: 'espera', limiar: 20, melhor: 'menor' });
 
         const etRec = {
@@ -455,7 +455,7 @@
         const PL = valoresDe('prelimpeza');
         def('plPesado', { rotulo: 'Impureza retirada', unidade: 't', casas: 1, base: plPes, dims: { prelimpeza: cotas(PL, (i) => [0.36, 0.33, 0.31][i], 91, 0.1), cultura: dCultImp } });
         def('plDesc', { rotulo: 'Descontado de impureza', unidade: 't', casas: 1, base: plDes, dims: { prelimpeza: cotas(PL, (i) => [0.35, 0.335, 0.315][i], 92, 0.1), cultura: dCultImp } });
-        def('plDif', { rotulo: 'Diferença', unidade: 't', casas: 1, agreg: 'dif', a: 'plPesado', b: 'plDesc' });
+        def('plDif', { rotulo: 'Diferença de conciliação', unidade: 't', casas: 1, agreg: 'dif', a: 'plPesado', b: 'plDesc' });
         def('plCacambas', { rotulo: 'Caçambas', unidade: 'caçambas', base: gerar((d) => plPes[d] / 7.5), dims: M.plPesado.dims });
 
         // ---- secagem ----
@@ -477,7 +477,7 @@
         def('umidSai', { rotulo: 'Umidade de saída', unidade: '%', casas: 1, agreg: 'media', peso: 'secado', melhor: 'menor', base: umidSai, dims: { cultura: desvios(umidSaiC, umidSai), secador: somas({ s1: -0.05, s2: 0.12 }) } });
         const pontosC = Object.fromEntries(CULT.map((c) => [c, gerar((d) => umidEntC[c][d] - umidSaiC[c][d])]));
         const pontos = gerar((d) => umidEnt[d] - umidSai[d]);
-        def('pontos', { rotulo: 'Pontos retirados', unidade: 'p.p.', casas: 1, agreg: 'media', peso: 'secado', base: pontos, dims: { cultura: desvios(pontosC, pontos), secador: somas({ s1: 0.2, s2: -0.32 }) } });
+        def('pontos', { rotulo: 'Pontos de umidade retirados', unidade: 'p.p.', casas: 1, agreg: 'media', peso: 'secado', base: pontos, dims: { cultura: desvios(pontosC, pontos), secador: somas({ s1: 0.2, s2: -0.32 }) } });
 
         const ritmoS = {
             s1: gerar((d) => (42 - 2 * Math.max(0, umidEnt[d] - 14)) / melhora(d) * (1 + 0.03 * ruidoDia(d, 103))),
@@ -485,7 +485,7 @@
         };
         const ritmoB = gerar((d) => ritmoS.s1[d] * dSecador.s1.f[d] + ritmoS.s2[d] * dSecador.s2.f[d]);
         def('ritmo', {
-            rotulo: 'Ritmo médio', unidade: 't/h', casas: 1, agreg: 'media', peso: 'secado', melhor: 'maior', base: ritmoB,
+            rotulo: 'Produtividade média', unidade: 't/h', casas: 1, agreg: 'media', peso: 'secado', melhor: 'maior', base: ritmoB,
             dims: { secador: desvios(ritmoS, ritmoB), cultura: somas({ milho: 0, sorgo: 2, trigo: 5, soja: 4 }), turno: somas({ t1: 1, t2: 0, t3: -1.5 }) },
         });
         const horas = {
@@ -493,15 +493,15 @@
             s2: gerar((d) => secado[d] * dSecador.s2.f[d] / ritmoS.s2[d]),
         };
         const horasTot = somaArr([horas.s1, horas.s2]);
-        def('horasSec', { rotulo: 'Horas secando', unidade: 'h', base: horasTot, dims: { secador: partes(horas, horasTot), cultura: dCultSec, turno: dTurnoSec } });
+        def('horasSec', { rotulo: 'Horas de secagem', unidade: 'h', base: horasTot, dims: { secador: partes(horas, horasTot), cultura: dCultSec, turno: dTurnoSec } });
         // dois secadores, 24 h cada: quanto do dia eles ficaram ligados (o dia mais cheio do período)
-        def('secUsoPico', { rotulo: 'Uso dos secadores no dia de pico', unidade: '%', agreg: 'max', base: gerar((d) => horasTot[d] / 48 * 100) });
+        def('secUsoPico', { rotulo: 'Utilização dos secadores no dia de pico', unidade: '%', agreg: 'max', base: gerar((d) => horasTot[d] / 48 * 100) });
 
         const SETP = { milho: 100, sorgo: 95, trigo: 80, soja: 85 };
         const tempArC = Object.fromEntries(CULT.map((c, i) => [c, gerar((d) => SETP[c] - 4 + 2.5 * carga[d] + 1.2 * ruidoDia(d, 120 + i))]));
         const tempArB = mediaPond(tempArC, sec);
         def('tempAr', { rotulo: 'Temperatura do ar', unidade: '°C', agreg: 'media', peso: 'secado', base: tempArB, dims: { cultura: desvios(tempArC, tempArB), secador: somas({ s1: 1.5, s2: -2 }) } });
-        def('arSaida', { rotulo: 'Ar de saída', unidade: '°C', casas: 1, agreg: 'media', peso: 'secado', melhor: 'menor', base: gerar((d) => 39 + 4 * carga[d] + (temp[d] - 21) * 0.45 + 0.8 * ruidoDia(d, 125)), dims: { secador: somas({ s1: -0.8, s2: 1.4 }) } });
+        def('arSaida', { rotulo: 'Temperatura do ar de saída', unidade: '°C', casas: 1, agreg: 'media', peso: 'secado', melhor: 'menor', base: gerar((d) => 39 + 4 * carga[d] + (temp[d] - 21) * 0.45 + 0.8 * ruidoDia(d, 125)), dims: { secador: somas({ s1: -0.8, s2: 1.4 }) } });
         def('foraFaixa', {
             rotulo: 'Tempo fora da faixa', unidade: '%', casas: 1, agreg: 'media', peso: 'secado', melhor: 'menor',
             base: gerar((d) => Math.max(0.2, (2 + 4 * carga[d] * carga[d]) * melhora(d) * (1 + 0.25 * ruidoDia(d, 126)))),
@@ -575,7 +575,7 @@
         const foraB = gerar((d) => ZONAS.reduce((s, z) => s + foraZ[z.v][d], 0) / ZONAS.length);
         def('pressDep', { rotulo: 'Depressão média', unidade: 'mmca', casas: 1, agreg: 'media', base: depB, dims: { zona: desvios(dep, depB), secador: somas({ s1: -0.3, s2: 0.5 }) } });
         def('pressFora', { rotulo: 'Leituras fora da faixa', unidade: '%', casas: 1, agreg: 'media', melhor: 'menor', base: foraB, dims: { zona: desvios(foraZ, foraB), secador: somas({ s1: -0.5, s2: 0.9 }) } });
-        def('pressDias10', { rotulo: 'Dias com mais de 10% fora', unidade: 'dias', agreg: 'acima', de: 'pressFora', limiar: 10, melhor: 'menor' });
+        def('pressDias10', { rotulo: 'Dias com mais de 10% fora da faixa', unidade: 'dias', agreg: 'acima', de: 'pressFora', limiar: 10, melhor: 'menor' });
 
         // ---- expedição (sai do recebido depois de 2 a 3 meses no silo) ----
         const semExp = semanaNormalizada([0.15, 1.1, 1.12, 1.12, 1.1, 1.08, 0.6]);
@@ -610,7 +610,7 @@
         const FREP = { milho: 1, sorgo: 0.8, trigo: 1.3, soja: 0.9 };
         const repC = Object.fromEntries(CULT.map((c, i) => [c, nivel(REP_P.map((v) => v * FREP[c]), [1.15, 1.08, 1.02, 1, 0.9], 255 + i, 0.12)]));
         const repB = mediaPond(repC, expCamC);
-        def('reprovasPct', { rotulo: 'Reprovas', unidade: '%', casas: 1, agreg: 'media', peso: 'expCam', melhor: 'menor', base: repB, dims: { cultura: desvios(repC, repB) } });
+        def('reprovasPct', { rotulo: 'Taxa de reprovação', unidade: '%', casas: 1, agreg: 'media', peso: 'expCam', melhor: 'menor', base: repB, dims: { cultura: desvios(repC, repB) } });
         const reprC = Object.fromEntries(CULT.map((c, i) => [c, eventos((d) => expCamC[c][d] * repC[c][d] / 100, 258 + i)]));
         const reprT = somaArr(CULT.map((c) => reprC[c]));
         def('reprovadas', { rotulo: 'Cargas reprovadas', unidade: 'cargas', melhor: 'menor', base: reprT, dims: { cultura: partes(reprC, reprT) } });
@@ -671,7 +671,7 @@
         def('atrasados', { rotulo: 'Encerrados com atraso', unidade: 'contratos', melhor: 'menor', base: atrT, dims: { cliente: partes(atrC, atrT), cultura: partes(porCultura(atrC), atrT) }, ignora: IGNORA_CULT });
         def('noPrazoN', { rotulo: 'No prazo', unidade: 'contratos', base: okT, dims: { cliente: partes(okC, okT), cultura: partes(porCultura(okC), okT) }, ignora: IGNORA_CULT });
         def('noPrazo', { rotulo: 'No prazo', unidade: '%', agreg: 'razao', num: 'noPrazoN', den: 'contratos', fator: 100, melhor: 'maior', limite: [0, 100] });
-        def('ritmoContr', { rotulo: 'Ritmo médio', unidade: 't/dia', agreg: 'razao', num: 'entregue', den: 'dias', melhor: 'maior' });
+        def('ritmoContr', { rotulo: 'Cadência média', unidade: 't/dia', agreg: 'razao', num: 'entregue', den: 'dias', melhor: 'maior' });
 
         // retornos do porto: cargas expedidas que o terminal não recebeu como estavam
         const qual = gerar((d) => 1 + Math.max(0, eAB[d] - 3.5) * 0.6);
@@ -684,10 +684,10 @@
         const tdC = Object.fromEntries(CULT.map((c, i) => [c, gerar((d) => dpC[c][d] * (0.4 + 0.5 * u01(d, 290 + i)))]));
         const tdT = somaPor(tdC);
         def('retornos', { rotulo: 'Cargas retornadas', unidade: 'cargas', melhor: 'menor', base: retT, dims: { cultura: partes(retC, retT) } });
-        def('descPorto', { rotulo: 'Aceitas com desconto', unidade: 'cargas', melhor: 'menor', base: dpT, dims: { cultura: partes(dpC, dpT) } });
+        def('descPorto', { rotulo: 'Cargas aceitas com desconto', unidade: 'cargas', melhor: 'menor', base: dpT, dims: { cultura: partes(dpC, dpT) } });
         def('custoRetorno', { rotulo: 'Frete de retorno', unidade: 'R$', melhor: 'menor', base: custoT, dims: { cultura: partes(custoC, custoT) } });
         def('tDescPorto', { rotulo: 'Descontado no porto', unidade: 't', casas: 1, melhor: 'menor', base: tdT, dims: { cultura: partes(tdC, tdT) } });
-        def('cargasPorRetorno', { rotulo: 'Cargas por retorno', unidade: 'cargas', agreg: 'razao', num: 'expCam', den: 'retornos', melhor: 'maior' });
+        def('cargasPorRetorno', { rotulo: 'Cargas expedidas por retorno', unidade: 'cargas', agreg: 'razao', num: 'expCam', den: 'retornos', melhor: 'maior' });
 
         // ---- moegas e pulmões ----
         def('vazao', {
@@ -702,7 +702,7 @@
             dims: { moega: cotas(MOEGAS, () => 1, 72, 0.3) },
         });
         const dPulmao = cotas(['p1', 'p2'], (i) => [0.52, 0.48][i], 401, 0.1);
-        def('pulmaoEnt', { rotulo: 'Passou pelos pulmões', unidade: 't', melhor: 'maior', base: secado, dims: { pulmao: dPulmao } });
+        def('pulmaoEnt', { rotulo: 'Volume nos silos pulmão', unidade: 't', melhor: 'maior', base: secado, dims: { pulmao: dPulmao } });
         def('perman', { rotulo: 'Permanência média', unidade: 'h', casas: 1, agreg: 'media', peso: 'pulmaoEnt', melhor: 'menor', base: gerar((d) => (4 + 9 * carga[d]) * (1 + 0.1 * ruidoDia(d, 402))), dims: { pulmao: somas({ p1: 0.4, p2: -0.4 }) } });
         def('pulmaoOcup', { rotulo: 'Ocupação média', unidade: '%', agreg: 'media', limite: [0, 100], base: gerar((d) => clamp((25 + 55 * Math.pow(carga[d], 0.8)) * (1 + 0.08 * ruidoDia(d, 403)), 3, 99)), dims: { pulmao: somas({ p1: 3, p2: -3 }) } });
         def('pulmaoCheio', { rotulo: 'Dias acima de 90%', unidade: 'dias', agreg: 'acima', de: 'pulmaoOcup', limiar: 90, melhor: 'menor' });
@@ -737,7 +737,7 @@
         def('tempMassa', { rotulo: 'Temperatura média', unidade: '°C', casas: 1, agreg: 'media', melhor: 'menor', base: tmB, dims: { unidadeArm: desvios(tm, tmB) } });
         def('tempMax', { rotulo: 'Máxima registrada', unidade: '°C', casas: 1, agreg: 'max', melhor: 'menor', base: tmxB, dims: { unidadeArm: desvios(tmx, tmxB) } });
         def('tempMaxMed', { rotulo: 'Máxima média', unidade: '°C', casas: 1, agreg: 'media', melhor: 'menor', base: tmxB, dims: { unidadeArm: desvios(tmx, tmxB) } });
-        def('focos', { rotulo: 'Focos quentes', unidade: 'focos', melhor: 'menor', base: focT, dims: { unidadeArm: partes(focU, focT) } });
+        def('focos', { rotulo: 'Focos de aquecimento', unidade: 'focos', melhor: 'menor', base: focT, dims: { unidadeArm: partes(focU, focT) } });
         def('aeracao', { rotulo: 'Horas de aeração', unidade: 'h', base: aerT, dims: { unidadeArm: partes(aerU, aerT) } });
 
         // aeração por cultura: as horas do dia repartidas pelo grão guardado
@@ -781,7 +781,7 @@
         def('profGrao', { rotulo: 'Grão tratado na entrada', unidade: 't', melhor: 'maior', base: gerar((d) => recTotal[d] * clamp(doAno([0.55, 0.62, 0.7, 0.76, 0.8], d) + 0.05 * ruidoDia(d, 307), 0, 1)) });
         def('profGraoPct', { rotulo: 'Recebido com tratamento', unidade: '%', agreg: 'razao', num: 'profGrao', den: 'rec', fator: 100, melhor: 'maior', limite: [0, 100] });
 
-        def('diasParados', { rotulo: 'Recepção parada por chuva', unidade: 'dias', melhor: 'menor', base: gerar((d) => (chuva[d] > 18 && carga[d] > 0.25 ? 1 : 0)) });
+        def('diasParados', { rotulo: 'Recepção interrompida por chuva', unidade: 'dias', melhor: 'menor', base: gerar((d) => (chuva[d] > 18 && carga[d] > 0.25 ? 1 : 0)) });
     }
 
     gerarDados();
@@ -999,11 +999,11 @@
         { v: '12m', n: '12 meses', meses: 12 },
         { v: '24m', n: '24 meses', meses: 24 },
         { v: '36m', n: '36 meses', meses: 36 },
-        { v: 'tudo', n: 'Tudo', meses: KM_ULT + 1 },
+        { v: 'tudo', n: 'Todo o histórico', meses: KM_ULT + 1 },
         { v: 'custom', n: 'De / até' },
     ];
     const AGRUPAR = [{ v: 'semana', n: 'Semana' }, { v: 'mes', n: 'Mês' }, { v: 'trimestre', n: 'Trimestre' }, { v: 'ano', n: 'Ano' }];
-    const PROJECOES = [{ v: 'off', n: 'Sem' }, { v: 'dez', n: 'Até dez/' + String(ULT.ano).slice(2) }, { v: '12m', n: '+12 meses' }];
+    const PROJECOES = [{ v: 'off', n: 'Desligada' }, { v: 'dez', n: 'Até dez/' + String(ULT.ano).slice(2) }, { v: '12m', n: '+12 meses' }];
     const COMPARAR = [{ v: 'ano', n: 'Ano anterior' }, { v: 'media', n: 'Média 3 anos' }, { v: 'tendencia', n: 'Tendência' }];
 
     const EST_KEY = 'videowall:est-filtros';
@@ -1215,7 +1215,7 @@
             if (ref != null) return deltaHtml(delta(m, valor, ref), modo === 'media' ? 'vs média de 3 anos' : 'vs ano anterior');
             modo = 'tendencia';
         }
-        if (P.meses < 24) return deltaHtml(null, 'sem histórico para comparar');
+        if (P.meses < 24) return deltaHtml(null, 'histórico insuficiente para comparação');
         const v1 = agregar(m, f, iniMes(P.kmIni), fimMes(P.kmIni + 11));
         const v2 = agregar(m, f, iniMes(P.kmFim - 11), fimMes(P.kmFim));
         const anos = (P.meses - 12) / 12;
@@ -1225,7 +1225,7 @@
         if (porcento && v1 > 0) alvo = v1 * (1 + ((v2 / v1) ** (1 / anos) - 1));
         else if (!porcento) alvo = v1 + (v2 - v1) / anos;
         const dl = delta(m, alvo, v1);
-        return deltaHtml(dl, 'por ano · tendência');
+        return deltaHtml(dl, 'tendência anual');
     }
 
     // ---------- telas ----------
@@ -1233,7 +1233,7 @@
 
     const EST_TELAS = [
         { id: 'est-geral', tipo: 'painel', codigo: 'AVR-E0A' },
-        { id: 'est-projecao', tipo: 'projecao', codigo: 'AVR-E0B', tempo: false, dims: [] },
+        { id: 'est-projecao', tipo: 'projecao', codigo: 'AVR-E0B', tempo: false, dims: ['cultura'] },
         { id: 'est-capacidade', tipo: 'capacidade', codigo: 'AVR-E0C', tempo: false, dims: [] },
 
         // Cada tela tem a grade que mostra melhor o seu dado (ver "blocos das
@@ -1258,7 +1258,7 @@
             ],
             blocos: [
                 { area: 'a', tipo: 'tempo', seletor: true },
-                { area: 'b', tipo: 'composicao', metrica: 'rec', dim: 'cultura', modo: 'pct', titulo: 'Mistura de culturas por ano' },
+                { area: 'b', tipo: 'composicao', metrica: 'rec', dim: 'cultura', modo: 'pct', titulo: 'Participação das culturas por ano' },
                 { area: 'c', tipo: 'anos', colunas: [{ metrica: 'rec', barra: true }, { metrica: 'cam' }, { metrica: 'recTagPct', rotulo: 'Com tag' }, { metrica: 'espera', rotulo: 'Espera' }] },
                 { area: 'd', tipo: 'mapa', modo: 'anoMes', metrica: 'rec', titulo: 'Recebido por mês e ano' },
             ],
@@ -1266,18 +1266,19 @@
         {
             // fila: o dia a dia importa (picos e dias ruins), então um calendário
             id: 'est-rec-fila', codigo: 'AVR-E1B', dims: ['cultura', 'turno', 'tag'],
-            kpis: [{ metrica: 'espera' }, { metrica: 'filaMedia' }, { metrica: 'filaPico' }, { metrica: 'diasEspera20', rotulo: 'Dias com espera > 20 min' }],
+            kpis: [{ metrica: 'espera' }, { metrica: 'filaMedia' }, { metrica: 'cam', rotulo: 'Caminhões recebidos' }, { metrica: 'diasEspera20', rotulo: 'Dias com espera > 20 min' }],
             seletor: [
                 { v: 'espera', n: 'Espera', grafico: { tipo: 'linha', metrica: 'espera', titulo: 'Espera média', refs: [{ valor: 20, rotulo: 'limite 20 min' }] } },
-                { v: 'fila', n: 'Fila', grafico: { tipo: 'linha', titulo: 'Fila de caminhões', series: [{ metrica: 'filaPico', nome: 'Pico do período', cor: 'var(--est-c2)' }, { metrica: 'filaMedia', nome: 'Fila média', cor: 'var(--est-c1)' }] } },
+                { v: 'fila', n: 'Fila', grafico: { tipo: 'linha', metrica: 'filaMedia', titulo: 'Fila média de caminhões' } },
+                { v: 'cam', n: 'Caminhões', grafico: { tipo: 'barras', metrica: 'cam', pilha: 'cultura', titulo: 'Caminhões recebidos' } },
                 { v: 'turno', n: 'Espera por turno', grafico: { tipo: 'linha', metrica: 'espera', pilha: 'turno', titulo: 'Espera média por turno' } },
             ],
             grade: { areas: ['a b', 'a c', 'd c'], cols: '1.55fr 1fr', rows: '0.85fr 0.45fr 1.1fr' },
             blocos: [
                 { area: 'a', tipo: 'tempo', seletor: true },
-                { area: 'b', tipo: 'recorte', dim: 'turno', colunas: [{ metrica: 'espera', barra: true }, { metrica: 'filaMedia' }, { metrica: 'filaPico' }, { metrica: 'rec' }] },
-                { area: 'c', tipo: 'anos', colunas: [{ metrica: 'espera', rotulo: 'Espera', barra: true }, { metrica: 'filaMedia', rotulo: 'Fila média' }, { metrica: 'filaPico', rotulo: 'Pico' }, { metrica: 'diasEspera20', rotulo: 'Dias > 20 min' }] },
-                { area: 'd', tipo: 'calendario', metrica: 'espera', limiar: 20, rotuloLimiar: 'espera acima de 20 min', titulo: 'Espera média, dia a dia' },
+                { area: 'b', tipo: 'recorte', dim: 'turno', colunas: [{ metrica: 'espera', barra: true }, { metrica: 'filaMedia' }, { metrica: 'cam' }, { metrica: 'rec' }] },
+                { area: 'c', tipo: 'anos', colunas: [{ metrica: 'espera', rotulo: 'Espera', barra: true }, { metrica: 'filaMedia', rotulo: 'Fila média' }, { metrica: 'cam', rotulo: 'Caminhões' }, { metrica: 'diasEspera20', rotulo: 'Dias > 20 min' }] },
+                { area: 'd', tipo: 'calendario', metrica: 'espera', limiar: 20, rotuloLimiar: 'espera acima de 20 min', titulo: 'Espera média diária' },
             ],
         },
         {
@@ -1289,20 +1290,20 @@
             ],
             blocos: [
                 { area: 'a', tipo: 'tempo', grafico: { tipo: 'barras', metrica: 'ciclo', pilha: 'etapaRec', titulo: 'Tempo de ciclo por etapa' } },
-                { area: 'b', tipo: 'recorte', dim: 'etapaRec', colunas: [{ metrica: 'ciclo', rotulo: 'Tempo médio', barra: true }, { share: true, rotulo: 'Do ciclo' }] },
+                { area: 'b', tipo: 'recorte', dim: 'etapaRec', colunas: [{ metrica: 'ciclo', rotulo: 'Tempo médio', barra: true }, { share: true, rotulo: 'Part. no ciclo' }] },
                 { area: 'c', tipo: 'anos', colunas: [{ metrica: 'ciclo', rotulo: 'Ciclo', barra: true }, { metrica: 'ciclo', fix: { etapaRec: 'fila' }, rotulo: 'Fila' }, { metrica: 'ciclo', fix: { etapaRec: 'desc' }, rotulo: 'Descarga' }, { metrica: 'diasCiclo60', rotulo: 'Dias > 60 min' }] },
-                { area: 'd', tipo: 'composicao', metrica: 'ciclo', dim: 'etapaRec', modo: 'abs', titulo: 'Ciclo de cada ano, por etapa' },
+                { area: 'd', tipo: 'composicao', metrica: 'ciclo', dim: 'etapaRec', modo: 'abs', titulo: 'Ciclo anual por etapa' },
             ],
         },
         {
             // retornos: poucos e caros; o que pesa é o gasto acumulado no ano
             id: 'est-rec-porto', codigo: 'AVR-E1D', dims: ['cultura'],
-            kpis: [{ metrica: 'retornos' }, { metrica: 'descPorto' }, { metrica: 'custoRetorno' }, { metrica: 'cargasPorRetorno', rotulo: 'Uma volta a cada' }],
+            kpis: [{ metrica: 'retornos' }, { metrica: 'descPorto' }, { metrica: 'custoRetorno' }],
             kpiProj: 'custoRetorno',
             seletor: [
                 { v: 'ret', n: 'Retornadas', grafico: { tipo: 'barras', metrica: 'retornos', pilha: 'cultura', titulo: 'Cargas retornadas do porto' } },
                 { v: 'desc', n: 'Com desconto', grafico: { tipo: 'barras', metrica: 'descPorto', pilha: 'cultura', titulo: 'Cargas aceitas com desconto' } },
-                { v: 'custo', n: 'Frete de retorno', grafico: { tipo: 'barras', metrica: 'custoRetorno', pilha: 'cultura', titulo: 'Gasto com frete de retorno' } },
+                { v: 'custo', n: 'Frete de retorno', grafico: { tipo: 'barras', metrica: 'custoRetorno', pilha: 'cultura', titulo: 'Custo de frete de retorno' } },
             ],
             blocos: [
                 { area: 'a', tipo: 'tempo', seletor: true },
@@ -1326,7 +1327,7 @@
             ],
             blocos: [
                 { area: 'a', tipo: 'multiplos', porDim: 'cultura', seletor: true, colunas: 2 },
-                { area: 'b', tipo: 'recorte', dim: 'cultura', colunas: [{ metrica: 'cam', rotulo: 'Cargas', barra: true }, { metrica: 'umidade', rotulo: 'Umid.' }, { metrica: 'impureza', rotulo: 'Imp.' }, { metrica: 'avariados', rotulo: 'Avar.' }, { metrica: 'foraPadrao', rotulo: 'Fora' }] },
+                { area: 'b', tipo: 'recorte', dim: 'cultura', colunas: [{ metrica: 'cam', rotulo: 'Cargas', barra: true }, { metrica: 'umidade', rotulo: 'Umid.' }, { metrica: 'impureza', rotulo: 'Imp.' }, { metrica: 'avariados', rotulo: 'Avar.' }, { metrica: 'foraPadrao', rotulo: 'F. padrão' }] },
                 { area: 'c', tipo: 'anos', colunas: [{ metrica: 'umidade', rotulo: 'Umidade' }, { metrica: 'impureza', rotulo: 'Impureza' }, { metrica: 'avariados', rotulo: 'Avariados' }, { metrica: 'descontado', rotulo: 'Descontado', barra: true }] },
                 { area: 'd', tipo: 'mapa', modo: 'anoMes', seletor: true },
             ],
@@ -1343,9 +1344,9 @@
             ],
             blocos: [
                 { area: 'a', tipo: 'mapa', modo: 'dimAno', dim: 'tipoTrigo', seletor: true },
-                { area: 'b', tipo: 'recorte', dim: 'tipoTrigo', colunas: [{ metrica: 'trigoCargas', rotulo: 'Cargas', barra: true }, { share: true, rotulo: 'Do total' }, { metrica: 'ph', rotulo: 'PH' }, { metrica: 'fn', rotulo: 'FN' }, { metrica: 'germinado', rotulo: 'Germ.' }] },
+                { area: 'b', tipo: 'recorte', dim: 'tipoTrigo', colunas: [{ metrica: 'trigoCargas', rotulo: 'Cargas', barra: true }, { share: true, rotulo: 'Part.' }, { metrica: 'ph', rotulo: 'PH' }, { metrica: 'fn', rotulo: 'FN' }, { metrica: 'germinado', rotulo: 'Germ.' }] },
                 { area: 'c', tipo: 'anos', colunas: [{ metrica: 'trigoCargas', rotulo: 'Cargas', barra: true }, { metrica: 'superiorPct', rotulo: 'Superior' }, { metrica: 'ph', rotulo: 'PH' }, { metrica: 'fn', rotulo: 'FN' }, { metrica: 'germinado', rotulo: 'Germ.' }] },
-                { area: 'd', tipo: 'composicao', metrica: 'trigoCargas', dim: 'tipoTrigo', modo: 'pct', titulo: 'Cargas de cada safra por tipo' },
+                { area: 'd', tipo: 'composicao', metrica: 'trigoCargas', dim: 'tipoTrigo', modo: 'pct', titulo: 'Cargas por tipo em cada safra' },
             ],
             nota: 'O trigo chega de ago a nov: cada coluna do mapa é a safra do ano.',
         },
@@ -1359,19 +1360,19 @@
                 { area: 'a', tipo: 'tempo', grafico: { tipo: 'linha', titulo: 'Conciliação da pré-limpeza', series: [{ metrica: 'plPesado', nome: 'Pesado na caçamba', cor: 'var(--est-c1)' }, { metrica: 'plDesc', nome: 'Descontado do cooperado', cor: 'var(--est-c2)' }] } },
                 { area: 'b', tipo: 'recorte', dim: 'prelimpeza', colunas: [{ metrica: 'plPesado', rotulo: 'Pesado', barra: true }, { metrica: 'plDif', rotulo: 'Diferença' }, { metrica: 'plCacambas', rotulo: 'Caçambas' }] },
                 { area: 'c', tipo: 'anos', colunas: [{ metrica: 'plPesado', rotulo: 'Pesado', barra: true }, { metrica: 'plDesc', rotulo: 'Descontado' }, { metrica: 'plDif', rotulo: 'Diferença' }, { metrica: 'descontado', rotulo: 'Desconto total' }] },
-                { area: 'd', tipo: 'tempo', grafico: { tipo: 'barras', metrica: 'plDif', titulo: 'Diferença: pesado − descontado', divergente: [{ rotulo: 'pesou mais do que descontou', cor: 'var(--est-c1)' }, { rotulo: 'pesou menos', cor: 'var(--est-c2)' }] } },
+                { area: 'd', tipo: 'tempo', grafico: { tipo: 'barras', metrica: 'plDif', titulo: 'Diferença de conciliação: pesado − descontado', divergente: [{ rotulo: 'pesado acima do descontado', cor: 'var(--est-c1)' }, { rotulo: 'pesado abaixo do descontado', cor: 'var(--est-c2)' }] } },
             ],
         },
         {
             // cooperados: ranking, volume × qualidade e quem cresceu ano a ano
             id: 'est-cla-cooperados', codigo: 'AVR-E2D', dims: ['cooperado', 'cultura'],
             kpis: [
-                { metrica: 'rec', rotulo: 'Entregue' }, { metrica: 'rec', modo: 'contagem', dim: 'cooperado', rotulo: 'Cooperados que entregaram' },
-                { metrica: 'rec', modo: 'concentracao', dim: 'cooperado', rotulo: 'Os 5 maiores entregaram' }, { metrica: 'foraPadrao', rotulo: 'Cargas fora do padrão' },
+                { metrica: 'rec', rotulo: 'Entregue' }, { metrica: 'rec', modo: 'contagem', dim: 'cooperado', rotulo: 'Cooperados ativos' },
+                { metrica: 'rec', modo: 'concentracao', dim: 'cooperado', rotulo: 'Participação dos 5 maiores' }, { metrica: 'foraPadrao', rotulo: 'Cargas fora do padrão' },
             ],
             grade: { areas: ['r d', 'r m'], cols: '1fr 1.15fr', rows: '1fr 1fr' },
             blocos: [
-                { area: 'r', tipo: 'recorte', dim: 'cooperado', ordenar: true, titulo: 'Ranking de cooperados', colunas: [{ metrica: 'rec', rotulo: 'Entregue', barra: true }, { share: true, rotulo: 'Part.' }, { metrica: 'umidade', rotulo: 'Umid.' }, { metrica: 'avariados', rotulo: 'Avar.' }, { metrica: 'foraPadrao', rotulo: 'Fora' }] },
+                { area: 'r', tipo: 'recorte', dim: 'cooperado', ordenar: true, titulo: 'Ranking de cooperados', colunas: [{ metrica: 'rec', rotulo: 'Entregue', barra: true }, { share: true, rotulo: 'Part.' }, { metrica: 'umidade', rotulo: 'Umid.' }, { metrica: 'avariados', rotulo: 'Avar.' }, { metrica: 'foraPadrao', rotulo: 'F. padrão' }] },
                 { area: 'd', tipo: 'dispersao', por: 'dim', dim: 'cooperado', x: 'rec', y: 'foraPadrao', titulo: 'Volume entregue × cargas fora do padrão' },
                 { area: 'm', tipo: 'mapa', modo: 'dimAno', dim: 'cooperado', metrica: 'rec', titulo: 'Entregue por cooperado e ano' },
             ],
@@ -1408,7 +1409,7 @@
                 { area: 'a', tipo: 'tempo', seletor: true },
                 { area: 'b', tipo: 'recorte', dim: 'pulmao', colunas: [{ metrica: 'pulmaoEnt', rotulo: 'Volume', barra: true }, { metrica: 'perman', rotulo: 'Perman.' }, { metrica: 'pulmaoOcup', rotulo: 'Ocup.' }, { metrica: 'pulmaoCheio', rotulo: 'Dias > 90%' }] },
                 { area: 'c', tipo: 'anos', colunas: [{ metrica: 'pulmaoEnt', rotulo: 'Volume', barra: true }, { metrica: 'perman', rotulo: 'Permanência' }, { metrica: 'pulmaoOcup', rotulo: 'Ocupação' }, { metrica: 'pulmaoCheio', rotulo: 'Dias > 90%' }] },
-                { area: 'd', tipo: 'calendario', metrica: 'pulmaoOcup', limiar: 90, rotuloLimiar: 'acima de 90%', titulo: 'Ocupação dos pulmões, dia a dia' },
+                { area: 'd', tipo: 'calendario', metrica: 'pulmaoOcup', limiar: 90, rotuloLimiar: 'acima de 90%', titulo: 'Ocupação diária dos silos pulmão' },
             ],
         },
 
@@ -1420,15 +1421,15 @@
             seletor: [
                 { v: 't', n: 'Toneladas', grafico: { tipo: 'barras', metrica: 'secado', pilha: 'cultura', titulo: 'Secado por período' } },
                 { v: 'sec', n: 'Por secador', grafico: { tipo: 'barras', metrica: 'secado', pilha: 'secador', titulo: 'Secado por secador' } },
-                { v: 'ritmo', n: 'Ritmo', grafico: { tipo: 'linha', metrica: 'ritmo', pilha: 'secador', titulo: 'Ritmo médio por secador' } },
+                { v: 'ritmo', n: 'Produtividade', grafico: { tipo: 'linha', metrica: 'ritmo', pilha: 'secador', titulo: 'Produtividade média por secador' } },
             ],
             // a dispersão leva quase metade da coluna: com menos altura os pontos se amontoam
             grade: { areas: ['a b', 'a c', 'd c'], cols: '1.55fr 1fr', rows: '0.8fr 0.5fr 1.2fr' },
             blocos: [
                 { area: 'a', tipo: 'tempo', seletor: true },
-                { area: 'b', tipo: 'recorte', dim: 'secador', colunas: [{ metrica: 'secado', rotulo: 'Secado', barra: true }, { metrica: 'ritmo', rotulo: 'Ritmo' }, { metrica: 'horasSec', rotulo: 'Horas' }, { metrica: 'cavacoKgM3', rotulo: 'Cavaco/m³' }] },
-                { area: 'c', tipo: 'anos', colunas: [{ metrica: 'secado', rotulo: 'Secado', barra: true }, { metrica: 'ritmo', rotulo: 'Ritmo' }, { metrica: 'horasSec', rotulo: 'Horas' }, { metrica: 'cavacoT', rotulo: 'Cavaco' }] },
-                { area: 'd', tipo: 'dispersao', por: 'mes', x: 'umidEnt', y: 'ritmo', minimo: { metrica: 'secado', valor: 1500 }, xLeitura: 'p.p. de umidade', yLeitura: 'o ritmo', titulo: 'Ritmo × umidade de entrada, mês a mês' },
+                { area: 'b', tipo: 'recorte', dim: 'secador', colunas: [{ metrica: 'secado', rotulo: 'Secado', barra: true }, { metrica: 'ritmo', rotulo: 'Produtiv.' }, { metrica: 'horasSec', rotulo: 'Horas' }, { metrica: 'cavacoKgM3', rotulo: 'Cavaco/m³' }] },
+                { area: 'c', tipo: 'anos', colunas: [{ metrica: 'secado', rotulo: 'Secado', barra: true }, { metrica: 'ritmo', rotulo: 'Produtiv.' }, { metrica: 'horasSec', rotulo: 'Horas' }, { metrica: 'cavacoT', rotulo: 'Cavaco' }] },
+                { area: 'd', tipo: 'dispersao', por: 'mes', x: 'umidEnt', y: 'ritmo', minimo: { metrica: 'secado', valor: 1500 }, xLeitura: 'p.p. de umidade', yLeitura: 'a produtividade', titulo: 'Produtividade × umidade de entrada, por mês' },
             ],
         },
         {
@@ -1446,8 +1447,8 @@
                         { metrica: 'foraFaixa', nome: 'Tempo fora da faixa (%)' },
                     ],
                 },
-                { area: 'b', tipo: 'recorte', dim: 'secador', colunas: [{ metrica: 'umidEnt', rotulo: 'Entrada' }, { metrica: 'umidSai', rotulo: 'Saída' }, { metrica: 'tempAr', rotulo: 'Ar' }, { metrica: 'arSaida', rotulo: 'Saída ar' }, { metrica: 'foraFaixa', rotulo: 'Fora', barra: true }] },
-                { area: 'c', tipo: 'anos', colunas: [{ metrica: 'umidEnt', rotulo: 'Entrada' }, { metrica: 'umidSai', rotulo: 'Saída' }, { metrica: 'pontos', rotulo: 'Pontos' }, { metrica: 'tempAr', rotulo: 'Ar' }, { metrica: 'foraFaixa', rotulo: 'Fora', barra: true }] },
+                { area: 'b', tipo: 'recorte', dim: 'secador', colunas: [{ metrica: 'umidEnt', rotulo: 'Entrada' }, { metrica: 'umidSai', rotulo: 'Saída' }, { metrica: 'tempAr', rotulo: 'Ar' }, { metrica: 'arSaida', rotulo: 'Ar de saída' }, { metrica: 'foraFaixa', rotulo: 'Fora da faixa', barra: true }] },
+                { area: 'c', tipo: 'anos', colunas: [{ metrica: 'umidEnt', rotulo: 'Entrada' }, { metrica: 'umidSai', rotulo: 'Saída' }, { metrica: 'pontos', rotulo: 'Pontos' }, { metrica: 'tempAr', rotulo: 'Ar' }, { metrica: 'foraFaixa', rotulo: 'Fora da faixa', barra: true }] },
             ],
         },
         {
@@ -1475,7 +1476,7 @@
                 { area: 'a', tipo: 'tempo', seletor: true },
                 { area: 'b', tipo: 'pareto', metrica: 'paradas', dim: 'motivo', titulo: 'Motivos de parada' },
                 { area: 'c', tipo: 'anos', colunas: [{ metrica: 'paradas', rotulo: 'Paradas', barra: true }, { metrica: 'dispo', rotulo: 'Disponib.' }, { metrica: 'paradas', fix: { motivo: 'corretiva' }, rotulo: 'Corretiva' }, { metrica: 'paradas', fix: { motivo: 'faltaGrao' }, rotulo: 'Falta de grão' }] },
-                { area: 'd', tipo: 'mapa', modo: 'dim', dim: 'motivo', metrica: 'paradas', escalaPorLinha: true, titulo: 'Quando cada motivo pesa' },
+                { area: 'd', tipo: 'mapa', modo: 'dim', dim: 'motivo', metrica: 'paradas', escalaPorLinha: true, titulo: 'Sazonalidade dos motivos de parada' },
             ],
         },
         {
@@ -1487,7 +1488,7 @@
             blocos: [
                 { area: 'm', tipo: 'multiplos', porDim: 'zona', metrica: 'pressDep', faixaDim: true, colunas: 5, titulo: 'Depressão média por zona' },
                 { area: 'h', tipo: 'mapa', modo: 'dim', dim: 'zona', metrica: 'pressFora', titulo: 'Leituras fora da faixa por zona' },
-                { area: 'c', tipo: 'anos', colunas: [{ metrica: 'pressDep', rotulo: 'Depressão' }, { metrica: 'pressFora', rotulo: 'Fora', barra: true }, { metrica: 'pressDias10', rotulo: 'Dias > 10%' }] },
+                { area: 'c', tipo: 'anos', colunas: [{ metrica: 'pressDep', rotulo: 'Depressão' }, { metrica: 'pressFora', rotulo: 'Fora da faixa', barra: true }, { metrica: 'pressDias10', rotulo: 'Dias > 10%' }] },
             ],
             nota: 'Faixas da Tabela 12 (SanTec), leitura a cada 15 min. A zona escolhida no filtro vale para os indicadores e o ano a ano.',
         },
@@ -1515,7 +1516,7 @@
             seletor: [
                 { v: 'temp', n: 'Temperatura', grafico: { tipo: 'linha', titulo: 'Temperatura da massa de grãos', series: [{ metrica: 'tempMaxMed', nome: 'Máxima média', cor: 'var(--est-c2)' }, { metrica: 'tempMassa', nome: 'Média', cor: 'var(--est-c1)' }], refs: [{ valor: 30, rotulo: 'alerta 30 °C' }] } },
                 { v: 'aer', n: 'Aeração', grafico: { tipo: 'barras', metrica: 'aeracao', titulo: 'Horas de aeração' } },
-                { v: 'focos', n: 'Focos quentes', grafico: { tipo: 'barras', metrica: 'focos', titulo: 'Focos quentes' } },
+                { v: 'focos', n: 'Focos de aquecimento', grafico: { tipo: 'barras', metrica: 'focos', titulo: 'Focos de aquecimento' } },
             ],
             blocos: [
                 { area: 'a', tipo: 'mapa', modo: 'dim', dim: 'unidadeArm', metrica: 'tempMassa', titulo: 'Temperatura média por silo e período' },
@@ -1546,9 +1547,9 @@
                 // a evolução separada por silo: uma linha para cada (os 10,
                 // sem agrupar em "demais")
                 { area: 'a', tipo: 'tempo', grafico: { tipo: 'barras', metrica: 'aerCult', pilha: 'unidadeArm', pilhaMax: 10, culturaNaDica: true, semAnos: true, titulo: 'Horas de aeração por silo' } },
-                { area: 'b', tipo: 'recorte', dim: 'cultura', colunas: [{ metrica: 'aerCult', rotulo: 'Horas', barra: true }, { share: true, rotulo: 'Do total' }] },
+                { area: 'b', tipo: 'recorte', dim: 'cultura', colunas: [{ metrica: 'aerCult', rotulo: 'Horas', barra: true }, { share: true, rotulo: 'Part.' }] },
                 { area: 'c', tipo: 'anos', alternaGrafico: true, colunas: [{ metrica: 'aerCult', rotulo: 'Total', barra: true }, { metrica: 'aerCult', fix: { cultura: 'milho' }, rotulo: 'Milho' }, { metrica: 'aerCult', fix: { cultura: 'sorgo' }, rotulo: 'Sorgo' }, { metrica: 'aerCult', fix: { cultura: 'trigo' }, rotulo: 'Trigo' }, { metrica: 'aerCult', fix: { cultura: 'soja' }, rotulo: 'Soja' }] },
-                { area: 'd', tipo: 'mapa', modo: 'dim', dim: 'cultura', metrica: 'aerCult', escalaPorLinha: true, titulo: 'Quando cada cultura pede aeração' },
+                { area: 'd', tipo: 'mapa', modo: 'dim', dim: 'cultura', metrica: 'aerCult', escalaPorLinha: true, titulo: 'Sazonalidade da aeração por cultura' },
             ],
         },
         {
@@ -1564,12 +1565,12 @@
             seletor: [
                 { v: 't', n: 'Toneladas', grafico: { tipo: 'barras', metrica: 'exp', pilha: 'cultura', titulo: 'Expedido por período' } },
                 { v: 'cam', n: 'Caminhões', grafico: { tipo: 'barras', metrica: 'expCam', pilha: 'cultura', titulo: 'Caminhões carregados' } },
-                { v: 'rep', n: 'Reprovas', grafico: { tipo: 'linha', metrica: 'reprovasPct', pilha: 'cultura', titulo: 'Cargas reprovadas' } },
+                { v: 'rep', n: 'Reprovação', grafico: { tipo: 'linha', metrica: 'reprovasPct', pilha: 'cultura', titulo: 'Cargas reprovadas' } },
             ],
             blocos: [
                 { area: 'a', tipo: 'tempo', seletor: true },
-                { area: 'b', tipo: 'composicao', metrica: 'exp', dim: 'cultura', modo: 'pct', titulo: 'Mistura de culturas por ano' },
-                { area: 'c', tipo: 'anos', colunas: [{ metrica: 'exp', rotulo: 'Expedido', barra: true }, { metrica: 'expCam', rotulo: 'Caminhões' }, { metrica: 'reprovadas', rotulo: 'Reprovadas' }, { metrica: 'reprovasPct', rotulo: 'Reprova' }] },
+                { area: 'b', tipo: 'composicao', metrica: 'exp', dim: 'cultura', modo: 'pct', titulo: 'Participação das culturas por ano' },
+                { area: 'c', tipo: 'anos', colunas: [{ metrica: 'exp', rotulo: 'Expedido', barra: true }, { metrica: 'expCam', rotulo: 'Caminhões' }, { metrica: 'reprovadas', rotulo: 'Reprovadas' }, { metrica: 'reprovasPct', rotulo: 'Reprovação' }] },
                 { area: 'd', tipo: 'mapa', modo: 'anoMes', metrica: 'exp', titulo: 'Expedido por mês e ano' },
             ],
         },
@@ -1590,8 +1591,8 @@
                         { metrica: 'expFn', nome: 'Falling number do trigo (s)', refs: [{ valor: 250, rotulo: '≥ 250 s' }] },
                     ],
                 },
-                { area: 'b', tipo: 'recorte', dim: 'cultura', colunas: [{ metrica: 'dosado', rotulo: 'Dosado', barra: true }, { metrica: 'expUmid', rotulo: 'Umid.' }, { metrica: 'expImp', rotulo: 'Imp.' }, { metrica: 'expAvar', rotulo: 'Avar.' }, { metrica: 'reprovasPct', rotulo: 'Reprova' }] },
-                { area: 'c', tipo: 'anos', colunas: [{ metrica: 'dosado', rotulo: 'Dosado', barra: true }, { metrica: 'expUmid', rotulo: 'Umid.' }, { metrica: 'expImp', rotulo: 'Imp.' }, { metrica: 'expAvar', rotulo: 'Avar.' }, { metrica: 'reprovasPct', rotulo: 'Reprova' }] },
+                { area: 'b', tipo: 'recorte', dim: 'cultura', colunas: [{ metrica: 'dosado', rotulo: 'Dosado', barra: true }, { metrica: 'expUmid', rotulo: 'Umid.' }, { metrica: 'expImp', rotulo: 'Imp.' }, { metrica: 'expAvar', rotulo: 'Avar.' }, { metrica: 'reprovasPct', rotulo: 'Reprovação' }] },
+                { area: 'c', tipo: 'anos', colunas: [{ metrica: 'dosado', rotulo: 'Dosado', barra: true }, { metrica: 'expUmid', rotulo: 'Umid.' }, { metrica: 'expImp', rotulo: 'Imp.' }, { metrica: 'expAvar', rotulo: 'Avar.' }, { metrica: 'reprovasPct', rotulo: 'Reprovação' }] },
             ],
         },
         {
@@ -1602,9 +1603,9 @@
             ],
             blocos: [
                 { area: 'a', tipo: 'tempo', grafico: { tipo: 'barras', metrica: 'cicloExp', pilha: 'etapaExp', titulo: 'Tempo na unidade por etapa' } },
-                { area: 'b', tipo: 'recorte', dim: 'etapaExp', colunas: [{ metrica: 'cicloExp', rotulo: 'Tempo médio', barra: true }, { share: true, rotulo: 'Do ciclo' }] },
+                { area: 'b', tipo: 'recorte', dim: 'etapaExp', colunas: [{ metrica: 'cicloExp', rotulo: 'Tempo médio', barra: true }, { share: true, rotulo: 'Part. no ciclo' }] },
                 { area: 'c', tipo: 'anos', colunas: [{ metrica: 'cicloExp', rotulo: 'Ciclo', barra: true }, { metrica: 'cicloExp', fix: { etapaExp: 'fila' }, rotulo: 'Fila' }, { metrica: 'cicloExp', fix: { etapaExp: 'carreg' }, rotulo: 'Carreg.' }, { metrica: 'diasCiclo75', rotulo: 'Dias > 75 min' }] },
-                { area: 'd', tipo: 'composicao', metrica: 'cicloExp', dim: 'etapaExp', modo: 'abs', titulo: 'Tempo na unidade de cada ano, por etapa' },
+                { area: 'd', tipo: 'composicao', metrica: 'cicloExp', dim: 'etapaExp', modo: 'abs', titulo: 'Tempo anual na unidade por etapa' },
             ],
         },
         {
@@ -1642,7 +1643,7 @@
                 { area: 'a', tipo: 'tempo', seletor: true },
                 { area: 'b', tipo: 'recorte', dim: 'localidade', colunas: [{ metrica: 'chuva', rotulo: 'Chuva', barra: true }, { metrica: 'diasChuva', rotulo: 'Dias' }, { metrica: 'temp', rotulo: 'Média' }, { metrica: 'tMax', rotulo: 'Máx.' }, { metrica: 'tMin', rotulo: 'Mín.' }, { metrica: 'ur', rotulo: 'UR' }] },
                 { area: 'c', tipo: 'anos', colunas: [{ metrica: 'chuva', rotulo: 'Chuva', barra: true }, { metrica: 'diasChuva', rotulo: 'Dias de chuva' }, { metrica: 'temp', rotulo: 'Temp. média' }, { metrica: 'diasParados', rotulo: 'Parada' }] },
-                { area: 'd', tipo: 'calendario', metrica: 'chuva', titulo: 'Chuva dia a dia' },
+                { area: 'd', tipo: 'calendario', metrica: 'chuva', titulo: 'Chuva diária' },
             ],
             nota: 'Estação da unidade (Avaré) e cooperados; a recepção parada só conta Avaré.',
         },
@@ -1657,26 +1658,26 @@
     // blocos ficam inteiras. VISTAS dá o nome da segunda aba, ou os pares
     // inteiros quando o bloco principal da tela não é o gráfico no tempo.
     const VISTAS = {
-        'est-recepcao': 'Meses e culturas',
-        'est-rec-fila': 'Dia a dia e turnos',
+        'est-recepcao': 'Por mês e cultura',
+        'est-rec-fila': 'Diário e por turno',
         'est-rec-ciclo': 'Etapas',
-        'est-rec-porto': 'Acumulado e culturas',
-        'est-classificacao': 'Meses e culturas',
+        'est-rec-porto': 'Acumulado e por cultura',
+        'est-classificacao': 'Por mês e cultura',
         'est-cla-trigo': [{ n: 'Por safra', areas: ['a', 'c'] }, { n: 'Tipos de trigo', areas: ['d', 'b'] }],
         'est-cla-prelimpeza': 'Diferença da conciliação',
         'est-moegas': 'Por moega',
-        'est-moe-pulmao': 'Dia a dia e pulmões',
-        'est-secagem': 'Ritmo × umidade',
+        'est-moe-pulmao': 'Diário e por pulmão',
+        'est-secagem': 'Produtividade × umidade',
         'est-sec-cavaco': 'Eficiência e estoque',
         'est-sec-paradas': 'Motivos',
         'est-armazenagem': [{ n: 'Evolução', areas: ['d', 'c'] }, { n: 'Por silo', areas: ['a', 'b'] }],
         'est-arm-temperatura': [{ n: 'Evolução', areas: ['d', 'c'] }, { n: 'Por silo', areas: ['a', 'b'] }],
         'est-arm-aeracao': 'Culturas',
-        'est-arm-profilaxia': 'Tratamentos e silos',
-        'est-expedicao': 'Meses e culturas',
+        'est-arm-profilaxia': 'Por tratamento e silo',
+        'est-expedicao': 'Por mês e cultura',
         'est-exp-ciclo': 'Etapas',
         'est-exp-contratos': 'Clientes',
-        'est-clima': 'Dia a dia e locais',
+        'est-clima': 'Diário e por local',
     };
 
     function vistasDe(tela) {
@@ -2364,7 +2365,7 @@
         const titulo = R.titulo || ('Por ' + D.rotulo.toLowerCase());
         // a comparação só entra na legenda quando há base para comparar (no
         // período "tudo" não existe ano anterior)
-        const legenda = (temDelta ? `▲▼ ${comp === 'media' ? 'vs média de 3 anos' : 'vs ano anterior'} · ` : '') + 'clique filtra a tela';
+        const legenda = (temDelta ? `▲▼ ${comp === 'media' ? 'vs média de 3 anos' : 'vs ano anterior'} · ` : '') + 'clique para filtrar';
         return `<div data-codigo="${op.codigo}" class="content-section du-section est-section est-recorte${op.solta ? ' est-recorte--solta' : ''}" style="${op.estilo}">
             <div class="section-head">
                 <h3>${titulo.toUpperCase()} · ${P.rot.toUpperCase()}</h3>
@@ -3231,7 +3232,7 @@
             + (comProj ? legItem('est-leg--proj', 'falta, pela projeção', 'var(--viz-real)') : '')
             + legItem('est-leg--ref', (ULT.ano - 1) + ' fechado');
         return `<div data-codigo="${tela.codigo}-B" class="content-section du-section est-section est-fech">
-            ${cabecalho('Quanto de ' + ULT.ano + ' já foi feito · t', leg)}
+            ${cabecalho('Realizado em ' + ULT.ano + ' · t', leg)}
             <div class="est-fech-corpo">${corpo}</div>
         </div>`;
     }
@@ -3275,7 +3276,7 @@
         const P = periodo();
         const t = { dims: {} };
         const graf = grafico(tela, {
-            tipo: 'linha', titulo: 'O que entrou, secou e saiu',
+            tipo: 'linha', titulo: 'Recebimento, secagem e expedição',
             series: [
                 { metrica: 'rec', nome: 'Recebido', cor: 'var(--est-c1)' },
                 { metrica: 'secado', nome: 'Secado', cor: 'var(--est-c4)' },
@@ -3288,14 +3289,14 @@
         const atencao = pontos.length
             ? `<ul class="est-atencao">${pontos.map((p) => `<li><button type="button" class="est-at${p.bom ? ' est-at--bom' : ''}" data-goto="${p.goto}" title="Abrir ${p.area}">
                     <span class="est-at-nome">${p.nome}</span><b>${fmtM(p.m, p.atual)}</b>
-                    <span class="est-at-area">${p.bom ? 'melhor evolução · ' : ''}${p.area}</span>${deltaHtml(p.dl, '')}
+                    <span class="est-at-area">${p.bom ? 'maior melhora · ' : ''}${p.area}</span>${deltaHtml(p.dl, '')}
                 </button></li>`).join('')}</ul>`
-            : '<p class="est-nota est-atencao-vazio">Nenhum indicador mudou de forma relevante contra a média dos 3 anos anteriores.</p>';
+            : '<p class="est-nota est-atencao-vazio">Nenhum indicador apresentou variação relevante em relação à média dos 3 anos anteriores.</p>';
         return htmlFiltros(tela, t) + `<div class="est-geral">
             <div class="est-geral-topo">${graf}${fechamentoHtml(tela)}</div>
             <div class="est-geral-base">
                 <div data-codigo="${tela.codigo}-C" class="content-section du-section est-section est-fluxo">
-                    ${cabecalho('Da recepção à expedição · ' + P.rot, `<span>número: o período do filtro · embaixo: cada ano de ${ANOS[0]} a ${ULT.ano}${comProj ? ' (* projetado)' : ' (' + ULT.ano + ' só até ' + rotDia(NH - 1).slice(0, 5) + ')'}</span>`)}
+                    ${cabecalho('Da recepção à expedição · ' + P.rot, `<span>valor: período selecionado · abaixo: série anual de ${ANOS[0]} a ${ULT.ano}${comProj ? ' (* projetado)' : ' (' + ULT.ano + ' apenas até ' + rotDia(NH - 1).slice(0, 5) + ')'}</span>`)}
                     <div class="est-fluxo-etapas">${etapas}</div>
                 </div>
                 <div data-codigo="${tela.codigo}-D" class="content-section du-section est-section est-fluxo est-fluxo--clima">
@@ -3318,37 +3319,43 @@
     const PROJ_TABELA = ['rec', 'cam', 'secado', 'exp', 'cavacoT', 'descontado', 'custoRetorno', 'paradas', 'chuva', 'umidade', 'ocup', 'espera'];
 
     function telaProjecao(tela) {
-        let t = ESTADO.telas[tela.id];
-        if (!t || typeof t !== 'object') t = ESTADO.telas[tela.id] = { dims: {}, sel: 'rec' };
+        const t = estadoTela(tela);
         if (!PROJ_INDICADORES.some((x) => x.v === t.sel)) t.sel = 'rec';
         const m = M[t.sel];
+        // filtro de cultura: vale para os indicadores que separam por cultura;
+        // os outros (chuva, paradas...) seguem com o total e avisam na linha
+        const f = Object.assign({}, t.dims);
+        const cult = f.cultura && f.cultura !== '*' ? DIMS.cultura.valores.find((x) => x.v === f.cultura) : null;
+        const separa = (mm) => !cult || !!(mm.dims && mm.dims.cultura);
+        const avisoTotal = (mm) => (separa(mm) ? '' : ' <small class="est-faixa-cel">todas as culturas</small>');
+        const rotCult = cult ? ' · ' + cult.n : '';
         const iniAno = (a) => diaDe(a, 0, 1);
         const fimAno = (a) => diaDe(a, 11, 31);
 
         // KPIs: fechamento projetado das somas principais
         const kp = ['rec', 'exp', 'secado', 'cavacoT'].map((id) => {
             const mm = M[id];
-            const r = agregarP(mm, {}, iniAno(ULT.ano), fimAno(ULT.ano));
-            const ant = agregar(mm, {}, iniAno(ULT.ano - 1), fimAno(ULT.ano - 1));
-            return kpiCard(tela.codigo + '-A', '<span class="est-tag-proj">Projeção</span> ' + mm.rotulo + ' · ' + ULT.ano, r ? valorHtml(mm, r.c) : '—', rodapeProj(mm, r, ant, 'vs ' + (ULT.ano - 1)), 'est-kpi--proj');
+            const r = agregarP(mm, f, iniAno(ULT.ano), fimAno(ULT.ano));
+            const ant = agregar(mm, f, iniAno(ULT.ano - 1), fimAno(ULT.ano - 1));
+            return kpiCard(tela.codigo + '-A', '<span class="est-tag-proj">Projeção</span> ' + mm.rotulo + ' · ' + ULT.ano + (separa(mm) ? rotCult : ''), r ? valorHtml(mm, r.c) : '—', rodapeProj(mm, r, ant, 'vs ' + (ULT.ano - 1)), 'est-kpi--proj');
         }).join('');
 
         // gráfico: acumulado do ano, mês a mês, de cada ano (aqui a projeção aparece sempre)
         const sel = listaSel('data-est-selsel', 'Indicador', PROJ_INDICADORES, t.sel);
-        const graf = graficoAcumulado(m, {}, { key: tela.id, codigo: tela.codigo + '-B', area: 'auto', estilo: '' }, 'Acumulado do ano · ' + m.rotulo, true);
+        const graf = graficoAcumulado(m, f, { key: tela.id, codigo: tela.codigo + '-B', area: 'auto', estilo: '' }, 'Acumulado do ano · ' + m.rotulo + (separa(m) ? rotCult : ' · todas as culturas'), true);
 
         // tabela: cada indicador, o ano passado, o ano até hoje e o projetado
         const linhas = PROJ_TABELA.map((id) => {
             const mm = M[id];
-            const ant = agregar(mm, {}, iniAno(ULT.ano - 1), fimAno(ULT.ano - 1));
-            const ate = agregar(mm, {}, iniAno(ULT.ano), NH - 1);
-            const r = agregarP(mm, {}, iniAno(ULT.ano), fimAno(ULT.ano));
-            const r12 = agregarP(mm, {}, NH, NT - 1);
+            const ant = agregar(mm, f, iniAno(ULT.ano - 1), fimAno(ULT.ano - 1));
+            const ate = agregar(mm, f, iniAno(ULT.ano), NH - 1);
+            const r = agregarP(mm, f, iniAno(ULT.ano), fimAno(ULT.ano));
+            const r12 = agregarP(mm, f, NH, NT - 1);
             const dl = r ? delta(mm, r.c, ant) : null;
             // a unidade fica ao lado do nome e a variação em coluna própria:
             // cada linha tem no máximo duas de texto e os 12 indicadores cabem
             const num = (v) => (v == null ? '—' : (mm.unidade === 'R$' ? 'R$ ' : '') + fmt(v, mm.casas));
-            return `<tr><td class="pv-tabela-nome">${mm.rotulo}${mm.unidade === 'R$' ? '' : `<small>${mm.unidade}</small>`}</td>
+            return `<tr><td class="pv-tabela-nome">${mm.rotulo}${mm.unidade === 'R$' ? '' : `<small>${mm.unidade}</small>`}${avisoTotal(mm)}</td>
                 <td class="num">${num(ant)}</td>
                 <td class="num">${num(ate)}</td>
                 <td class="num est-cel-proj"><b>${num(r ? r.c : null)}</b><small class="est-faixa-cel">${r ? faixaCurta(mm, r) : ''}</small></td>
@@ -3358,7 +3365,7 @@
         }).join('');
         const tabela = `<div data-codigo="${tela.codigo}-C" class="content-section du-section est-section est-anos">
             <div class="section-head">
-                <h3>FECHAMENTO DE ${ULT.ano} · TODOS OS INDICADORES</h3>
+                <h3>FECHAMENTO DE ${ULT.ano} · TODOS OS INDICADORES${rotCult.toUpperCase()}</h3>
                 <span class="du-legenda"><span>embaixo do projetado, a faixa provável</span></span>
             </div>
             <div class="table-scroll table-scroll--livre est-scroll">
@@ -3368,10 +3375,10 @@
                 </table>
             </div>
         </div>`;
-        const filtros = `<div class="est-filtros"><div class="est-filtros-linha">${grupo('Acumulado de', sel, 'est-fgrupo--mostrar')}</div></div>`;
+        const filtros = `<div class="est-filtros"><div class="est-filtros-linha">${grupo('Acumulado de', sel, 'est-fgrupo--mostrar')}${filtroDim('cultura', t.dims.cultura)}</div></div>`;
         return filtros + `<div class="kpi-grid est-kpis" style="--k: 4">${kp}</div>`
             + `<div class="est-proj-corpo">${graf}${tabela}</div>`
-            + `<p class="est-nota">Como a projeção é feita: cada dia que falta repete o mesmo dia de ${ULT.ano - 1}, ${ULT.ano - 2} e ${ULT.ano - 3}, cada um ajustado ao ritmo dos últimos 12 meses. O valor é a média dos três; a faixa vai do mais fraco ao mais forte e abre um pouco a cada mês à frente.</p>`;
+            + `<p class="est-nota">Metodologia: cada dia restante replica o mesmo dia de ${ULT.ano - 1}, ${ULT.ano - 2} e ${ULT.ano - 3}, ajustado ao desempenho dos últimos 12 meses. O valor projetado é a média dos três cenários; a faixa vai do cenário mais conservador ao mais otimista e se amplia a cada mês à frente.</p>`;
     }
 
     // ---------- capacidade: para onde o ritmo dos anos leva ----------
@@ -3517,7 +3524,7 @@
                 ${sitHtml(sitDe(o.p))}
             </div>`).join('');
         return `<div data-codigo="${tela.codigo}-D" class="content-section du-section est-section est-cap-amp">
-            ${cabecalho('Ampliar a armazenagem · pico dos silos em ' + x.fim.a, `<span>hoje: ${n0} unidades de ${fmt(uni, 0)} t</span>`)}
+            ${cabecalho('Necessidade de ampliação da armazenagem · pico em ' + x.fim.a, `<span>hoje: ${n0} unidades de ${fmt(uni, 0)} t</span>`)}
             <p class="est-cap-frase">${frase}</p>
             <div class="est-cap-ops" style="--n: ${ops.length}">${cartoes}</div>
         </div>`;
@@ -3579,7 +3586,7 @@
         const filtros = `<div class="est-filtros"><div class="est-filtros-linha">${grupo('Volume', sel, 'est-fgrupo--mostrar')}</div></div>`;
         return filtros + `<div class="kpi-grid est-kpis" style="--k: 4">${kp}</div>`
             + `<div class="est-proj-corpo est-cap-corpo"><div class="est-cap-esq">${graficoHorizonte(tela, m)}${ampliacaoHtml(tela, sinais)}</div>${tabela}</div>`
-            + `<p class="est-nota">Como ler: ${ULT.ano} é a projeção até dezembro; ${ULT.ano + 1} a ${anoFim} continuam o ritmo médio de ${ANOS[0]} a ${ULT.ano} (uma reta pelos anos). Mostra para onde o ritmo atual leva a estrutura, não prevê safra. Situação: "No limite" a partir de 30 dias por ano acima do limite ou 95% da capacidade; "Atenção" a partir de 10 dias, 85% ou quando a tendência chega lá até ${anoFim}.</p>`;
+            + `<p class="est-nota">Leitura: ${ULT.ano} é a projeção até dezembro; ${ULT.ano + 1} a ${anoFim} seguem a tendência linear de ${ANOS[0]} a ${ULT.ano}. Indica o efeito da tendência atual sobre a estrutura; não constitui previsão de safra. Situação: "No limite" a partir de 30 dias por ano acima do limite ou 95% da capacidade; "Atenção" a partir de 10 dias, 85% ou quando a tendência atinge esses patamares até ${anoFim}.</p>`;
     }
 
     // ---------- profilaxia e expurgo: o histórico de cada silo ----------
