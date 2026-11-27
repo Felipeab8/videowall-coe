@@ -1026,6 +1026,7 @@
         e.de =clamp(Math.round(Number(e.de)) || 0, 0, KM_ULT);
         e.ate = clamp(Math.round(Number(e.ate)) || KM_ULT, 0, KM_ULT);
         if (!e.telas || typeof e.telas !== 'object') e.telas = {};
+        if (!e.serieAnos || typeof e.serieAnos !== 'object') e.serieAnos = {};
         return e;
     }
 
@@ -1758,6 +1759,8 @@
         if (m) return `data-est-dim="${m[1]}" data-v="${v}"`;
         m = attr.match(/^data-est-(de|ate)$/);
         if (m) return `data-est-mes="${m[1]}" data-v="${v}"`;
+        m = attr.match(/^data-est-serieanossel="([^"]+)"$/);
+        if (m) return `data-est-serieanos="${v}" data-k="${m[1]}"`;
         return '';
     }
 
@@ -1973,15 +1976,40 @@
 
     const TIP = {};
 
-    function cabecalhoGrafico(cfg, m, legenda) {
+    function cabecalhoGrafico(cfg, m, legenda, extra) {
         const anosOk = ESTADO.agrupar !== 'ano';
         const modo = ESTADO.modo === 'anos' && anosOk ? 'anos' : 'linha';
         const bt = (v, rot, dis) => `<button type="button" class="fluxo-periodo-btn${modo === v ? ' is-active' : ''}" data-est-modo="${v}" aria-pressed="${modo === v}"${dis ? ' disabled title="Escolha semana, mês ou trimestre para sobrepor os anos"' : ''}>${rot}</button>`;
         return `<div class="section-head est-graf-head">
             <h3>${cfg.titulo.toUpperCase()} · ${m.unidade.toUpperCase()}</h3>
             <span class="du-legenda">${legenda}</span>
+            ${extra || ''}
             ${cfg.semAnos ? '' : `<div class="class-filtro est-modo" role="group" aria-label="Forma do gráfico">${bt('linha', 'Linha do tempo')}${bt('anos', 'Sobrepor anos', !anosOk)}</div>`}
         </div>`;
+    }
+
+    // anos sobrepostos cabem uma série só: nos gráficos de várias séries
+    // (recebido × secado × expedido, máx/méd/mín...) e nos quebrados por
+    // dimensão (por moega, por secador...), a lista no cabeçalho diz qual
+    // está na tela, em vez de sumir com as outras sem avisar
+    function escolhaAnos(cfg, f, S) {
+        const k = cfg.titulo;
+        const salvo = ESTADO.serieAnos[k];
+        if (cfg.series) {
+            const ops = S.lista.map((s, i) => ({ v: 's' + i, n: s.nome }));
+            const padrao = (ops.find((o) => o.n === 'Média') || ops[0]).v;
+            const v = ops.some((o) => o.v === salvo) ? salvo : padrao;
+            const s = S.lista[Number(v.slice(1))];
+            return { m: s.m, f: s.f, ops, v, k };
+        }
+        if (S.modo === 'multi' && cfg.pilha) {
+            const D = DIMS[cfg.pilha];
+            const ops = [{ v: '*', n: D.todos }].concat(D.valores);
+            const v = ops.some((o) => o.v === salvo) ? salvo : '*';
+            return { m: S.total.m, f: v === '*' ? S.total.f : Object.assign({}, S.total.f, { [cfg.pilha]: v }), ops, v, k, rot: D.rotulo };
+        }
+        const s = S.total || S.lista[0];
+        return { m: s.m, f: s.f, ops: null };
     }
 
     const legItem = (cls, txt, cor) => `<span><i class="est-leg ${cls}"${cor ? ` style="--c: ${cor}"` : ''}></i>${txt}</span>`;
@@ -2199,8 +2227,12 @@
         const g = op.agrupar || ESTADO.agrupar;
         const nPos = { semana: 53, mes: 12, trimestre: 4 }[g];
         const S = seriesDoGrafico(cfg, f, P);
-        const mP = S.total ? S.total.m : S.lista[0].m;
-        const fP = S.total ? S.total.f : S.lista[0].f;
+        const E = escolhaAnos(cfg, f, S);
+        const mP = E.m;
+        const fP = E.f;
+        const seletor = E.ops
+            ? `<div class="est-anos-serie">${listaSel(`data-est-serieanossel="${E.k}"`, E.rot || 'Série', E.ops, E.v)}</div>`
+            : '';
         const bs = buckets(g, P.ini, P.fimProj);
         const porAno = new Map();
         bs.forEach((b) => {
@@ -2230,8 +2262,35 @@
             eixoY += `<span style="--y: ${y(v)}">${abrev(v, esc.passo)}</span>`;
         }
         let svg = '';
-        let rotulos = '';
+        const marcas = [];
+        // os anos fechados viram uma faixa (mínimo–máximo de cada mês) com a
+        // média no meio: a pergunta do gráfico é "este ano está dentro do
+        // normal?", e um novelo de 4–5 linhas finas não responde isso. O ano
+        // passado segue como linha, para a comparação direta
+        const hist = anos.filter((a) => a < ULT.ano);
+        const comFaixa = hist.length >= 3;
+        const histRot = hist.length ? hist[0] + '–' + hist[hist.length - 1] : '';
+        const media = new Array(nPos).fill(null);
+        if (comFaixa) {
+            const alto = [];
+            const baixo = [];
+            const med = [];
+            for (let i = 0; i < nPos; i++) {
+                const vs = hist.map((a) => porAno.get(a)[i]).filter((x) => x && x.r && !x.r.proj).map((x) => x.r.c);
+                if (vs.length < 2) continue;
+                media[i] = vs.reduce((s, v) => s + v, 0) / vs.length;
+                alto.push(X(i) + ',' + Y(Math.max(...vs)));
+                baixo.push(X(i) + ',' + Y(Math.min(...vs)));
+                med.push(X(i) + ',' + Y(media[i]));
+            }
+            if (alto.length > 1) {
+                svg += `<polygon class="est-faixa-hist" points="${alto.concat(baixo.reverse()).join(' ')}"></polygon>`;
+                svg += `<polyline class="est-l est-l-media" points="${med.join(' ')}"></polyline>`;
+            }
+        }
+        let agora = null;   // último ponto real do ano corrente
         anos.forEach((a) => {
+            if (comFaixa && a < ULT.ano - 1) return;
             const arr = porAno.get(a);
             const cor = corAno(a);
             const cls = a >= ULT.ano ? ' est-l--forte' : (a === ULT.ano - 1 ? '' : ' est-l--fraca');
@@ -2246,6 +2305,7 @@
                 if (!x.r.proj) {
                     real.push(p);
                     ult = { i, x };
+                    if (a === ULT.ano) agora = { i, c: x.r.c };
                 } else {
                     if (!proj.length && ult && ult.i === i - 1) {
                         proj.push(X(ult.i) + ',' + Y(ult.x.r.c));
@@ -2261,10 +2321,48 @@
             if (alto.length > 1) svg += `<polygon class="est-banda" style="--c: ${cor}" points="${alto.concat(baixo.reverse()).join(' ')}"></polygon>`;
             if (real.length > 1) svg += `<polyline class="est-l${cls}" style="--c: ${cor}" points="${real.join(' ')}"></polyline>`;
             if (proj.length > 1) svg += `<polyline class="est-l est-l--proj${cls}" style="--c: ${cor}" points="${proj.join(' ')}"></polyline>`;
-            if (ult) {
-                rotulos += `<span class="est-rotulo-ano${a >= ULT.ano ? ' is-atual' : ''}" style="left: ${X(ult.i)}%; bottom: ${(yv(ult.x.r.c) * 100).toFixed(2)}%; --c: ${cor}">${a}${ult.x.r.proj ? '*' : ''}</span>`;
+            // rótulo só nos anos em destaque (o atual, o anterior e o
+            // projetado); os mais antigos são "anos anteriores" na legenda
+            if (ult && a >= ULT.ano - 1) marcas.push({ a, x: Number(X(ult.i)), b: yv(ult.x.r.c) * 100, cor, proj: ult.x.r.proj });
+        });
+        // rótulos que terminam perto um do outro não se sobrepõem: o de baixo desce
+        marcas.sort((p, q) => q.b - p.b);
+        marcas.forEach((q, i) => {
+            for (let j = 0; j < i; j++) {
+                const p = marcas[j];
+                if (Math.abs(p.x - q.x) < 8 && p.b - q.b < 9) q.b = p.b - 9;
             }
         });
+        let rotulos = marcas.map((r) => `<span class="est-rotulo-ano${r.a >= ULT.ano ? ' is-atual' : ''}" style="left: ${r.x}%; bottom: ${Math.max(-6, r.b).toFixed(2)}%; --c: ${r.cor}">${r.a}${r.proj ? '*' : ''}</span>`).join('');
+        // "agora": o ponto do último mês fechado, uma linha vertical até o
+        // eixo e a leitura do ano em cima do gráfico
+        let leitura = '';
+        if (agora) {
+            rotulos += `<i class="est-agora" style="left: ${X(agora.i)}%"></i>`
+                + `<i class="est-agora-pt" style="left: ${X(agora.i)}%; bottom: ${(yv(agora.c) * 100).toFixed(2)}%"></i>`;
+            const nomePos = g === 'semana' ? 'semana ' + (agora.i + 1) : (g === 'mes' ? MESES[agora.i] : TRI[agora.i]);
+            const ant = porAno.get(ULT.ano - 1);
+            const xAnt = ant && ant[agora.i] && ant[agora.i].r ? ant[agora.i].r.c : null;
+            const itens = [`<span class="est-anos-leitura-v"><span>${nomePos}/${ULT.ano}</span><b>${fmtM(mP, agora.c)}</b></span>`];
+            if (xAnt != null) itens.push(deltaHtml(delta(mP, agora.c, xAnt), 'vs ' + nomePos + '/' + (ULT.ano - 1)));
+            if (media[agora.i] != null) itens.push(deltaHtml(delta(mP, agora.c, media[agora.i]), 'vs média ' + histRot));
+            // nas somas (toneladas, caminhões, horas...) o que decide a safra é
+            // o acumulado do ano até aqui, não um mês isolado
+            const atual = porAno.get(ULT.ano);
+            if (mP.agreg === 'soma' && ant && agora.i > 0) {
+                let sA = 0;
+                let sB = 0;
+                let ok = true;
+                for (let i = 0; i <= agora.i; i++) {
+                    if (!atual[i] || !atual[i].r || !ant[i] || !ant[i].r) { ok = false; break; }
+                    sA += atual[i].r.c;
+                    sB += ant[i].r.c;
+                }
+                const rotAc = g === 'mes' ? MESES[0] + '–' + nomePos : 'no ano';
+                if (ok) itens.push(`<span class="est-anos-leitura-v"><span>acumulado ${rotAc}</span><b>${fmtM(mP, sA)}</b></span>` + deltaHtml(delta(mP, sA, sB), 'vs ' + (ULT.ano - 1)));
+            }
+            leitura = `<div class="est-anos-leitura">${itens.join('')}</div>`;
+        }
         const refHtml = refs.map((r) => `<i class="est-ref" style="--y: ${y(r.valor)}"></i>`).join('');
         const cols = Array.from({ length: nPos }, (_, i) => `<div class="est-col" data-est-pos="${i}"></div>`).join('');
         const eixoX = Array.from({ length: nPos }, (_, i) => {
@@ -2278,13 +2376,16 @@
             ? (anos.includes(ULT.ano + 1) ? legItem('est-leg--linha', String(ULT.ano + 1), 'var(--est-c7)') : '')
                 + legItem('est-leg--linha', anos.includes(ULT.ano) ? String(ULT.ano) : String(anos[anos.length - 1]), 'var(--viz-real)')
                 + (anos.includes(ULT.ano - 1) ? legItem('est-leg--linha', String(ULT.ano - 1), 'var(--muted)') : '')
-                + (anos.some((a) => a < ULT.ano - 1) ? legItem('est-leg--linha', 'anos anteriores', 'var(--faint)') : '')
+                + (comFaixa
+                    ? legItem('est-leg--faixa-hist', 'faixa ' + histRot) + legItem('est-leg--media', 'média ' + histRot)
+                    : (anos.some((a) => a < ULT.ano - 1) ? legItem('est-leg--linha', 'anos anteriores', 'var(--faint)') : ''))
             : '';
         if (P.comProj) leg += legItem('est-leg--proj', 'projeção (*) e faixa provável', 'var(--viz-real)');
         refs.filter((r) => r.rotulo).forEach((r) => { leg += legItem('est-leg--ref', r.rotulo); });
-        TIP[op.key] = { tipo: 'anos', porAno, anos, mP, g };
+        TIP[op.key] = { tipo: 'anos', porAno, anos, mP, g, media: comFaixa ? media : null, histRot };
         return `<div data-codigo="${op.codigo}" class="content-section du-section est-section est-section--grafico" style="${op.estilo}" data-est-tipid="${op.key}">
-            ${op.cabecalho ? op.cabecalho(leg, mP) : cabecalhoGrafico(cfg, mP, leg)}
+            ${op.cabecalho ? op.cabecalho(leg, mP) : cabecalhoGrafico(cfg, mP, leg, seletor)}
+            ${leitura}
             <div class="est-graf est-graf--rotulos" style="--n: ${nPos}">
                 <div class="est-eixo-y" aria-hidden="true">${eixoY}</div>
                 <div class="est-plot" role="img" aria-label="${cfg.titulo}, anos sobrepostos">
@@ -4063,8 +4164,14 @@
         if (!corpo) return;
         const id = corpo.getAttribute('data-est');
         const tela = TELA[id];
-        const alvo = ev.target.closest('[data-est-periodo], [data-est-agrupar], [data-est-projecao], [data-est-comparar], [data-est-modo], [data-est-dim], [data-est-sel], [data-est-recorte], [data-est-vista], [data-est-filtros], [data-est-mes], [data-est-anosvista]');
+        const alvo = ev.target.closest('[data-est-periodo], [data-est-agrupar], [data-est-projecao], [data-est-comparar], [data-est-modo], [data-est-dim], [data-est-sel], [data-est-recorte], [data-est-vista], [data-est-filtros], [data-est-mes], [data-est-anosvista], [data-est-serieanos]');
         if (!alvo || !tela || alvo.disabled) return;
+        if (alvo.hasAttribute('data-est-serieanos')) {
+            ESTADO.serieAnos[alvo.getAttribute('data-k')] = alvo.getAttribute('data-est-serieanos');
+            gravarEstado();
+            remontarUma(id);
+            return;
+        }
         if (alvo.hasAttribute('data-est-mes')) {
             ESTADO[alvo.getAttribute('data-est-mes')] = Number(alvo.getAttribute('data-v'));
             ESTADO.periodo = 'custom';
@@ -4192,6 +4299,7 @@
                 if (!titulo) titulo = st.g === 'semana' ? 'Semana ' + (pos + 1) : (st.g === 'mes' ? MESES[pos] : TRI[pos]);
                 h += linhaTip('', a + (x.r.proj ? ' (projeção)' : ''), valorTip(st.mP, x.r));
             });
+            if (titulo && st.media && st.media[pos] != null) h += linhaTip('', 'média ' + st.histRot, fmtM(st.mP, st.media[pos]));
             return titulo ? `<div class="est-tip-titulo">${titulo}</div>` + h : '';
         }
         if (st.tipo === 'acumulado') {
